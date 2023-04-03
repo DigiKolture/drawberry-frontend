@@ -1,12 +1,14 @@
 <template>
-  <div class="about">
-    <h1 class="text-success">This is anf about page</h1>
-  </div>
+  <BaseLayout>
+    <h1>Login</h1>
+  </BaseLayout>
 </template>
 <script>
 import { defineComponent } from "vue";
+import BaseLayout from "@/components/layout/AuthLayout";
 
 export default defineComponent({
   name: "LoginPage",
+  components: { BaseLayout },
 });
 </script>

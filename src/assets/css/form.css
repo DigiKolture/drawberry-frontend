@@ -1,0 +1,47 @@
+.form-group{
+    @apply flex flex-col;
+    row-gap: 4px;
+}
+
+label{
+    font-style: normal;
+    font-weight: 400;
+    font-size: 12px;
+    line-height: 16px;
+    color: #C2CBD6;
+}
+
+input::placeholder {
+    color: #848F9F;
+}
+
+input, select{
+    background: #E1E6ED;
+    border-radius: 4px;
+    padding: 13px 16px;
+    height: 48px;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 21px;
+    color: #353843;
+}
+
+select option:first-child{
+    color: #848F9F;
+}
+
+input:focus{
+    background: #EBF8FE;
+    border: 2px solid #1873CD;
+}
+
+input:focus-visible{
+    outline: none;
+}
+
+button.button{
+    @apply text-white;
+    border-radius: 4px;
+    padding-top: 13px;
+    padding-bottom: 13px;
+}

@@ -1,0 +1,37 @@
+section.app__layout{
+    @apply flex w-full h-full;
+}
+
+.app__container{
+    @apply flex flex-col w-full;
+}
+
+.app__header{
+    @apply flex justify-center;
+    background: #454856;
+    padding: 39px;
+}
+
+.app__content__container{
+    @apply flex flex-col;
+    width: 588px;
+}
+
+.app__content__container h2{
+    font-weight: 500;
+    font-size: 40px;
+    line-height: 52px;
+    color: #E1E6ED;
+}
+
+.app__content__container p {
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 21px;
+    color: #E1E6ED;
+}
+
+.app__body{
+    @apply flex h-full justify-center;
+    background: #2D3039;
+}

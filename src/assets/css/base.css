@@ -67,3 +67,15 @@ div#app{
 p a{
     @apply text-white;
 }
+
+button.button__icon{
+    margin-top: 24px;
+    @apply flex items-center justify-center text-white;
+    column-gap: 13px;
+    background: #494B57;
+    border-radius: 4px;
+    font-weight: 700;
+    font-size: 14px;
+    line-height: 18px;
+    padding: 9px 8px;
+}

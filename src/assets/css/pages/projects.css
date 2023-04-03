@@ -1,0 +1,23 @@
+.projects__container{
+    @apply flex flex-col;
+}
+
+.projects__empty{
+    @apply flex flex-col justify-center items-center;
+    margin-top: 85px;
+}
+
+.projects__empty h6{
+    font-weight: 400;
+    font-size: 20px;
+    line-height: 26px;
+    color: #E1E6ED;
+    margin-bottom: 5px;
+}
+
+.projects__empty p{
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 21px;
+    color: #848F9F;
+}

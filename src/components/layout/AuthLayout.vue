@@ -1,22 +1,18 @@
 <template>
-  <div class="base">
-    <Header />
-
-    <main class="main auth">
-      <section class="auth">
-        <slot />
-      </section>
-    </main>
-  </div>
+  <BaseLayout>
+    <section class="auth-layout">
+      <slot />
+    </section>
+  </BaseLayout>
 </template>
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import Header from "./Header.vue";
+import BaseLayout from "@/components/layout/BaseLayout.vue";
 
 export default defineComponent({
-  name: "BaseLayout",
-  components: { Header },
+  name: "AuthLayout",
+  components: { BaseLayout },
 });
 </script>
 

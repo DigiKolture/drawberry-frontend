@@ -2,6 +2,7 @@ import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
 import Login from "@/views/Auth/Login.vue";
 import Register from "@/views/Auth/Register.vue";
 import ProjectIndex from "@/views/Projects/ProjectIndex.vue";
+import store from "@/store";
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -33,6 +34,22 @@ const routes: Array<RouteRecordRaw> = [
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
   routes,
+});
+
+router.beforeEach((routeTo, routeFrom, next) => {
+  const authRequired = routeTo.matched.some((route) => route.meta.authRequired);
+  const authUser = store.getters["auth/authUser"];
+  // const jwt = store.getters["auth/jwt"];
+  const jwt = localStorage.getItem("access-token");
+
+  if (!authRequired) {
+    return next();
+  }
+
+  if (authUser && jwt) {
+    return next();
+  }
+  return next({ name: "Login" });
 });
 
 export default router;

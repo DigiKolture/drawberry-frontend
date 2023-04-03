@@ -90,3 +90,16 @@ section.auth{
 .form__footer p a{
     @apply underline;
 }
+
+/* LOGIN */
+
+.login .auth__submit{
+    margin-top: 12px;
+    row-gap: 18px;
+}
+
+.login .auth__submit a{
+    @apply text-white underline;
+    font-size: 12px;
+    line-height: 16px;
+}

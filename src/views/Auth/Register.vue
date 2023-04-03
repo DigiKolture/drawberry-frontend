@@ -1,60 +1,58 @@
 <template>
   <AuthLayout>
-    <section class="auth">
-      <div class="auth__main">
-        <div class="auth__main__close">
-          <button>
-            <BaseIcon icon="close" />
-          </button>
-        </div>
-        <form class="auth__form" action="">
-          <div class="auth__form-content">
-            <h3>Sign Up</h3>
-            <p>Create an account to start designing</p>
-          </div>
-          <div class="auth__form-inputs">
-            <div class="auth__form__row">
-              <FormGroup>
-                <BaseLabel title="First Name" />
-                <BaseInput type="text" placeholder="First name" />
-              </FormGroup>
-              <FormGroup>
-                <BaseLabel title="Last Name" />
-                <BaseInput type="text" placeholder="Last name" />
-              </FormGroup>
-            </div>
-            <FormGroup>
-              <BaseLabel title="Email" />
-              <BaseInput type="email" placeholder="Email address" />
-            </FormGroup>
-            <FormGroup>
-              <BaseLabel title="Country" />
-              <BaseSelect
-                title="Select country"
-                :options="['Nigeria', 'Ghana', 'Togo', 'France']"
-              />
-            </FormGroup>
-            <FormGroup>
-              <BaseLabel title="Password" />
-              <BaseInput type="password" placeholder="Password" />
-            </FormGroup>
-          </div>
-          <div class="auth__submit">
-            <p>
-              By clicking the button below, you accept our
-              <a href="">Terms of Use</a> and <a href="">Privacy Policy</a>
-            </p>
-            <BaseButton />
-          </div>
-        </form>
-        <div class="form__footer">
-          <p>
-            Already have an account?
-            <router-link to="/login">Sign in here</router-link>
-          </p>
-        </div>
+    <div class="auth__main">
+      <div class="auth__main__close">
+        <button>
+          <BaseIcon icon="close" />
+        </button>
       </div>
-    </section>
+      <form class="auth__form" action="">
+        <div class="auth__form-content">
+          <h3>Sign Up</h3>
+          <p>Create an account to start designing</p>
+        </div>
+        <div class="auth__form-inputs">
+          <div class="auth__form__row">
+            <FormGroup>
+              <BaseLabel title="First Name" />
+              <BaseInput type="text" placeholder="First name" />
+            </FormGroup>
+            <FormGroup>
+              <BaseLabel title="Last Name" />
+              <BaseInput type="text" placeholder="Last name" />
+            </FormGroup>
+          </div>
+          <FormGroup>
+            <BaseLabel title="Email" />
+            <BaseInput type="email" placeholder="Email address" />
+          </FormGroup>
+          <FormGroup>
+            <BaseLabel title="Country" />
+            <BaseSelect
+              title="Select country"
+              :options="['Nigeria', 'Ghana', 'Togo', 'France']"
+            />
+          </FormGroup>
+          <FormGroup>
+            <BaseLabel title="Password" />
+            <BaseInput type="password" placeholder="Password" />
+          </FormGroup>
+        </div>
+        <div class="auth__submit">
+          <p>
+            By clicking the button below, you accept our
+            <a href="">Terms of Use</a> and <a href="">Privacy Policy</a>
+          </p>
+          <BaseButton title="Create Account" />
+        </div>
+      </form>
+      <div class="form__footer">
+        <p>
+          Already have an account?
+          <router-link to="/login">Sign in here</router-link>
+        </p>
+      </div>
+    </div>
   </AuthLayout>
 </template>
 <script>

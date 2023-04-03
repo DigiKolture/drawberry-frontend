@@ -1,14 +1,58 @@
 <template>
-  <BaseLayout>
-    <h1>Login</h1>
-  </BaseLayout>
+  <AuthLayout>
+    <div class="auth__main login">
+      <div class="auth__main__close">
+        <button>
+          <BaseIcon icon="close" />
+        </button>
+      </div>
+      <form class="auth__form" action="">
+        <div class="auth__form-content">
+          <h3>Login</h3>
+          <p>Enter your account details</p>
+        </div>
+        <div class="auth__form-inputs">
+          <FormGroup>
+            <BaseLabel title="Email" />
+            <BaseInput type="email" placeholder="Email address" />
+          </FormGroup>
+          <FormGroup>
+            <BaseLabel title="Password" />
+            <BaseInput type="password" placeholder="Password" />
+          </FormGroup>
+        </div>
+        <div class="auth__submit">
+          <a href="">Forgot password?</a>
+          <BaseButton title="Sign In" />
+        </div>
+      </form>
+      <div class="form__footer">
+        <p>
+          Don’t have an account?
+          <router-link to="/register">Sign Up here</router-link>
+        </p>
+      </div>
+    </div>
+  </AuthLayout>
 </template>
 <script>
 import { defineComponent } from "vue";
-import BaseLayout from "@/components/layout/AuthLayout";
+import AuthLayout from "@/components/layout/AuthLayout";
+import BaseIcon from "@/components/icon/BaseIcon";
+import FormGroup from "@/components/layout/FormGroup";
+import BaseLabel from "@/components/form/BaseLabel";
+import BaseInput from "@/components/form/BaseInput";
+import BaseButton from "@/components/layout/BaseButton";
 
 export default defineComponent({
   name: "LoginPage",
-  components: { BaseLayout },
+  components: {
+    BaseButton,
+    BaseInput,
+    BaseLabel,
+    FormGroup,
+    BaseIcon,
+    AuthLayout,
+  },
 });
 </script>

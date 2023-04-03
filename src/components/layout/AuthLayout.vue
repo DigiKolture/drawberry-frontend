@@ -3,13 +3,15 @@
     <Header />
 
     <main class="main auth">
-      <slot />
+      <section class="auth">
+        <slot />
+      </section>
     </main>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted } from "vue";
+import { defineComponent } from "vue";
 import Header from "./Header.vue";
 
 export default defineComponent({

@@ -84,3 +84,7 @@ button.button__icon{
     line-height: 18px;
     padding: 9px 8px;
 }
+
+.hide{
+    @apply hidden;
+}

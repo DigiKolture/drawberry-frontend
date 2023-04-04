@@ -7,7 +7,7 @@
             <slot name="sidebar" />
           </div>
         </aside>
-        <section class="canvas__workspace" id="workspace">
+        <section class="canvas__workspace" id="canvas-workspace">
           <div class="canvas__workspace__container">
             <slot name="workspace" />
           </div>
@@ -18,12 +18,19 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
+import { defineComponent, onMounted } from "vue";
 import BaseLayout from "@/components/layout/BaseLayout.vue";
+import { ui } from "@/assets/js/canvas";
 
 export default defineComponent({
   name: "CanvasLayout",
   components: { BaseLayout },
+
+  setup() {
+    onMounted(() => {
+      ui.mainIndex();
+    });
+  },
 });
 </script>
 

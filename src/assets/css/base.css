@@ -33,6 +33,10 @@
     text-decoration: none;
 }
 
+:root{
+    --header-height: 64px;
+    --canvas-sidebar-width: 272px;
+}
 
 html{
     margin: 0;
@@ -60,8 +64,9 @@ div#app{
     @apply flex flex-col w-full h-full;
 }
 
-.main{
+main.main{
     @apply flex w-full h-full;
+    margin-top: var(--header-height);
 }
 
 p a{

@@ -1,8 +1,8 @@
 header.header{
-    /*position: fixed;*/
+    position: fixed;
     top: 0;
     left: 0;
-    height: 64px;
+    height: var(--header-height);
     width: 100%;
     background-color: #1E1F26;
     z-index: 1000;

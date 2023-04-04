@@ -1,0 +1,25 @@
+section.canvas__layout{
+    @apply flex w-full h-full;
+}
+
+.canvas__container{
+    @apply grid w-full h-full;
+    grid-template-columns: var(--canvas-sidebar-width) 1fr 239px;
+}
+
+.canvas__sidebar{
+    height: 100vh;
+    background-color: #2D3039;
+}
+
+.canvas__sidebar__container{
+
+}
+
+.canvas__workspace{
+
+}
+
+.canvas__workspace__container{
+
+}

@@ -1,16 +1,17 @@
 <template>
-  <BaseLayout>
-    <div class="canvas__container"></div>
-  </BaseLayout>
+  <CanvasLayout>
+    <template v-slot:sidebar> </template>
+    <template v-slot:workspace> </template>
+  </CanvasLayout>
 </template>
 <script>
 import { computed, defineComponent } from "vue";
-import BaseLayout from "@/components/layout/BaseLayout";
 import store from "@/store";
+import CanvasLayout from "@/components/layout/CanvasLayout";
 
 export default defineComponent({
   name: "CanvasPage",
-  components: { BaseLayout },
+  components: { CanvasLayout },
 
   setup() {
     const project = computed(() => {

@@ -1,5 +1,6 @@
 import { createStore } from "vuex";
 import auth from "@/store/modules/auth";
+import projects from "@/store/modules/projects";
 import createPersistedState from "vuex-persistedstate";
 
 export default createStore({
@@ -11,6 +12,7 @@ export default createStore({
   actions: {},
   modules: {
     auth,
+    projects,
   },
   plugins: [
     // createLogger(),

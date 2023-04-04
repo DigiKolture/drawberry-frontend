@@ -2,6 +2,7 @@ import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
 import Login from "@/views/Auth/Login.vue";
 import Register from "@/views/Auth/Register.vue";
 import ProjectIndex from "@/views/Projects/ProjectIndex.vue";
+import Canvas from "@/views/Projects/Canvas.vue";
 import store from "@/store";
 
 const routes: Array<RouteRecordRaw> = [
@@ -25,6 +26,15 @@ const routes: Array<RouteRecordRaw> = [
     path: "/projects",
     name: "ProjectIndex",
     component: ProjectIndex,
+    meta: {
+      authRequired: true,
+    },
+  },
+
+  {
+    path: "/projects/:id",
+    name: "Canvas",
+    component: Canvas,
     meta: {
       authRequired: true,
     },

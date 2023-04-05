@@ -1,0 +1,33 @@
+.panel__style__tabs{
+    @apply flex flex-col;
+    row-gap: 12px;
+}
+
+.panel__style__tabs__head{
+    @apply flex;
+    height: 40px;
+    background: #353843;
+    border-radius: 4px 4px 4px 4px;
+}
+
+.panel__style__tabs__head button{
+    width: 50%;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 18px;
+    text-align: center;
+    color: #848F9F;
+}
+
+.panel__style__tabs__head button.active{
+    @apply text-white;
+    background: #454856;
+}
+
+.panel__style__tabs__head button:first-child.active{
+    border-radius: 4px 0 0 4px;
+}
+
+.panel__style__tabs__head button:nth-child(2).active{
+    border-radius: 0 4px 4px 0;
+}

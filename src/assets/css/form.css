@@ -11,11 +11,11 @@ label{
     color: #C2CBD6;
 }
 
-input::placeholder {
+input.base__input::placeholder {
     color: #848F9F;
 }
 
-input, select{
+input.base__input, select{
     background: #E1E6ED;
     border-radius: 4px;
     padding: 13px 16px;
@@ -30,12 +30,12 @@ select option:first-child{
     color: #848F9F;
 }
 
-input:focus{
+input.base__input:focus{
     background: #EBF8FE;
     border: 2px solid #1873CD;
 }
 
-input:focus-visible{
+input.base__input:focus-visible{
     outline: none;
 }
 

@@ -43,3 +43,70 @@
     letter-spacing: 0.04em;
     color: #848F9F;
 }
+
+.border__radius__style{
+    @apply flex items-center justify-between;
+    background-color: #454856;
+    border-radius: 4px 4px 4px 4px;
+    padding-left: 12px;
+    padding-right: 11px;
+    height: 40px;
+}
+
+.border__radius__style__icon{
+    width: 16px;
+    height: 16px;
+    border-left: 1px solid #FFFFFF;
+    border-top: 1px solid #FFFFFF;
+    border-top-left-radius: 8px;
+}
+
+
+
+/*SPACING*/
+
+.spacing__style{
+
+}
+
+.spacing__style__tab__item{
+    @apply flex flex-col justify-between;
+    height: 128px;
+    background: #454856;
+    border-radius: 4px;
+    padding: 12px;
+}
+
+.spacing__style__outer__rect{
+    @apply flex flex-col;
+    border: 1px dotted #1873CD;
+}
+
+.spacing__style__outer__rect__common{
+    @apply flex items-center justify-center;
+    height: 24px;
+}
+
+.spacing__style__outer__rect div span{
+    @apply uppercase;
+    font-weight: 500;
+    font-size: 9px;
+    line-height: 12px;
+    text-align: center;
+    letter-spacing: 0.04em;
+    color: #ADAFBB;
+}
+
+.spacing__style__outer__rect__mid{
+    @apply grid;
+    grid-template-columns: 20px 1fr 20px;
+    height: 24px;
+}
+
+.spacing__style__outer__rect__mid div{
+    @apply flex items-center justify-center;
+}
+
+.spacing__style__inner__rect{
+    background: #1873CD;
+}

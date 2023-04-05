@@ -26,7 +26,7 @@ section.canvas__layout{
 }
 
 .canvas__workspace__container{
-    @apply flex justify-center;
+    @apply flex items-center flex-col;
     padding-top: 40px;
     padding-bottom: 40px;
 }
@@ -85,4 +85,52 @@ div.components__container{
 
 .component__items__container.hide{
     @apply hidden;
+}
+
+
+.component__items__list__item{
+    @apply cursor-pointer;
+}
+
+.canvas__workspace__empty{
+    @apply text-center flex flex-col items-center;
+    margin-top: 117px;
+    width: 362px;
+    row-gap: 24px;
+}
+
+.canvas__workspace__empty p{
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 26px;
+    color: #353843;
+}
+
+.canvas__workspace__empty p span{
+    /*font-size: 24px;*/
+    font-weight: bold;
+}
+
+.canvas__workspace__empty button{
+    @apply flex items-center justify-center rounded-full;
+    background: #1873CD;
+    width: 48px;
+    height: 48px;
+}
+
+.canvas__workspace__empty button svg{
+    height: 20px;
+    width: 20px;
+}
+
+.workspace__component__items__container{
+    @apply flex flex-col items-center;
+    width: 600px;
+    /* background-color: red; */
+    height: 100vh;
+    row-gap: 20px;
+}
+
+.workspace__component__items__list__item{
+    @apply cursor-pointer w-full;
 }

@@ -9,6 +9,7 @@ const state: ComponentState = {
   components: [],
   componentItems: [],
   myComponentItems: [],
+  selectedComponent: null,
 };
 
 export const data: Module<ComponentState, RootState> = {

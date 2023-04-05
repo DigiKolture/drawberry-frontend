@@ -5,6 +5,7 @@ section.canvas__layout{
 .canvas__container{
     @apply grid w-full h-full;
     grid-template-columns: var(--canvas-sidebar-width) 1fr 239px;
+    grid-gap: 10px;
 }
 
 .canvas__sidebar{
@@ -22,12 +23,19 @@ section.canvas__layout{
 
 .canvas__workspace{
     @apply h-screen;
-    grid-column: 2 / span 2;
+    /*grid-column: 2 / span 2;*/
 }
 
 .canvas__workspace__container{
     @apply flex items-center flex-col;
     padding-top: 40px;
     padding-bottom: 40px;
+}
+
+
+.canvas__panel{
+    @apply h-screen;
+    background: #2D3039;
+    box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
 }
 

@@ -7,6 +7,9 @@
     <template v-slot:workspace>
       <WorkspaceComponentItemsContainer />
     </template>
+    <template v-slot:panel>
+      <PanelTabs />
+    </template>
   </CanvasLayout>
 </template>
 <script>
@@ -16,10 +19,12 @@ import CanvasLayout from "@/components/layout/CanvasLayout";
 import ComponentsContainer from "@/components/canvas/sidebar/components/ComponentsContainer";
 import ComponentItemsContainer from "@/components/canvas/sidebar/component-items/ComponentItemsContainer";
 import WorkspaceComponentItemsContainer from "@/components/canvas/workspace/component-items/WorkspaceComponentItemsContainer";
+import PanelTabs from "@/components/canvas/panel/tabs/PanelTabs";
 
 export default defineComponent({
   name: "CanvasPage",
   components: {
+    PanelTabs,
     WorkspaceComponentItemsContainer,
     ComponentItemsContainer,
     ComponentsContainer,

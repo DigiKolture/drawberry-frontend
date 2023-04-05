@@ -1,0 +1,45 @@
+.canvas__panel__tabs{
+    @apply flex flex-col;
+}
+
+.panel__tab{
+    @apply flex flex-col;
+}
+
+.panel__tab__head{
+    @apply flex justify-between;
+    padding: 16px;
+    background-color: #353843;
+    border: 1px solid #1E1F26;
+}
+
+.panel__tab__head h5{
+    @apply text-white;
+    font-size: 12px;
+    line-height: 16px;
+    letter-spacing: 0.04em;
+}
+
+.panel__tab__body{
+    padding: 24px;
+
+}
+
+.canvas__panel__styles{
+    @apply flex flex-col;
+    row-gap: 24px;
+}
+
+.panel__style{
+    @apply flex flex-col;
+    row-gap: 6px;
+}
+
+.panel__style__head h5{
+    @apply uppercase;
+    font-weight: 500;
+    font-size: 10px;
+    line-height: 13px;
+    letter-spacing: 0.04em;
+    color: #848F9F;
+}

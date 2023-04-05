@@ -6,7 +6,8 @@
 @import "css/layout/app.css";
 @import "css/pages/projects.css";
 @import "css/pages/canavas.css";
-@import "css/pages/canavas/sidebar.css";
-@import "css/pages/canavas/workspace.css";
+@import "css/pages/canvas/sidebar.css";
+@import "css/pages/canvas/workspace.css";
+@import "css/pages/canvas/panel.css";
 
 

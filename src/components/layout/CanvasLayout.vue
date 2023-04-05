@@ -12,6 +12,12 @@
             <slot name="workspace" />
           </div>
         </section>
+
+        <section class="canvas__panel" id="canvas-panel">
+          <div class="canvas__panel__container">
+            <slot name="panel" />
+          </div>
+        </section>
       </div>
     </section>
   </BaseLayout>

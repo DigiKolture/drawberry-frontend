@@ -5,6 +5,8 @@
 
 .slider__icon__container{
     @apply flex items-center justify-between;
+    width: 100%;
+
 }
 
 .slider__input{

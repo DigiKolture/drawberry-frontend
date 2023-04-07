@@ -1,0 +1,92 @@
+.vc-sketch-field .vc-input__label {
+    display: block;
+    padding-top: 3px;
+    font-weight: 500;
+    font-size: 10px;
+    line-height: 13px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: #848F9F;
+}
+
+.vc-sketch-field--single .vc-input__label{
+    text-align: center;
+}
+
+.vc-input__input{
+    @apply text-white;
+    padding: 3px 8px;
+    background: #2D3039;
+    border-radius: 2px;
+    border: none;
+    box-shadow: none !important;
+    font-weight: 400;
+    font-size: 12px;
+    line-height: 16px;
+    text-align: center;
+    width: 100%;
+}
+
+.vc-input__input:focus{
+    border: none;
+    outline: none;
+
+}
+
+
+.vc-sketch-field{
+    /*@apply grid;*/
+    /*grid-template-columns: 2fr 1fr 1fr 1fr 1fr;*/
+
+    column-gap: 4px !important;
+}
+
+.vc-sketch-field--single{
+    padding-left: 0;
+}
+
+.vc-sketch-sliders{
+    padding-top: 4px;
+    padding-bottom: 0;
+}
+
+.vc-sketch-controls{
+    padding-bottom: 8px;
+    border-bottom: 1px solid #353843;
+}
+
+.vc-sketch-field{
+    padding-bottom: 8px;
+    border-bottom: 1px solid #353843;
+}
+
+.saved__colors {
+    @apply flex flex-col;
+}
+
+.saved__colors h6 {
+    padding-top: 8px;
+    font-weight: 500;
+    font-size: 10px;
+    line-height: 13px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: #848F9F;
+}
+
+.vc-sketch-presets{
+    @apply flex flex-wrap justify-between;
+    row-gap: 5px;
+    column-gap: 4px;
+    padding-right: 8px;
+    padding-bottom: 8px;
+}
+
+.vc-sketch-presets-color{
+    width: 24px;
+    height: 24px;
+}
+
+.saved__colors .add__color{
+    @apply flex items-center justify-center cursor-pointer;
+}

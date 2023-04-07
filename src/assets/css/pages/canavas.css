@@ -4,7 +4,8 @@ section.canvas__layout{
 
 .canvas__container{
     @apply grid w-full h-full;
-    grid-template-columns: var(--canvas-sidebar-width) 1fr 239px;
+    /*grid-template-columns: var(--canvas-sidebar-width) 1fr 239px;*/
+    grid-template-columns: var(--canvas-sidebar-width) 1fr 320px;
     grid-gap: 10px;
 }
 
@@ -34,7 +35,7 @@ section.canvas__layout{
 
 
 .canvas__panel{
-    @apply h-screen;
+    @apply h-full;
     background: #2D3039;
     box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
 }

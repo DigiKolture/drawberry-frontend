@@ -4,7 +4,7 @@
       <div class="projects__empty">
         <h6>Start designing your audience’s inbox</h6>
         <p>Bring your ideas to life!</p>
-        <button @click="createProject" class="button__icon">
+        <button @click="createProject" class="button__icon__text">
           <BaseIcon icon="add" /><span>New Project</span>
         </button>
       </div>

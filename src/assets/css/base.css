@@ -73,7 +73,7 @@ p a{
     @apply text-white;
 }
 
-button.button__icon{
+button.button__icon__text{
     margin-top: 24px;
     @apply flex items-center justify-center text-white;
     column-gap: 13px;
@@ -87,4 +87,12 @@ button.button__icon{
 
 .hide{
     @apply hidden;
+}
+
+.button__icon{
+    @apply flex items-center justify-center;
+    width: 40px;
+    height: 40px;
+    background: #353843;
+    border-radius: 4px;
 }

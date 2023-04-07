@@ -9,6 +9,7 @@
           <LineHeightStyle />
           <LetterSpacingStyle />
         </div>
+        <TextAlignStyle />
         <ContentStyle />
         <BackgroundColorStyle />
         <TextColorStyle />
@@ -33,10 +34,12 @@ import FontSizeStyle from "@/components/canvas/panel/styles/FontSizeStyle";
 import WeightStyle from "@/components/canvas/panel/styles/WeightStyle";
 import LineHeightStyle from "@/components/canvas/panel/styles/LineHeightStyle";
 import LetterSpacingStyle from "@/components/canvas/panel/styles/LetterSpacingStyle";
+import TextAlignStyle from "@/components/canvas/panel/styles/TextAlignStyle";
 
 export default defineComponent({
   name: "PanelTabs",
   components: {
+    TextAlignStyle,
     LetterSpacingStyle,
     LineHeightStyle,
     WeightStyle,

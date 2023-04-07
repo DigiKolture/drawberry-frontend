@@ -32,12 +32,12 @@
     line-height: 16px;
     text-align: center;
     width: 100%;
+    height: 22px;
 }
 
 .vc-input__input:focus{
-    border: none;
+    border: 1px solid #1873CD;
     outline: none;
-
 }
 
 

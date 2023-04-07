@@ -59,3 +59,26 @@ input.canvas__input__text:focus{
 
 
 /*CANVAS INPUT*/
+
+/*CANVAS TEXTAREA*/
+
+.content__style{
+    @apply flex w-full;
+}
+
+.canvas__textarea{
+    @apply text-white w-full;
+    background: #454856;
+    border-radius: 4px;
+    height: 58px;
+    padding: 8px 12px;
+    font-weight: 400;
+    font-size: 12px;
+    line-height: 16px;
+}
+
+.canvas__textarea:focus{
+    border: 1px solid #1873CD;
+}
+
+/*CANVAS TEXTAREA*/

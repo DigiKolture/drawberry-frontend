@@ -2,7 +2,9 @@
   <div class="canvas__panel__tabs">
     <PanelTab title="Background">
       <div class="canvas__panel__styles">
+        <ContentStyle />
         <BackgroundColorStyle />
+        <TextColorStyle />
         <BorderRadiusStyle />
         <SpacingStyle />
         <ShadowStyle />
@@ -17,10 +19,14 @@ import SpacingStyle from "@/components/canvas/panel/styles/SpacingStyle";
 import BorderRadiusStyle from "@/components/canvas/panel/styles/BorderRadiusStyle";
 import ShadowStyle from "@/components/canvas/panel/styles/ShadowStyle";
 import BackgroundColorStyle from "@/components/canvas/panel/styles/BackgroundColorStyle";
+import TextColorStyle from "@/components/canvas/panel/styles/TextColorStyle";
+import ContentStyle from "@/components/canvas/panel/styles/ContentStyle";
 
 export default defineComponent({
   name: "PanelTabs",
   components: {
+    ContentStyle,
+    TextColorStyle,
     BackgroundColorStyle,
     ShadowStyle,
     BorderRadiusStyle,

@@ -103,3 +103,53 @@
 .saved__colors .add__color{
     @apply flex items-center justify-center cursor-pointer;
 }
+
+.vc-add__color__picker{
+    border-top: 1px solid #353843;
+    @apply flex flex-col;
+    padding-top: 8px;
+    padding-bottom: 8px;
+    row-gap: 8px;
+}
+
+.vc-add__color__picker__content{
+    @apply flex flex-col;
+    row-gap: 4px;
+}
+
+.vc-add__color__picker__content h6{
+    @apply text-white;
+    font-weight: 700;
+    font-size: 10px;
+    line-height: 13px;
+}
+
+.vc-add__color__picker__content p{
+    font-weight: 500;
+    font-size: 10px;
+    line-height: 13px;
+    color: #848F9F;
+}
+
+.vc-add__color__picker__form{
+    @apply grid;
+    grid-template-columns: 111px 1fr 1fr;
+    column-gap: 8px;
+}
+
+.vc-add__color__picker__form button.vc-add__color__picker__form__submit{
+    @apply text-white;
+    background-color: #519E47 !important;
+    border-radius: 4px;
+    padding: 6px 9px 5px 10px;
+    font-weight: 700;
+    font-size: 12px;
+    line-height: 16px;
+}
+
+.vc-add__color__picker__form .vc-add__color__picker__form__cancel{
+    @apply text-white;
+    font-weight: 400;
+    font-size: 12px;
+    line-height: 16px;
+}

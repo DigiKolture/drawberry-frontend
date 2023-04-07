@@ -183,6 +183,21 @@ export default {
         </button>
       </div>
     </div>
+
+    <div class="vc-add__color__picker">
+      <div class="vc-add__color__picker__content">
+        <h6>Add color</h6>
+        <p>
+          Create a new color swatch from current color. All instances of this
+          color will update automatically if you edit it in the future
+        </p>
+      </div>
+      <form class="vc-add__color__picker__form">
+        <input class="canvas__input__text" />
+        <button class="vc-add__color__picker__form__submit">Create</button>
+        <button class="vc-add__color__picker__form__cancel">Cancel</button>
+      </form>
+    </div>
   </div>
 </template>
 

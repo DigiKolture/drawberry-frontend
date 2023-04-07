@@ -39,3 +39,23 @@ section.canvas__layout{
     box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
 }
 
+
+/*CANVAS INPUT*/
+
+.canvas__input__text{
+    @apply text-white;
+    background: #2D3039;
+    border-radius: 4px;
+    padding: 6px 8px;
+    height: 28px;
+    font-weight: 400;
+    font-size: 12px;
+    line-height: 16px;
+}
+
+input.canvas__input__text:focus{
+    border: 1px solid #1873CD;
+}
+
+
+/*CANVAS INPUT*/

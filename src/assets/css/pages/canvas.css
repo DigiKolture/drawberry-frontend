@@ -40,6 +40,15 @@ section.canvas__layout{
 }
 
 
+.canvas__panel__styles__row{
+    @apply flex flex-wrap justify-between;
+    row-gap: 12px;
+}
+
+.canvas__panel__styles__row .panel__style{
+    width: 91.5px;
+}
+
 /*CANVAS INPUT*/
 
 .canvas__input__text{
@@ -99,3 +108,21 @@ input.canvas__input__text:focus{
 }
 
 /*CANVAS SELECT*/
+
+/*CANVAS INPUT NUMBER*/
+
+.canvas__input__number{
+    @apply text-white w-full;
+    background: #454856;
+    border-radius: 4px;
+    height: 40px;
+    padding: 11px 12px;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 18px;
+}
+
+.canvas__input__number:focus{
+    border: 1px solid #1873CD;
+}
+/*CANVAS INPUT NUMBER*/

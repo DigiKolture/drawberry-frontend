@@ -169,7 +169,7 @@
 /*CONTENT STYLE*/
 
 /*FONT STYLE*/
-.font__style{
+.font__size__style{
     @apply flex w-full;
 }
 

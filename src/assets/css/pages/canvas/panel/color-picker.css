@@ -1,3 +1,10 @@
+.vc-sketch{
+    @apply absolute;
+    z-index: 100;
+    top: 46px;
+    left: -47px;
+}
+
 .vc-sketch-field .vc-input__label {
     display: block;
     padding-top: 3px;
@@ -81,7 +88,7 @@
 }
 
 .vc-sketch-presets{
-    @apply flex flex-wrap;
+    @apply flex flex-wrap ;
     row-gap: 5px;
     column-gap: 4px;
     padding-right: 8px;

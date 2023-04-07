@@ -129,3 +129,30 @@
     background: #454856;
     border-radius: 4px;
 }
+
+/*COLOR STYLE*/
+.color__style{
+    @apply relative;
+}
+
+.color__style__container{
+    @apply flex items-center justify-between;
+    height: 40px;
+    padding: 11px 12px;
+    background: #454856;
+    border-radius: 4px 4px 4px 4px;
+}
+
+.color__style__container h5{
+    @apply text-white;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 18px;
+    color: #FFFFFF;
+}
+
+.color__style__container .selected__color{
+    width: 18px;
+    height: 18px;
+    border-radius: 2px;
+}

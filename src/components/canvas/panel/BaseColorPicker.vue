@@ -5,7 +5,7 @@ import editableInput from "@/packages/@ckpack/vue-color/src/components/editable-
 import saturation from "@/packages/@ckpack/vue-color/src/components/saturation";
 import hue from "@/packages/@ckpack/vue-color/src/components/hue";
 import alpha from "@/packages/@ckpack/vue-color/src/components/alpha";
-// import checkboard from "@/packages/@ckpack/vue-color/src/components/checkboard";
+import checkboard from "@/packages/@ckpack/vue-color/src/components/checkboard";
 import BaseIcon from "@/components/icon/BaseIcon";
 
 const presetColors = [
@@ -35,7 +35,7 @@ export default {
     Hue: hue,
     Alpha: alpha,
     EdIn: editableInput,
-    // Checkboard: checkboard,
+    Checkboard: checkboard,
   },
   mixins: [colorMixin],
   props: {

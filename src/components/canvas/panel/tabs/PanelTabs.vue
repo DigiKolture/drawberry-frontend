@@ -2,9 +2,7 @@
   <div class="canvas__panel__tabs">
     <PanelTab title="Background">
       <div class="canvas__panel__styles">
-        <!--        <Sketch v-model="colors" />-->
-        <BaseColorPicker v-model="colors" />
-        <p class="text-white">{{ colors }}</p>
+        <BackgroundColorStyle />
         <BorderRadiusStyle />
         <SpacingStyle />
         <ShadowStyle />
@@ -18,13 +16,12 @@ import PanelTab from "./PanelTab";
 import SpacingStyle from "@/components/canvas/panel/styles/SpacingStyle";
 import BorderRadiusStyle from "@/components/canvas/panel/styles/BorderRadiusStyle";
 import ShadowStyle from "@/components/canvas/panel/styles/ShadowStyle";
-// import { Sketch } from "@ckpack/vue-color";
-import BaseColorPicker from "@/components/canvas/panel/BaseColorPicker";
+import BackgroundColorStyle from "@/components/canvas/panel/styles/BackgroundColorStyle";
 
 export default defineComponent({
   name: "PanelTabs",
   components: {
-    BaseColorPicker,
+    BackgroundColorStyle,
     ShadowStyle,
     BorderRadiusStyle,
     SpacingStyle,

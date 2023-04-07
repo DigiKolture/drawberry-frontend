@@ -20,7 +20,7 @@ import { defineComponent, ref } from "vue";
 import BaseColorPicker from "@/components/canvas/panel/BaseColorPicker";
 
 export default defineComponent({
-  name: "ColorStyle",
+  name: "ColorPickerStyle",
   components: { BaseColorPicker },
 
   setup(props, { emit }) {

@@ -1,16 +1,16 @@
 <template>
   <PanelStyle title="BACKGROUND COLOR">
-    <ColorStyle />
+    <ColorPickerStyle />
   </PanelStyle>
 </template>
 <script>
 import { defineComponent, ref } from "vue";
 import PanelStyle from "./PanelStyle";
-import ColorStyle from "@/components/canvas/panel/ColorStyle";
+import ColorPickerStyle from "@/components/canvas/panel/ColorPickerStyle";
 
 export default defineComponent({
   name: "BackgroundColorStyle",
-  components: { ColorStyle, PanelStyle },
+  components: { ColorPickerStyle, PanelStyle },
   setup() {
     const show = ref(true);
 

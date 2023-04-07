@@ -5,26 +5,26 @@ import editableInput from "@/packages/@ckpack/vue-color/src/components/editable-
 import saturation from "@/packages/@ckpack/vue-color/src/components/saturation";
 import hue from "@/packages/@ckpack/vue-color/src/components/hue";
 import alpha from "@/packages/@ckpack/vue-color/src/components/alpha";
-import checkboard from "@/packages/@ckpack/vue-color/src/components/checkboard";
+// import checkboard from "@/packages/@ckpack/vue-color/src/components/checkboard";
 import BaseIcon from "@/components/icon/BaseIcon";
 
 const presetColors = [
-  "#D0021B",
-  "#F5A623",
-  "#F8E71C",
-  "#8B572A",
-  "#7ED321",
-  "#417505",
-  "#BD10E0",
-  "#9013FE",
-  "#4A90E2",
-  "#50E3C2",
-  "#B8E986",
-  "#000000",
-  "#4A4A4A",
-  "#9B9B9B",
   "#FFFFFF",
-  "rgba(0,0,0,0)",
+  "#1E1F26",
+  // "#F8E71C",
+  // "#8B572A",
+  // "#7ED321",
+  // "#417505",
+  // "#BD10E0",
+  // "#9013FE",
+  // "#4A90E2",
+  // "#50E3C2",
+  // "#B8E986",
+  // "#000000",
+  // "#4A4A4A",
+  // "#9B9B9B",
+  // "#FFFFFF",
+  // "rgba(0,0,0,0)",
 ];
 
 export default {
@@ -35,7 +35,7 @@ export default {
     Hue: hue,
     Alpha: alpha,
     EdIn: editableInput,
-    Checkboard: checkboard,
+    // Checkboard: checkboard,
   },
   mixins: [colorMixin],
   props: {
@@ -108,6 +108,9 @@ export default {
       <Saturation :value="colors" @change="childChange" />
     </div>
     <div class="vc-sketch-controls">
+      <button class="vc-controls-picker">
+        <BaseIcon icon="canvas/panel/styles/color-picker/picker" />
+      </button>
       <div class="vc-sketch-sliders">
         <div class="vc-sketch-hue-wrap">
           <Hue :value="colors" @change="childChange" />
@@ -116,14 +119,14 @@ export default {
           <Alpha :value="colors" @change="childChange" />
         </div>
       </div>
-      <div class="vc-sketch-color-wrap">
-        <div
-          :aria-label="`Current color is ${activeColor}`"
-          class="vc-sketch-active-color"
-          :style="{ background: activeColor }"
-        />
-        <Checkboard />
-      </div>
+      <!--      <div class="vc-sketch-color-wrap">-->
+      <!--        <div-->
+      <!--          :aria-label="`Current color is ${activeColor}`"-->
+      <!--          class="vc-sketch-active-color"-->
+      <!--          :style="{ background: activeColor }"-->
+      <!--        />-->
+      <!--        <Checkboard />-->
+      <!--      </div>-->
     </div>
     <div v-if="!disableFields" class="vc-sketch-field">
       <!-- rgba -->
@@ -295,15 +298,15 @@ export default {
 }
 
 .vc-sketch-presets-color {
-  border-radius: 3px;
+  border-radius: 2px;
   overflow: hidden;
   position: relative;
   display: inline-block;
-  margin: 0 10px 10px 0;
+  /*margin: 0 10px 10px 0;*/
   vertical-align: top;
   cursor: pointer;
-  width: 16px;
-  height: 16px;
+  /*width: 16px;*/
+  /*height: 16px;*/
   box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.15);
 }
 

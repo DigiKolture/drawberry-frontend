@@ -51,8 +51,14 @@
 }
 
 .vc-sketch-controls{
+    @apply flex;
+    column-gap: 10px;
     padding-bottom: 8px;
     border-bottom: 1px solid #353843;
+}
+
+.vc-controls-picker{
+    @apply flex items-center justify-center;
 }
 
 .vc-sketch-field{
@@ -75,7 +81,7 @@
 }
 
 .vc-sketch-presets{
-    @apply flex flex-wrap justify-between;
+    @apply flex flex-wrap;
     row-gap: 5px;
     column-gap: 4px;
     padding-right: 8px;

@@ -2,6 +2,7 @@
   <div class="canvas__panel__tabs">
     <PanelTab title="Background">
       <div class="canvas__panel__styles">
+        <FontStyle />
         <ContentStyle />
         <BackgroundColorStyle />
         <TextColorStyle />
@@ -21,10 +22,12 @@ import ShadowStyle from "@/components/canvas/panel/styles/ShadowStyle";
 import BackgroundColorStyle from "@/components/canvas/panel/styles/BackgroundColorStyle";
 import TextColorStyle from "@/components/canvas/panel/styles/TextColorStyle";
 import ContentStyle from "@/components/canvas/panel/styles/ContentStyle";
+import FontStyle from "@/components/canvas/panel/styles/FontStyle";
 
 export default defineComponent({
   name: "PanelTabs",
   components: {
+    FontStyle,
     ContentStyle,
     TextColorStyle,
     BackgroundColorStyle,

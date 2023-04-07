@@ -162,6 +162,18 @@
 
 /*CONTENT STYLE*/
 
-
+.content__style{
+    @apply flex w-full;
+}
 
 /*CONTENT STYLE*/
+
+/*FONT STYLE*/
+.font__style{
+    @apply flex w-full;
+}
+
+
+
+
+/*FONT STYLE*/

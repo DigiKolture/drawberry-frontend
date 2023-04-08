@@ -181,13 +181,12 @@
 /*TEXT ALIGN STYLE*/
 
 
-.text__align__style{
+.align__style{
     @apply flex justify-between;
 }
 
-.text__align__style .active path{
+.align__style .active path{
     fill: white;
-
 }
 
 

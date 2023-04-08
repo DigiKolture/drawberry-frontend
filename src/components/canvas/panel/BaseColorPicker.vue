@@ -108,9 +108,9 @@ export default {
       <Saturation :value="colors" @change="childChange" />
     </div>
     <div class="vc-sketch-controls">
-      <button class="vc-controls-picker">
-        <BaseIcon icon="canvas/panel/styles/color-picker/picker" />
-      </button>
+      <!--      <button class="vc-controls-picker">-->
+      <!--        <BaseIcon icon="canvas/panel/styles/color-picker/picker" />-->
+      <!--      </button>-->
       <div class="vc-sketch-sliders">
         <div class="vc-sketch-hue-wrap">
           <Hue :value="colors" @change="childChange" />

@@ -1,10 +1,9 @@
 <template>
-  <PanelStyle title="Content">
-    <div class="text__align__style">
+  <PanelStyle title="Text Align">
+    <div class="align__style">
       <BaseButtonIcon class="active" icon="canvas/panel/styles/align/left" />
       <BaseButtonIcon icon="canvas/panel/styles/align/center" />
       <BaseButtonIcon icon="canvas/panel/styles/align/right" />
-      <BaseButtonIcon icon="hamburger" />
     </div>
   </PanelStyle>
 </template>
@@ -14,7 +13,7 @@ import PanelStyle from "./PanelStyle";
 import BaseButtonIcon from "@/components/icon/BaseButtonIcon";
 
 export default defineComponent({
-  name: "TextAlignStyle",
+  name: "HorizontalAlignStyle",
   components: { BaseButtonIcon, PanelStyle },
 });
 </script>

@@ -9,7 +9,6 @@
       >
         {{ title }}
       </button>
-      <!--      <button class="active">Outer</button>-->
     </div>
     <div class="panel__style__tabs__body">
       <slot />

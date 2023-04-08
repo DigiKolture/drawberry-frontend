@@ -129,6 +129,25 @@
     background: #454856;
     border-radius: 4px;
 }
+
+.shadow__style__tab__item .color__style__container{
+    @apply justify-start;
+    padding: 5px 0 0 0;
+    height: 20px;
+}
+
+.shadow__style__tab__item .color__style__container h5{
+    @apply capitalize;
+    font-weight: 400;
+    font-size: 12px;
+    line-height: 16px;
+}
+
+.shadow__style__tab__item .vc-sketch{
+    top: 40px;
+    left: -64px;
+}
+
 /*SHADOW STYLE*/
 
 
@@ -138,7 +157,8 @@
 }
 
 .color__style__container{
-    @apply flex items-center justify-between;
+    @apply grid;
+    grid-template-columns: 50px 1fr 40px;
     height: 40px;
     padding: 11px 12px;
     background: #454856;
@@ -153,7 +173,9 @@
     color: #FFFFFF;
 }
 
+
 .color__style__container .selected__color{
+    @apply justify-self-end;
     width: 18px;
     height: 18px;
     border-radius: 2px;

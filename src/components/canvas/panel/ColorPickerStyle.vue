@@ -1,7 +1,7 @@
 <template>
   <div class="color__style">
     <div class="color__style__container">
-      <h5>HEX</h5>
+      <h5>{{ title }}</h5>
       <h5>{{ colors.hex }}</h5>
       <button
         @click="toggle"
@@ -22,7 +22,12 @@ import BaseColorPicker from "@/components/canvas/panel/BaseColorPicker";
 export default defineComponent({
   name: "ColorPickerStyle",
   components: { BaseColorPicker },
-
+  props: {
+    title: {
+      required: false,
+      default: "HEX",
+    },
+  },
   setup(props, { emit }) {
     const show = ref(false);
 

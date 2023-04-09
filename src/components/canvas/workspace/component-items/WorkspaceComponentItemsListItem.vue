@@ -13,7 +13,7 @@
   ></div>
 </template>
 <script lang="ts">
-import { computed, defineComponent, onMounted } from "vue";
+import { computed, defineComponent, onMounted, watch } from "vue";
 import { drag_and_drop } from "@/composables/canvas/drag_and_drop";
 import store from "@/store";
 import * as cheerio from "cheerio";
@@ -61,6 +61,11 @@ export default defineComponent({
       return props.componentItem.json.find((element: any) => element.id === id);
     };
 
+    watch(focusedElement, () => {
+      // console.log("<<<<< UPDATED FOCUSED ELEMENT");
+      // loadStylesForComponent(props);
+    });
+
     const loadStylesForComponent = (props: any) => {
       const html = props.componentItem.html;
       const json = props.componentItem.json;
@@ -95,7 +100,6 @@ export default defineComponent({
         target.classList.add("focus");
         const elementJson = getComponentItemElementObject(event.target.id);
         if (elementJson) {
-          console.log({ styles: JSON.parse(JSON.stringify(elementJson)) });
           store.commit(
             "canvas/SET_FOCUSED_ELEMENT",
             JSON.parse(JSON.stringify(elementJson))
@@ -111,14 +115,12 @@ export default defineComponent({
       if (target.classList.contains("editable")) {
         removeAllHover();
         target.classList.add("hover");
-        // console.log({ ID: event.target.id });
       }
     };
 
     const handleMouseLeave = (event: any) => {
       const target = event.target;
       target.classList.remove("hover");
-      // console.log({ ID: event.target.id });
     };
 
     const removeAllHover = () => {

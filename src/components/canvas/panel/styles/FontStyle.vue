@@ -1,5 +1,5 @@
 <template>
-  <PanelStyle title="Font">
+  <PanelStyle name="font" title="Font">
     <div class="font__style">
       <select class="canvas__select" name="" id="">
         <option value="">DB Sans</option>

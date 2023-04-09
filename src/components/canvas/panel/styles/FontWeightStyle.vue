@@ -1,5 +1,5 @@
 <template>
-  <PanelStyle title="Weight">
+  <PanelStyle name="font-weight" title="Weight">
     <div class="font__weight__style">
       <select class="canvas__select" name="" id="">
         <option value="">400</option>
@@ -14,7 +14,7 @@ import { defineComponent } from "vue";
 import PanelStyle from "./PanelStyle";
 
 export default defineComponent({
-  name: "WeightStyle",
+  name: "FontWeightStyle",
   components: { PanelStyle },
 });
 </script>

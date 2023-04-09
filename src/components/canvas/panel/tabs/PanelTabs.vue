@@ -5,7 +5,7 @@
         <FontStyle />
         <div class="canvas__panel__styles__row">
           <FontSizeStyle />
-          <WeightStyle />
+          <FontWeightStyle />
           <LineHeightStyle />
           <LetterSpacingStyle />
         </div>
@@ -22,7 +22,7 @@
   </div>
 </template>
 <script>
-import { defineComponent, ref } from "vue";
+import { computed, defineComponent } from "vue";
 import PanelTab from "./PanelTab";
 import SpacingStyle from "@/components/canvas/panel/styles/SpacingStyle";
 import BorderRadiusStyle from "@/components/canvas/panel/styles/BorderRadiusStyle";
@@ -32,11 +32,12 @@ import TextColorStyle from "@/components/canvas/panel/styles/TextColorStyle";
 import ContentStyle from "@/components/canvas/panel/styles/ContentStyle";
 import FontStyle from "@/components/canvas/panel/styles/FontStyle";
 import FontSizeStyle from "@/components/canvas/panel/styles/FontSizeStyle";
-import WeightStyle from "@/components/canvas/panel/styles/WeightStyle";
+import FontWeightStyle from "@/components/canvas/panel/styles/FontWeightStyle";
 import LineHeightStyle from "@/components/canvas/panel/styles/LineHeightStyle";
 import LetterSpacingStyle from "@/components/canvas/panel/styles/LetterSpacingStyle";
 import HorizontalAlignStyle from "@/components/canvas/panel/styles/HorizontalAlignStyle";
 import VerticalAlignStyle from "@/components/canvas/panel/styles/VerticalAlignStyle";
+import store from "@/store";
 
 export default defineComponent({
   name: "PanelTabs",
@@ -45,7 +46,7 @@ export default defineComponent({
     LetterSpacingStyle,
     LineHeightStyle,
     VerticalAlignStyle,
-    WeightStyle,
+    FontWeightStyle,
     FontSizeStyle,
     FontStyle,
     ContentStyle,
@@ -57,15 +58,16 @@ export default defineComponent({
     PanelTab,
   },
   setup() {
-    const slider = ref(15);
+    const focusedElement = computed(() => {
+      return store.getters["canvas/focusedElement"];
+    });
 
-    // const colors = { h: 150, s: 0.66, v: 0.3 };
-    // const colors = ref({ h: 150, s: 0.66, v: 0.3 });
-    const colors = ref("194D33A8");
+    const styles = computed(() => {
+      return Object.keys(focusedElement.value.attributes.style.value);
+    });
 
     return {
-      slider,
-      colors,
+      styles,
     };
   },
 });

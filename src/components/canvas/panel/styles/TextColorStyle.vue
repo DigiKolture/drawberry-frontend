@@ -1,5 +1,5 @@
 <template>
-  <PanelStyle title="Text COLOR">
+  <PanelStyle name="color" title="Text COLOR">
     <ColorPickerStyle />
   </PanelStyle>
 </template>

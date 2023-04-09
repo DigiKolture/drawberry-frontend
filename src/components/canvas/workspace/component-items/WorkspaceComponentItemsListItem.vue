@@ -12,9 +12,10 @@
     @mouseleave="handleMouseLeave"
   ></div>
 </template>
-<script>
-import { defineComponent } from "vue";
+<script lang="ts">
+import { computed, defineComponent, onMounted } from "vue";
 import { drag_and_drop } from "@/composables/canvas/drag_and_drop";
+import store from "@/store";
 
 export default defineComponent({
   name: "WorkspaceComponentItemsListItem",
@@ -30,33 +31,64 @@ export default defineComponent({
     },
   },
 
-  setup() {
+  setup(props) {
     const { moveComponentItemPosition, changeComponentItemPosition } =
       drag_and_drop();
 
-    const handleClick = (event) => {
+    const focusedElement = computed(() => {
+      return store.getters["canvas/focusedElement"];
+    });
+
+    onMounted(() => {
+      // store.commit("components/SET_MY_COMPONENT_ITEMS", []);
+      // store.commit("canvas/SET_FOCUSED_ELEMENT", null);
+      // if (focusedElement.value) {
+      //   document
+      //     .getElementById(focusedElement.value.id)
+      //     ?.classList.add("focus");
+      //   // const element = document.getElementById(focusedElement.value.id);
+      //   // console.log({ element });
+      //
+      //   // element?.classList.add("focus");
+      // }
+    });
+
+    const getComponentItemElementObject = (id: string) => {
+      return props.componentItem.json.find((element: any) => element.id === id);
+    };
+
+    const handleClick = (event: any) => {
       event.preventDefault();
       const target = event.target;
       if (target.classList.contains("editable")) {
         removeAllFocus();
         target.classList.add("focus");
-        console.log({ ID: event.target.id });
+        const styles = getComponentItemElementObject(event.target.id);
+        if (styles) {
+          console.log({ styles: JSON.parse(JSON.stringify(styles)) });
+          store.commit(
+            "canvas/SET_FOCUSED_ELEMENT",
+            JSON.parse(JSON.stringify(styles))
+          );
+          store.commit("canvas/SET_FOCUSED_INDEX", props.itemIndex);
+        }
+        // console.log({ ID: event.target.id, styles });
       }
     };
 
-    const handleMouseOver = (event) => {
+    const handleMouseOver = (event: any) => {
       const target = event.target;
       if (target.classList.contains("editable")) {
         removeAllHover();
         target.classList.add("hover");
-        console.log({ ID: event.target.id });
+        // console.log({ ID: event.target.id });
       }
     };
 
-    const handleMouseLeave = (event) => {
+    const handleMouseLeave = (event: any) => {
       const target = event.target;
       target.classList.remove("hover");
-      console.log({ ID: event.target.id });
+      // console.log({ ID: event.target.id });
     };
 
     const removeAllHover = () => {

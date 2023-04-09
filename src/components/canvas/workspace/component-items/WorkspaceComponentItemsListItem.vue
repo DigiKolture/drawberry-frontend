@@ -16,6 +16,7 @@
 import { computed, defineComponent, onMounted } from "vue";
 import { drag_and_drop } from "@/composables/canvas/drag_and_drop";
 import store from "@/store";
+import * as cheerio from "cheerio";
 
 export default defineComponent({
   name: "WorkspaceComponentItemsListItem",
@@ -41,6 +42,9 @@ export default defineComponent({
 
     onMounted(() => {
       // store.commit("components/SET_MY_COMPONENT_ITEMS", []);
+
+      loadStylesForComponent(props);
+
       // store.commit("canvas/SET_FOCUSED_ELEMENT", null);
       // if (focusedElement.value) {
       //   document
@@ -57,18 +61,44 @@ export default defineComponent({
       return props.componentItem.json.find((element: any) => element.id === id);
     };
 
+    const loadStylesForComponent = (props: any) => {
+      const html = props.componentItem.html;
+      const json = props.componentItem.json;
+
+      const $ = cheerio.load(html);
+
+      for (let elementJson of json) {
+        if (!elementJson.attributes.style.value) continue;
+
+        const el = $(`#${elementJson.id}`);
+        let style: Record<string, any> = elementJson.attributes.style.value;
+        for (let [key, value] of Object.entries(style)) {
+          if (typeof value !== "string") {
+            style[key] = value.unit
+              ? `${value.value}${value.unit}`
+              : value.value;
+          } else {
+            style[key] = value;
+          }
+        }
+        el.css(style);
+      }
+      //eslint-disable-next-line vue/no-mutating-props
+      props.componentItem.html = $.html();
+    };
+
     const handleClick = (event: any) => {
       event.preventDefault();
       const target = event.target;
       if (target.classList.contains("editable")) {
         removeAllFocus();
         target.classList.add("focus");
-        const styles = getComponentItemElementObject(event.target.id);
-        if (styles) {
-          console.log({ styles: JSON.parse(JSON.stringify(styles)) });
+        const elementJson = getComponentItemElementObject(event.target.id);
+        if (elementJson) {
+          console.log({ styles: JSON.parse(JSON.stringify(elementJson)) });
           store.commit(
             "canvas/SET_FOCUSED_ELEMENT",
-            JSON.parse(JSON.stringify(styles))
+            JSON.parse(JSON.stringify(elementJson))
           );
           store.commit("canvas/SET_FOCUSED_INDEX", props.itemIndex);
         }

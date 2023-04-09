@@ -21,20 +21,17 @@ export default defineComponent({
       return store.getters["canvas/focusedElement"];
     });
 
-    let size = ref(
-      focusedElement.value && focusedElement.value.attributes.style.value[name]
-        ? focusedElement.value.attributes.style.value[name].value
-        : null
-    );
+    let size = ref(focusedElement.value.attributes?.style?.value[name]?.value);
+
     watch(focusedElement, (newVal) => {
-      size.value = newVal.attributes.style.value[name].value;
+      size.value = newVal.attributes?.style?.value[name]?.value;
     });
 
     watch(size, (newVal) => {
-      if (focusedElement.value && focusedElement.value.attributes) {
+      if (focusedElement.value.attributes?.style?.value[name]?.value) {
         focusedElement.value.attributes.style.value[name].value = newVal;
+        store.commit("canvas/SET_FOCUSED_ELEMENT", focusedElement.value);
       }
-      store.commit("canvas/SET_FOCUSED_ELEMENT", focusedElement.value);
     });
 
     return {

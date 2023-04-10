@@ -1,6 +1,5 @@
 import { MutationTree } from "vuex";
 import { CanvasState } from "@/store/modules/canvas/types";
-import store from "@/store";
 import { updateDom } from "@/composables/canvas/update_dom";
 
 export const mutations: MutationTree<CanvasState> = {

@@ -22,12 +22,14 @@ export default defineComponent({
     });
 
     let size = ref(
-      focusedElement.value.attributes?.style?.value[name]?.slice(0, -2)
+      focusedElement.value?.attributes?.style?.value[name]?.slice(0, -2)
     );
-    let sizeWithUnit = ref(focusedElement.value.attributes?.style?.value[name]);
+    let sizeWithUnit = ref(
+      focusedElement.value?.attributes?.style?.value[name]
+    );
 
     watch(size, (newVal: string | number) => {
-      if (focusedElement.value.attributes?.style?.value[name]) {
+      if (focusedElement.value?.attributes?.style?.value[name]) {
         if (typeof newVal === "string" && newVal.endsWith(unit)) {
           sizeWithUnit.value = newVal;
         } else {

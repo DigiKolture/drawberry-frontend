@@ -43,6 +43,10 @@ export default defineComponent({
       return store.getters["canvas/focusedElement"];
     });
 
+    const workspaceComponents = computed(() => {
+      return store.getters["canvas/workspaceComponents"];
+    });
+
     onMounted(() => {
       // store.commit("canvas/SET_WORKSPACE_COMPONENTS", []);
 
@@ -64,10 +68,14 @@ export default defineComponent({
       return props.componentItem.json.find((element: any) => element.id === id);
     };
 
-    watch(focusedElement, () => {
-      // console.log("<<<<< UPDATED FOCUSED ELEMENT");
-      // loadStylesForComponent(props);
-    });
+    // watch(
+    //   workspaceComponents,
+    //   (newVal) => {
+    //     const el = document.getElementById(focusedElement.value.id);
+    //     el.classList.add("focus");
+    //   },
+    //   { deep: true }
+    // );
 
     const loadStylesForComponent = (props: any) => {
       let html = props.componentItem.html;
@@ -85,10 +93,11 @@ export default defineComponent({
       event.preventDefault();
       const target = event.target;
       if (target.classList.contains("editable")) {
-        removeAllFocus();
-        target.classList.add("focus");
         const elementJson = getComponentItemElementObject(event.target.id);
         if (elementJson) {
+          removeAllFocus();
+          target.classList.add("focus");
+
           store.commit(
             "canvas/SET_FOCUSED_ELEMENT",
             JSON.parse(JSON.stringify(elementJson))

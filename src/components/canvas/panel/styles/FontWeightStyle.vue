@@ -1,20 +1,51 @@
 <template>
   <PanelStyle name="font-weight" title="Weight">
     <div class="font__weight__style">
-      <select class="canvas__select" name="" id="">
-        <option value="">400</option>
-        <option value="">500</option>
-        <option value="">700</option>
+      <select v-model="weight" class="canvas__select" name="" id="">
+        <option :key="key" v-for="(weight, key) in WEIGHTS" :value="weight">
+          {{ weight }}
+        </option>
       </select>
     </div>
   </PanelStyle>
 </template>
-<script>
-import { defineComponent } from "vue";
+<script lang="ts">
+import { computed, defineComponent, ref, watch } from "vue";
 import PanelStyle from "./PanelStyle";
+import store from "@/store";
 
 export default defineComponent({
   name: "FontWeightStyle",
   components: { PanelStyle },
+  setup() {
+    const name = "font-weight";
+
+    const WEIGHTS = [200, 300, 400, 500, 600, 700, 800];
+
+    const focusedElement = computed(() => {
+      return store.getters["canvas/focusedElement"];
+    });
+
+    let weight = ref(focusedElement.value?.attributes?.style?.value[name]);
+
+    watch(weight, (newVal: string | number) => {
+      if (focusedElement.value?.attributes?.style?.value[name]) {
+        focusedElement.value.attributes.style.value[name] = newVal;
+        store.commit(
+          "canvas/UPDATE_FOCUSED_JSON_AND_DOM",
+          focusedElement.value
+        );
+      }
+    });
+
+    watch(focusedElement, (newVal) => {
+      weight.value = newVal.attributes?.style?.value[name];
+    });
+
+    return {
+      weight,
+      WEIGHTS,
+    };
+  },
 });
 </script>

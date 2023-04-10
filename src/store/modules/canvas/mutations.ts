@@ -8,9 +8,14 @@ export const mutations: MutationTree<CanvasState> = {
     state.focusedElement = data;
     return state.focusedElement;
   },
-  UPDATE_FOCUSED_ELEMENT(state: CanvasState, data: object) {
+  SET_WORKSPACE_COMPONENTS(state: CanvasState, data: any[]) {
+    state.workspaceComponents = data;
+    return state.workspaceComponents;
+  },
+  UPDATE_FOCUSED_JSON_AND_DOM(state: CanvasState, data: object) {
     state.focusedElement = data;
-    const workspaceComponents = store.getters["components/myComponentItems"];
+    const workspaceComponents = state.workspaceComponents;
+
     if (state.focusedIndex === null) {
       return state.focusedElement;
     }
@@ -26,7 +31,7 @@ export const mutations: MutationTree<CanvasState> = {
     const { updateElementDom } = updateDom();
 
     componentItem.html = updateElementDom(html, elementJson);
-    store.commit("components/SET_MY_COMPONENT_ITEMS", workspaceComponents);
+    state.workspaceComponents = workspaceComponents;
     return state.focusedElement;
   },
   SET_FOCUSED_INDEX(state: CanvasState, data: number) {

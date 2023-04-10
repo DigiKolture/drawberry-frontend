@@ -8,6 +8,7 @@ import { actions } from "@/store/modules/canvas/actions";
 const state: CanvasState = {
   focusedElement: null,
   focusedIndex: null,
+  workspaceComponents: [],
 };
 
 export const data: Module<CanvasState, RootState> = {

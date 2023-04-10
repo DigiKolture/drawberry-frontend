@@ -34,7 +34,7 @@ export default defineComponent({
   setup() {
     onMounted(() => {
       store.dispatch("components/getComponents");
-      // store.commit("components/SET_MY_COMPONENT_ITEMS", []);
+      // store.commit("canvas/SET_WORKSPACE_COMPONENTS", []);
     });
 
     const selectedComponent = ref({});

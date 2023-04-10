@@ -9,4 +9,7 @@ export const getters: GetterTree<CanvasState, RootState> = {
   focusedIndex(state: CanvasState): number | null {
     return state.focusedIndex;
   },
+  workspaceComponents(state: CanvasState): object[] | null {
+    return state.workspaceComponents;
+  },
 };

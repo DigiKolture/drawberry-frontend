@@ -1,6 +1,5 @@
 <template>
   <PanelStyle :name="name" title="Size">
-    Size - {{ size }}
     <div class="font__size__style">
       <input v-model="size" class="canvas__input__number" type="number" />
     </div>
@@ -23,7 +22,7 @@ export default defineComponent({
     });
 
     let size = ref(
-      focusedElement.value.attributes?.style?.value[name].slice(0, -2)
+      focusedElement.value.attributes?.style?.value[name]?.slice(0, -2)
     );
     let sizeWithUnit = ref(focusedElement.value.attributes?.style?.value[name]);
 
@@ -35,7 +34,10 @@ export default defineComponent({
           sizeWithUnit.value = newVal + unit;
         }
         focusedElement.value.attributes.style.value[name] = sizeWithUnit.value;
-        store.commit("canvas/UPDATE_FOCUSED_ELEMENT", focusedElement.value);
+        store.commit(
+          "canvas/UPDATE_FOCUSED_JSON_AND_DOM",
+          focusedElement.value
+        );
       }
     });
 

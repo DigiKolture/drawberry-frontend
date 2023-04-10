@@ -10,7 +10,7 @@ export const mutations: MutationTree<ComponentState> = {
     state.componentItems = data;
     return state.componentItems;
   },
-  SET_MY_COMPONENT_ITEMS(state: ComponentState, data: object[]) {
+  SET_MY_COMPONENT_ITEMS(state: ComponentState, data: any[]) {
     state.myComponentItems = data;
     return state.myComponentItems;
   },

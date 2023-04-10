@@ -2,8 +2,8 @@ import store from "@/store";
 import { computed } from "vue";
 
 export function drag_and_drop() {
-  const myComponentItems = computed(() => {
-    return store.getters["components/myComponentItems"];
+  const workspaceComponents = computed(() => {
+    return store.getters["canvas/workspaceComponents"];
   });
 
   const componentItems = computed(() => {
@@ -30,10 +30,13 @@ export function drag_and_drop() {
     const componentItem = componentItems.value[parseInt(componentItemIndex)];
 
     if (componentItem) {
-      myComponentItems.value.push(componentItem);
-      // console.log({ myComponentItems: myComponentItems.value });
+      workspaceComponents.value.push(componentItem);
+      // console.log({ workspaceComponents: workspaceComponents.value });
       // console.log({ componentItem: componentItem, componentItemIndex });
-      store.commit("components/SET_MY_COMPONENT_ITEMS", myComponentItems);
+      store.commit(
+        "canvas/SET_WORKSPACE_COMPONENTS",
+        workspaceComponents.value
+      );
     }
   };
 
@@ -60,12 +63,15 @@ export function drag_and_drop() {
 
       if (!fromComponentItemIndex) return;
       const componentItem =
-        myComponentItems.value[parseInt(fromComponentItemIndex)];
+        workspaceComponents.value[parseInt(fromComponentItemIndex)];
 
-      myComponentItems.value.splice(parseInt(fromComponentItemIndex), 1);
-      myComponentItems.value.splice(parseInt(toIndex), 0, componentItem);
+      workspaceComponents.value.splice(parseInt(fromComponentItemIndex), 1);
+      workspaceComponents.value.splice(parseInt(toIndex), 0, componentItem);
 
-      store.commit("components/SET_MY_COMPONENT_ITEMS", myComponentItems);
+      store.commit(
+        "canvas/SET_WORKSPACE_COMPONENTS",
+        workspaceComponents.value
+      );
     }
   };
 

@@ -17,6 +17,7 @@ import { computed, defineComponent, onMounted, watch } from "vue";
 import { drag_and_drop } from "@/composables/canvas/drag_and_drop";
 import store from "@/store";
 import * as cheerio from "cheerio";
+import { updateDom } from "@/composables/canvas/update_dom";
 
 export default defineComponent({
   name: "WorkspaceComponentItemsListItem",
@@ -36,12 +37,14 @@ export default defineComponent({
     const { moveComponentItemPosition, changeComponentItemPosition } =
       drag_and_drop();
 
+    const { updateElementDom } = updateDom();
+
     const focusedElement = computed(() => {
       return store.getters["canvas/focusedElement"];
     });
 
     onMounted(() => {
-      // store.commit("components/SET_MY_COMPONENT_ITEMS", []);
+      // store.commit("canvas/SET_WORKSPACE_COMPONENTS", []);
 
       loadStylesForComponent(props);
 
@@ -67,29 +70,15 @@ export default defineComponent({
     });
 
     const loadStylesForComponent = (props: any) => {
-      const html = props.componentItem.html;
+      let html = props.componentItem.html;
       const json = props.componentItem.json;
-
-      const $ = cheerio.load(html);
 
       for (let elementJson of json) {
         if (!elementJson.attributes.style.value) continue;
-
-        const el = $(`#${elementJson.id}`);
-        let style: Record<string, any> = elementJson.attributes.style.value;
-        for (let [key, value] of Object.entries(style)) {
-          if (typeof value !== "string") {
-            style[key] = value.unit
-              ? `${value.value}${value.unit}`
-              : value.value;
-          } else {
-            style[key] = value;
-          }
-        }
-        el.css(style);
+        html = updateElementDom(html, elementJson);
       }
       //eslint-disable-next-line vue/no-mutating-props
-      props.componentItem.html = $.html();
+      props.componentItem.html = html;
     };
 
     const handleClick = (event: any) => {

@@ -5,10 +5,10 @@
     @dragover.prevent
     @dragenter.prevent
   >
-    <CanvasWorkspaceEmpty v-if="myComponentItems.length === 0" />
+    <CanvasWorkspaceEmpty v-if="workspaceComponents.length === 0" />
 
     <WorkspaceComponentItemsListItem
-      v-for="(componentItem, itemIndex) in myComponentItems"
+      v-for="(componentItem, itemIndex) in workspaceComponents"
       :key="componentItem.id"
       :component-item="componentItem"
       :item-index="itemIndex"
@@ -32,12 +32,12 @@ export default defineComponent({
   setup() {
     const { changeComponentItemPosition } = drag_and_drop();
 
-    const myComponentItems = computed(() => {
-      return store.getters["components/myComponentItems"];
+    const workspaceComponents = computed(() => {
+      return store.getters["canvas/workspaceComponents"];
     });
 
     return {
-      myComponentItems,
+      workspaceComponents,
       changeComponentItemPosition,
     };
   },

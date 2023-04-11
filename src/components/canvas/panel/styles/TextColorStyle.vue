@@ -8,7 +8,7 @@
   </PanelStyle>
 </template>
 <script lang="ts">
-import { computed, defineComponent, ref, watch, watchEffect } from "vue";
+import { computed, defineComponent, ref, watch } from "vue";
 import PanelStyle from "./PanelStyle";
 import ColorPickerStyle from "@/components/canvas/panel/ColorPickerStyle";
 import store from "@/store";

@@ -4,15 +4,15 @@
       <div class="canvas__panel__styles">
         <FontStyle />
         <div class="canvas__panel__styles__row">
-          <FontSizeStyle />
-          <FontWeightStyle />
+          <FontSizeStyle v-if="showStyle('font-size')" />
+          <FontWeightStyle v-if="showStyle('font-weight')" />
           <LineHeightStyle />
           <LetterSpacingStyle />
         </div>
-        <TextColorStyle />
+        <TextColorStyle v-if="showStyle('color')" />
         <BackgroundColorStyle />
-        <HorizontalAlignStyle />
-        <VerticalAlignStyle />
+        <HorizontalAlignStyle v-if="showStyle('text-align')" />
+        <VerticalAlignStyle v-if="hasAttributes('valign')" />
         <ContentStyle />
         <BorderRadiusStyle />
         <SpacingStyle />
@@ -21,7 +21,7 @@
     </PanelTab>
   </div>
 </template>
-<script>
+<script lang="ts">
 import { computed, defineComponent } from "vue";
 import PanelTab from "./PanelTab";
 import SpacingStyle from "@/components/canvas/panel/styles/SpacingStyle";
@@ -66,8 +66,22 @@ export default defineComponent({
       return Object.keys(focusedElement.value.attributes.style.value);
     });
 
+    const attributes = computed(() => {
+      return Object.keys(focusedElement.value.attributes);
+    });
+
+    const showStyle = (style: string) => {
+      return style ? styles.value.includes(style) : true;
+    };
+
+    const hasAttributes = (attribute: string) => {
+      return attribute.value ? attributes.value.includes(attribute) : true;
+    };
+
     return {
       styles,
+      showStyle,
+      hasAttributes,
     };
   },
 });

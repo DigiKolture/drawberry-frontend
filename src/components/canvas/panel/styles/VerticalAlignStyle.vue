@@ -1,20 +1,68 @@
 <template>
   <PanelStyle title="Vertical Align">
     <div class="align__style">
-      <BaseButtonIcon class="active" icon="canvas/panel/styles/align/top" />
-      <BaseButtonIcon icon="canvas/panel/styles/align/middle" />
-      <BaseButtonIcon icon="canvas/panel/styles/align/bottom" />
+      <BaseButtonIcon
+        :key="key"
+        v-for="(option, key) in alignOptions"
+        :class="{ active: option.align === align }"
+        :icon="option.icon"
+        @click="changeAlignment(option.align)"
+      />
     </div>
   </PanelStyle>
 </template>
-<script>
-import { defineComponent } from "vue";
+<script lang="ts">
+import { computed, defineComponent, ref, watch } from "vue";
 import PanelStyle from "./PanelStyle";
 import BaseButtonIcon from "@/components/icon/BaseButtonIcon";
+import store from "@/store";
 
 export default defineComponent({
   name: "VerticalAlignStyle",
   components: { BaseButtonIcon, PanelStyle },
+  setup() {
+    const name = "valign";
+
+    const focusedElement = computed(() => {
+      return store.getters["canvas/focusedElement"];
+    });
+
+    const alignOptions = [
+      {
+        icon: "canvas/panel/styles/align/top",
+        align: "top",
+      },
+      {
+        icon: "canvas/panel/styles/align/middle",
+        align: "middle",
+      },
+      {
+        icon: "canvas/panel/styles/align/bottom",
+        align: "bottom",
+      },
+    ];
+
+    const align = ref(focusedElement.value.attributes[name].value);
+
+    watch(align, (newVal: string) => {
+      focusedElement.value.attributes[name].value = newVal;
+      store.commit("canvas/UPDATE_FOCUSED_JSON_AND_DOM", focusedElement.value);
+    });
+
+    watch(focusedElement, (newVal) => {
+      align.value = newVal.attributes[name].value;
+    });
+
+    const changeAlignment = (option) => {
+      align.value = option;
+    };
+
+    return {
+      alignOptions,
+      align,
+      changeAlignment,
+    };
+  },
 });
 </script>
 PanelTabs

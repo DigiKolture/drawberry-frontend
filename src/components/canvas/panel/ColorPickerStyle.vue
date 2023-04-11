@@ -2,12 +2,12 @@
   <div class="color__style">
     <div class="color__style__container">
       <h5>{{ title }}</h5>
-      <h5>{{ colors.hex }}</h5>
+      <h5>{{ colors.hex8 }}</h5>
       <button
         @click="toggle"
         class="selected__color"
         :style="{
-          background: colors.hex,
+          background: colors.hex8,
         }"
       ></button>
     </div>
@@ -15,48 +15,41 @@
   </div>
 </template>
 
-<script>
-import { defineComponent, ref } from "vue";
-import BaseColorPicker from "@/components/canvas/panel/BaseColorPicker";
+<script setup>
+import { defineProps, defineEmits, ref, watch, defineExpose } from "vue";
+import BaseColorPicker from "@/components/canvas/panel/BaseColorPicker.vue";
 
-export default defineComponent({
-  name: "ColorPickerStyle",
-  components: { BaseColorPicker },
-  props: {
-    title: {
-      required: false,
-      default: "HEX",
-    },
+const props = defineProps({
+  title: {
+    type: String,
+    default: "HEX",
   },
-  setup(props, { emit }) {
-    const show = ref(false);
-
-    // const colors = { h: 150, s: 0.66, v: 0.3 };
-    // const colors = ref({ h: 150, s: 0.66, v: 0.3 });
-
-    const colors = ref({
-      hsl: { h: 232.5, s: 0.11764705882352941, l: 0.13333333333333333, a: 1 },
-      hex: "#1E1F26",
-      hex8: "#1E1F26FF",
-      rgba: { r: 30, g: 31, b: 38, a: 1 },
-      hsv: { h: 232.5, s: 0.21052631578947367, v: 0.14901960784313725, a: 1 },
-      oldHue: 150.00000000000003,
-      source: "hex",
-      a: 1,
-    });
-
-    const toggle = () => {
-      show.value = !show.value;
-      emit("toggle");
-    };
-
-    return {
-      colors,
-      show,
-      toggle,
-    };
+  color: {
+    type: Object,
+    default: null,
   },
 });
-</script>
 
-<style scoped></style>
+const emits = defineEmits(["update-color", "toggle"]);
+
+const show = ref(false);
+
+const colors = ref({
+  hex8: props.color?.hex8,
+});
+
+watch(colors, (newVal) => {
+  emits("update-color", newVal);
+});
+
+const updateColor = (newVal) => {
+  colors.value = newVal;
+};
+
+const toggle = () => {
+  show.value = !show.value;
+  emits("toggle");
+};
+
+defineExpose({ updateColor });
+</script>

@@ -16,7 +16,6 @@
 import { computed, defineComponent, onMounted, watch } from "vue";
 import { drag_and_drop } from "@/composables/canvas/drag_and_drop";
 import store from "@/store";
-import * as cheerio from "cheerio";
 import { updateDom } from "@/composables/canvas/update_dom";
 
 export default defineComponent({

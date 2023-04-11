@@ -9,11 +9,11 @@
           <LineHeightStyle />
           <LetterSpacingStyle />
         </div>
+        <TextColorStyle />
+        <BackgroundColorStyle />
         <HorizontalAlignStyle />
         <VerticalAlignStyle />
         <ContentStyle />
-        <BackgroundColorStyle />
-        <TextColorStyle />
         <BorderRadiusStyle />
         <SpacingStyle />
         <ShadowStyle />

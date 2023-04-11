@@ -1,8 +1,12 @@
 <template>
   <PanelStyle name="font-weight" title="Weight">
     <div class="font__weight__style">
-      <select v-model="weight" class="canvas__select" name="" id="">
-        <option :key="key" v-for="(weight, key) in WEIGHTS" :value="weight">
+      <select v-model="weight" class="canvas__select">
+        <option
+          :key="key"
+          v-for="(weight, key) in weightOptions"
+          :value="weight"
+        >
           {{ weight }}
         </option>
       </select>
@@ -19,14 +23,12 @@ export default defineComponent({
   components: { PanelStyle },
   setup() {
     const name = "font-weight";
+    const weightOptions = [200, 300, 400, 500, 600, 700, 800];
 
-    const WEIGHTS = [200, 300, 400, 500, 600, 700, 800];
-
-    const focusedElement = computed(() => {
-      return store.getters["canvas/focusedElement"];
-    });
-
-    let weight = ref(focusedElement.value?.attributes?.style?.value[name]);
+    const focusedElement = computed(
+      () => store.getters["canvas/focusedElement"]
+    );
+    const weight = ref(focusedElement.value?.attributes?.style?.value[name]);
 
     watch(weight, (newVal: string | number) => {
       if (focusedElement.value?.attributes?.style?.value[name]) {
@@ -44,7 +46,7 @@ export default defineComponent({
 
     return {
       weight,
-      WEIGHTS,
+      weightOptions,
     };
   },
 });

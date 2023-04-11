@@ -38,6 +38,11 @@ export function updateDom() {
 
     el.css(style);
 
+    //UPDATE Content
+    if (elementJson.innerHtml !== null) {
+      el.text(elementJson.innerHtml);
+    }
+
     return $.html();
   };
 

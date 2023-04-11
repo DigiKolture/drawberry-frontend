@@ -1,7 +1,7 @@
 <template>
-  <PanelStyle title="Content">
+  <PanelStyle title="HREF">
     <div class="content__style">
-      <textarea v-model="content" class="canvas__textarea"> </textarea>
+      <textarea v-model="href" class="canvas__textarea"> </textarea>
     </div>
   </PanelStyle>
 </template>
@@ -11,33 +11,29 @@ import PanelStyle from "./PanelStyle";
 import store from "@/store";
 
 export default defineComponent({
-  name: "ContentStyle",
+  name: "HrefAttribute",
   components: { PanelStyle },
 
   setup() {
-    const name = "innerHtml";
+    const name = "href";
+
     const focusedElement = computed(() => {
       return store.getters["canvas/focusedElement"];
     });
 
-    const content = ref(focusedElement.value[name]);
+    const href = ref(focusedElement.value.attributes[name].value);
 
-    watch(content, (newVal: string) => {
-      if (newVal) {
-        focusedElement.value[name] = newVal;
-        store.commit(
-          "canvas/UPDATE_FOCUSED_JSON_AND_DOM",
-          focusedElement.value
-        );
-      }
+    watch(href, (newVal: string) => {
+      focusedElement.value.attributes[name].value = newVal;
+      store.commit("canvas/UPDATE_FOCUSED_JSON_AND_DOM", focusedElement.value);
     });
 
     watch(focusedElement, (newVal) => {
-      content.value = newVal[name];
+      href.value = newVal.attributes[name].value;
     });
 
     return {
-      content,
+      href,
     };
   },
 });

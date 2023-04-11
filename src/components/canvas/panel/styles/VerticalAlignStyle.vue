@@ -53,7 +53,7 @@ export default defineComponent({
       align.value = newVal.attributes[name].value;
     });
 
-    const changeAlignment = (option) => {
+    const changeAlignment = (option: string) => {
       align.value = option;
     };
 

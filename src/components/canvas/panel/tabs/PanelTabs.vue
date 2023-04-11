@@ -13,7 +13,8 @@
         <BackgroundColorStyle />
         <HorizontalAlignStyle v-if="showStyle('text-align')" />
         <VerticalAlignStyle v-if="hasAttributes('valign')" />
-        <ContentStyle />
+        <ContentStyle v-if="hasContent()" />
+        <HrefAttribute v-if="hasAttributes('href')" />
         <BorderRadiusStyle />
         <SpacingStyle />
         <ShadowStyle />
@@ -38,10 +39,12 @@ import LetterSpacingStyle from "@/components/canvas/panel/styles/LetterSpacingSt
 import HorizontalAlignStyle from "@/components/canvas/panel/styles/HorizontalAlignStyle";
 import VerticalAlignStyle from "@/components/canvas/panel/styles/VerticalAlignStyle";
 import store from "@/store";
+import HrefAttribute from "@/components/canvas/panel/styles/HrefAttribute.vue";
 
 export default defineComponent({
   name: "PanelTabs",
   components: {
+    HrefAttribute,
     HorizontalAlignStyle,
     LetterSpacingStyle,
     LineHeightStyle,
@@ -75,12 +78,17 @@ export default defineComponent({
     };
 
     const hasAttributes = (attribute: string) => {
-      return attribute.value ? attributes.value.includes(attribute) : true;
+      return attribute ? attributes.value.includes(attribute) : true;
+    };
+
+    const hasContent = () => {
+      return focusedElement.value.innerHtml !== null;
     };
 
     return {
       styles,
       showStyle,
+      hasContent,
       hasAttributes,
     };
   },

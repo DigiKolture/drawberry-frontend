@@ -13,8 +13,8 @@
 </template>
 <script lang="ts">
 import { computed, defineComponent, ref, watch } from "vue";
-import PanelStyle from "./PanelStyle";
-import BaseButtonIcon from "@/components/icon/BaseButtonIcon";
+import PanelStyle from "./PanelStyle.vue";
+import BaseButtonIcon from "@/components/icon/BaseButtonIcon.vue";
 import store from "@/store";
 
 export default defineComponent({

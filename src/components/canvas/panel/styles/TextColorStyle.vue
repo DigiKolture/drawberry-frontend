@@ -9,8 +9,8 @@
 </template>
 <script lang="ts">
 import { computed, defineComponent, ref, watch } from "vue";
-import PanelStyle from "./PanelStyle";
-import ColorPickerStyle from "@/components/canvas/panel/ColorPickerStyle";
+import PanelStyle from "./PanelStyle.vue";
+import ColorPickerStyle from "@/components/canvas/panel/ColorPickerStyle.vue";
 import store from "@/store";
 
 export default defineComponent({
@@ -30,7 +30,7 @@ export default defineComponent({
       hex8: focusedElement.value?.attributes?.style?.value[name],
     });
 
-    watch(color, (newVal: object) => {
+    watch(color, (newVal: any) => {
       if (focusedElement.value?.attributes?.style?.value[name]) {
         focusedElement.value.attributes.style.value[name] = newVal.hex8;
         store.commit(
@@ -45,7 +45,7 @@ export default defineComponent({
       color.value.hex8 = newVal.attributes?.style?.value[name];
     });
 
-    const updateColor = (newVal) => {
+    const updateColor = (newVal: any) => {
       color.value = newVal;
     };
 

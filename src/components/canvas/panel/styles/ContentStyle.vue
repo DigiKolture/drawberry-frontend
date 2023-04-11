@@ -7,7 +7,7 @@
 </template>
 <script lang="ts">
 import { computed, defineComponent, ref, watch } from "vue";
-import PanelStyle from "./PanelStyle";
+import PanelStyle from "./PanelStyle.vue";
 import store from "@/store";
 
 export default defineComponent({

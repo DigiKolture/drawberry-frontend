@@ -24,31 +24,33 @@
 </template>
 <script lang="ts">
 import { computed, defineComponent } from "vue";
-import PanelTab from "./PanelTab";
-import SpacingStyle from "@/components/canvas/panel/styles/SpacingStyle";
-import BorderRadiusStyle from "@/components/canvas/panel/styles/BorderRadiusStyle";
-import ShadowStyle from "@/components/canvas/panel/styles/ShadowStyle";
-import BackgroundColorStyle from "@/components/canvas/panel/styles/BackgroundColorStyle";
-import TextColorStyle from "@/components/canvas/panel/styles/TextColorStyle";
-import ContentStyle from "@/components/canvas/panel/styles/ContentStyle";
-import FontStyle from "@/components/canvas/panel/styles/FontStyle";
-import FontSizeStyle from "@/components/canvas/panel/styles/FontSizeStyle";
-import FontWeightStyle from "@/components/canvas/panel/styles/FontWeightStyle";
-import LineHeightStyle from "@/components/canvas/panel/styles/LineHeightStyle";
-import LetterSpacingStyle from "@/components/canvas/panel/styles/LetterSpacingStyle";
-import HorizontalAlignStyle from "@/components/canvas/panel/styles/HorizontalAlignStyle";
-import VerticalAlignStyle from "@/components/canvas/panel/styles/VerticalAlignStyle";
+import PanelTab from "./PanelTab.vue";
+
+import BorderRadiusStyle from "@/components/canvas/panel/styles/BorderRadiusStyle.vue";
+import ShadowStyle from "@/components/canvas/panel/styles/ShadowStyle.vue";
+import BackgroundColorStyle from "@/components/canvas/panel/styles/BackgroundColorStyle.vue";
+import TextColorStyle from "@/components/canvas/panel/styles/TextColorStyle.vue";
+import ContentStyle from "@/components/canvas/panel/styles/ContentStyle.vue";
+import FontStyle from "@/components/canvas/panel/styles/FontStyle.vue";
+import FontSizeStyle from "@/components/canvas/panel/styles/FontSizeStyle.vue";
+import FontWeightStyle from "@/components/canvas/panel/styles/FontWeightStyle.vue";
+import LineHeightStyle from "@/components/canvas/panel/styles/LineHeightStyle.vue";
+import LetterSpacingStyle from "@/components/canvas/panel/styles/LetterSpacingStyle.vue";
+import HorizontalAlignStyle from "@/components/canvas/panel/styles/HorizontalAlignStyle.vue";
 import store from "@/store";
 import HrefAttribute from "@/components/canvas/panel/styles/HrefAttribute.vue";
+import SpacingStyle from "@/components/canvas/panel/styles/SpacingStyle.vue";
+import VerticalAlignStyle from "@/components/canvas/panel/styles/VerticalAlignStyle.vue";
 
 export default defineComponent({
   name: "PanelTabs",
   components: {
+    VerticalAlignStyle,
+    SpacingStyle,
     HrefAttribute,
     HorizontalAlignStyle,
     LetterSpacingStyle,
     LineHeightStyle,
-    VerticalAlignStyle,
     FontWeightStyle,
     FontSizeStyle,
     FontStyle,
@@ -57,7 +59,6 @@ export default defineComponent({
     BackgroundColorStyle,
     ShadowStyle,
     BorderRadiusStyle,
-    SpacingStyle,
     PanelTab,
   },
   setup() {

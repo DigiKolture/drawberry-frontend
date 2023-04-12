@@ -35,7 +35,7 @@ export function styles() {
     }
   };
 
-  const checkIfAllPaddingIsEqual = (padding: any) => {
+  const getDefaultPaddingValue = (padding: any) => {
     const { top, left, right, bottom } = padding;
     return top === left && left === right && right === bottom ? right : 0;
   };
@@ -49,7 +49,7 @@ export function styles() {
 
   return {
     parsePadding,
-    checkIfAllPaddingIsEqual,
+    getDefaultPaddingValue,
     getDefaultPaddingPosition,
   };
 }

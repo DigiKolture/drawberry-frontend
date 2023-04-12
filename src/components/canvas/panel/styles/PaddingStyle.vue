@@ -45,11 +45,8 @@ export default defineComponent({
   setup() {
     const name = "padding";
     const unit = "px";
-    const {
-      parsePadding,
-      checkIfAllPaddingIsEqual,
-      getDefaultPaddingPosition,
-    } = styles();
+    const { parsePadding, getDefaultPaddingValue, getDefaultPaddingPosition } =
+      styles();
 
     const paddingOptions = ["top", "left", "right", "bottom"];
 
@@ -63,7 +60,7 @@ export default defineComponent({
 
     const activePadding = ref(getDefaultPaddingPosition(padding));
     const singlePadding = ref(padding[activePadding.value] ?? padding.top);
-    const centerValue: any = ref(checkIfAllPaddingIsEqual(padding));
+    const centerValue: any = ref(getDefaultPaddingValue(padding));
 
     watch(activePadding, (newVal) => {
       if (activePadding.value !== "center") {

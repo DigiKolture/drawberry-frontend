@@ -9,14 +9,15 @@
           <LineHeightStyle />
           <LetterSpacingStyle />
         </div>
+        <PaddingStyle />
         <TextColorStyle v-if="showStyle('color')" />
         <BackgroundColorStyle />
-        <HorizontalAlignStyle v-if="showStyle('text-align')" />
+        <TextAlignStyle v-if="showStyle('text-align')" />
+        <HorizontalAlignStyle v-if="hasAttributes('align')" />
         <VerticalAlignStyle v-if="hasAttributes('valign')" />
         <ContentStyle v-if="hasContent()" />
         <HrefAttribute v-if="hasAttributes('href')" />
         <BorderRadiusStyle />
-        <SpacingStyle />
         <ShadowStyle />
       </div>
     </PanelTab>
@@ -39,14 +40,16 @@ import LetterSpacingStyle from "@/components/canvas/panel/styles/LetterSpacingSt
 import HorizontalAlignStyle from "@/components/canvas/panel/styles/HorizontalAlignStyle.vue";
 import store from "@/store";
 import HrefAttribute from "@/components/canvas/panel/styles/HrefAttribute.vue";
-import SpacingStyle from "@/components/canvas/panel/styles/SpacingStyle.vue";
+import PaddingStyle from "@/components/canvas/panel/styles/PaddingStyle.vue";
 import VerticalAlignStyle from "@/components/canvas/panel/styles/VerticalAlignStyle.vue";
+import TextAlignStyle from "@/components/canvas/panel/styles/TextAlignStyle.vue";
 
 export default defineComponent({
   name: "PanelTabs",
   components: {
+    TextAlignStyle,
     VerticalAlignStyle,
-    SpacingStyle,
+    PaddingStyle,
     HrefAttribute,
     HorizontalAlignStyle,
     LetterSpacingStyle,

@@ -87,13 +87,47 @@
 }
 
 .spacing__style__outer__rect{
-    @apply flex flex-col;
+    @apply grid;
+    grid-template-columns: 20px 1fr 20px;
+    grid-template-rows: 24px 24px 24px;
     border: 1px dotted #1873CD;
 }
 
-.spacing__style__outer__rect__common{
-    @apply flex items-center justify-center;
-    height: 24px;
+.spacing__style__inner__rect{
+    @apply flex justify-center items-center cursor-pointer;
+}
+
+.spacing__style__inner__rect.top{
+    grid-column: 2 / 3;
+    grid-row: 1 / 2;
+}
+
+.spacing__style__inner__rect.left{
+    grid-column: 1 / 2;
+    grid-row: 1 / 4;
+}
+
+.spacing__style__inner__rect.right{
+    grid-column: 3 / 4;
+    grid-row: 1 / 4;
+}
+
+.spacing__style__inner__rect.center{
+    grid-column: 2 / 3;
+    grid-row: 2 / 3;
+}
+
+.spacing__style__inner__rect.bottom{
+    grid-column: 2 / 3;
+    grid-row: 3 / 4;
+}
+
+.spacing__style__inner__rect.active{
+    background: #1873CD;
+}
+
+.spacing__style__inner__rect:hover{
+    background: #1873CD;
 }
 
 .spacing__style__outer__rect div span{
@@ -104,20 +138,6 @@
     text-align: center;
     letter-spacing: 0.04em;
     color: #ADAFBB;
-}
-
-.spacing__style__outer__rect__mid{
-    @apply grid;
-    grid-template-columns: 20px 1fr 20px;
-    height: 24px;
-}
-
-.spacing__style__outer__rect__mid div{
-    @apply flex items-center justify-center;
-}
-
-.spacing__style__inner__rect{
-    background: #1873CD;
 }
 
 /*SHADOW STYLE*/

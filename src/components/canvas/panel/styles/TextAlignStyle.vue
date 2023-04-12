@@ -1,5 +1,5 @@
 <template>
-  <PanelStyle title="Horizontal Align">
+  <PanelStyle title="Text Align">
     <div class="align__style">
       <BaseButtonIcon
         :key="key"
@@ -18,11 +18,11 @@ import BaseButtonIcon from "@/components/icon/BaseButtonIcon.vue";
 import store from "@/store";
 
 export default defineComponent({
-  name: "HorizontalAlignStyle",
+  name: "TextAlignStyle",
   components: { BaseButtonIcon, PanelStyle },
 
   setup() {
-    const name = "align";
+    const name = "text-align";
 
     const focusedElement = computed(() => {
       return store.getters["canvas/focusedElement"];
@@ -43,15 +43,15 @@ export default defineComponent({
       },
     ];
 
-    const align = ref(focusedElement.value.attributes[name].value);
+    const align = ref(focusedElement.value.attributes.style.value[name]);
 
     watch(align, (newVal: string) => {
-      focusedElement.value.attributes[name].value = newVal;
+      focusedElement.value.attributes.style.value[name] = newVal;
       store.commit("canvas/UPDATE_FOCUSED_JSON_AND_DOM", focusedElement.value);
     });
 
     watch(focusedElement, (newVal) => {
-      align.value = newVal.attributes[name].value;
+      align.value = newVal.attributes.style.value[name];
     });
 
     const changeAlignment = (option: string) => {

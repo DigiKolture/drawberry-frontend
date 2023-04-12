@@ -9,7 +9,7 @@
           <LineHeightStyle />
           <LetterSpacingStyle />
         </div>
-        <PaddingStyle />
+        <PaddingStyle v-if="showStyle('padding')" />
         <TextColorStyle v-if="showStyle('color')" />
         <BackgroundColorStyle />
         <TextAlignStyle v-if="showStyle('text-align')" />

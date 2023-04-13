@@ -70,7 +70,7 @@ export default defineComponent({
     });
 
     const styles = computed(() => {
-      return Object.keys(focusedElement.value.attributes.style.value);
+      return Object.keys(focusedElement.value.attributes?.style?.value || []);
     });
 
     const attributes = computed(() => {

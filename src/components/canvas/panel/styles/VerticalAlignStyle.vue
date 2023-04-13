@@ -29,15 +29,15 @@ export default defineComponent({
 
     const alignOptions = [
       {
-        icon: "canvas/panel/styles/align/top",
+        icon: "canvas/panel/styles/vertical-align/top",
         align: "top",
       },
       {
-        icon: "canvas/panel/styles/align/middle",
+        icon: "canvas/panel/styles/vertical-align/middle",
         align: "middle",
       },
       {
-        icon: "canvas/panel/styles/align/bottom",
+        icon: "canvas/panel/styles/vertical-align/bottom",
         align: "bottom",
       },
     ];

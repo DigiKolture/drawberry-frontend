@@ -30,15 +30,15 @@ export default defineComponent({
 
     const alignOptions = [
       {
-        icon: "canvas/panel/styles/align/left",
+        icon: "canvas/panel/styles/horizontal-align/left",
         align: "left",
       },
       {
-        icon: "canvas/panel/styles/align/center",
+        icon: "canvas/panel/styles/horizontal-align/center",
         align: "center",
       },
       {
-        icon: "canvas/panel/styles/align/right",
+        icon: "canvas/panel/styles/horizontal-align/right",
         align: "right",
       },
     ];

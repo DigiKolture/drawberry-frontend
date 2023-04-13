@@ -1,5 +1,5 @@
 <template>
-  <section v-if="show" class="panel__style">
+  <section class="panel__style">
     <div class="panel__style__head">
       <h5>{{ title }}</h5>
     </div>
@@ -23,27 +23,6 @@ export default defineComponent({
       type: String,
       required: true,
     },
-  },
-  setup(props) {
-    const focusedElement = computed(() => {
-      return store.getters["canvas/focusedElement"];
-    });
-
-    const styles = computed(() => {
-      return focusedElement.value
-        ? Object.keys(focusedElement.value.attributes.style.value)
-        : [];
-    });
-
-    //TODO: To remove
-    const show = computed(() => {
-      return props.name ? styles.value.includes(props.name) : true;
-    });
-
-    return {
-      styles,
-      show,
-    };
   },
 });
 </script>

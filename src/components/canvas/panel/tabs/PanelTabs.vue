@@ -11,7 +11,7 @@
         </div>
         <PaddingStyle v-if="showStyle('padding')" />
         <TextColorStyle v-if="showStyle('color')" />
-        <BackgroundColorStyle />
+        <BackgroundColorStyle v-if="showStyle('background-color')" />
         <TextAlignStyle v-if="showStyle('text-align')" />
         <HorizontalAlignStyle v-if="hasAttributes('align')" />
         <VerticalAlignStyle v-if="hasAttributes('valign')" />

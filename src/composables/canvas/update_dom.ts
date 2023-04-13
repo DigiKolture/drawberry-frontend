@@ -36,6 +36,10 @@ export function updateDom() {
       // }
     }
 
+    if (style["background-color"]) {
+      el.attr("bgcolor", style["background-color"]);
+    }
+
     el.css(style);
 
     //UPDATE Content

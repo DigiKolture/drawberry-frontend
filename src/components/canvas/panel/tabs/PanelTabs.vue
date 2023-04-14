@@ -6,8 +6,8 @@
         <div class="canvas__panel__styles__row">
           <FontSizeStyle v-if="showStyle('font-size')" />
           <FontWeightStyle v-if="showStyle('font-weight')" />
-          <LineHeightStyle />
-          <LetterSpacingStyle />
+          <LineHeightStyle v-if="showStyle('line-height')" />
+          <LetterSpacingStyle v-if="showStyle('letter-spacing')" />
         </div>
         <PaddingStyle v-if="showStyle('padding')" />
         <ShadowStyle v-if="showStyle('box-shadow')" />

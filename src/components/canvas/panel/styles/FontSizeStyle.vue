@@ -21,31 +21,24 @@ export default defineComponent({
       return store.getters["canvas/focusedElement"];
     });
 
-    let size = ref(
-      focusedElement.value?.attributes?.style?.value[name]?.slice(0, -2)
+    const size = ref(
+      focusedElement.value.attributes.style.value[name]?.slice(0, -2)
     );
-    let sizeWithUnit = ref(
-      focusedElement.value?.attributes?.style?.value[name]
-    );
+    let sizeWithUnit = ref(focusedElement.value.attributes.style.value[name]);
 
     watch(size, (newVal: string | number) => {
-      if (focusedElement.value?.attributes?.style?.value[name]) {
-        if (typeof newVal === "string" && newVal.endsWith(unit)) {
-          sizeWithUnit.value = newVal;
-        } else {
-          sizeWithUnit.value = newVal + unit;
-        }
-        focusedElement.value.attributes.style.value[name] = sizeWithUnit.value;
-        store.commit(
-          "canvas/UPDATE_FOCUSED_JSON_AND_DOM",
-          focusedElement.value
-        );
+      if (typeof newVal === "string" && newVal.endsWith(unit)) {
+        sizeWithUnit.value = newVal;
+      } else {
+        sizeWithUnit.value = newVal + unit;
       }
+      focusedElement.value.attributes.style.value[name] = sizeWithUnit.value;
+      store.commit("canvas/UPDATE_FOCUSED_JSON_AND_DOM", focusedElement.value);
     });
 
     watch(focusedElement, (newVal) => {
-      size.value = newVal.attributes?.style?.value[name].slice(0, -2);
-      sizeWithUnit.value = newVal.attributes?.style?.value[name];
+      size.value = newVal.attributes.style.value[name].slice(0, -2);
+      sizeWithUnit.value = newVal.attributes.style.value[name];
     });
 
     return {

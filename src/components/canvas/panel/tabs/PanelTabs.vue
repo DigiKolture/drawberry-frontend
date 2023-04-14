@@ -17,7 +17,7 @@
         <VerticalAlignStyle v-if="hasAttributes('valign')" />
         <ContentStyle v-if="hasContent()" />
         <HrefAttribute v-if="hasAttributes('href')" />
-        <BorderRadiusStyle />
+        <BorderRadiusStyle v-if="showStyle('border-radius')" />
         <ShadowStyle />
       </div>
     </PanelTab>

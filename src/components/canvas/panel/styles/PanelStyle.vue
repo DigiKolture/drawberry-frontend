@@ -9,8 +9,7 @@
   </section>
 </template>
 <script lang="ts">
-import { computed, defineComponent } from "vue";
-import store from "@/store";
+import { defineComponent } from "vue";
 
 export default defineComponent({
   name: "PanelStyle",

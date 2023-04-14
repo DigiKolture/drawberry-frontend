@@ -35,7 +35,7 @@ export default defineComponent({
     },
     min: {
       type: Number,
-      default: 1,
+      default: 0,
       required: false,
     },
     max: {

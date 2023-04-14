@@ -10,6 +10,8 @@
           <LetterSpacingStyle />
         </div>
         <PaddingStyle v-if="showStyle('padding')" />
+        <ShadowStyle v-if="showStyle('box-shadow')" />
+
         <TextColorStyle v-if="showStyle('color')" />
         <BackgroundColorStyle v-if="showStyle('background-color')" />
         <TextAlignStyle v-if="showStyle('text-align')" />
@@ -18,7 +20,6 @@
         <ContentStyle v-if="hasContent()" />
         <HrefAttribute v-if="hasAttributes('href')" />
         <BorderRadiusStyle v-if="showStyle('border-radius')" />
-        <ShadowStyle />
       </div>
     </PanelTab>
   </div>

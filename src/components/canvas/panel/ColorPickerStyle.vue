@@ -11,7 +11,7 @@
         }"
       ></button>
     </div>
-    <BaseColorPicker v-model="colors" v-if="show" />
+    <BaseColorPicker @cancel="show = false" v-model="colors" v-if="show" />
   </div>
 </template>
 

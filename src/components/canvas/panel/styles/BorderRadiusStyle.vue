@@ -10,8 +10,8 @@
 </template>
 <script lang="ts">
 import { computed, defineComponent, ref, watch } from "vue";
-import PanelStyle from "./PanelStyle";
-import BaseSliderIcon from "../BaseSliderIcon";
+import PanelStyle from "./PanelStyle.vue";
+import BaseSliderIcon from "../BaseSliderIcon.vue";
 import store from "@/store";
 
 export default defineComponent({

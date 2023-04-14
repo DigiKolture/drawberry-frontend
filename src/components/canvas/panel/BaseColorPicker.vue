@@ -195,7 +195,12 @@ export default {
       <form class="vc-add__color__picker__form">
         <input class="canvas__input__text" />
         <button class="vc-add__color__picker__form__submit">Create</button>
-        <button class="vc-add__color__picker__form__cancel">Cancel</button>
+        <button
+          @click="$emit('cancel')"
+          class="vc-add__color__picker__form__cancel"
+        >
+          Cancel
+        </button>
       </form>
     </div>
   </div>

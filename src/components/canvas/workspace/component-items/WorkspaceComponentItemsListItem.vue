@@ -4,7 +4,7 @@
     v-html="componentItem.html"
     :draggable="true"
     @dragstart.self="moveComponentItemPosition($event, itemIndex)"
-    @drop="changeComponentItemPosition($event, itemIndex)"
+    @drop="changeComponentItemPosition($event, itemIndex, route.params)"
     @dragover.prevent
     @dragenter.prevent
     @click="handleClick"
@@ -13,15 +13,20 @@
   ></div>
 </template>
 <script lang="ts">
-import { computed, defineComponent, onMounted, watch } from "vue";
+import { computed, defineComponent, onMounted } from "vue";
 import { drag_and_drop } from "@/composables/canvas/drag_and_drop";
 import store from "@/store";
 import { updateDom } from "@/composables/canvas/update_dom";
+import { useRoute } from "vue-router";
 
 export default defineComponent({
   name: "WorkspaceComponentItemsListItem",
 
   props: {
+    projectId: {
+      type: String,
+      required: true,
+    },
     componentItem: {
       type: Object,
       required: true,
@@ -50,17 +55,6 @@ export default defineComponent({
       // store.commit("canvas/SET_WORKSPACE_COMPONENTS", []);
 
       loadStylesForComponent(props);
-
-      // store.commit("canvas/SET_FOCUSED_ELEMENT", null);
-      // if (focusedElement.value) {
-      //   document
-      //     .getElementById(focusedElement.value.id)
-      //     ?.classList.add("focus");
-      //   // const element = document.getElementById(focusedElement.value.id);
-      //   // console.log({ element });
-      //
-      //   // element?.classList.add("focus");
-      // }
     });
 
     const getComponentItemElementObject = (id: string) => {
@@ -103,7 +97,6 @@ export default defineComponent({
           );
           store.commit("canvas/SET_FOCUSED_INDEX", props.itemIndex);
         }
-        // console.log({ ID: event.target.id, styles });
       }
     };
 

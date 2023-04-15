@@ -34,6 +34,7 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: "/projects/:id",
     name: "Canvas",
+    props: true,
     component: Canvas,
     meta: {
       authRequired: true,

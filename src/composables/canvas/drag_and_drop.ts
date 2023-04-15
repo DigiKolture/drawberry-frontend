@@ -1,5 +1,6 @@
 import store from "@/store";
 import { computed } from "vue";
+import { useRoute } from "vue-router";
 
 export function drag_and_drop() {
   const workspaceComponents = computed(() => {
@@ -11,8 +12,6 @@ export function drag_and_drop() {
   });
 
   const dragComponentItemToCanvas = (e: any, itemIndex: any) => {
-    // console.log("DRAG FROM SIDBAR TO WORKSPACE >>>>>>>>>> 1");
-
     e.dataTransfer.effectAllowed = "move";
     e.dataTransfer.dropEffect = "move";
 
@@ -20,24 +19,28 @@ export function drag_and_drop() {
     e.dataTransfer.setData("type", "from-sidebar");
   };
 
-  const moveComponentItem = (e: any) => {
-    // console.log("PASTE FROM SIDBAR TO WORKSPACE >>>>>>>>>> 1");
-    // const componentItemId = e.dataTransfer.getData("componentItemId");
+  const moveComponentItem = async (e: any, projectId: string) => {
     const componentItemIndex = e.dataTransfer.getData("componentItemIndex");
-
     if (!componentItemIndex) return;
 
     const componentItem = componentItems.value[parseInt(componentItemIndex)];
+    if (!componentItem) return;
 
-    if (componentItem) {
-      workspaceComponents.value.push(componentItem);
-      // console.log({ workspaceComponents: workspaceComponents.value });
-      // console.log({ componentItem: componentItem, componentItemIndex });
-      store.commit(
-        "canvas/SET_WORKSPACE_COMPONENTS",
-        workspaceComponents.value
-      );
-    }
+    if (!projectId) return;
+    // workspaceComponents.value.push(componentItem);
+
+    await store.dispatch("canvas/storeProjectComponent", {
+      projectId,
+      data: {
+        componentItemId: componentItem.id,
+        positionIndex: workspaceComponents.value.length,
+      },
+    });
+
+    // store.commit(
+    //   "canvas/SET_WORKSPACE_COMPONENTS",
+    //   workspaceComponents.value
+    // );
   };
 
   const moveComponentItemPosition = (e: any, itemIndex: any) => {
@@ -50,13 +53,16 @@ export function drag_and_drop() {
     e.dataTransfer.setData("type", "from-workspace");
   };
 
-  const changeComponentItemPosition = (e: any, toIndex: any) => {
+  const changeComponentItemPosition = async (
+    e: any,
+    toIndex: any,
+    projectId: string
+  ) => {
     const type = e.dataTransfer.getData("type");
 
     if (type === "from-sidebar") {
-      moveComponentItem(e);
+      await moveComponentItem(e, projectId);
     } else {
-      // console.log("CHANGE POSITION OF COMPONENT ITEMS >>>> 2");
       const fromComponentItemIndex = e.dataTransfer.getData(
         "fromComponentItemIndex"
       );

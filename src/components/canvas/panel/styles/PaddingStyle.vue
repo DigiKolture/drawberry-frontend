@@ -89,7 +89,7 @@ export default defineComponent({
       focusedElement.value.attributes.style.value[
         name
       ] = `${newVal.top}${unit} ${newVal.right}${unit} ${newVal.bottom}${unit} ${newVal.left}${unit}`;
-      store.commit("canvas/UPDATE_FOCUSED_JSON_AND_DOM", focusedElement.value);
+      store.dispatch("canvas/updateFocusedElement", focusedElement.value);
     });
 
     const changePaddingOption = (option: string) => {

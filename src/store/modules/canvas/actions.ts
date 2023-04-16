@@ -20,10 +20,14 @@ export const actions: ActionTree<CanvasState, RootState> = {
         }
       });
   },
-  storeProjectComponent({ dispatch }, { projectId, data }): Promise<void> {
+  storeProjectComponent({ state, commit }, { projectId, data }): Promise<void> {
     return AxiosClient.post(`/projects/${projectId}/components`, data)
       .then((res: any) => {
-        dispatch("getProjectComponentItems", projectId);
+        // dispatch("getProjectComponentItems", projectId);
+        const data = res.data;
+        const component = data.data.component;
+        state.workspaceComponents.push(component);
+        commit("SET_WORKSPACE_COMPONENTS", state.workspaceComponents);
         return res.data.data;
       })
       .catch((err: any): any => {
@@ -35,14 +39,16 @@ export const actions: ActionTree<CanvasState, RootState> = {
   },
   updateProjectComponent(
     { dispatch },
-    { projectId, projectComponentItemId, data }
+    { projectId, projectComponentItemId, data, set = true }
   ): Promise<void> {
     return AxiosClient.put(
       `/projects/${projectId}/components/${projectComponentItemId}`,
       data
     )
       .then((res: any) => {
-        dispatch("getProjectComponentItems", projectId);
+        // if (set) {
+        //   dispatch("getProjectComponentItems", projectId);
+        // }
         return res.data.data;
       })
       .catch((err: any): any => {
@@ -53,8 +59,9 @@ export const actions: ActionTree<CanvasState, RootState> = {
       });
   },
   updateFocusedElement({ state, dispatch, commit, rootState }, element) {
-    commit("UPDATE_FOCUSED_JSON_AND_DOM", element);
     if (state.focusedIndex === null || state.focusedElement === null) return;
+
+    commit("UPDATE_FOCUSED_JSON_AND_DOM", element);
     const projectComponentItem = state.workspaceComponents[state.focusedIndex];
     const focusedElement: any = state.focusedElement;
     const root: any = rootState;
@@ -63,6 +70,7 @@ export const actions: ActionTree<CanvasState, RootState> = {
     dispatch("updateProjectComponent", {
       projectId,
       projectComponentItemId: projectComponentItem.id,
+      set: false,
       data: {
         elements: [
           {

@@ -25,14 +25,10 @@ export function drag_and_drop() {
     const componentItem = componentItems.value[parseInt(componentItemIndex)];
     if (!componentItem || !projectId) return;
 
-    workspaceComponents.value.push(componentItem);
+    // workspaceComponents.value.push(componentItem);
+    // store.commit("canvas/SET_WORKSPACE_COMPONENTS", workspaceComponents.value);
 
-    //TODO: Debate on this
-    // store.commit(
-    //   "canvas/SET_WORKSPACE_COMPONENTS",
-    //   workspaceComponents.value
-    // );
-
+    // TODO: We will need a loader here
     await store.dispatch("canvas/storeProjectComponent", {
       projectId,
       data: {
@@ -67,7 +63,7 @@ export function drag_and_drop() {
       );
 
       if (!fromComponentItemIndex || !projectId) return;
-      // console.log({ toIndex, fromComponentItemIndex });
+      console.log({ fromComponentItemIndex, toIndex });
 
       const projectComponentItem =
         workspaceComponents.value[parseInt(fromComponentItemIndex)];
@@ -77,6 +73,11 @@ export function drag_and_drop() {
         parseInt(toIndex),
         0,
         projectComponentItem
+      );
+
+      store.commit(
+        "canvas/SET_WORKSPACE_COMPONENTS",
+        workspaceComponents.value
       );
 
       await store.dispatch("canvas/updateProjectComponent", {

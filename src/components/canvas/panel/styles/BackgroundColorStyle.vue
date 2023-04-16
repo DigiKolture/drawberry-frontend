@@ -28,22 +28,17 @@ export default defineComponent({
     );
 
     const color = ref({
-      hex8: focusedElement.value?.attributes?.style?.value[name],
+      hex8: focusedElement.value.attributes.style.value[name],
     });
 
     watch(color, (newVal: any) => {
-      if (focusedElement.value?.attributes?.style?.value[name]) {
-        focusedElement.value.attributes.style.value[name] = newVal.hex8;
-        store.commit(
-          "canvas/UPDATE_FOCUSED_JSON_AND_DOM",
-          focusedElement.value
-        );
-      }
+      focusedElement.value.attributes.style.value[name] = newVal.hex8;
+      store.dispatch("canvas/updateFocusedElement", focusedElement.value);
     });
 
     watch(focusedElement, (newVal) => {
       colorPickerStyleRef.value.updateColor(color.value);
-      color.value.hex8 = newVal.attributes?.style?.value[name];
+      color.value.hex8 = newVal.attributes.style.value[name];
     });
 
     const updateColor = (newVal: any) => {

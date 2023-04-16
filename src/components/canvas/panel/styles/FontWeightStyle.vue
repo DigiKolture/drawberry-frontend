@@ -28,20 +28,15 @@ export default defineComponent({
     const focusedElement = computed(
       () => store.getters["canvas/focusedElement"]
     );
-    const weight = ref(focusedElement.value?.attributes?.style?.value[name]);
+    const weight = ref(focusedElement.value.attributes.style.value[name]);
 
     watch(weight, (newVal: string | number) => {
-      if (focusedElement.value?.attributes?.style?.value[name]) {
-        focusedElement.value.attributes.style.value[name] = newVal;
-        store.commit(
-          "canvas/UPDATE_FOCUSED_JSON_AND_DOM",
-          focusedElement.value
-        );
-      }
+      focusedElement.value.attributes.style.value[name] = newVal;
+      store.commit("canvas/UPDATE_FOCUSED_JSON_AND_DOM", focusedElement.value);
     });
 
     watch(focusedElement, (newVal) => {
-      weight.value = newVal.attributes?.style?.value[name];
+      weight.value = newVal.attributes.style.value[name];
     });
 
     return {

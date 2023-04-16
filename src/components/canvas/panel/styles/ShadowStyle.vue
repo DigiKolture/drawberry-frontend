@@ -64,7 +64,7 @@ export default defineComponent({
       focusedElement.value.attributes.style.value[
         name
       ] = `${newVal.y}${unit} ${newVal.x}${unit} ${newVal.blur}${unit} ${newVal.spread}${unit} ${newVal.color.hex8}`;
-      store.commit("canvas/UPDATE_FOCUSED_JSON_AND_DOM", focusedElement.value);
+      store.dispatch("canvas/updateFocusedElement", focusedElement.value);
     });
 
     return {

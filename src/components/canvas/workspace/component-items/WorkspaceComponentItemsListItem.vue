@@ -10,6 +10,7 @@
     @click="handleClick"
     @mouseover="handleMouseOver"
     @mouseleave="handleMouseLeave"
+    v-if="isMounted"
   ></div>
 </template>
 <script lang="ts">
@@ -62,6 +63,7 @@ export default defineComponent({
       () => props.isMounted,
       (value) => {
         if (value) {
+          console.log("Loading this >>>>>>>");
           loadStylesForComponent(props);
         }
       }

@@ -47,7 +47,7 @@ export default defineComponent({
 
     watch(align, (newVal: string) => {
       focusedElement.value.attributes.style.value[name] = newVal;
-      store.commit("canvas/UPDATE_FOCUSED_JSON_AND_DOM", focusedElement.value);
+      store.dispatch("canvas/updateFocusedElement", focusedElement.value);
     });
 
     watch(focusedElement, (newVal) => {

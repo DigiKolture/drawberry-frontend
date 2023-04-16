@@ -1,6 +1,5 @@
 import store from "@/store";
 import { computed } from "vue";
-import { useRoute } from "vue-router";
 
 export function drag_and_drop() {
   const workspaceComponents = computed(() => {
@@ -25,9 +24,15 @@ export function drag_and_drop() {
 
     const componentItem = componentItems.value[parseInt(componentItemIndex)];
     if (!componentItem) return;
-
     if (!projectId) return;
-    // workspaceComponents.value.push(componentItem);
+
+    workspaceComponents.value.push(componentItem);
+
+    //TODO: Debate on this
+    // store.commit(
+    //   "canvas/SET_WORKSPACE_COMPONENTS",
+    //   workspaceComponents.value
+    // );
 
     await store.dispatch("canvas/storeProjectComponent", {
       projectId,
@@ -36,11 +41,6 @@ export function drag_and_drop() {
         positionIndex: workspaceComponents.value.length,
       },
     });
-
-    // store.commit(
-    //   "canvas/SET_WORKSPACE_COMPONENTS",
-    //   workspaceComponents.value
-    // );
   };
 
   const moveComponentItemPosition = (e: any, itemIndex: any) => {
@@ -68,16 +68,25 @@ export function drag_and_drop() {
       );
 
       if (!fromComponentItemIndex) return;
-      const componentItem =
+      // console.log({ toIndex, fromComponentItemIndex });
+
+      const projectComponentItem =
         workspaceComponents.value[parseInt(fromComponentItemIndex)];
 
       workspaceComponents.value.splice(parseInt(fromComponentItemIndex), 1);
-      workspaceComponents.value.splice(parseInt(toIndex), 0, componentItem);
-
-      store.commit(
-        "canvas/SET_WORKSPACE_COMPONENTS",
-        workspaceComponents.value
+      workspaceComponents.value.splice(
+        parseInt(toIndex),
+        0,
+        projectComponentItem
       );
+
+      await store.dispatch("canvas/updateProjectComponent", {
+        projectId,
+        projectComponentItemId: projectComponentItem.id,
+        data: {
+          positionIndex: parseInt(toIndex),
+        },
+      });
     }
   };
 

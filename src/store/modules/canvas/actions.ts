@@ -33,4 +33,23 @@ export const actions: ActionTree<CanvasState, RootState> = {
         }
       });
   },
+  updateProjectComponent(
+    { dispatch },
+    { projectId, projectComponentItemId, data }
+  ): Promise<void> {
+    return AxiosClient.put(
+      `/projects/${projectId}/components/${projectComponentItemId}`,
+      data
+    )
+      .then((res: any) => {
+        dispatch("getProjectComponentItems", projectId);
+        return res.data.data;
+      })
+      .catch((err: any): any => {
+        if (err instanceof Error) {
+          const message = err.message;
+          return Promise.reject(new Error(message));
+        }
+      });
+  },
 };

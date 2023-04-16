@@ -4,7 +4,7 @@
     v-html="componentItem.html"
     :draggable="true"
     @dragstart.self="moveComponentItemPosition($event, itemIndex)"
-    @drop="changeComponentItemPosition($event, itemIndex, route.params)"
+    @drop="changeComponentItemPosition($event, itemIndex, projectId)"
     @dragover.prevent
     @dragenter.prevent
     @click="handleClick"
@@ -17,7 +17,6 @@ import { computed, defineComponent, onMounted } from "vue";
 import { drag_and_drop } from "@/composables/canvas/drag_and_drop";
 import store from "@/store";
 import { updateDom } from "@/composables/canvas/update_dom";
-import { useRoute } from "vue-router";
 
 export default defineComponent({
   name: "WorkspaceComponentItemsListItem",

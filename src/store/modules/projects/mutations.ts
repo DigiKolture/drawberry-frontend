@@ -10,4 +10,8 @@ export const mutations: MutationTree<ProjectState> = {
     state.project = data;
     return state.project;
   },
+  SET_PROJECT_ID(state: ProjectState, data: string) {
+    state.projectId = data;
+    return state.project;
+  },
 };

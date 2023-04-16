@@ -8,6 +8,7 @@ import { actions } from "@/store/modules/projects/actions";
 const state: ProjectState = {
   projects: [],
   project: null,
+  projectId: null,
 };
 
 export const auth: Module<ProjectState, RootState> = {

@@ -33,7 +33,8 @@ export default defineComponent({
         sizeWithUnit.value = newVal + unit;
       }
       focusedElement.value.attributes.style.value[name] = sizeWithUnit.value;
-      store.commit("canvas/UPDATE_FOCUSED_JSON_AND_DOM", focusedElement.value);
+      // store.commit("canvas/UPDATE_FOCUSED_JSON_AND_DOM", focusedElement.value);
+      store.dispatch("canvas/updateFocusedElement", focusedElement.value);
     });
 
     watch(focusedElement, (newVal) => {

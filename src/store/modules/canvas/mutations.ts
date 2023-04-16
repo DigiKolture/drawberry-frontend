@@ -11,25 +11,25 @@ export const mutations: MutationTree<CanvasState> = {
     state.workspaceComponents = data;
     return state.workspaceComponents;
   },
-  UPDATE_FOCUSED_JSON_AND_DOM(state: CanvasState, data: object) {
+  UPDATE_FOCUSED_JSON_AND_DOM(state: CanvasState, data: object): any {
     state.focusedElement = data;
     const workspaceComponents = state.workspaceComponents;
 
     if (state.focusedIndex === null) {
       return state.focusedElement;
     }
-    const componentItem = workspaceComponents[state.focusedIndex];
+    const projectComponentItem = workspaceComponents[state.focusedIndex];
     const elementJson: any = state.focusedElement;
 
-    const jsonIndex = componentItem.json.findIndex(
+    const jsonIndex = projectComponentItem.json.findIndex(
       (el: any) => el.id == elementJson.id
     );
-    componentItem.json[jsonIndex] = state.focusedElement;
+    projectComponentItem.json[jsonIndex] = state.focusedElement;
 
-    const html = componentItem.html;
+    const html = projectComponentItem.html;
     const { updateElementDom } = updateDom();
 
-    componentItem.html = updateElementDom(html, elementJson);
+    projectComponentItem.html = updateElementDom(html, elementJson);
     state.workspaceComponents = workspaceComponents;
     return state.focusedElement;
   },

@@ -9,4 +9,7 @@ export const getters: GetterTree<ProjectState, RootState> = {
   project(state: ProjectState): object | null {
     return state.project;
   },
+  projectId(state: ProjectState): string | null {
+    return state.projectId;
+  },
 };

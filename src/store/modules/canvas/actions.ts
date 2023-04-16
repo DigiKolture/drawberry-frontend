@@ -52,4 +52,25 @@ export const actions: ActionTree<CanvasState, RootState> = {
         }
       });
   },
+  updateFocusedElement({ state, dispatch, commit, rootState }, element) {
+    commit("UPDATE_FOCUSED_JSON_AND_DOM", element);
+    if (state.focusedIndex === null || state.focusedElement === null) return;
+    const projectComponentItem = state.workspaceComponents[state.focusedIndex];
+    const focusedElement: any = state.focusedElement;
+    const root: any = rootState;
+    const projectId: string = root.projects.projectId;
+
+    dispatch("updateProjectComponent", {
+      projectId,
+      projectComponentItemId: projectComponentItem.id,
+      data: {
+        elements: [
+          {
+            id: focusedElement.id,
+            attributes: focusedElement.attributes,
+          },
+        ],
+      },
+    });
+  },
 };

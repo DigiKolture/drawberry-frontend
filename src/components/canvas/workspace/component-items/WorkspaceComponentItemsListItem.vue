@@ -13,7 +13,7 @@
   ></div>
 </template>
 <script lang="ts">
-import { computed, defineComponent, onMounted } from "vue";
+import { computed, defineComponent, onMounted, nextTick, watch } from "vue";
 import { drag_and_drop } from "@/composables/canvas/drag_and_drop";
 import store from "@/store";
 import { updateDom } from "@/composables/canvas/update_dom";
@@ -34,6 +34,10 @@ export default defineComponent({
       type: [Number, String],
       required: true,
     },
+    isMounted: {
+      type: Boolean,
+      required: true,
+    },
   },
 
   setup(props) {
@@ -52,9 +56,16 @@ export default defineComponent({
 
     onMounted(() => {
       // store.commit("canvas/SET_WORKSPACE_COMPONENTS", []);
-
-      loadStylesForComponent(props);
     });
+
+    watch(
+      () => props.isMounted,
+      (value) => {
+        if (value) {
+          loadStylesForComponent(props);
+        }
+      }
+    );
 
     const getComponentItemElementObject = (id: string) => {
       return props.componentItem.json.find((element: any) => element.id === id);
@@ -75,7 +86,16 @@ export default defineComponent({
 
       for (let elementJson of json) {
         if (!elementJson.attributes.style.value) continue;
+
         html = updateElementDom(html, elementJson);
+
+        //   if (elementJson.id === "header9_headerLink3") {
+        //     console.log({
+        //       elementJson: JSON.parse(JSON.stringify(elementJson)),
+        //       attributes: JSON.parse(JSON.stringify(elementJson.attributes)),
+        //     });
+        //     console.log(html);
+        //   }
       }
       //eslint-disable-next-line vue/no-mutating-props
       props.componentItem.html = html;

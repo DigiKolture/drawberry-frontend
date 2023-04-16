@@ -23,8 +23,7 @@ export function drag_and_drop() {
     if (!componentItemIndex) return;
 
     const componentItem = componentItems.value[parseInt(componentItemIndex)];
-    if (!componentItem) return;
-    if (!projectId) return;
+    if (!componentItem || !projectId) return;
 
     workspaceComponents.value.push(componentItem);
 
@@ -67,7 +66,7 @@ export function drag_and_drop() {
         "fromComponentItemIndex"
       );
 
-      if (!fromComponentItemIndex) return;
+      if (!fromComponentItemIndex || !projectId) return;
       // console.log({ toIndex, fromComponentItemIndex });
 
       const projectComponentItem =

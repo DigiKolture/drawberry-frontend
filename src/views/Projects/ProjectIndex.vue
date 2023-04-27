@@ -8,6 +8,9 @@
 
       <ProjectsSection v-else @create-project="createProject" />
     </div>
+    <div class="view__bg">
+      <router-view @close="close" />
+    </div>
   </AppLayout>
 </template>
 <script>
@@ -46,9 +49,14 @@ export default defineComponent({
         });
     };
 
+    const close = () => {
+      router.push({ name: "ProjectIndex" });
+    };
+
     return {
       title,
       description,
+      close,
       projects,
       createProject,
     };

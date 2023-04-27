@@ -48,4 +48,14 @@ button.button{
     border-radius: 4px;
     padding-top: 13px;
     padding-bottom: 13px;
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 18px;
 }
+
+button.button.success{
+    background: #519E47;
+    border-radius: 4px;
+    padding: 9px 20px;
+}
+

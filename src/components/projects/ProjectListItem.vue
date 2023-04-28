@@ -10,6 +10,7 @@
       </div>
       <BaseIcon icon="hamburger/horizontal" />
     </div>
+    <ProjectDropdown class="open" />
   </div>
 </template>
 
@@ -18,10 +19,11 @@ import { defineComponent } from "vue";
 import BaseIcon from "@/components/icon/BaseIcon.vue";
 import { helpers } from "@/composables/helpers";
 import router from "@/router";
+import ProjectDropdown from "@/components/projects/ProjectDropdown.vue";
 
 export default defineComponent({
   name: "ProjectListItem",
-  components: { BaseIcon },
+  components: { ProjectDropdown, BaseIcon },
 
   props: {
     project: {

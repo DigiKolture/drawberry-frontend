@@ -1,3 +1,4 @@
+
 .projects__container{
     @apply flex flex-col;
     padding-top: 24px;
@@ -29,11 +30,11 @@
 }
 
 .projects__header{
-    @apply flex justify-between;
+    @apply flex justify-between relative;
 }
 
 .projects__header__create{
-    @apply flex items-center justify-center;
+    @apply flex items-center justify-center ;
     background: #494B57;
     border-radius: 4px;
     padding-left: 13px;
@@ -95,6 +96,8 @@
     color: #E1E6ED;
 }
 
+
+
 .projects__body__list__items{
     @apply flex flex-wrap;
     row-gap: 16px;
@@ -102,7 +105,7 @@
 }
 
 .projects__body__list__item{
-    @apply flex flex-col cursor-pointer;
+    @apply flex flex-col cursor-pointer relative;
     width: 180px;
     height: 131px;
     background: #454856;
@@ -139,3 +142,67 @@
     line-height: 13px;
     color: #848F9F;
 }
+
+.folders__body__list__items{
+    @apply flex flex-wrap;
+    row-gap: 16px;
+    column-gap: 24px;
+}
+
+.folders__body__list__item{
+    @apply flex cursor-pointer items-center justify-between relative;
+    width: 180px;
+    height: 48px;
+    padding: 14px;
+    background: #2D3039;
+    border: 1px solid #454856;
+    border-radius: 6px;
+}
+
+.folders__body__list__item h6{
+    @apply text-white;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 18px;
+}
+
+/* Project dropdown*/
+
+.projects-dropdown.open{
+    @apply flex;
+}
+
+.projects-dropdown{
+    @apply flex-col absolute z-20;
+    width: 152px;
+    left: 55px;
+    top: 45px;
+    row-gap: 18px;
+    padding: 20px 10px;
+    background: #454856;
+    box-shadow: 0 4px 25px rgba(0, 0, 0, 0.08), 0 1px 4px rgba(23, 27, 30, 0.08);
+    border-radius: 8px;
+}
+
+.projects-dropdown button{
+    @apply flex;
+    column-gap: 7px;
+}
+
+.projects-dropdown button span:first-child{
+    @apply flex justify-center items-center;
+    width: 30px;
+}
+
+.projects-dropdown button span:first-child svg{
+    fill: #454856;
+}
+
+.projects-dropdown button span:nth-child(2){
+    @apply text-white;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 16px;
+}
+
+/* Project dropdown*/

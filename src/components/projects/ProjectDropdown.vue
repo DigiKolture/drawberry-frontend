@@ -1,0 +1,39 @@
+<template>
+  <ProjectDropdownLayout :data="data" />
+</template>
+
+<script lang="ts">
+import { defineComponent } from "vue";
+import ProjectDropdownLayout from "@/components/layout/dropdown/ProjectDropdownLayout.vue";
+export default defineComponent({
+  name: "ProjectDropdown",
+  components: { ProjectDropdownLayout },
+
+  setup() {
+    const data = [
+      {
+        icon: "projects/dropdown/duplicate",
+        name: "Duplicate",
+      },
+      {
+        icon: "projects/dropdown/open",
+        name: "Move to folder",
+      },
+      {
+        icon: "projects/dropdown/edit",
+        name: "Edit file",
+      },
+      {
+        icon: "projects/dropdown/delete",
+        name: "Delete",
+      },
+    ];
+
+    return {
+      data,
+    };
+  },
+});
+</script>
+
+<style></style>

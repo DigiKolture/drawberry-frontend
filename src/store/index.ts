@@ -3,6 +3,7 @@ import auth from "@/store/modules/auth";
 import projects from "@/store/modules/projects";
 import components from "@/store/modules/components";
 import canvas from "@/store/modules/canvas";
+import folders from "@/store/modules/folders";
 import createPersistedState from "vuex-persistedstate";
 
 export default createStore({
@@ -15,6 +16,7 @@ export default createStore({
   modules: {
     auth,
     projects,
+    folders,
     components,
     canvas,
   },

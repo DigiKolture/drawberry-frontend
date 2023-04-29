@@ -1,6 +1,10 @@
 <template>
   <div class="projects-dropdown">
-    <button :key="key" v-for="(dropdown, key) in data">
+    <button
+      @click="callEvent(dropdown)"
+      :key="key"
+      v-for="(dropdown, key) in data"
+    >
       <span><BaseIcon :icon="dropdown.icon" /></span>
       <span>{{ dropdown.name }}</span>
     </button>
@@ -19,6 +23,16 @@ export default defineComponent({
       type: Array,
       required: true,
     },
+  },
+
+  setup(props, { emit }) {
+    const callEvent = (dropdown: any) => {
+      if (dropdown.event) emit("events", dropdown.event);
+    };
+
+    return {
+      callEvent,
+    };
   },
 });
 </script>

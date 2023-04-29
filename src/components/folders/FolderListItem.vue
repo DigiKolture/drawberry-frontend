@@ -1,7 +1,7 @@
 <template>
   <div class="folders__body__list__item">
     <BaseIcon icon="projects/folder" />
-    <h6>Folder name</h6>
+    <h6>{{ sliceString(folder.name) }}</h6>
     <BaseIcon icon="hamburger/horizontal" />
   </div>
 </template>
@@ -18,12 +18,12 @@ export default defineComponent({
   props: {
     folder: {
       type: Object,
-      required: false,
+      required: true,
     },
   },
 
   setup(props, { emit }) {
-    const { formatDate } = helpers();
+    const { formatDate, sliceString } = helpers();
 
     const createProject = () => {
       emit("create-project");
@@ -32,6 +32,7 @@ export default defineComponent({
     return {
       createProject,
       formatDate,
+      sliceString,
     };
   },
 });

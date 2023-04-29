@@ -10,7 +10,7 @@
       </div>
       <BaseIcon icon="hamburger/horizontal" />
     </div>
-    <ProjectDropdown class="open" />
+    <ProjectDropdown class="" />
   </div>
 </template>
 

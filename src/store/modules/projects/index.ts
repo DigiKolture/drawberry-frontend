@@ -11,7 +11,7 @@ const state: ProjectState = {
   projectId: null,
 };
 
-export const auth: Module<ProjectState, RootState> = {
+export const data: Module<ProjectState, RootState> = {
   namespaced: true,
   state,
   getters,
@@ -19,4 +19,4 @@ export const auth: Module<ProjectState, RootState> = {
   mutations,
 };
 
-export default auth;
+export default data;

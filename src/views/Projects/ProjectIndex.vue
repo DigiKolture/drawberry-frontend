@@ -1,12 +1,9 @@
 <template>
   <AppLayout :title="title" :description="description">
     <div class="projects__container">
-      <ProjectsEmpty
-        @create-project="createProject"
-        v-if="projects.length === 0"
-      />
+      <ProjectsEmpty v-if="projects.length === 0" />
 
-      <ProjectsSection v-else @create-project="createProject" />
+      <ProjectsSection />
     </div>
     <div class="view__bg">
       <router-view @close="close" />
@@ -36,18 +33,8 @@ export default defineComponent({
 
     onMounted(() => {
       store.dispatch("projects/getProjects");
+      store.dispatch("folders/getFolders");
     });
-
-    const createProject = async () => {
-      await store
-        .dispatch("projects/storeProject", {
-          name: "Untitled project",
-        })
-        .then((data) => {
-          store.commit("projects/SET_PROJECT", data.project);
-          router.push({ name: "Canvas", params: { id: data.project.id } });
-        });
-    };
 
     const close = () => {
       router.push({ name: "ProjectIndex" });
@@ -58,7 +45,6 @@ export default defineComponent({
       description,
       close,
       projects,
-      createProject,
     };
   },
 });

@@ -2,7 +2,9 @@
   <div class="folders__body__list__item">
     <BaseIcon icon="projects/folder" />
     <h6>{{ sliceString(folder.name) }}</h6>
-    <BaseIcon icon="hamburger/horizontal" />
+    <div class="folders__list__item__hamburger">
+      <BaseIcon icon="hamburger/horizontal" />
+    </div>
   </div>
 </template>
 

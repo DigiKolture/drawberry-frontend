@@ -4,7 +4,7 @@ export function helpers() {
     return moment(date).format("MMMM DD, YYYY");
   };
 
-  const sliceString = (str: string, num = 11) => {
+  const sliceString = (str: string, num = 12) => {
     if (str.length <= num) return str;
     return str.slice(0, num) + "...";
   };

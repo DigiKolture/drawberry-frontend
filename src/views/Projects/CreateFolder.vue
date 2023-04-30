@@ -9,8 +9,8 @@
     <form @submit.prevent="storeFolder">
       <div class="modal__content">
         <div class="form-group">
-          <BaseLabel v-model="folder.name" title="Folder name"></BaseLabel>
-          <BaseInput required />
+          <BaseLabel title="Folder name"></BaseLabel>
+          <BaseInput v-model="folder.name" required />
         </div>
       </div>
       <div class="modal__footer">

@@ -36,9 +36,10 @@ export const actions: ActionTree<FolderState, RootState> = {
       });
   },
 
-  storeFolder({ commit }, data): Promise<void> {
+  storeFolder({ commit, dispatch }, data): Promise<void> {
     return AxiosClient.post(`${baseUrl}`, data)
       .then((res: any) => {
+        dispatch("getFolders");
         return res.data.data;
       })
       .catch((err: any): any => {

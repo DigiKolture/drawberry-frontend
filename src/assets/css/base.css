@@ -35,7 +35,8 @@
 
 :root{
     --header-height: 64px;
-    --canvas-sidebar-width: 272px;
+    --canvas-sidebar-nav-width: 48px;
+    --canvas-sidebar-nav-content-width: 238px;
 }
 
 html{

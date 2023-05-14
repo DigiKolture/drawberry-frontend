@@ -1,4 +1,79 @@
 
+nav.canvas__sidebar__nav{
+    @apply h-full flex flex-col justify-between items-center;
+    width: var(--canvas-sidebar-nav-width);
+    background-color: #1E1F26;
+    padding-top: 4px;
+    padding-bottom: 16px;
+}
+
+.sidebar__nav__top, .sidebar__nav__bottom{
+    @apply flex flex-col items-center;
+}
+
+.sidebar__nav__top{
+    row-gap: 4px;
+}
+
+.sidebar__nav__bottom{
+    row-gap: 10px;
+}
+
+.canvas__sidebar__nav .button__icon{
+    background-color: transparent;
+}
+
+.canvas__sidebar__nav .button__icon:hover, .canvas__sidebar__nav .button__icon.active{
+    background: #2D3039;
+    border-radius: 4px;
+}
+
+.sidebar__nav__bottom__initials{
+    @apply text-white uppercase rounded-full flex items-center justify-center;
+    background: #519E47;
+    width: 32px;
+    height: 32px;
+    font-weight: 500;
+    font-size: 10.9801px;
+    line-height: 14px;
+}
+
+/*SIDEBAR NAV CONTENT*/
+
+
+.canvas__sidebar__nav__content{
+    @apply flex flex-col;
+    width: var(--canvas-sidebar-nav-content-width);
+    background: #2D3039;
+}
+
+.sidebar__nav__contents__header{
+    @apply flex justify-between items-center;
+    height: 40px;
+    padding: 11px 0 11px 12px;
+}
+
+.sidebar__nav__contents__header{
+    @apply text-white;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 18px;
+    letter-spacing: 0.04em;
+    border-bottom: 1px solid #1E1F26;
+}
+
+.sidebar__nav__contents__header__icons{
+    @apply flex;
+}
+
+.sidebar__nav__contents__header__icons .button__icon{
+    background-color: transparent;
+    width: 35px;
+    height: 35px;
+}
+
+/*SIDEBAR NAV CONTENT*/
+
 
 div.components__container{
     @apply grid;

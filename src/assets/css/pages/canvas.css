@@ -4,22 +4,19 @@ section.canvas__layout{
 
 .canvas__container{
     @apply grid w-full h-full;
-    grid-template-columns: var(--canvas-sidebar-width) 1fr 239px;
+    grid-template-columns: calc(var(--canvas-sidebar-nav-width) + var(--canvas-sidebar-nav-content-width)) 1fr 239px;
     grid-gap: 10px;
 }
 
 .canvas__sidebar{
-    height: 100%;
-    background-color: #2D3039;
+    height: calc(100vh - var(--header-height));
 }
 
 .canvas__sidebar__container{
-    @apply relative;
-    background-color: #2D3039;
-    padding-left: 27px;
-    padding-top: 29px;
+    @apply relative h-full flex;
+    /*padding-left: 27px;*/
+    /*padding-top: 29px;*/
 }
-
 
 .canvas__workspace{
     @apply h-screen;

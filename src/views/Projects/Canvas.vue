@@ -1,8 +1,7 @@
 <template>
   <CanvasLayout>
     <template v-slot:sidebar>
-      <ComponentsContainer />
-      <ComponentItemsContainer />
+      <CanvasSidebarNav />
     </template>
     <template v-slot:workspace>
       <WorkspaceComponentItemsContainer />
@@ -16,18 +15,20 @@
 import { computed, defineComponent, onMounted, ref } from "vue";
 import store from "@/store";
 import CanvasLayout from "@/components/layout/CanvasLayout";
-import ComponentsContainer from "@/components/canvas/sidebar/components/ComponentsContainer";
-import ComponentItemsContainer from "@/components/canvas/sidebar/component-items/ComponentItemsContainer";
+// import ComponentsContainer from "@/components/canvas/sidebar/components/ComponentsContainer";
+// import ComponentItemsContainer from "@/components/canvas/sidebar/component-items/ComponentItemsContainer";
 import WorkspaceComponentItemsContainer from "@/components/canvas/workspace/component-items/WorkspaceComponentItemsContainer";
 import PanelTabs from "@/components/canvas/panel/tabs/PanelTabs";
+import CanvasSidebarNav from "@/components/canvas/sidebar/CanvasSidebarNav";
 
 export default defineComponent({
   name: "CanvasPage",
   components: {
+    CanvasSidebarNav,
     PanelTabs,
     WorkspaceComponentItemsContainer,
-    ComponentItemsContainer,
-    ComponentsContainer,
+    // ComponentItemsContainer,
+    // ComponentsContainer,
     CanvasLayout,
   },
 

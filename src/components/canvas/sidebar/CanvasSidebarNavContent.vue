@@ -31,7 +31,7 @@
     </div>
   </div>
 </template>
-<script>
+<script lang="ts">
 import { computed, defineComponent, ref } from "vue";
 import BaseButtonIcon from "@/components/icon/BaseButtonIcon";
 import store from "@/store";
@@ -50,7 +50,7 @@ export default defineComponent({
       return store.getters["canvas/sidebarDock"];
     });
 
-    const showContent = (name) => {
+    const showContent = (name: string) => {
       return name === sidebarNavContent.value;
     };
 

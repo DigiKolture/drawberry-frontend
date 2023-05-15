@@ -6,6 +6,7 @@
         v-for="(button, key) in sidebarNavTopIcons"
         @click="changeSidebarNavContent(button.name)"
         :icon="button.icon"
+        :class="{ active: activeContent(button.name) }"
       />
     </div>
     <div class="sidebar__nav__bottom">
@@ -19,7 +20,7 @@
   </nav>
 </template>
 <script lang="ts">
-import { defineComponent } from "vue";
+import { computed, defineComponent } from "vue";
 import BaseButtonIcon from "@/components/icon/BaseButtonIcon.vue";
 import store from "@/store";
 
@@ -39,6 +40,14 @@ export default defineComponent({
       { icon: "canvas/sidebar/nav/notification" },
     ];
 
+    const sidebarNavContent = computed(() => {
+      return store.getters["canvas/sidebarNavContent"];
+    });
+
+    const activeContent = (name: string) => {
+      return name === sidebarNavContent.value;
+    };
+
     const changeSidebarNavContent = (name: string) => {
       store.commit("canvas/SET_SIDEBAR_NAVBAR_CONTENT", name);
     };
@@ -46,6 +55,8 @@ export default defineComponent({
     return {
       sidebarNavTopIcons,
       sidebarNavBottomIcons,
+      sidebarNavContent,
+      activeContent,
       changeSidebarNavContent,
     };
   },

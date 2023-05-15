@@ -4,8 +4,12 @@ section.canvas__layout{
 
 .canvas__container{
     @apply grid w-full h-full;
-    grid-template-columns: calc(var(--canvas-sidebar-nav-width) + var(--canvas-sidebar-nav-content-width)) 1fr 239px;
+    grid-template-columns: var(--canvas-sidebar-nav-width) 1fr 239px;
     grid-gap: 10px;
+}
+
+.canvas__container.nav__content__docked{
+    grid-template-columns: calc(var(--canvas-sidebar-nav-width) + var(--canvas-sidebar-nav-content-width)) 1fr 239px;
 }
 
 .canvas__sidebar{
@@ -14,8 +18,6 @@ section.canvas__layout{
 
 .canvas__sidebar__container{
     @apply relative h-full flex;
-    /*padding-left: 27px;*/
-    /*padding-top: 29px;*/
 }
 
 .canvas__workspace{

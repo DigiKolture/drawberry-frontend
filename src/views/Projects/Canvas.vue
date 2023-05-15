@@ -2,6 +2,7 @@
   <CanvasLayout>
     <template v-slot:sidebar>
       <CanvasSidebarNav />
+      <CanvasSidebarNavContent />
     </template>
     <template v-slot:workspace>
       <WorkspaceComponentItemsContainer />
@@ -20,11 +21,13 @@ import CanvasLayout from "@/components/layout/CanvasLayout";
 import WorkspaceComponentItemsContainer from "@/components/canvas/workspace/component-items/WorkspaceComponentItemsContainer";
 import PanelTabs from "@/components/canvas/panel/tabs/PanelTabs";
 import CanvasSidebarNav from "@/components/canvas/sidebar/CanvasSidebarNav";
+import CanvasSidebarNavContent from "@/components/canvas/sidebar/CanvasSidebarNavContent";
 
 export default defineComponent({
   name: "CanvasPage",
   components: {
     CanvasSidebarNav,
+    CanvasSidebarNavContent,
     PanelTabs,
     WorkspaceComponentItemsContainer,
     // ComponentItemsContainer,

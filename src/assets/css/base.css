@@ -91,7 +91,7 @@ button.button__icon__text{
 }
 
 .button__icon{
-    @apply flex items-center justify-center;
+    @apply flex items-center justify-center cursor-pointer;
     width: 40px;
     height: 40px;
     background: #353843;

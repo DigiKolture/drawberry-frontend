@@ -12,4 +12,10 @@ export const getters: GetterTree<CanvasState, RootState> = {
   workspaceComponents(state: CanvasState): object[] | null {
     return state.workspaceComponents;
   },
+  sidebarNavContent(state: CanvasState): string | null {
+    return state.sidebarNavContent;
+  },
+  sidebarDock(state: CanvasState): boolean {
+    return state.sidebarDock;
+  },
 };

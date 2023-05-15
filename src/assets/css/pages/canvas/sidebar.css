@@ -40,11 +40,12 @@ nav.canvas__sidebar__nav{
 
 /*SIDEBAR NAV CONTENT*/
 
-
 .canvas__sidebar__nav__content{
-    @apply flex flex-col;
+    @apply flex flex-col absolute;
     width: var(--canvas-sidebar-nav-content-width);
     background: #2D3039;
+    height: 100vh;
+    left: var(--canvas-sidebar-nav-width);
 }
 
 .sidebar__nav__contents__header{
@@ -70,6 +71,10 @@ nav.canvas__sidebar__nav{
     background-color: transparent;
     width: 35px;
     height: 35px;
+}
+
+.content__sidebar__dock__button.active svg path{
+    fill: white;
 }
 
 /*SIDEBAR NAV CONTENT*/

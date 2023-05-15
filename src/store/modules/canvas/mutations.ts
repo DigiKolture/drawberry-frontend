@@ -37,4 +37,12 @@ export const mutations: MutationTree<CanvasState> = {
     state.focusedIndex = data;
     return state.focusedIndex;
   },
+  SET_SIDEBAR_NAVBAR_CONTENT(state: CanvasState, data: string) {
+    state.sidebarNavContent = data;
+    return state.sidebarNavContent;
+  },
+  SET_SIDEBAR_DOCK(state: CanvasState, data: boolean) {
+    state.sidebarDock = data;
+    return state.sidebarDock;
+  },
 };

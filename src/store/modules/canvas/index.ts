@@ -8,6 +8,8 @@ import { actions } from "@/store/modules/canvas/actions";
 const state: CanvasState = {
   focusedElement: null,
   focusedIndex: null,
+  sidebarNavContent: null,
+  sidebarDock: false,
   workspaceComponents: [],
 };
 

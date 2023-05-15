@@ -1,25 +1,53 @@
 <template>
   <nav class="canvas__sidebar__nav">
     <div class="sidebar__nav__top">
-      <BaseButtonIcon class="" icon="canvas/sidebar/nav/add" />
-      <BaseButtonIcon icon="canvas/sidebar/nav/style" />
-      <BaseButtonIcon icon="canvas/sidebar/nav/layer" />
+      <BaseButtonIcon
+        :key="key"
+        v-for="(button, key) in sidebarNavTopIcons"
+        @click="changeSidebarNavContent(button.name)"
+        :icon="button.icon"
+      />
     </div>
     <div class="sidebar__nav__bottom">
-      <BaseButtonIcon icon="canvas/sidebar/nav/library" />
-      <BaseButtonIcon icon="canvas/sidebar/nav/notification" />
+      <BaseButtonIcon
+        :key="key"
+        v-for="(button, key) in sidebarNavBottomIcons"
+        :icon="button.icon"
+      />
       <div class="sidebar__nav__bottom__initials">KN</div>
     </div>
   </nav>
-  <CanvasSidebarNavContent />
 </template>
-<script>
+<script lang="ts">
 import { defineComponent } from "vue";
-import BaseButtonIcon from "@/components/icon/BaseButtonIcon";
-import CanvasSidebarNavContent from "@/components/canvas/sidebar/CanvasSidebarNavContent";
+import BaseButtonIcon from "@/components/icon/BaseButtonIcon.vue";
+import store from "@/store";
 
 export default defineComponent({
   name: "CanvasSidebarNav",
-  components: { CanvasSidebarNavContent, BaseButtonIcon },
+  components: { BaseButtonIcon },
+
+  setup() {
+    const sidebarNavTopIcons = [
+      { icon: "canvas/sidebar/nav/add", name: "add_component" },
+      { icon: "canvas/sidebar/nav/style", name: "style" },
+      { icon: "canvas/sidebar/nav/layer", name: "layer" },
+    ];
+
+    const sidebarNavBottomIcons = [
+      { icon: "canvas/sidebar/nav/library" },
+      { icon: "canvas/sidebar/nav/notification" },
+    ];
+
+    const changeSidebarNavContent = (name: string) => {
+      store.commit("canvas/SET_SIDEBAR_NAVBAR_CONTENT", name);
+    };
+
+    return {
+      sidebarNavTopIcons,
+      sidebarNavBottomIcons,
+      changeSidebarNavContent,
+    };
+  },
 });
 </script>

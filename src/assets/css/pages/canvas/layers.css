@@ -1,0 +1,50 @@
+.layers__component__items{
+    margin-top: 4px;
+    @apply flex flex-col;
+    row-gap: 5px;
+}
+
+.layers__component__item__header{
+    @apply flex items-center cursor-pointer;
+    column-gap: 5px;
+    padding-top: 8px;
+    padding-bottom: 8px;
+}
+
+.layers__component__item__header:hover, .layers__component__item__header.active{
+    background: #494B57;
+}
+
+.layers__component__item__header:hover svg path{
+    fill: white;
+}
+
+.layers__component__items h5{
+    @apply text-white;
+    font-weight: 400;
+    font-size: 12px;
+    line-height: 16px;
+    letter-spacing: 0.04em;
+}
+
+
+.layers__component__item__elements{
+    @apply flex flex-col;
+}
+
+.layers__component__item__element{
+    @apply flex items-center cursor-pointer;
+    column-gap: 6px;
+    padding-left: 53px;
+    padding-top: 8px;
+    padding-bottom: 8px;
+
+}
+
+.layers__component__item__element:hover, .layers__component__item__element.active{
+    background: #494B57;
+}
+
+.layers__component__item__element:hover svg path, .layers__component__item__element.active svg path{
+    fill: white;
+}

@@ -83,6 +83,8 @@ nav.canvas__sidebar__nav{
 div.components__container{
     @apply grid;
     row-gap: 31px;
+    padding-top: 24px;
+    padding-left: 24px;
 }
 
 .components__title{
@@ -123,7 +125,7 @@ div.components__container{
     row-gap: 20px;
     padding: 30px 30px 100px 30px;
     top: var(--header-height);
-    left: var(--canvas-sidebar-width);
+    left: calc(var(--canvas-sidebar-nav-width) + var(--canvas-sidebar-nav-content-width));
     /* width: 393px; */
     width: 500px;
     background: #494B57;

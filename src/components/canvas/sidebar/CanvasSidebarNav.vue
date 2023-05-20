@@ -32,7 +32,7 @@ export default defineComponent({
     const sidebarNavTopIcons = [
       { icon: "canvas/sidebar/nav/add", name: "add_component" },
       { icon: "canvas/sidebar/nav/style", name: "style" },
-      { icon: "canvas/sidebar/nav/layer", name: "layer" },
+      { icon: "canvas/sidebar/nav/layer", name: "layers" },
     ];
 
     const sidebarNavBottomIcons = [

@@ -1,6 +1,5 @@
 <template>
   <div class="components__container">
-    <h5 class="components__title">Components</h5>
     <ComponentsContainerList />
   </div>
 </template>

@@ -20,7 +20,7 @@
 }
 
 .layers__component__items h5{
-    @apply text-white;
+    @apply text-white capitalize;
     font-weight: 400;
     font-size: 12px;
     line-height: 16px;
@@ -35,10 +35,7 @@
 .layers__component__item__element{
     @apply flex items-center cursor-pointer;
     column-gap: 6px;
-    padding-left: 53px;
-    padding-top: 8px;
-    padding-bottom: 8px;
-
+    padding: 8px 40px 8px 53px;
 }
 
 .layers__component__item__element:hover, .layers__component__item__element.active{

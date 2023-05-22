@@ -44,7 +44,8 @@ nav.canvas__sidebar__nav{
     @apply flex flex-col absolute;
     width: var(--canvas-sidebar-nav-content-width);
     background: #2D3039;
-    height: 100vh;
+    /*height: 100vh;*/
+    height: 100%;
     left: var(--canvas-sidebar-nav-width);
 }
 

@@ -61,6 +61,7 @@ export const actions: ActionTree<CanvasState, RootState> = {
   updateFocusedElement({ state, dispatch, commit, rootState }, element) {
     if (state.focusedIndex === null || state.focusedElement === null) return;
 
+    //Update DOM before the API (Just to prevent waiting for changes)
     commit("UPDATE_FOCUSED_JSON_AND_DOM", element);
     const projectComponentItem = state.workspaceComponents[state.focusedIndex];
     const focusedElement: any = state.focusedElement;
@@ -76,6 +77,7 @@ export const actions: ActionTree<CanvasState, RootState> = {
           {
             id: focusedElement.id,
             attributes: focusedElement.attributes,
+            innerHtml: focusedElement.innerHtml,
           },
         ],
       },

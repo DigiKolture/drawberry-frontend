@@ -52,12 +52,6 @@ export default defineComponent({
       removeHoverClassFromElement,
     } = layers();
 
-    const focusedElement = computed(() => {
-      return store.getters["canvas/focusedElement"];
-    });
-
-    // const currentHoverElementId = ref("");
-
     const currentHoverElementId = computed(() => {
       return store.getters["canvas/currentHoverElementId"];
     });
@@ -139,121 +133,6 @@ export default defineComponent({
         }
       }
     };
-
-    const handleMouseOver = async (event: any) => {
-      const target = event.target;
-      if (!target.classList.contains("editable")) {
-        return;
-      }
-      let componentItem = props.componentItem;
-      let html = props.componentItem.html;
-
-      // console.log("hovering >>>>>>");
-
-      // await removeAllHover();
-      // if (result) {
-      // target.classList.add("hover");
-
-      if (currentHoverElement.value.id) {
-        const jsonIndex = getComponentElementIndexUsingId(
-          componentItem,
-          currentHoverElement.value.id
-        );
-
-        if (jsonIndex > -1) {
-          let element = removeHoverClassFromElement(
-            componentItem.json[jsonIndex]
-          );
-          html = updateElementDom(html, element, true);
-          // eslint-disable-next-line vue/no-mutating-props
-          props.componentItem.html = html;
-        }
-      }
-
-      const elementId = target.id;
-      store.commit("canvas/SET_CURRENT_HOVER_ELEMENT_ID", elementId);
-      store.commit("canvas/SET_CURRENT_HOVER_ELEMENT", {
-        id: elementId,
-        componentIndex: props.itemIndex,
-      });
-
-      const jsonIndex = getComponentElementIndexUsingId(
-        componentItem,
-        elementId
-      );
-      componentItem.json[jsonIndex] = addHoverClassToElement(
-        componentItem.json[jsonIndex]
-      );
-      // workspaceComponents.value[props.itemIndex] = componentItem;
-      // store.commit(
-      //   "canvas/SET_WORKSPACE_COMPONENTS",
-      //   workspaceComponents.value
-      // );
-      html = updateElementDom(html, componentItem.json[jsonIndex], true);
-      // eslint-disable-next-line vue/no-mutating-props
-      props.componentItem.html = html;
-      // }
-    };
-
-    const handleMouseLeave = (event: any) => {
-      const target = event.target;
-      target.classList.remove("hover");
-    };
-
-    const removePrevHover = async (componentItem: any, html: any) => {
-      if (currentHoverElementId.value) {
-        const jsonIndex = getComponentElementIndexUsingId(
-          componentItem,
-          currentHoverElementId.value
-        );
-
-        if (jsonIndex > -1) {
-          let element = removeHoverClassFromElement(
-            componentItem.json[jsonIndex]
-          );
-          html = updateElementDom(html, element, true);
-          // eslint-disable-next-line vue/no-mutating-props
-          props.componentItem.html = html;
-        }
-      }
-    };
-
-    const removeAllHover = async () => {
-      // return new Promise<void>((resolve) => {
-      //   setTimeout(() => {
-      //     const hovers = document.querySelectorAll(".hover");
-      //     for (let i = 0; i < hovers.length; i++) {
-      //       hovers[i].classList.remove("hover");
-      //     }
-      //     resolve();
-      //   }, 0); // Simulating an asynchronous operation with setTimeout
-      // });
-      // const hovers = document.querySelectorAll(".hover");
-      // for (let i = 0; i < hovers.length; i++) {
-      //   hovers[i].classList.remove("hover");
-      // }
-      // for (let i = 0; i < workspaceComponents.value.length; i++) {
-      //   hovers[i].classList.remove("hover");
-      // }
-
-      for (let workspaceComponent of workspaceComponents.value) {
-        for (let element of workspaceComponent.json) {
-          element.classes =
-            element.classes &&
-            typeof element.classes === "object" &&
-            element.classes.includes("hover")
-              ? element.classes.filter((classs: string) => classs !== "hover")
-              : element.classes;
-          workspaceComponent.html = updateElementDom(
-            workspaceComponent.html,
-            element,
-            true
-          );
-        }
-      }
-      // return true;
-    };
-
     const removeAllFocus = () => {
       const elements = document.querySelectorAll(".focus");
       for (let i = 0; i < elements.length; i++) {
@@ -266,8 +145,6 @@ export default defineComponent({
       moveComponentItemPosition,
       changeComponentItemPosition,
       handleClick,
-      handleMouseOver,
-      handleMouseLeave,
     };
   },
 });

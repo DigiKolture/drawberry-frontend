@@ -9,17 +9,17 @@
 
     <div class="layers__component__item__elements">
       <LayersContainerElementItem
-        v-for="element in component.json"
+        v-for="element in componentItem.json"
         :key="element.id"
         @mouseover="handleMouseOver(element)"
         :element="element"
-        :componentItem="component"
+        :componentItem="componentItem"
       />
     </div>
   </div>
 </template>
 <script lang="ts">
-import { computed, defineComponent, ref } from "vue";
+import { computed, defineComponent } from "vue";
 import BaseIcon from "@/components/icon/BaseIcon.vue";
 import LayersContainerElementItem from "@/components/canvas/sidebar/layers/LayersContainerElementItem.vue";
 import { layers } from "@/composables/canvas/layers";
@@ -30,8 +30,12 @@ export default defineComponent({
   name: "LayersContainerItem",
   components: { LayersContainerElementItem, BaseIcon },
   props: {
-    component: {
+    componentItem: {
       type: Object,
+      required: true,
+    },
+    itemIndex: {
+      type: [Number, String],
       required: true,
     },
   },
@@ -45,9 +49,8 @@ export default defineComponent({
 
     const { updateElementDom } = updateDom();
 
-    // const currentHoverElementId = ref("");
-    const currentHoverElementId = computed(() => {
-      return store.getters["canvas/currentHoverElementId"];
+    const workspaceComponents = computed(() => {
+      return store.getters["canvas/workspaceComponents"];
     });
 
     const currentHoverElement = computed(() => {
@@ -55,35 +58,62 @@ export default defineComponent({
     });
 
     const handleMouseOver = async (element: any) => {
-      let componentItem = props.component;
-      if (currentHoverElement.value.id) {
+      if (
+        currentHoverElement.value.id &&
+        currentHoverElement.value.componentIndex > -1
+      ) {
+        let currentComponentItem =
+          workspaceComponents.value[currentHoverElement.value.componentIndex];
+
         const jsonIndex = getComponentElementIndexUsingId(
-          componentItem,
+          currentComponentItem,
           currentHoverElement.value.id
         );
 
         if (jsonIndex > -1) {
-          const newElementClasses = removeHoverClassFromElement(
-            componentItem.json[jsonIndex]
-          );
-          // eslint-disable-next-line vue/no-mutating-props
-          props.component.json[jsonIndex].classes = newElementClasses.classes;
-          // eslint-disable-next-line vue/no-mutating-props
-          props.component.html = updateElementDom(
-            props.component.html,
-            props.component.json[jsonIndex],
-            true
-          );
+          let currElement = currentComponentItem.json[jsonIndex];
+
+          if (
+            currElement.classes &&
+            typeof currElement.classes == "object" &&
+            currElement.classes.includes("hover")
+          ) {
+            currElement = removeHoverClassFromElement(
+              currentComponentItem.json[jsonIndex]
+            );
+
+            workspaceComponents.value[
+              currentHoverElement.value.componentIndex
+            ].html = updateElementDom(
+              currentComponentItem.html,
+              currElement,
+              true
+            );
+          }
         }
       }
-      //
-      // currentHoverElementId.value = element.id;
-      store.commit("canvas/SET_CURRENT_HOVER_ELEMENT_ID", element.id);
-      element.classes = addHoverClassToElement(element).classes;
-      // eslint-disable-next-line vue/no-mutating-props
-      props.component.html = updateElementDom(props.component.html, element);
-    };
 
+      const elementId = element.id;
+      const componentItem = props.componentItem;
+      const itemIndex = props.itemIndex;
+
+      store.commit("canvas/SET_CURRENT_HOVER_ELEMENT", {
+        id: elementId,
+        componentIndex: itemIndex,
+      });
+      const jsonIndex = getComponentElementIndexUsingId(
+        componentItem,
+        elementId
+      );
+      componentItem.json[jsonIndex] = addHoverClassToElement(
+        componentItem.json[jsonIndex]
+      );
+      workspaceComponents.value[itemIndex].html = updateElementDom(
+        componentItem.html,
+        componentItem.json[jsonIndex],
+        true
+      );
+    };
     return { handleMouseOver };
   },
 });

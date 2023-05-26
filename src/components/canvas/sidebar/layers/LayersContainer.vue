@@ -3,8 +3,9 @@
     <div class="layers__component__items">
       <LayersContainerItem
         :key="component.id"
-        v-for="component in workspaceComponents"
-        :component="component"
+        v-for="(component, itemIndex) in workspaceComponents"
+        :componentItem="component"
+        :itemIndex="itemIndex"
       />
     </div>
   </div>

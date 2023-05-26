@@ -38,8 +38,42 @@ export function layers() {
     return `canvas/sidebar/layers/${icon}`;
   };
 
+  const getComponentElementIndexUsingId = (
+    componentItem: any,
+    elementId: string
+  ) => {
+    const jsonIndex = componentItem.json.findIndex(
+      (el: any) => el.id == elementId
+    );
+    return jsonIndex;
+  };
+
+  const addHoverClassToElement = (element: any) => {
+    element.classes =
+      element.classes &&
+      element.classes.value &&
+      typeof element.classes.value === "object"
+        ? element.classes.value.push("hover")
+        : ["hover"];
+
+    return element;
+  };
+
+  const removeHoverClassFromElement = (element: any) => {
+    element.classes =
+      element.classes &&
+      typeof element.classes === "object" &&
+      element.classes.includes("hover")
+        ? element.classes.filter((classs: string) => classs !== "hover")
+        : element.classes;
+    return element;
+  };
+
   return {
     getLayerElementTitle,
     getLayerElementIcon,
+    getComponentElementIndexUsingId,
+    addHoverClassToElement,
+    removeHoverClassFromElement,
   };
 }

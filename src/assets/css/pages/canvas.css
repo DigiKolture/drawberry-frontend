@@ -13,7 +13,8 @@ section.canvas__layout{
 }
 
 .canvas__sidebar{
-    height: calc(100vh - var(--header-height));
+    /*height: calc(100vh - var(--header-height));*/
+    height: 100%;
 }
 
 .canvas__sidebar__container{

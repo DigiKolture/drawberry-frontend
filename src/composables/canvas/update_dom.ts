@@ -6,10 +6,9 @@ export function updateDom() {
     img: ["src"],
     a: ["href"],
   };
-  const updateElementDom = (html: string, elementJson: any) => {
+  const updateElementDom = (html: string, elementJson: any, here = false) => {
     const $ = cheerio.load(html);
     const el = $(`#${elementJson.id}`);
-
     const tagName = el.prop("tagName").toLowerCase();
     const elementAttributes = el.attr();
     const attributesValues = attributesSettings[tagName];
@@ -24,26 +23,39 @@ export function updateDom() {
     }
 
     const style: Record<string, any> = elementJson.attributes.style.value;
-
-    for (const [key, value] of Object.entries(style)) {
-      style[key] = value;
-      // if (typeof value !== "string" && key === "font-size") {
-      //   style[key] = value.unit ? `${value.value}${value.unit}` : value.value;
-      // } else if (typeof value === "object") {
-      //   style[key] = value.value;
-      // } else {
-      //   style[key] = value;
-      // }
+    if (style) {
+      for (const [key, value] of Object.entries(style)) {
+        style[key] = value;
+        // if (typeof value !== "string" && key === "font-size") {
+        //   style[key] = value.unit ? `${value.value}${value.unit}` : value.value;
+        // } else if (typeof value === "object") {
+        //   style[key] = value.value;
+        // } else {
+        //   style[key] = value;
+        // }
+      }
     }
 
-    if (style["background-color"]) {
+    if (style && style["background-color"]) {
       el.attr("bgcolor", style["background-color"]);
     }
 
     el.css(style);
+    if (typeof elementJson.classes == "object") {
+      const classAttribute = el.attr("class");
+      const classList = classAttribute ? classAttribute.split(" ") : [];
+      const newClasses = elementJson.classes;
+      el.attr("class", elementJson.classes.join(" "));
+
+      if (classList.includes("hover") && !newClasses.includes("hover")) {
+        classList.splice(classList.indexOf("hover"), 1);
+      }
+      const mergedClasses = Array.from(new Set(classList.concat(newClasses)));
+      el.addClass(mergedClasses.join(" "));
+    }
 
     //UPDATE Content
-    if (elementJson.innerHtml !== null) {
+    if (elementJson.innerHtml !== null && elementJson.innerHtml !== "") {
       el.text(elementJson.innerHtml);
     }
 

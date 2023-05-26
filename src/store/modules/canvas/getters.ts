@@ -1,5 +1,8 @@
 import { GetterTree } from "vuex";
-import { CanvasState } from "@/store/modules/canvas/types";
+import {
+  CanvasState,
+  CurrentHoverElementType,
+} from "@/store/modules/canvas/types";
 import { RootState } from "@/store/types";
 
 export const getters: GetterTree<CanvasState, RootState> = {
@@ -8,6 +11,12 @@ export const getters: GetterTree<CanvasState, RootState> = {
   },
   focusedIndex(state: CanvasState): number | null {
     return state.focusedIndex;
+  },
+  currentHoverElementId(state: CanvasState): string | null {
+    return state.currentHoverElementId;
+  },
+  currentHoverElement(state: CanvasState): CurrentHoverElementType {
+    return state.currentHoverElement;
   },
   workspaceComponents(state: CanvasState): object[] | null {
     return state.workspaceComponents;

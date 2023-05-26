@@ -1,5 +1,5 @@
 <template>
-  {{ classes }}
+  <!--  {{ classes }}-->
   <div
     class="workspace__component__items__list__item"
     v-html="componentItem.html"
@@ -9,8 +9,6 @@
     @dragover.prevent
     @dragenter.prevent
     @click="handleClick"
-    @mouseover="handleMouseOver"
-    @mouseleave="handleMouseLeave"
     v-if="isMounted"
   ></div>
 </template>
@@ -58,7 +56,15 @@ export default defineComponent({
       return store.getters["canvas/focusedElement"];
     });
 
-    const currentHoverElementId = ref("");
+    // const currentHoverElementId = ref("");
+
+    const currentHoverElementId = computed(() => {
+      return store.getters["canvas/currentHoverElementId"];
+    });
+
+    const currentHoverElement = computed(() => {
+      return store.getters["canvas/currentHoverElement"];
+    });
 
     const workspaceComponents = computed(() => {
       return store.getters["canvas/workspaceComponents"];
@@ -148,10 +154,10 @@ export default defineComponent({
       // if (result) {
       // target.classList.add("hover");
 
-      if (currentHoverElementId.value) {
+      if (currentHoverElement.value.id) {
         const jsonIndex = getComponentElementIndexUsingId(
           componentItem,
-          currentHoverElementId.value
+          currentHoverElement.value.id
         );
 
         if (jsonIndex > -1) {
@@ -165,7 +171,11 @@ export default defineComponent({
       }
 
       const elementId = target.id;
-      currentHoverElementId.value = elementId;
+      store.commit("canvas/SET_CURRENT_HOVER_ELEMENT_ID", elementId);
+      store.commit("canvas/SET_CURRENT_HOVER_ELEMENT", {
+        id: elementId,
+        componentIndex: props.itemIndex,
+      });
 
       const jsonIndex = getComponentElementIndexUsingId(
         componentItem,

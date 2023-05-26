@@ -19,11 +19,12 @@
   </div>
 </template>
 <script lang="ts">
-import { defineComponent, ref } from "vue";
+import { computed, defineComponent, ref } from "vue";
 import BaseIcon from "@/components/icon/BaseIcon.vue";
 import LayersContainerElementItem from "@/components/canvas/sidebar/layers/LayersContainerElementItem.vue";
 import { layers } from "@/composables/canvas/layers";
 import { updateDom } from "@/composables/canvas/update_dom";
+import store from "@/store";
 
 export default defineComponent({
   name: "LayersContainerItem",
@@ -44,14 +45,21 @@ export default defineComponent({
 
     const { updateElementDom } = updateDom();
 
-    const currentHoverElementId = ref("");
+    // const currentHoverElementId = ref("");
+    const currentHoverElementId = computed(() => {
+      return store.getters["canvas/currentHoverElementId"];
+    });
+
+    const currentHoverElement = computed(() => {
+      return store.getters["canvas/currentHoverElement"];
+    });
 
     const handleMouseOver = async (element: any) => {
       let componentItem = props.component;
-      if (currentHoverElementId.value) {
+      if (currentHoverElement.value.id) {
         const jsonIndex = getComponentElementIndexUsingId(
           componentItem,
-          currentHoverElementId.value
+          currentHoverElement.value.id
         );
 
         if (jsonIndex > -1) {
@@ -69,7 +77,8 @@ export default defineComponent({
         }
       }
       //
-      currentHoverElementId.value = element.id;
+      // currentHoverElementId.value = element.id;
+      store.commit("canvas/SET_CURRENT_HOVER_ELEMENT_ID", element.id);
       element.classes = addHoverClassToElement(element).classes;
       // eslint-disable-next-line vue/no-mutating-props
       props.component.html = updateElementDom(props.component.html, element);

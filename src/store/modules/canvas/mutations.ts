@@ -1,5 +1,8 @@
 import { MutationTree } from "vuex";
-import { CanvasState } from "@/store/modules/canvas/types";
+import {
+  CanvasState,
+  CurrentHoverElementType,
+} from "@/store/modules/canvas/types";
 import { updateDom } from "@/composables/canvas/update_dom";
 
 export const mutations: MutationTree<CanvasState> = {
@@ -10,6 +13,14 @@ export const mutations: MutationTree<CanvasState> = {
   SET_WORKSPACE_COMPONENTS(state: CanvasState, data: any[]) {
     state.workspaceComponents = data;
     return state.workspaceComponents;
+  },
+  SET_CURRENT_HOVER_ELEMENT_ID(state: CanvasState, data: string) {
+    state.currentHoverElementId = data;
+    return state.currentHoverElementId;
+  },
+  SET_CURRENT_HOVER_ELEMENT(state: CanvasState, data: CurrentHoverElementType) {
+    state.currentHoverElement = data;
+    return state.currentHoverElement;
   },
   UPDATE_FOCUSED_JSON_AND_DOM(state: CanvasState, data: object): any {
     state.focusedElement = data;

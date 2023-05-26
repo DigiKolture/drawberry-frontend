@@ -6,7 +6,6 @@ export interface CurrentHoverElementType {
 export interface CanvasState {
   focusedElement: object | null;
   focusedIndex: number | null;
-  currentHoverElementId: string | null;
   currentHoverElement: CurrentHoverElementType;
   sidebarNavContent: string | null;
   sidebarDock: boolean;

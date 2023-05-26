@@ -12,9 +12,6 @@ export const getters: GetterTree<CanvasState, RootState> = {
   focusedIndex(state: CanvasState): number | null {
     return state.focusedIndex;
   },
-  currentHoverElementId(state: CanvasState): string | null {
-    return state.currentHoverElementId;
-  },
   currentHoverElement(state: CanvasState): CurrentHoverElementType {
     return state.currentHoverElement;
   },

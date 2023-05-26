@@ -38,7 +38,7 @@
     padding: 8px 40px 8px 53px;
 }
 
-.layers__component__item__element:hover, .layers__component__item__element.active{
+.layers__component__item__element.active{
     background: #494B57;
 }
 

@@ -7,7 +7,6 @@ import { actions } from "@/store/modules/canvas/actions";
 
 const state: CanvasState = {
   focusedElement: null,
-  currentHoverElementId: null,
   currentHoverElement: {
     id: null,
     componentIndex: null,

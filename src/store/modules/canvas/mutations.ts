@@ -14,10 +14,6 @@ export const mutations: MutationTree<CanvasState> = {
     state.workspaceComponents = data;
     return state.workspaceComponents;
   },
-  SET_CURRENT_HOVER_ELEMENT_ID(state: CanvasState, data: string) {
-    state.currentHoverElementId = data;
-    return state.currentHoverElementId;
-  },
   SET_CURRENT_HOVER_ELEMENT(state: CanvasState, data: CurrentHoverElementType) {
     state.currentHoverElement = data;
     return state.currentHoverElement;

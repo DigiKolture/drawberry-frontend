@@ -1,8 +1,8 @@
 <template>
   <div :class="{ active: isActive }" class="layers__component__item__element">
     <BaseIcon :icon="icon" />
-    <!--    <h5>{{ title }}- {{ element.classes }}</h5>-->
-    <h5>{{ title }}</h5>
+    <h5>{{ title }}- {{ element.classes }}</h5>
+    <!--    <h5>{{ title }}</h5>-->
   </div>
 </template>
 <script lang="ts">
@@ -34,7 +34,8 @@ export default defineComponent({
       return (
         props.element.classes &&
         typeof props.element.classes == "object" &&
-        props.element.classes.includes("hover")
+        (props.element.classes.includes("hover") ||
+          props.element.classes.includes("focus"))
       );
     });
 

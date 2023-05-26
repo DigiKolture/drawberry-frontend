@@ -10,9 +10,6 @@ export function updateDom() {
     const $ = cheerio.load(html);
     const el = $(`#${elementJson.id}`);
     let tagName = el.prop("tagName");
-    if (!tagName) {
-      console.log("failed >>>>>>>>");
-    }
     tagName = tagName.toLowerCase();
     const elementAttributes = el.attr();
     const attributesValues = attributesSettings[tagName];
@@ -49,10 +46,14 @@ export function updateDom() {
       const classAttribute = el.attr("class");
       const classList = classAttribute ? classAttribute.split(" ") : [];
       const newClasses = elementJson.classes;
+
       el.attr("class", elementJson.classes.join(" "));
 
       if (classList.includes("hover") && !newClasses.includes("hover")) {
         classList.splice(classList.indexOf("hover"), 1);
+      }
+      if (classList.includes("focus") && !newClasses.includes("focus")) {
+        classList.splice(classList.indexOf("focus"), 1);
       }
       const mergedClasses = Array.from(new Set(classList.concat(newClasses)));
       el.addClass(mergedClasses.join(" "));

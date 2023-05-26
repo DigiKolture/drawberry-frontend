@@ -10,7 +10,8 @@
     <WorkspaceComponentItemsListItem
       v-for="(componentItem, itemIndex) in workspaceComponents"
       :key="componentItem.id"
-      @mouseover="handleMouseOver(componentItem, itemIndex, $event)"
+      @mouseover.stop="handleMouseOver(componentItem, itemIndex, $event)"
+      @click="handleClick(componentItem, itemIndex, $event)"
       :component-item="componentItem"
       :item-index="itemIndex"
       :project-id="projectId"
@@ -41,6 +42,8 @@ export default defineComponent({
     const { updateElementDom } = updateDom();
     const {
       addHoverClassToElement,
+      addClassToElement,
+      removeClassFromElement,
       getComponentElementIndexUsingId,
       removeHoverClassFromElement,
     } = layers();
@@ -64,6 +67,18 @@ export default defineComponent({
       return store.getters["canvas/currentHoverElement"];
     });
 
+    const focusedElement = computed(() => {
+      return store.getters["canvas/focusedElement"];
+    });
+
+    const focusedIndex = computed(() => {
+      return store.getters["canvas/focusedIndex"];
+    });
+
+    const hasFocused = computed(() => {
+      return focusedElement.value !== null && focusedIndex.value !== null;
+    });
+
     onMounted(async () => {
       //TODO: Look into the glitches that occuress before the page the styles is completely loaded
       await Promise.all([
@@ -79,7 +94,10 @@ export default defineComponent({
       event: any
     ) => {
       const target = event.target;
-      if (!target.classList.contains("editable")) {
+      if (
+        !target.classList.contains("editable") ||
+        target.classList.contains("focus")
+      ) {
         return;
       }
       if (
@@ -136,11 +154,70 @@ export default defineComponent({
       );
     };
 
+    const handleClick = (componentItem: any, itemIndex: any, event: any) => {
+      event.preventDefault();
+      const target = event.target;
+      const elementId = event.target.id;
+      if (!target.classList.contains("editable")) {
+        return;
+      }
+      if (hasFocused.value) {
+        let focusedComponentItem =
+          workspaceComponents.value[focusedIndex.value];
+
+        const jsonIndex = getComponentElementIndexUsingId(
+          focusedComponentItem,
+          focusedElement.value.id
+        );
+
+        if (jsonIndex > -1) {
+          let focusedElement = focusedComponentItem.json[jsonIndex];
+
+          if (
+            focusedElement.classes &&
+            typeof focusedElement.classes == "object" &&
+            focusedElement.classes.includes("focus")
+          ) {
+            focusedElement = removeClassFromElement(
+              focusedComponentItem.json[jsonIndex],
+              "focus"
+            );
+            workspaceComponents.value[focusedIndex.value].html =
+              updateElementDom(focusedComponentItem.html, focusedElement, true);
+          }
+        }
+      }
+
+      const jsonIndex = getComponentElementIndexUsingId(
+        componentItem,
+        elementId
+      );
+
+      if (jsonIndex > -1) {
+        componentItem.json[jsonIndex] = addClassToElement(
+          componentItem.json[jsonIndex],
+          "focus"
+        );
+
+        workspaceComponents.value[itemIndex].html = updateElementDom(
+          componentItem.html,
+          componentItem.json[jsonIndex],
+          true
+        );
+        store.commit(
+          "canvas/SET_FOCUSED_ELEMENT",
+          componentItem.json[jsonIndex]
+        );
+        store.commit("canvas/SET_FOCUSED_INDEX", itemIndex);
+      }
+    };
+
     return {
       workspaceComponents,
       changeComponentItemPosition,
       projectId,
       isMounted,
+      handleClick,
       handleMouseOver,
     };
   },

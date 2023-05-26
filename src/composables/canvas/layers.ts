@@ -59,6 +59,17 @@ export function layers() {
     return element;
   };
 
+  const addClassToElement = (element: any, className = "hover") => {
+    element.classes =
+      element.classes &&
+      element.classes.value &&
+      typeof element.classes.value === "object"
+        ? element.classes.value.push(className)
+        : [className];
+
+    return element;
+  };
+
   const removeHoverClassFromElement = (element: any) => {
     element.classes =
       element.classes &&
@@ -69,11 +80,23 @@ export function layers() {
     return element;
   };
 
+  const removeClassFromElement = (element: any, className = "hover") => {
+    element.classes =
+      element.classes &&
+      typeof element.classes === "object" &&
+      element.classes.includes(className)
+        ? element.classes.filter((classs: string) => classs !== className)
+        : element.classes;
+    return element;
+  };
+
   return {
     getLayerElementTitle,
     getLayerElementIcon,
     getComponentElementIndexUsingId,
     addHoverClassToElement,
+    removeClassFromElement,
+    addClassToElement,
     removeHoverClassFromElement,
   };
 }

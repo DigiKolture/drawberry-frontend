@@ -8,7 +8,6 @@
     @drop="changeComponentItemPosition($event, itemIndex, projectId)"
     @dragover.prevent
     @dragenter.prevent
-    @click="handleClick"
     v-if="isMounted"
   ></div>
 </template>
@@ -46,23 +45,6 @@ export default defineComponent({
       drag_and_drop();
 
     const { updateElementDom } = updateDom();
-    const {
-      addHoverClassToElement,
-      getComponentElementIndexUsingId,
-      removeHoverClassFromElement,
-    } = layers();
-
-    const currentHoverElementId = computed(() => {
-      return store.getters["canvas/currentHoverElementId"];
-    });
-
-    const currentHoverElement = computed(() => {
-      return store.getters["canvas/currentHoverElement"];
-    });
-
-    const workspaceComponents = computed(() => {
-      return store.getters["canvas/workspaceComponents"];
-    });
 
     onMounted(() => {
       // store.commit("canvas/SET_WORKSPACE_COMPONENTS", []);
@@ -76,15 +58,10 @@ export default defineComponent({
       () => props.isMounted,
       (value) => {
         if (value) {
-          console.log("Loading this >>>>>>>");
           loadStylesForComponent(props);
         }
       }
     );
-
-    const getComponentItemElementObject = (id: string) => {
-      return props.componentItem.json.find((element: any) => element.id === id);
-    };
 
     // watch(
     //   workspaceComponents,
@@ -116,35 +93,10 @@ export default defineComponent({
       props.componentItem.html = html;
     };
 
-    const handleClick = (event: any) => {
-      event.preventDefault();
-      const target = event.target;
-      if (target.classList.contains("editable")) {
-        const elementJson = getComponentItemElementObject(event.target.id);
-        if (elementJson) {
-          removeAllFocus();
-          target.classList.add("focus");
-
-          store.commit(
-            "canvas/SET_FOCUSED_ELEMENT",
-            JSON.parse(JSON.stringify(elementJson))
-          );
-          store.commit("canvas/SET_FOCUSED_INDEX", props.itemIndex);
-        }
-      }
-    };
-    const removeAllFocus = () => {
-      const elements = document.querySelectorAll(".focus");
-      for (let i = 0; i < elements.length; i++) {
-        elements[i].classList.remove("focus");
-      }
-    };
-
     return {
       classes,
       moveComponentItemPosition,
       changeComponentItemPosition,
-      handleClick,
     };
   },
 });

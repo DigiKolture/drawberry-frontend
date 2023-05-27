@@ -43,9 +43,7 @@ export default defineComponent({
 
   setup(props) {
     const {
-      addHoverClassToElement,
       getComponentElementIndexUsingId,
-      removeHoverClassFromElement,
       addClassToElement,
       removeClassFromElement,
     } = layers();
@@ -101,7 +99,7 @@ export default defineComponent({
             typeof currElement.classes == "object" &&
             currElement.classes.includes("hover")
           ) {
-            currElement = removeHoverClassFromElement(
+            currElement = removeClassFromElement(
               currentComponentItem.json[jsonIndex]
             );
 
@@ -128,7 +126,7 @@ export default defineComponent({
         componentItem,
         elementId
       );
-      componentItem.json[jsonIndex] = addHoverClassToElement(
+      componentItem.json[jsonIndex] = addClassToElement(
         componentItem.json[jsonIndex]
       );
       workspaceComponents.value[itemIndex].html = updateElementDom(

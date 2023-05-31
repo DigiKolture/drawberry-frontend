@@ -11,7 +11,7 @@
       <LayersContainerElementItem
         v-for="element in componentItem.json"
         :key="element.id"
-        @mouseover.stop="handleMouseOver(element, $event)"
+        @mouseover.stop="handleMouseOver(element)"
         @click="handleClick(element)"
         :element="element"
         :componentItem="componentItem"
@@ -70,7 +70,7 @@ export default defineComponent({
       return focusedElement.value !== null && focusedIndex.value !== null;
     });
 
-    const handleMouseOver = async (element: any, event: any) => {
+    const handleMouseOver = async (element: any) => {
       if (
         element.classes &&
         typeof element.classes === "object" &&

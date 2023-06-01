@@ -24,7 +24,7 @@
         <ComponentItemsContainer />
       </div>
       <div v-if="showContent('style')" class="sidebar__nav__content__item">
-        <h1>Style</h1>
+        <StylesContainer />
       </div>
       <div v-if="showContent('layers')" class="sidebar__nav__content__item">
         <LayersContainer />
@@ -39,18 +39,18 @@ import store from "@/store";
 import ComponentsContainer from "@/components/canvas/sidebar/components/ComponentsContainer.vue";
 import ComponentItemsContainer from "@/components/canvas/sidebar/component-items/ComponentItemsContainer.vue";
 import LayersContainer from "@/components/canvas/sidebar/layers/LayersContainer.vue";
+import StylesContainer from "@/components/canvas/sidebar/styles/StylesContainer.vue";
 
 export default defineComponent({
   name: "CanvasSidebarNavContent",
   components: {
+    StylesContainer,
     LayersContainer,
     ComponentItemsContainer,
     ComponentsContainer,
     BaseButtonIcon,
   },
   setup() {
-    const content = ref("");
-
     const sidebarNavContent = computed(() => {
       return store.getters["canvas/sidebarNavContent"];
     });

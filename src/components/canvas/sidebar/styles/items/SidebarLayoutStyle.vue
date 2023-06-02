@@ -24,7 +24,6 @@
 import { computed, defineComponent } from "vue";
 import PanelStyle from "@/components/canvas/panel/styles/PanelStyle.vue";
 import store from "@/store";
-import { updateDom } from "@/composables/canvas/update_dom";
 
 export default defineComponent({
   name: "SidebarLayoutStyle",
@@ -51,10 +50,6 @@ export default defineComponent({
       return store.getters["projects/project"];
     });
 
-    const workspaceComponents = computed(() => {
-      return store.getters["canvas/workspaceComponents"];
-    });
-
     const isActive = (lay: string) => {
       return layout.value === lay;
     };
@@ -67,7 +62,6 @@ export default defineComponent({
         "box-shadow": boxShadow[lay],
         "background-color": bgColor.value,
       };
-      // await store.commit("canvas/UPDATE_PROJECT_STYLE", style);
       await store.dispatch("canvas/updateProjectStyle", {
         projectId: project.value.id,
         style,

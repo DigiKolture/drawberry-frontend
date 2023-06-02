@@ -1,7 +1,11 @@
 <template>
   <PanelStyle title="Preview text">
     <div class="preview__text__style">
-      <textarea class="canvas__textarea"> </textarea>
+      <textarea
+        class="canvas__textarea"
+        placeholder="Add email preview text..."
+      >
+      </textarea>
       <p>This text will be shown by some email clients as preview text</p>
     </div>
   </PanelStyle>

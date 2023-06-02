@@ -34,6 +34,9 @@
     width: 600px;
     /* background-color: red; */
     height: 100vh;
+}
+
+.workspace__component__items__container.cards{
     row-gap: 20px;
 }
 

@@ -1,6 +1,7 @@
 <template>
   <div
     class="workspace__component__items__container"
+    :class="layout"
     @drop.self="changeComponentItemPosition($event, 0, projectId)"
     @dragover.prevent
     @dragenter.prevent
@@ -55,6 +56,10 @@ export default defineComponent({
         id: null,
         componentIndex: null,
       });
+    });
+
+    const layout = computed(() => {
+      return store.getters["style/layout"];
     });
 
     const workspaceComponents = computed(() => {
@@ -216,6 +221,7 @@ export default defineComponent({
       projectId,
       isMounted,
       handleClick,
+      layout,
       handleMouseOver,
     };
   },

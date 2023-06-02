@@ -4,6 +4,7 @@ import {
   CurrentHoverElementType,
 } from "@/store/modules/canvas/types";
 import { updateDom } from "@/composables/canvas/update_dom";
+const { updateElementDom } = updateDom();
 
 export const mutations: MutationTree<CanvasState> = {
   SET_FOCUSED_ELEMENT(state: CanvasState, data: object) {
@@ -34,11 +35,25 @@ export const mutations: MutationTree<CanvasState> = {
     projectComponentItem.json[jsonIndex] = state.focusedElement;
 
     const html = projectComponentItem.html;
-    const { updateElementDom } = updateDom();
 
     projectComponentItem.html = updateElementDom(html, elementJson);
     state.workspaceComponents = workspaceComponents;
     return state.focusedElement;
+  },
+  UPDATE_PROJECT_STYLE(state: CanvasState, style: object): any {
+    for (const workspaceComponent of state.workspaceComponents) {
+      const element = workspaceComponent.json[0];
+      element.attributes.style.value = {
+        ...element.attributes.style.value,
+        ...style,
+      };
+
+      workspaceComponent.html = updateElementDom(
+        workspaceComponent.html,
+        element
+      );
+    }
+    return state.workspaceComponents;
   },
   SET_FOCUSED_INDEX(state: CanvasState, data: number) {
     state.focusedIndex = data;

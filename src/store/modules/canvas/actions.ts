@@ -83,4 +83,19 @@ export const actions: ActionTree<CanvasState, RootState> = {
       },
     });
   },
+  updateProjectStyle({ commit }, { projectId, style }): Promise<void> {
+    commit("UPDATE_PROJECT_STYLE", style);
+    return AxiosClient.put(`/projects/${projectId}/style`, {
+      style,
+    })
+      .then((res: any) => {
+        return res.data;
+      })
+      .catch((err: any): any => {
+        if (err instanceof Error) {
+          const message = err.message;
+          return Promise.reject(new Error(message));
+        }
+      });
+  },
 };

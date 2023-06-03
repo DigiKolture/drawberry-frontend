@@ -1,5 +1,5 @@
 <template>
-  <div class="canvas__panel__tabs">
+  <div v-if="focusedElement" class="canvas__panel__tabs">
     <PanelTab title="Background">
       <div class="canvas__panel__styles">
         <FontStyle />
@@ -94,6 +94,7 @@ export default defineComponent({
       styles,
       showStyle,
       hasContent,
+      focusedElement,
       hasAttributes,
     };
   },

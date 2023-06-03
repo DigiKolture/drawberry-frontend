@@ -7,7 +7,7 @@ import { actions } from "@/store/modules/style/actions";
 
 const state: StyleState = {
   layout: "cards",
-  bgColor: "#1E1F26",
+  bgColor: "#FFFFFF",
 };
 
 export const data: Module<StyleState, RootState> = {

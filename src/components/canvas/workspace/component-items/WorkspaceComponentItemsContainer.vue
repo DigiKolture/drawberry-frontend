@@ -56,6 +56,8 @@ export default defineComponent({
         id: null,
         componentIndex: null,
       });
+      store.commit("canvas/SET_FOCUSED_ELEMENT", null);
+      store.commit("canvas/SET_FOCUSED_INDEX", null);
     });
 
     const layout = computed(() => {

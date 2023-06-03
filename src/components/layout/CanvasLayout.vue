@@ -7,7 +7,11 @@
             <slot name="sidebar" />
           </div>
         </aside>
-        <section class="canvas__workspace" id="canvas-workspace">
+        <section
+          class="canvas__workspace"
+          :style="styles"
+          id="canvas-workspace"
+        >
           <div class="canvas__workspace__container">
             <slot name="workspace" />
           </div>
@@ -39,12 +43,22 @@ export default defineComponent({
       ui.mainIndex();
     });
 
+    const styles = computed(() => {
+      return {
+        backgroundColor: bgColor.value,
+      };
+    });
+
     const sidebarNavContent = computed(() => {
       return store.getters["canvas/sidebarNavContent"];
     });
 
     const sidebarDock = computed(() => {
       return store.getters["canvas/sidebarDock"];
+    });
+
+    const bgColor = computed(() => {
+      return store.getters["style/bgColor"];
     });
 
     const docked = computed(() => {
@@ -54,6 +68,8 @@ export default defineComponent({
     return {
       sidebarDock,
       docked,
+      bgColor,
+      styles,
     };
   },
 });

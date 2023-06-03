@@ -36,12 +36,6 @@ export default defineComponent({
 
     watch(color, (newVal: any) => {
       store.commit("style/SET_BG_COLOR", newVal.hex8);
-      store.dispatch("canvas/updateProjectStyle", {
-        projectId: project.value.id,
-        style: {
-          [name]: newVal.hex8,
-        },
-      });
     });
 
     const updateColor = (newVal: any) => {

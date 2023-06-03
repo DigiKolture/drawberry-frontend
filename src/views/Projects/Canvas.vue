@@ -8,7 +8,7 @@
       <WorkspaceComponentItemsContainer />
     </template>
     <template v-slot:panel>
-      <PanelTabs />
+      <CanvasPanel />
     </template>
   </CanvasLayout>
 </template>
@@ -16,22 +16,18 @@
 import { computed, defineComponent, onMounted, ref } from "vue";
 import store from "@/store";
 import CanvasLayout from "@/components/layout/CanvasLayout";
-// import ComponentsContainer from "@/components/canvas/sidebar/components/ComponentsContainer";
-// import ComponentItemsContainer from "@/components/canvas/sidebar/component-items/ComponentItemsContainer";
 import WorkspaceComponentItemsContainer from "@/components/canvas/workspace/component-items/WorkspaceComponentItemsContainer";
-import PanelTabs from "@/components/canvas/panel/tabs/PanelTabs";
 import CanvasSidebarNav from "@/components/canvas/sidebar/CanvasSidebarNav";
 import CanvasSidebarNavContent from "@/components/canvas/sidebar/CanvasSidebarNavContent";
+import CanvasPanel from "@/components/canvas/panel/CanvasPanel";
 
 export default defineComponent({
   name: "CanvasPage",
   components: {
+    CanvasPanel,
     CanvasSidebarNav,
     CanvasSidebarNavContent,
-    PanelTabs,
     WorkspaceComponentItemsContainer,
-    // ComponentItemsContainer,
-    // ComponentsContainer,
     CanvasLayout,
   },
 

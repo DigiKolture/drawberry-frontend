@@ -1,3 +1,26 @@
+.canvas__panel{
+
+}
+
+.canvas__panel__empty{
+    @apply flex flex-col items-center;
+    row-gap: 10px;
+    width: 191px;
+    height: 103px;
+    background: #353843;
+    border-radius: 4px;
+    margin: 24px;
+    padding: 16px;
+}
+
+.canvas__panel__empty{
+    @apply text-white;
+    font-weight: 400;
+    font-size: 10px;
+    line-height: 13px;
+    text-align: center;
+    letter-spacing: 0.04em;
+}
 .canvas__panel__tabs{
     @apply flex flex-col;
 }
@@ -22,10 +45,12 @@
 
 .panel__tab__body{
     padding: 24px;
-
+    @apply flex flex-col;
+    row-gap: 24px;
 }
 
-.canvas__panel__styles{
+.canvas__panel__singleton__styles{
+    padding: 24px;
     @apply flex flex-col;
     row-gap: 24px;
 }

@@ -1,32 +1,27 @@
 <template>
-  <div v-if="focusedElement" class="canvas__panel__tabs">
-    <PanelTab title="Background">
-      <div class="canvas__panel__styles">
-        <FontStyle />
-        <div class="canvas__panel__styles__row">
-          <FontSizeStyle v-if="showStyle('font-size')" />
-          <FontWeightStyle v-if="showStyle('font-weight')" />
-          <LineHeightStyle v-if="showStyle('line-height')" />
-          <LetterSpacingStyle v-if="showStyle('letter-spacing')" />
-        </div>
-        <PaddingStyle v-if="showStyle('padding')" />
-        <ShadowStyle v-if="showStyle('box-shadow')" />
+  <div class="canvas__panel__singleton__styles" v-if="focusedElement">
+    <FontStyle />
+    <div class="canvas__panel__styles__row">
+      <FontSizeStyle v-if="showStyle('font-size')" />
+      <FontWeightStyle v-if="showStyle('font-weight')" />
+      <LineHeightStyle v-if="showStyle('line-height')" />
+      <LetterSpacingStyle v-if="showStyle('letter-spacing')" />
+    </div>
+    <PaddingStyle v-if="showStyle('padding')" />
+    <ShadowStyle v-if="showStyle('box-shadow')" />
 
-        <TextColorStyle v-if="showStyle('color')" />
-        <BackgroundColorStyle v-if="showStyle('background-color')" />
-        <TextAlignStyle v-if="showStyle('text-align')" />
-        <HorizontalAlignStyle v-if="hasAttributes('align')" />
-        <VerticalAlignStyle v-if="hasAttributes('valign')" />
-        <ContentStyle v-if="hasContent()" />
-        <HrefAttribute v-if="hasAttributes('href')" />
-        <BorderRadiusStyle v-if="showStyle('border-radius')" />
-      </div>
-    </PanelTab>
+    <TextColorStyle v-if="showStyle('color')" />
+    <BackgroundColorStyle v-if="showStyle('background-color')" />
+    <TextAlignStyle v-if="showStyle('text-align')" />
+    <HorizontalAlignStyle v-if="hasAttributes('align')" />
+    <VerticalAlignStyle v-if="hasAttributes('valign')" />
+    <ContentStyle v-if="hasContent()" />
+    <HrefAttribute v-if="hasAttributes('href')" />
+    <BorderRadiusStyle v-if="showStyle('border-radius')" />
   </div>
 </template>
 <script lang="ts">
 import { computed, defineComponent } from "vue";
-import PanelTab from "./PanelTab.vue";
 
 import BorderRadiusStyle from "@/components/canvas/panel/styles/BorderRadiusStyle.vue";
 import ShadowStyle from "@/components/canvas/panel/styles/ShadowStyle.vue";
@@ -46,7 +41,7 @@ import VerticalAlignStyle from "@/components/canvas/panel/styles/VerticalAlignSt
 import TextAlignStyle from "@/components/canvas/panel/styles/TextAlignStyle.vue";
 
 export default defineComponent({
-  name: "PanelTabs",
+  name: "CanvasPanelSingletonStyles",
   components: {
     TextAlignStyle,
     VerticalAlignStyle,
@@ -63,7 +58,6 @@ export default defineComponent({
     BackgroundColorStyle,
     ShadowStyle,
     BorderRadiusStyle,
-    PanelTab,
   },
   setup() {
     const focusedElement = computed(() => {

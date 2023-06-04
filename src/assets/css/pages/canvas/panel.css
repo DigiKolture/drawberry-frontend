@@ -30,7 +30,7 @@
 }
 
 .panel__tab__head{
-    @apply flex justify-between;
+    @apply flex justify-between cursor-pointer;
     padding: 16px;
     background-color: #353843;
     border: 1px solid #1E1F26;

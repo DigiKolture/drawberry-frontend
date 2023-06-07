@@ -5,13 +5,17 @@
         <div class="header__logo">
           <BaseIcon icon="logo/white" />
         </div>
-        <div v-if="isCanvas" class="header__home">
+        <router-link to="/projects" v-if="isCanvas" class="header__home">
           <button><BaseIcon icon="arrow/left" /></button>
           <button><BaseIcon icon="header/home" /></button>
-        </div>
+        </router-link>
       </div>
       <div v-if="isCanvas && project" class="header__container__middle">
-        <input v-model="project.name" type="text" />
+        <input
+          v-model="project.name"
+          type="text"
+          @keyup.enter="updateProjectName"
+        />
       </div>
 
       <div v-if="isCanvas" class="header__container__right">
@@ -51,10 +55,20 @@ export default defineComponent({
       return route.name === "Canvas";
     });
 
+    const updateProjectName = () => {
+      store.dispatch("projects/updateProject", {
+        id: project.value.id,
+        data: {
+          name: project.value.name,
+        },
+      });
+    };
+
     return {
       project,
       route,
       isCanvas,
+      updateProjectName,
     };
   },
 });

@@ -33,4 +33,18 @@ export const actions: ActionTree<ProjectState, RootState> = {
         }
       });
   },
+
+  updateProject({ commit }, { data, id }): Promise<void> {
+    return AxiosClient.put(`${baseUrl}/${id}`, data)
+      .then((res: any) => {
+        commit("SET_PROJECT", res.data.data.project);
+        return res.data.data;
+      })
+      .catch((err: any): any => {
+        if (err instanceof Error) {
+          const message = err.message;
+          return Promise.reject(new Error(message));
+        }
+      });
+  },
 };

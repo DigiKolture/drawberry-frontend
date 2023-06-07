@@ -59,3 +59,19 @@ button.button.success{
     padding: 9px 20px;
 }
 
+button.button__text__icon{
+    @apply flex text-white bg-transparent text-white;
+    column-gap: 11px;
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 18px;
+    text-align: center;
+    padding: 11px 13px 11px 16px;
+}
+
+
+button.button__text__icon.success{
+    background: #519E47;
+    border-radius: 4px;
+    padding: 11px 13px 11px 16px;
+}

@@ -1,3 +1,13 @@
+@tailwind components;
+
+@layer components {
+    .header-border{
+        border-width: 0 1px;
+        border-style: solid;
+        border-color: #2D3039;
+    }
+}
+
 header.header{
     position: fixed;
     top: 0;
@@ -9,94 +19,50 @@ header.header{
 }
 
 .header__container{
-    display: grid;
-    grid-template-columns: 124px repeat(3, 1fr) 165px;
-    padding-left: 50px;
-    padding-right: 29px;
-    justify-content: center;
-    align-content: center;
-    height: 100%;
+    @apply flex items-center justify-between h-full;
+    padding-left: 24px;
+    padding-right: 13px;
+}
+
+.header__container__left{
+    @apply flex items-center justify-center h-full;
+    column-gap: 24px;
 }
 
 .header__logo{
     @apply flex items-center justify-start;
 }
 
-
-.projects-add-buttons{
-    @apply flex justify-start items-center;
-    column-gap: 16px;
+.header__home{
+    @apply flex header-border h-full;
+    column-gap: 12px;
+    padding: 17px;
 }
 
-
-.project-title{
-    @apply flex items-center;
-    /* justify-content: center; */
-    column-gap: 24px;
+.header__container__middle{
+    @apply flex items-center justify-center h-full header-border;
+    padding: 12px;
 }
 
-.project-title button{
-    background-color: #454856;
-}
-
-.project-details{
-    @apply flex flex-col justify-center;
-    row-gap: 3px;
-}
-
-.canvas-actions{
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
-    column-gap: 16px;
-
-}
-
-.canvas-actions .preview__action {
-}
-
-.canvas-actions .export__action{
-    /* width: 109px; */
-}
-
-.canvas-actions .library__action{
-    background-color: #454856;
-}
-
-.header__icons{
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
-    column-gap: 10px;
-}
-
-
-.header__dropdown{
-    display: flex;
-    justify-content:center;
-    align-items: center;
-}
-
-.header__dropdown .header__initials{
-
-    cursor: pointer;
-    display: flex;
-    justify-content:center;
-    align-items: center;
+.header__container__middle input{
+    @apply text-white bg-transparent;
+    width: 117px;
+    font-weight: 700;
     font-size: 14px;
-    font-style: normal;
-    font-weight: 500;
     line-height: 18px;
-    letter-spacing: 0em;
-    text-align: center;
-    background-color: #519E47;
-    border-radius: 50%;
-    color: white;
-    width: 34px;
-    height: 32px;
-    text-align: center;
 }
 
-.header__dropdown .dropdown__img{
-    width: 35px;
+.header__container__right{
+    @apply flex items-center justify-center h-full;
+    column-gap: 14px;
+}
+
+.header__redo{
+    @apply flex items-center header-border h-full;
+    column-gap: 8px;
+    padding: 8px;
+}
+
+.header__redo button{
+    padding: 11px;
 }

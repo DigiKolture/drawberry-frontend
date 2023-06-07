@@ -1,7 +1,7 @@
 <template>
   <section class="panel__tab">
-    <div class="panel__tab__head">
-      <h5>{{ title }}</h5>
+    <div @click="setActiveTab" class="panel__tab__head">
+      <h5>{{ properties.title }}</h5>
       <BaseIcon :icon="`canvas/panel/tab/${showBody ? 'open' : 'close'}`" />
     </div>
     <div v-if="showBody" class="panel__tab__body">
@@ -17,8 +17,8 @@ export default defineComponent({
   name: "PanelTab",
   components: { BaseIcon },
   props: {
-    title: {
-      type: String,
+    properties: {
+      type: Object,
       required: true,
     },
     showBody: {
@@ -26,6 +26,15 @@ export default defineComponent({
       required: false,
       default: false,
     },
+  },
+  setup(props, { emit }) {
+    const setActiveTab = () => {
+      emit("update", props.properties.index);
+    };
+
+    return {
+      setActiveTab,
+    };
   },
 });
 </script>

@@ -3,8 +3,8 @@
     <div class="canvas__panel__tabs">
       <PanelTab
         v-if="showTab(tabsStyles.layout)"
-        @click="setActiveTab(tabsStyles.layout.index)"
-        title="Layout"
+        @update="setActiveTab"
+        :properties="tabsStyles.layout"
         :show-body="activeTab === tabsStyles.layout.index"
       >
         <HorizontalAlignStyle v-if="hasAttributes('align')" />
@@ -12,8 +12,8 @@
       </PanelTab>
       <PanelTab
         v-if="showTab(tabsStyles.spacing)"
-        @click="setActiveTab(tabsStyles.spacing.index)"
-        title="Spacing"
+        @update="setActiveTab"
+        :properties="tabsStyles.spacing"
         :show-body="activeTab === tabsStyles.spacing.index"
       >
         <PaddingStyle v-if="showStyle('padding')" />
@@ -21,8 +21,8 @@
 
       <PanelTab
         v-if="showTab(tabsStyles.typography)"
-        @click="setActiveTab(tabsStyles.typography.index)"
-        title="Typography"
+        @update="setActiveTab"
+        :properties="tabsStyles.typography"
         :show-body="activeTab === tabsStyles.typography.index"
       >
         <FontStyle />
@@ -38,32 +38,32 @@
       </PanelTab>
       <PanelTab
         v-if="showTab(tabsStyles.background)"
-        @click="setActiveTab(tabsStyles.background.index)"
-        title="Background"
+        @update="setActiveTab"
+        :properties="tabsStyles.background"
         :show-body="activeTab === tabsStyles.background.index"
       >
         <BackgroundColorStyle v-if="showStyle('background-color')" />
       </PanelTab>
       <PanelTab
         v-if="showTab(tabsStyles.borders)"
-        @click="setActiveTab(tabsStyles.effects.borders)"
-        title="Borders"
+        @update="setActiveTab"
+        :properties="tabsStyles.borders"
         :show-body="activeTab === tabsStyles.borders.index"
       >
         <BorderRadiusStyle v-if="showStyle('border-radius')" />
       </PanelTab>
       <PanelTab
         v-if="showTab(tabsStyles.effects)"
-        @click="setActiveTab(tabsStyles.effects.index)"
-        title="Effects"
+        @update="setActiveTab"
+        :properties="tabsStyles.effects"
         :show-body="activeTab === tabsStyles.effects.index"
       >
         <ShadowStyle v-if="showStyle('box-shadow')" />
       </PanelTab>
       <PanelTab
         v-if="showTab(tabsStyles.link)"
-        @click="setActiveTab(tabsStyles.link.index)"
-        title="Link"
+        @update="setActiveTab"
+        :properties="tabsStyles.link"
         :show-body="activeTab === tabsStyles.link.index"
       >
         <HrefAttribute v-if="hasAttributes('href')" />
@@ -132,16 +132,19 @@ export default defineComponent({
 
     const tabsStyles = {
       layout: {
+        title: "Layout",
         index: 0,
         styles: [],
         attributes: ["align", "valign"],
       },
       spacing: {
+        title: "Spacing",
         index: 1,
         styles: ["padding"],
         attributes: [],
       },
       typography: {
+        title: "Typography",
         index: 2,
         styles: [
           "color",
@@ -155,21 +158,25 @@ export default defineComponent({
         isContent: true,
       },
       background: {
+        title: "Background",
         index: 3,
         styles: ["background-color"],
         attributes: [],
       },
       borders: {
+        title: "Borders",
         index: 4,
         styles: ["border-radius"],
         attributes: [],
       },
       effects: {
+        title: "Effects",
         index: 5,
         styles: ["box-shadow"],
         attributes: [],
       },
       link: {
+        title: "Link",
         index: 6,
         styles: [],
         attributes: ["href"],

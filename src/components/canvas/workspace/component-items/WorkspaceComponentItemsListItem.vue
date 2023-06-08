@@ -1,26 +1,40 @@
 <template>
-  <!--  {{ classes }}-->
-  <div
-    class="workspace__component__items__list__item"
-    v-html="componentItem.html"
-    :draggable="true"
-    @dragstart.self="moveComponentItemPosition($event, itemIndex)"
-    @drop="changeComponentItemPosition($event, itemIndex, projectId)"
-    @dragover.prevent
-    @dragenter.prevent
-    v-if="isMounted"
-  ></div>
+  <div class="workspace__component__items__list">
+    <div
+      class="workspace__component__items__list__item"
+      v-html="componentItem.html"
+      :draggable="true"
+      @dragstart.self="moveComponentItemPosition($event, itemIndex)"
+      @drop="changeComponentItemPosition($event, itemIndex, projectId)"
+      @click="clickEvent($event)"
+      @mouseover.stop="hoverEvent($event)"
+      @dragover.prevent
+      @dragenter.prevent
+      v-if="isMounted"
+    ></div>
+    <div v-if="showActions" class="workspace__component__actions">
+      <div class="workspace__component__actions__top">
+        <BaseButtonIcon class="copy" icon="canvas/workspace/copy" />
+        <BaseButtonIcon icon="canvas/workspace/duplicate" />
+        <BaseButtonIcon icon="canvas/workspace/delete" />
+      </div>
+      <div class="workspace__component__actions__bottom">
+        <BaseButtonIcon icon="arrow/up" />
+        <BaseButtonIcon icon="arrow/down" />
+      </div>
+    </div>
+  </div>
 </template>
 <script lang="ts">
-import { computed, defineComponent, onMounted, ref, watch } from "vue";
+import { computed, defineComponent, onMounted, watch } from "vue";
 import { drag_and_drop } from "@/composables/canvas/drag_and_drop";
-import store from "@/store";
 import { updateDom } from "@/composables/canvas/update_dom";
-import { layers } from "@/composables/canvas/layers";
+import BaseButtonIcon from "@/components/icon/BaseButtonIcon.vue";
+import store from "@/store";
 
 export default defineComponent({
   name: "WorkspaceComponentItemsListItem",
-
+  components: { BaseButtonIcon },
   props: {
     projectId: {
       type: String,
@@ -40,7 +54,7 @@ export default defineComponent({
     },
   },
 
-  setup(props) {
+  setup(props, { emit }) {
     const { moveComponentItemPosition, changeComponentItemPosition } =
       drag_and_drop();
 
@@ -63,14 +77,30 @@ export default defineComponent({
       }
     );
 
-    // watch(
-    //   workspaceComponents,
-    //   (newVal) => {
-    //     const el = document.getElementById(focusedElement.value.id);
-    //     el.classList.add("focus");
-    //   },
-    //   { deep: true }
-    // );
+    const focusedElement = computed(() => {
+      return store.getters["canvas/focusedElement"];
+    });
+
+    const workspaceComponents = computed(() => {
+      return store.getters["canvas/workspaceComponents"];
+    });
+
+    const focusedIndex = computed(() => {
+      return store.getters["canvas/focusedIndex"];
+    });
+
+    const showActions = computed(() => {
+      if (focusedIndex.value == null || focusedIndex.value != props.itemIndex)
+        return false;
+
+      const firstWorkspaceComponentElement =
+        workspaceComponents.value[focusedIndex.value].json[0];
+
+      return (
+        focusedElement.value &&
+        firstWorkspaceComponentElement.id == focusedElement.value.id
+      );
+    });
 
     const loadStylesForComponent = (props: any) => {
       let html = props.componentItem.html;
@@ -78,23 +108,25 @@ export default defineComponent({
 
       for (let elementJson of json) {
         if (!elementJson.attributes.style.value) continue;
-
         html = updateElementDom(html, elementJson);
-
-        //   if (elementJson.id === "header9_headerLink3") {
-        //     console.log({
-        //       elementJson: JSON.parse(JSON.stringify(elementJson)),
-        //       attributes: JSON.parse(JSON.stringify(elementJson.attributes)),
-        //     });
-        //     console.log(html);
-        //   }
       }
       //eslint-disable-next-line vue/no-mutating-props
       props.componentItem.html = html;
     };
 
+    const clickEvent = (event: any) => {
+      emit("clicked", props.componentItem, props.itemIndex, event);
+    };
+
+    const hoverEvent = (event: any) => {
+      emit("hover", props.componentItem, props.itemIndex, event);
+    };
+
     return {
       classes,
+      showActions,
+      clickEvent,
+      hoverEvent,
       moveComponentItemPosition,
       changeComponentItemPosition,
     };

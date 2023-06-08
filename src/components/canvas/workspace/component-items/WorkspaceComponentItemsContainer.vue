@@ -7,12 +7,11 @@
     @dragenter.prevent
   >
     <CanvasWorkspaceEmpty v-if="workspaceComponents.length === 0" />
-
     <WorkspaceComponentItemsListItem
       v-for="(componentItem, itemIndex) in workspaceComponents"
       :key="componentItem.id"
-      @mouseover.stop="handleMouseOver(componentItem, itemIndex, $event)"
-      @click="handleClick(componentItem, itemIndex, $event)"
+      @clicked="handleClick"
+      @hover="handleMouseOver"
       :component-item="componentItem"
       :item-index="itemIndex"
       :project-id="projectId"

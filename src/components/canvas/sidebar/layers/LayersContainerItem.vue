@@ -1,15 +1,21 @@
 <template>
   <div class="layers__component__item">
-    <div class="layers__component__item__header">
+    <LayersContainerElementItem
+      @mouseover.stop="handleMouseOver(componentItem.json[0])"
+      @click="handleClick(componentItem.json[0])"
+      :element="componentItem.json[0]"
+      :componentItem="componentItem"
+      :header="true"
+    >
       <BaseIcon icon="canvas/sidebar/layers/dots" />
       <BaseIcon icon="canvas/sidebar/layers/open" />
       <BaseIcon icon="canvas/sidebar/layers/component" />
       <h5 class="layers__component__item__title">Component</h5>
-    </div>
+    </LayersContainerElementItem>
 
     <div class="layers__component__item__elements">
       <LayersContainerElementItem
-        v-for="element in componentItem.json"
+        v-for="element in componentItem.json.slice(1)"
         :key="element.id"
         @mouseover.stop="handleMouseOver(element)"
         @click="handleClick(element)"

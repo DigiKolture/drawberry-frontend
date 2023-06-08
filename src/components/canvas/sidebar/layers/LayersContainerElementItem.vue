@@ -1,8 +1,20 @@
 <template>
-  <div :class="{ active: isActive }" class="layers__component__item__element">
-    <BaseIcon :icon="icon" />
-    <!--    <h5>{{ title }}- {{ element.classes }}</h5>-->
-    <h5>{{ title }}</h5>
+  <div>
+    <div
+      v-if="!header"
+      :class="{ active: isActive }"
+      class="layers__component__item__element"
+    >
+      <BaseIcon :icon="icon" />
+      <h5>{{ title }}</h5>
+    </div>
+    <div
+      v-else
+      :class="{ active: isActive }"
+      class="layers__component__item__header"
+    >
+      <slot />
+    </div>
   </div>
 </template>
 <script lang="ts">
@@ -21,6 +33,11 @@ export default defineComponent({
     componentItem: {
       type: Object,
       required: true,
+    },
+    header: {
+      type: Boolean,
+      required: false,
+      default: false,
     },
   },
 

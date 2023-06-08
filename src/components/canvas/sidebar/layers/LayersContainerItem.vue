@@ -2,18 +2,22 @@
   <div class="layers__component__item">
     <LayersContainerElementItem
       @mouseover.stop="handleMouseOver(componentItem.json[0])"
-      @click="handleClick(componentItem.json[0])"
+      @click="handleClick(componentItem.json[0], true)"
       :element="componentItem.json[0]"
       :componentItem="componentItem"
       :header="true"
     >
-      <BaseIcon icon="canvas/sidebar/layers/dots" />
-      <BaseIcon icon="canvas/sidebar/layers/open" />
+      <button class="layers__component__item__header__move">
+        <BaseIcon icon="canvas/sidebar/layers/dots" />
+      </button>
+      <button class="layers__component__item__header__switch">
+        <BaseIcon icon="canvas/sidebar/layers/open" />
+      </button>
       <BaseIcon icon="canvas/sidebar/layers/component" />
       <h5 class="layers__component__item__title">Component</h5>
     </LayersContainerElementItem>
 
-    <div class="layers__component__item__elements">
+    <div v-if="showElements" class="layers__component__item__elements">
       <LayersContainerElementItem
         v-for="element in componentItem.json.slice(1)"
         :key="element.id"
@@ -26,7 +30,7 @@
   </div>
 </template>
 <script lang="ts">
-import { computed, defineComponent } from "vue";
+import { computed, defineComponent, ref, watch } from "vue";
 import BaseIcon from "@/components/icon/BaseIcon.vue";
 import LayersContainerElementItem from "@/components/canvas/sidebar/layers/LayersContainerElementItem.vue";
 import { layers } from "@/composables/canvas/layers";
@@ -56,6 +60,12 @@ export default defineComponent({
 
     const { updateElementDom } = updateDom();
 
+    const showElements = ref(true);
+
+    const toggleShowElements = () => {
+      return (showElements.value = !showElements.value);
+    };
+
     const workspaceComponents = computed(() => {
       return store.getters["canvas/workspaceComponents"];
     });
@@ -74,6 +84,12 @@ export default defineComponent({
 
     const hasFocused = computed(() => {
       return focusedElement.value !== null && focusedIndex.value !== null;
+    });
+
+    watch(currentHoverElement, (val) => {
+      if (val && val.componentIndex == props.itemIndex) {
+        showElements.value = true;
+      }
     });
 
     const handleMouseOver = async (element: any) => {
@@ -142,7 +158,8 @@ export default defineComponent({
       );
     };
 
-    const handleClick = (element: any) => {
+    const handleClick = (element: any, header = false) => {
+      if (header) toggleShowElements();
       if (hasFocused.value) {
         let focusedComponentItem =
           workspaceComponents.value[focusedIndex.value];
@@ -192,7 +209,7 @@ export default defineComponent({
       store.commit("canvas/SET_FOCUSED_INDEX", itemIndex);
     };
 
-    return { handleMouseOver, handleClick };
+    return { handleMouseOver, handleClick, showElements };
   },
 });
 </script>

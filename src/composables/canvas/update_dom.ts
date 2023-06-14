@@ -10,6 +10,8 @@ export function updateDom() {
     const $ = cheerio.load(html);
     const el = $(`#${elementJson.id}`);
     let tagName = el.prop("tagName");
+
+    console.log({ tagName });
     tagName = tagName.toLowerCase();
     const elementAttributes = el.attr();
     const attributesValues = attributesSettings[tagName];
@@ -60,7 +62,12 @@ export function updateDom() {
     }
 
     //UPDATE Content
-    if (elementJson.innerHtml !== null && elementJson.innerHtml !== "") {
+    // TODO: Update Condition
+    if (
+      elementJson.innerHtml !== null &&
+      elementJson.innerHtml !== "" &&
+      elementJson.innerHtml.trim()
+    ) {
       el.text(elementJson.innerHtml);
     }
 

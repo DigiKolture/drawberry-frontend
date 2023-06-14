@@ -4,7 +4,9 @@ export function layers() {
   const { sliceString } = helpers();
   const getLayerElementTitle = (element: any): string => {
     const id = element.id.toLowerCase();
-    const text = element.innerHtml;
+    const text = element.innerHtml
+      ? element.innerHtml.trim()
+      : element.innerHtml;
 
     if (text) {
       return sliceString(text, 16);

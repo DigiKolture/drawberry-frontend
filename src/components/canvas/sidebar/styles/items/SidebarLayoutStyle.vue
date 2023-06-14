@@ -60,7 +60,6 @@ export default defineComponent({
       const style = {
         "border-radius": borderRadius[lay],
         "box-shadow": boxShadow[lay],
-        "background-color": bgColor.value,
       };
       await store.dispatch("canvas/updateProjectStyle", {
         projectId: project.value.id,

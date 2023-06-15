@@ -6,6 +6,19 @@ export function updateDom() {
     img: ["src"],
     a: ["href"],
   };
+
+  const updateComponentItemDom = (componentItem: any) => {
+    let html = componentItem.html;
+    const json = componentItem.json;
+
+    for (const elementJson of json) {
+      if (!elementJson.attributes.style.value) continue;
+      html = updateElementDom(html, elementJson);
+    }
+    componentItem.html = html;
+    return componentItem;
+  };
+
   const updateElementDom = (html: string, elementJson: any, here = false) => {
     const $ = cheerio.load(html);
     const el = $(`#${elementJson.id}`);
@@ -74,5 +87,6 @@ export function updateDom() {
 
   return {
     updateElementDom,
+    updateComponentItemDom,
   };
 }

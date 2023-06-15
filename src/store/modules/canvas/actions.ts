@@ -2,8 +2,11 @@ import { ActionTree } from "vuex";
 import { CanvasState } from "@/store/modules/canvas/types";
 import { RootState } from "@/store/types";
 import AxiosClient from "@/services/api";
+import { updateDom } from "@/composables/canvas/update_dom";
 
 // const baseUrl = "/components";
+
+const { updateComponentItemDom } = updateDom();
 
 export const actions: ActionTree<CanvasState, RootState> = {
   getProjectComponentItems({ commit }, projectId: string): Promise<void> {
@@ -49,6 +52,27 @@ export const actions: ActionTree<CanvasState, RootState> = {
         // if (set) {
         //   dispatch("getProjectComponentItems", projectId);
         // }
+        return res.data.data;
+      })
+      .catch((err: any): any => {
+        if (err instanceof Error) {
+          const message = err.message;
+          return Promise.reject(new Error(message));
+        }
+      });
+  },
+  duplicateProjectComponent(
+    { state, commit, dispatch },
+    { projectId, projectComponentItemId, positionIndex, set = true }
+  ): Promise<void> {
+    return AxiosClient.post(
+      `/projects/${projectId}/duplicate/components/${projectComponentItemId}`
+    )
+      .then((res: any) => {
+        const data = res.data;
+        const component = updateComponentItemDom(data.data.component);
+        state.workspaceComponents.splice(positionIndex, 0, component);
+        commit("SET_WORKSPACE_COMPONENTS", state.workspaceComponents);
         return res.data.data;
       })
       .catch((err: any): any => {

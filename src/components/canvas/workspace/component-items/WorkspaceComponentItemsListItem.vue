@@ -14,9 +14,17 @@
     ></div>
     <div v-if="showActions" class="workspace__component__actions">
       <div class="workspace__component__actions__top">
-        <BaseButtonIcon class="copy" icon="canvas/workspace/copy" />
-        <BaseButtonIcon icon="canvas/workspace/duplicate" />
-        <BaseButtonIcon icon="canvas/workspace/delete" />
+        {{ disabledButton }}
+        <!--        <BaseButtonIcon class="copy" icon="canvas/workspace/copy" />-->
+        <BaseButtonIcon
+          :disabled="disabledButton"
+          @click="duplicateComponent"
+          icon="canvas/workspace/duplicate"
+        />
+        <BaseButtonIcon
+          :disabled="disabledButton"
+          icon="canvas/workspace/delete"
+        />
       </div>
       <div class="workspace__component__actions__bottom">
         <BaseButtonIcon
@@ -34,7 +42,7 @@
   </div>
 </template>
 <script lang="ts">
-import { computed, defineComponent, onMounted, watch } from "vue";
+import { computed, defineComponent, onMounted, ref, watch } from "vue";
 import { drag_and_drop } from "@/composables/canvas/drag_and_drop";
 import { updateDom } from "@/composables/canvas/update_dom";
 import BaseButtonIcon from "@/components/icon/BaseButtonIcon.vue";
@@ -70,6 +78,7 @@ export default defineComponent({
     } = drag_and_drop();
 
     const { updateElementDom } = updateDom();
+    const disabledButton = ref(false);
 
     onMounted(() => {
       // store.commit("canvas/SET_WORKSPACE_COMPONENTS", []);
@@ -97,11 +106,14 @@ export default defineComponent({
     });
 
     const disabledTopModifyPosition = computed(() => {
-      return props.itemIndex === 0;
+      return disabledButton.value || props.itemIndex === 0;
     });
 
     const disabledBottomModifyPosition = computed(() => {
-      return props.itemIndex === workspaceComponents.value.length - 1;
+      return (
+        disabledButton.value ||
+        props.itemIndex === workspaceComponents.value.length - 1
+      );
     });
 
     const focusedIndex = computed(() => {
@@ -162,7 +174,21 @@ export default defineComponent({
       store.commit("canvas/SET_FOCUSED_INDEX", updatedIndex);
     };
 
+    const duplicateComponent = async () => {
+      disabledButton.value = true;
+      const projectComponentItem = workspaceComponents.value[props.itemIndex];
+
+      await store.dispatch("canvas/duplicateProjectComponent", {
+        projectId: props.projectId,
+        projectComponentItemId: projectComponentItem.id,
+        positionIndex: props.itemIndex + 1,
+      });
+
+      disabledButton.value = false;
+    };
+
     return {
+      disabledButton,
       classes,
       showActions,
       clickEvent,
@@ -170,6 +196,7 @@ export default defineComponent({
       hoverEvent,
       moveComponentItemPosition,
       upsertComponentItem,
+      duplicateComponent,
       disabledTopModifyPosition,
       disabledBottomModifyPosition,
     };

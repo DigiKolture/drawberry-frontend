@@ -54,6 +54,7 @@
     row-gap: 8px;
     top: 0;
     right: -44px;
+    background-color: #1D1E20;
 }
 
 .workspace__component__actions div{

@@ -62,7 +62,7 @@ export const actions: ActionTree<CanvasState, RootState> = {
       });
   },
   duplicateProjectComponent(
-    { state, commit, dispatch },
+    { state, commit },
     { projectId, projectComponentItemId, positionIndex, set = true }
   ): Promise<void> {
     return AxiosClient.post(
@@ -72,6 +72,25 @@ export const actions: ActionTree<CanvasState, RootState> = {
         const data = res.data;
         const component = updateComponentItemDom(data.data.component);
         state.workspaceComponents.splice(positionIndex, 0, component);
+        commit("SET_WORKSPACE_COMPONENTS", state.workspaceComponents);
+        return res.data.data;
+      })
+      .catch((err: any): any => {
+        if (err instanceof Error) {
+          const message = err.message;
+          return Promise.reject(new Error(message));
+        }
+      });
+  },
+  deleteProjectComponent(
+    { state, commit },
+    { projectId, projectComponentItemId, positionIndex }
+  ): Promise<void> {
+    return AxiosClient.delete(
+      `/projects/${projectId}/components/${projectComponentItemId}`
+    )
+      .then((res: any) => {
+        state.workspaceComponents.splice(positionIndex, 1);
         commit("SET_WORKSPACE_COMPONENTS", state.workspaceComponents);
         return res.data.data;
       })

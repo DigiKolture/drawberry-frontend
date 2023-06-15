@@ -14,15 +14,15 @@
     ></div>
     <div v-if="showActions" class="workspace__component__actions">
       <div class="workspace__component__actions__top">
-        {{ disabledButton }}
         <!--        <BaseButtonIcon class="copy" icon="canvas/workspace/copy" />-->
         <BaseButtonIcon
           :disabled="disabledButton"
-          @click="duplicateComponent"
+          @click="duplicateProjectComponent"
           icon="canvas/workspace/duplicate"
         />
         <BaseButtonIcon
           :disabled="disabledButton"
+          @click="deleteProjectComponent"
           icon="canvas/workspace/delete"
         />
       </div>
@@ -174,7 +174,7 @@ export default defineComponent({
       store.commit("canvas/SET_FOCUSED_INDEX", updatedIndex);
     };
 
-    const duplicateComponent = async () => {
+    const duplicateProjectComponent = async () => {
       disabledButton.value = true;
       const projectComponentItem = workspaceComponents.value[props.itemIndex];
 
@@ -183,6 +183,21 @@ export default defineComponent({
         projectComponentItemId: projectComponentItem.id,
         positionIndex: props.itemIndex + 1,
       });
+
+      disabledButton.value = false;
+    };
+
+    const deleteProjectComponent = async () => {
+      disabledButton.value = true;
+      const projectComponentItem = workspaceComponents.value[props.itemIndex];
+
+      await store.dispatch("canvas/deleteProjectComponent", {
+        projectId: props.projectId,
+        projectComponentItemId: projectComponentItem.id,
+        positionIndex: props.itemIndex,
+      });
+      store.commit("canvas/SET_FOCUSED_ELEMENT", null);
+      store.commit("canvas/SET_FOCUSED_INDEX", null);
 
       disabledButton.value = false;
     };
@@ -196,7 +211,8 @@ export default defineComponent({
       hoverEvent,
       moveComponentItemPosition,
       upsertComponentItem,
-      duplicateComponent,
+      duplicateProjectComponent,
+      deleteProjectComponent,
       disabledTopModifyPosition,
       disabledBottomModifyPosition,
     };

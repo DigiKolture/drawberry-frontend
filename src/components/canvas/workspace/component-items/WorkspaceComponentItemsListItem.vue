@@ -19,8 +19,16 @@
         <BaseButtonIcon icon="canvas/workspace/delete" />
       </div>
       <div class="workspace__component__actions__bottom">
-        <BaseButtonIcon icon="arrow/up" />
-        <BaseButtonIcon icon="arrow/down" />
+        <BaseButtonIcon
+          :disabled="disabledTopModifyPosition"
+          @click="modifyComponentPosition(false)"
+          icon="arrow/up"
+        />
+        <BaseButtonIcon
+          :disabled="disabledBottomModifyPosition"
+          @click="modifyComponentPosition()"
+          icon="arrow/down"
+        />
       </div>
     </div>
   </div>
@@ -45,7 +53,7 @@ export default defineComponent({
       required: true,
     },
     itemIndex: {
-      type: [Number, String],
+      type: Number,
       required: true,
     },
     isMounted: {
@@ -55,7 +63,11 @@ export default defineComponent({
   },
 
   setup(props, { emit }) {
-    const { moveComponentItemPosition, upsertComponentItem } = drag_and_drop();
+    const {
+      moveComponentItemPosition,
+      upsertComponentItem,
+      changeComponentItemPosition,
+    } = drag_and_drop();
 
     const { updateElementDom } = updateDom();
 
@@ -82,6 +94,14 @@ export default defineComponent({
 
     const workspaceComponents = computed(() => {
       return store.getters["canvas/workspaceComponents"];
+    });
+
+    const disabledTopModifyPosition = computed(() => {
+      return props.itemIndex === 0;
+    });
+
+    const disabledBottomModifyPosition = computed(() => {
+      return props.itemIndex === workspaceComponents.value.length - 1;
     });
 
     const focusedIndex = computed(() => {
@@ -121,13 +141,37 @@ export default defineComponent({
       emit("hover", props.componentItem, props.itemIndex, event);
     };
 
+    const modifyComponentPosition = async (increment = true) => {
+      const currentIndex = props.itemIndex;
+      const updatedIndex = increment
+        ? props.itemIndex + 1
+        : props.itemIndex - 1;
+      if (increment) {
+        await changeComponentItemPosition(
+          props.projectId,
+          currentIndex,
+          updatedIndex
+        );
+      } else {
+        await changeComponentItemPosition(
+          props.projectId,
+          currentIndex,
+          updatedIndex
+        );
+      }
+      store.commit("canvas/SET_FOCUSED_INDEX", updatedIndex);
+    };
+
     return {
       classes,
       showActions,
       clickEvent,
+      modifyComponentPosition,
       hoverEvent,
       moveComponentItemPosition,
       upsertComponentItem,
+      disabledTopModifyPosition,
+      disabledBottomModifyPosition,
     };
   },
 });

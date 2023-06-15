@@ -53,6 +53,10 @@ button.button{
     line-height: 18px;
 }
 
+button:disabled{
+    @apply pointer-events-none;
+}
+
 button.button.success{
     background: #519E47;
     border-radius: 4px;

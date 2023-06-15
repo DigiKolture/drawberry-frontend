@@ -70,3 +70,7 @@
 .workspace__component__actions button.copy svg path{
     fill: white;
 }
+
+.workspace__component__actions button:disabled{
+    fill-opacity: 0.5;
+}

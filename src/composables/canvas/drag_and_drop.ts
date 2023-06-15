@@ -61,7 +61,6 @@ export function drag_and_drop() {
       );
 
       if (!fromComponentItemIndex || !projectId) return;
-      console.log({ fromComponentItemIndex, toIndex });
 
       await changeComponentItemPosition(
         projectId,

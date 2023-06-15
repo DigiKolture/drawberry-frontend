@@ -2,7 +2,7 @@
   <div class="layers__component__item">
     <LayersContainerElementItem
       @mouseover.stop="handleMouseOver(componentItem.json[0])"
-      @click="handleClick(componentItem.json[0], true)"
+      @click="handleClick(componentItem.json[0])"
       :element="componentItem.json[0]"
       :componentItem="componentItem"
       :header="true"
@@ -10,7 +10,10 @@
       <button class="layers__component__item__header__move">
         <BaseIcon icon="canvas/sidebar/layers/dots" />
       </button>
-      <button class="layers__component__item__header__switch">
+      <button
+        @click="toggleShowElements"
+        class="layers__component__item__header__switch"
+      >
         <BaseIcon icon="canvas/sidebar/layers/open" />
       </button>
       <BaseIcon icon="canvas/sidebar/layers/component" />
@@ -158,8 +161,7 @@ export default defineComponent({
       );
     };
 
-    const handleClick = (element: any, header = false) => {
-      if (header) toggleShowElements();
+    const handleClick = (element: any) => {
       if (hasFocused.value) {
         let focusedComponentItem =
           workspaceComponents.value[focusedIndex.value];
@@ -209,7 +211,7 @@ export default defineComponent({
       store.commit("canvas/SET_FOCUSED_INDEX", itemIndex);
     };
 
-    return { handleMouseOver, handleClick, showElements };
+    return { handleMouseOver, handleClick, toggleShowElements, showElements };
   },
 });
 </script>

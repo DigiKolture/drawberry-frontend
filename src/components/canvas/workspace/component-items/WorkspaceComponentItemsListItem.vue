@@ -5,7 +5,7 @@
       v-html="componentItem.html"
       :draggable="true"
       @dragstart.self="moveComponentItemPosition($event, itemIndex)"
-      @drop="changeComponentItemPosition($event, itemIndex, projectId)"
+      @drop="upsertComponentItem($event, itemIndex, projectId)"
       @click="clickEvent($event)"
       @mouseover.stop="hoverEvent($event)"
       @dragover.prevent
@@ -55,8 +55,7 @@ export default defineComponent({
   },
 
   setup(props, { emit }) {
-    const { moveComponentItemPosition, changeComponentItemPosition } =
-      drag_and_drop();
+    const { moveComponentItemPosition, upsertComponentItem } = drag_and_drop();
 
     const { updateElementDom } = updateDom();
 
@@ -128,7 +127,7 @@ export default defineComponent({
       clickEvent,
       hoverEvent,
       moveComponentItemPosition,
-      changeComponentItemPosition,
+      upsertComponentItem,
     };
   },
 });

@@ -39,8 +39,6 @@ export function drag_and_drop() {
   };
 
   const moveComponentItemPosition = (e: any, itemIndex: any) => {
-    // console.log("DRAG POSITION OF COMPONENT ITEMS >>>> 2");
-
     e.dataTransfer.effectAllowed = "move";
     e.dataTransfer.dropEffect = "move";
 
@@ -48,7 +46,7 @@ export function drag_and_drop() {
     e.dataTransfer.setData("type", "from-workspace");
   };
 
-  const changeComponentItemPosition = async (
+  const upsertComponentItem = async (
     e: any,
     toIndex: any,
     projectId: string
@@ -65,34 +63,41 @@ export function drag_and_drop() {
       if (!fromComponentItemIndex || !projectId) return;
       console.log({ fromComponentItemIndex, toIndex });
 
-      const projectComponentItem =
-        workspaceComponents.value[parseInt(fromComponentItemIndex)];
-
-      workspaceComponents.value.splice(parseInt(fromComponentItemIndex), 1);
-      workspaceComponents.value.splice(
-        parseInt(toIndex),
-        0,
-        projectComponentItem
-      );
-
-      store.commit(
-        "canvas/SET_WORKSPACE_COMPONENTS",
-        workspaceComponents.value
-      );
-
-      await store.dispatch("canvas/updateProjectComponent", {
+      await changeComponentItemPosition(
         projectId,
-        projectComponentItemId: projectComponentItem.id,
-        data: {
-          positionIndex: parseInt(toIndex),
-        },
-      });
+        parseInt(fromComponentItemIndex),
+        parseInt(toIndex)
+      );
     }
+  };
+
+  const changeComponentItemPosition = async (
+    projectId: string,
+    fromIndex: number,
+    toIndex: number
+  ) => {
+    console.log({ fromIndex, toIndex });
+
+    const projectComponentItem = workspaceComponents.value[fromIndex];
+
+    workspaceComponents.value.splice(fromIndex, 1);
+    workspaceComponents.value.splice(toIndex, 0, projectComponentItem);
+
+    store.commit("canvas/SET_WORKSPACE_COMPONENTS", workspaceComponents.value);
+
+    await store.dispatch("canvas/updateProjectComponent", {
+      projectId,
+      projectComponentItemId: projectComponentItem.id,
+      data: {
+        positionIndex: toIndex,
+      },
+    });
   };
 
   return {
     dragComponentItemToCanvas,
     moveComponentItem,
+    upsertComponentItem,
     moveComponentItemPosition,
     changeComponentItemPosition,
   };

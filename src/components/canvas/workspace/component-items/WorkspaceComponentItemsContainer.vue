@@ -2,7 +2,7 @@
   <div
     class="workspace__component__items__container"
     :class="layout"
-    @drop.self="changeComponentItemPosition($event, 0, projectId)"
+    @drop.self="upsertComponentItem($event, 0, projectId)"
     @dragover.prevent
     @dragenter.prevent
   >
@@ -37,7 +37,7 @@ export default defineComponent({
   },
 
   setup() {
-    const { changeComponentItemPosition } = drag_and_drop();
+    const { upsertComponentItem } = drag_and_drop();
 
     const { updateElementDom } = updateDom();
     const {
@@ -218,7 +218,7 @@ export default defineComponent({
 
     return {
       workspaceComponents,
-      changeComponentItemPosition,
+      upsertComponentItem,
       projectId,
       isMounted,
       handleClick,

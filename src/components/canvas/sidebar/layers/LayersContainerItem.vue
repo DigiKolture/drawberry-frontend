@@ -6,10 +6,17 @@
       :element="componentItem.json[0]"
       :componentItem="componentItem"
       :header="true"
+      :draggable="true"
+      @dragstart.self="dragComponentItemLayer($event)"
+      @drop="dropComponentItemLayer($event)"
+      @dragover.prevent
+      @dragenter.prevent
     >
-      <button class="layers__component__item__header__move">
-        <BaseIcon icon="canvas/sidebar/layers/dots" />
-      </button>
+      <div class="layers__component__item__header__move">
+        <button>
+          <BaseIcon icon="canvas/sidebar/layers/dots" />
+        </button>
+      </div>
       <button
         @click="toggleShowElements"
         class="layers__component__item__header__switch"
@@ -39,6 +46,7 @@ import LayersContainerElementItem from "@/components/canvas/sidebar/layers/Layer
 import { layers } from "@/composables/canvas/layers";
 import { updateDom } from "@/composables/canvas/update_dom";
 import store from "@/store";
+import { drag_and_drop } from "@/composables/canvas/drag_and_drop";
 
 export default defineComponent({
   name: "LayersContainerItem",
@@ -49,7 +57,7 @@ export default defineComponent({
       required: true,
     },
     itemIndex: {
-      type: [Number, String],
+      type: Number,
       required: true,
     },
   },
@@ -61,6 +69,8 @@ export default defineComponent({
       removeClassFromElement,
     } = layers();
 
+    const { changeComponentItemPosition } = drag_and_drop();
+
     const { updateElementDom } = updateDom();
 
     const showElements = ref(true);
@@ -71,6 +81,10 @@ export default defineComponent({
 
     const workspaceComponents = computed(() => {
       return store.getters["canvas/workspaceComponents"];
+    });
+
+    const project = computed(() => {
+      return store.getters["projects/project"];
     });
 
     const currentHoverElement = computed(() => {
@@ -211,7 +225,35 @@ export default defineComponent({
       store.commit("canvas/SET_FOCUSED_INDEX", itemIndex);
     };
 
-    return { handleMouseOver, handleClick, toggleShowElements, showElements };
+    const dragComponentItemLayer = (e: any) => {
+      const itemIndex = props.itemIndex;
+      console.log("Drag Index", itemIndex);
+      e.dataTransfer.effectAllowed = "move";
+      e.dataTransfer.dropEffect = "move";
+      e.dataTransfer.setData("fromLayerComponentItemIndex", itemIndex);
+    };
+
+    const dropComponentItemLayer = async (e: any) => {
+      const toIndex = props.itemIndex;
+      console.log("Drop Index", toIndex);
+      const fromIndex = e.dataTransfer.getData("fromLayerComponentItemIndex");
+      if (!fromIndex) return;
+
+      await changeComponentItemPosition(
+        project.value.id,
+        parseInt(fromIndex),
+        toIndex
+      );
+    };
+
+    return {
+      handleMouseOver,
+      handleClick,
+      toggleShowElements,
+      showElements,
+      dragComponentItemLayer,
+      dropComponentItemLayer,
+    };
   },
 });
 </script>

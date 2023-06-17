@@ -13,6 +13,7 @@ export const actions: ActionTree<CanvasState, RootState> = {
     return AxiosClient.get(`/projects/${projectId}`)
       .then((res: any) => {
         const data = res.data;
+        commit("projects/SET_PROJECT", data.data.project, { root: true });
         commit("SET_WORKSPACE_COMPONENTS", data.data.project.components);
         return res.data;
       })

@@ -13,6 +13,14 @@
 
 .layers__component__item__header__move{
     @apply flex items-center justify-center;
+    width: 24px;
+    height: 24px;
+}
+.layers__component__item__header__move button{
+    @apply flex items-center justify-center;
+}
+.layers__component__item__header__replace{
+    @apply flex items-center justify-center;
 }
 
 .layers__component__item__header__switch{

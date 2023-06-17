@@ -12,45 +12,24 @@
       @dragenter.prevent
       v-if="isMounted"
     ></div>
-    <div v-if="showActions" class="workspace__component__actions">
-      <div class="workspace__component__actions__top">
-        <!--        <BaseButtonIcon class="copy" icon="canvas/workspace/copy" />-->
-        <BaseButtonIcon
-          :disabled="disabledButton"
-          @click="duplicateProjectComponent"
-          icon="canvas/workspace/duplicate"
-        />
-        <BaseButtonIcon
-          :disabled="disabledButton"
-          @click="deleteProjectComponent"
-          icon="canvas/workspace/delete"
-        />
-      </div>
-      <div class="workspace__component__actions__bottom">
-        <BaseButtonIcon
-          :disabled="disabledTopModifyPosition"
-          @click="modifyComponentPosition(false)"
-          icon="arrow/up"
-        />
-        <BaseButtonIcon
-          :disabled="disabledBottomModifyPosition"
-          @click="modifyComponentPosition()"
-          icon="arrow/down"
-        />
-      </div>
-    </div>
+    <WorkspaceComponentItemsActions
+      v-if="showActions"
+      :component-item="componentItem"
+      :project-id="projectId"
+      :item-index="itemIndex"
+    />
   </div>
 </template>
 <script lang="ts">
 import { computed, defineComponent, onMounted, ref, watch } from "vue";
 import { drag_and_drop } from "@/composables/canvas/drag_and_drop";
 import { updateDom } from "@/composables/canvas/update_dom";
-import BaseButtonIcon from "@/components/icon/BaseButtonIcon.vue";
 import store from "@/store";
+import WorkspaceComponentItemsActions from "@/components/canvas/workspace/component-items/WorkspaceComponentItemsActions.vue";
 
 export default defineComponent({
   name: "WorkspaceComponentItemsListItem",
-  components: { BaseButtonIcon },
+  components: { WorkspaceComponentItemsActions },
   props: {
     projectId: {
       type: String,
@@ -71,11 +50,7 @@ export default defineComponent({
   },
 
   setup(props, { emit }) {
-    const {
-      moveComponentItemPosition,
-      upsertComponentItem,
-      changeComponentItemPosition,
-    } = drag_and_drop();
+    const { moveComponentItemPosition, upsertComponentItem } = drag_and_drop();
 
     const { updateElementDom } = updateDom();
     const disabledButton = ref(false);
@@ -153,66 +128,14 @@ export default defineComponent({
       emit("hover", props.componentItem, props.itemIndex, event);
     };
 
-    const modifyComponentPosition = async (increment = true) => {
-      const currentIndex = props.itemIndex;
-      const updatedIndex = increment
-        ? props.itemIndex + 1
-        : props.itemIndex - 1;
-      if (increment) {
-        await changeComponentItemPosition(
-          props.projectId,
-          currentIndex,
-          updatedIndex
-        );
-      } else {
-        await changeComponentItemPosition(
-          props.projectId,
-          currentIndex,
-          updatedIndex
-        );
-      }
-      store.commit("canvas/SET_FOCUSED_INDEX", updatedIndex);
-    };
-
-    const duplicateProjectComponent = async () => {
-      disabledButton.value = true;
-      const projectComponentItem = workspaceComponents.value[props.itemIndex];
-
-      await store.dispatch("canvas/duplicateProjectComponent", {
-        projectId: props.projectId,
-        projectComponentItemId: projectComponentItem.id,
-        positionIndex: props.itemIndex + 1,
-      });
-
-      disabledButton.value = false;
-    };
-
-    const deleteProjectComponent = async () => {
-      disabledButton.value = true;
-      const projectComponentItem = workspaceComponents.value[props.itemIndex];
-
-      await store.dispatch("canvas/deleteProjectComponent", {
-        projectId: props.projectId,
-        projectComponentItemId: projectComponentItem.id,
-        positionIndex: props.itemIndex,
-      });
-      store.commit("canvas/SET_FOCUSED_ELEMENT", null);
-      store.commit("canvas/SET_FOCUSED_INDEX", null);
-
-      disabledButton.value = false;
-    };
-
     return {
       disabledButton,
       classes,
       showActions,
       clickEvent,
-      modifyComponentPosition,
       hoverEvent,
       moveComponentItemPosition,
       upsertComponentItem,
-      duplicateProjectComponent,
-      deleteProjectComponent,
       disabledTopModifyPosition,
       disabledBottomModifyPosition,
     };

@@ -75,8 +75,6 @@ export function drag_and_drop() {
     fromIndex: number,
     toIndex: number
   ) => {
-    console.log({ fromIndex, toIndex });
-
     const projectComponentItem = workspaceComponents.value[fromIndex];
 
     workspaceComponents.value.splice(fromIndex, 1);

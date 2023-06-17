@@ -42,7 +42,7 @@ export const actions: ActionTree<CanvasState, RootState> = {
   },
   updateProjectComponent(
     { dispatch },
-    { projectId, projectComponentItemId, data, set = true }
+    { projectId, projectComponentItemId, data }
   ): Promise<void> {
     return AxiosClient.put(
       `/projects/${projectId}/components/${projectComponentItemId}`,
@@ -63,7 +63,7 @@ export const actions: ActionTree<CanvasState, RootState> = {
   },
   duplicateProjectComponent(
     { state, commit },
-    { projectId, projectComponentItemId, positionIndex, set = true }
+    { projectId, projectComponentItemId, positionIndex }
   ): Promise<void> {
     return AxiosClient.post(
       `/projects/${projectId}/duplicate/components/${projectComponentItemId}`

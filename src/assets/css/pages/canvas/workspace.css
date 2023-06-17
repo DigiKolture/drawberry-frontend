@@ -49,28 +49,28 @@
 }
 
 
-.workspace__component__actions{
+.workspace__component__item__actions{
     @apply flex flex-col absolute;
     row-gap: 8px;
     top: 0;
     right: -44px;
 }
 
-.workspace__component__actions div{
+.workspace__component__item__actions div{
     @apply bg-white;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
     border-radius: 4px;
 }
 
-.workspace__component__actions button{
+.workspace__component__item__actions button{
     @apply flex items-center justify-center bg-white;
     width: 36px;
     height: 36px;
 }
-.workspace__component__actions button.copy svg path{
+.workspace__component__item__actions button.copy svg path{
     fill: white;
 }
 
-.workspace__component__actions button:disabled{
+.workspace__component__item__actions button:disabled{
     fill-opacity: 0.5;
 }

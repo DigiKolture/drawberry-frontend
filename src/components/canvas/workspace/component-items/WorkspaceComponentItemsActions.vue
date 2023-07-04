@@ -112,13 +112,17 @@ export default defineComponent({
       disabledButton.value = true;
       const projectComponentItem = workspaceComponents.value[props.itemIndex];
 
+      store.commit("canvas/SET_CURRENT_HOVER_ELEMENT", {
+        id: null,
+        componentIndex: null,
+      });
       await store.dispatch("canvas/deleteProjectComponent", {
         projectId: props.projectId,
         projectComponentItemId: projectComponentItem.id,
         positionIndex: props.itemIndex,
       });
       store.commit("canvas/SET_FOCUSED_ELEMENT", null);
-      store.commit("canvas/SET_FOCUSED_INDEX", null);
+      store.commit("canvas/SET_FOCUSED_ELEMENT", null);
 
       disabledButton.value = false;
     };

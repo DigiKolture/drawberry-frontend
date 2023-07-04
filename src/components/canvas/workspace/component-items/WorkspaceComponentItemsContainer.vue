@@ -1,7 +1,7 @@
 <template>
   <div
     class="workspace__component__items__container"
-    :class="layout"
+    :class="style.layout"
     @drop.self="upsertComponentItem($event, 0, projectId)"
     @dragover.prevent
     @dragenter.prevent
@@ -59,8 +59,8 @@ export default defineComponent({
       store.commit("canvas/SET_FOCUSED_INDEX", null);
     });
 
-    const layout = computed(() => {
-      return store.getters["style/layout"];
+    const style = computed(() => {
+      return store.getters["canvas/style"];
     });
 
     const workspaceComponents = computed(() => {
@@ -106,6 +106,7 @@ export default defineComponent({
       }
       if (
         currentHoverElement.value.id &&
+        currentHoverElement.value.componentIndex !== null &&
         currentHoverElement.value.componentIndex > -1
       ) {
         let currentComponentItem =
@@ -222,7 +223,7 @@ export default defineComponent({
       projectId,
       isMounted,
       handleClick,
-      layout,
+      style,
       handleMouseOver,
     };
   },

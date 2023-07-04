@@ -42,10 +42,6 @@ export default defineComponent({
       return store.getters["canvas/style"];
     });
 
-    // const layout = computed(() => {
-    //   return store.getters["style/layout"];
-    // });
-
     const project = computed(() => {
       return store.getters["projects/project"];
     });

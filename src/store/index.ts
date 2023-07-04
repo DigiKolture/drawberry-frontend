@@ -4,7 +4,6 @@ import projects from "@/store/modules/projects";
 import components from "@/store/modules/components";
 import canvas from "@/store/modules/canvas";
 import folders from "@/store/modules/folders";
-import style from "@/store/modules/style";
 import createPersistedState from "vuex-persistedstate";
 
 export default createStore({
@@ -20,7 +19,6 @@ export default createStore({
     folders,
     components,
     canvas,
-    style,
   },
   plugins: [
     createPersistedState({

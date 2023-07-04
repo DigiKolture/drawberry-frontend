@@ -3,6 +3,7 @@ import { CanvasState } from "@/store/modules/canvas/types";
 import { RootState } from "@/store/types";
 import AxiosClient from "@/services/api";
 import { updateDom } from "@/composables/canvas/update_dom";
+import store from "@/store";
 
 // const baseUrl = "/components";
 
@@ -15,6 +16,7 @@ export const actions: ActionTree<CanvasState, RootState> = {
         const data = res.data;
         commit("projects/SET_PROJECT", data.data.project, { root: true });
         commit("SET_WORKSPACE_COMPONENTS", data.data.project.components);
+        commit("SET_STYLE", data.data.project.style);
         return res.data;
       })
       .catch((err: any): any => {
@@ -127,9 +129,22 @@ export const actions: ActionTree<CanvasState, RootState> = {
       },
     });
   },
-  updateProjectStyle({ commit }, { projectId, style }): Promise<void> {
-    commit("UPDATE_PROJECT_STYLE", style);
-    return AxiosClient.put(`/projects/${projectId}/style`, {
+  async updateProjectStyle({ commit, rootState }, style): Promise<void> {
+    commit("SET_STYLE", style);
+    const root: any = rootState;
+    const projectId: string = root.projects.projectId;
+
+    await store.dispatch("projects/updateProject", {
+      id: projectId,
+      data: { style },
+    });
+  },
+  updateProjectComponentStyles(
+    { commit },
+    { projectId, style }
+  ): Promise<void> {
+    commit("UPDATE_PROJECT_COMPONENTS_STYLE", style);
+    return AxiosClient.put(`/projects/${projectId}/components/styles`, {
       style,
     })
       .then((res: any) => {

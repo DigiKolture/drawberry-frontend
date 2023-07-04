@@ -5,7 +5,7 @@
     </div>
     <div class="projects__body__item__body">
       <div class="projects__body__item__body__content">
-        <h3>{{ project.name }}</h3>
+        <h3>{{ sliceString(project.name, 17) }}</h3>
         <h4>{{ formatDate(project.createdAt) }}</h4>
       </div>
       <BaseIcon icon="hamburger/horizontal" />
@@ -33,7 +33,7 @@ export default defineComponent({
   },
 
   setup(props, { emit }) {
-    const { formatDate } = helpers();
+    const { formatDate, sliceString } = helpers();
 
     const createProject = () => {
       emit("create-project");
@@ -47,6 +47,7 @@ export default defineComponent({
       createProject,
       openProject,
       formatDate,
+      sliceString,
     };
   },
 });

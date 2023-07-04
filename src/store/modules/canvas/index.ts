@@ -12,9 +12,17 @@ const state: CanvasState = {
     componentIndex: null,
   },
   focusedIndex: null,
+  workspaceComponents: [],
+  style: {
+    layout: "",
+    backgroundColor: "",
+    font: "",
+    buttonColor: "",
+    backgroundImage: "",
+    previewText: "",
+  },
   sidebarNavContent: null,
   sidebarDock: false,
-  workspaceComponents: [],
 };
 
 export const data: Module<CanvasState, RootState> = {

@@ -3,6 +3,15 @@ export interface CurrentHoverElementType {
   componentIndex: number | null;
 }
 
+export interface ProjectStyle {
+  layout: string;
+  backgroundColor: string;
+  font: string;
+  buttonColor: string;
+  backgroundImage: string;
+  previewText: string;
+}
+
 export interface CanvasState {
   focusedElement: object | null;
   focusedIndex: number | null;
@@ -10,4 +19,5 @@ export interface CanvasState {
   sidebarNavContent: string | null;
   sidebarDock: boolean;
   workspaceComponents: any[];
+  style: ProjectStyle;
 }

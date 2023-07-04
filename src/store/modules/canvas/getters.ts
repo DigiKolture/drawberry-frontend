@@ -2,6 +2,7 @@ import { GetterTree } from "vuex";
 import {
   CanvasState,
   CurrentHoverElementType,
+  ProjectStyle,
 } from "@/store/modules/canvas/types";
 import { RootState } from "@/store/types";
 
@@ -17,6 +18,9 @@ export const getters: GetterTree<CanvasState, RootState> = {
   },
   workspaceComponents(state: CanvasState): object[] | null {
     return state.workspaceComponents;
+  },
+  style(state: CanvasState): ProjectStyle {
+    return state.style;
   },
   sidebarNavContent(state: CanvasState): string | null {
     return state.sidebarNavContent;

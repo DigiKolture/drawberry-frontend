@@ -38,39 +38,40 @@ export default defineComponent({
       cards: "8px",
       collapsed: "0px",
     };
-    const layout = computed(() => {
-      return store.getters["style/layout"];
+    const style = computed(() => {
+      return store.getters["canvas/style"];
     });
 
-    const bgColor = computed(() => {
-      return store.getters["style/bgColor"];
-    });
+    // const layout = computed(() => {
+    //   return store.getters["style/layout"];
+    // });
 
     const project = computed(() => {
       return store.getters["projects/project"];
     });
 
     const isActive = (lay: string) => {
-      return layout.value === lay;
+      return style.value.layout === lay;
     };
 
     const changeLayout = async (lay: string) => {
-      if (lay === layout.value) return;
-      store.commit("style/SET_LAYOUT", lay);
-      const style = {
+      if (lay === style.value.layout) return;
+      style.value.layout = lay;
+      store.dispatch("canvas/updateProjectStyle", style.value).then();
+      const componentsStyle = {
         "border-radius": borderRadius[lay],
         "box-shadow": boxShadow[lay],
       };
-      await store.dispatch("canvas/updateProjectStyle", {
+      await store.dispatch("canvas/updateProjectComponentStyles", {
         projectId: project.value.id,
-        style,
+        style: componentsStyle,
       });
     };
 
     return {
-      layout,
       isActive,
       changeLayout,
+      style,
     };
   },
 });

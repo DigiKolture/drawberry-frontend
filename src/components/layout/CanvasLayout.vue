@@ -45,7 +45,7 @@ export default defineComponent({
 
     const styles = computed(() => {
       return {
-        backgroundColor: bgColor.value,
+        backgroundColor: style.value.backgroundColor,
       };
     });
 
@@ -57,8 +57,8 @@ export default defineComponent({
       return store.getters["canvas/sidebarDock"];
     });
 
-    const bgColor = computed(() => {
-      return store.getters["style/bgColor"];
+    const style = computed(() => {
+      return store.getters["canvas/style"];
     });
 
     const docked = computed(() => {
@@ -68,7 +68,6 @@ export default defineComponent({
     return {
       sidebarDock,
       docked,
-      bgColor,
       styles,
     };
   },

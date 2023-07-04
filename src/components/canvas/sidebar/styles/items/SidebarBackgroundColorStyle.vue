@@ -18,24 +18,20 @@ export default defineComponent({
   components: { ColorPickerStyle, PanelStyle },
   setup() {
     const show = ref(true);
-    const name = "background-color";
 
     const colorPickerStyleRef = ref();
 
-    const bgColor = computed(() => {
-      return store.getters["style/bgColor"];
-    });
-
-    const project = computed(() => {
-      return store.getters["projects/project"];
+    const style = computed(() => {
+      return store.getters["canvas/style"];
     });
 
     const color = ref({
-      hex8: bgColor.value,
+      hex8: style.value.backgroundColor,
     });
 
     watch(color, (newVal: any) => {
-      store.commit("style/SET_BG_COLOR", newVal.hex8);
+      style.value.backgroundColor = newVal.hex8;
+      store.dispatch("canvas/updateProjectStyle", style.value).then();
     });
 
     const updateColor = (newVal: any) => {

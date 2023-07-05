@@ -41,7 +41,7 @@ nav.canvas__sidebar__nav{
 /*SIDEBAR NAV CONTENT*/
 
 .canvas__sidebar__nav__content{
-    @apply flex flex-col absolute;
+    @apply flex flex-col absolute  ;
     width: var(--canvas-sidebar-nav-content-width);
     background: #2D3039;
     /*height: 100vh;*/
@@ -66,6 +66,10 @@ nav.canvas__sidebar__nav{
 
 .sidebar__nav__contents__header__icons{
     @apply flex;
+}
+
+.sidebar__nav__contents__body{
+    @apply overflow-x-auto h-full;
 }
 
 .sidebar__nav__contents__header__icons .button__icon{

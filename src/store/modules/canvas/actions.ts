@@ -26,6 +26,20 @@ export const actions: ActionTree<CanvasState, RootState> = {
         }
       });
   },
+  getGoogleFonts({ commit }): Promise<void> {
+    return AxiosClient.get("/relays/google/fonts")
+      .then((res: any) => {
+        const data = res.data;
+        commit("SET_GOOGLE_FONTS", data.data.fonts);
+        return res.data;
+      })
+      .catch((err: any): any => {
+        if (err instanceof Error) {
+          const message = err.message;
+          return Promise.reject(new Error(message));
+        }
+      });
+  },
   storeProjectComponent({ state, commit }, { projectId, data }): Promise<void> {
     return AxiosClient.post(`/projects/${projectId}/components`, data)
       .then((res: any) => {

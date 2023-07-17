@@ -20,6 +20,14 @@ export const mutations: MutationTree<CanvasState> = {
     state.style = data;
     return state.style;
   },
+  SET_GOOGLE_FONTS(state: CanvasState, data: any[]) {
+    state.googleFonts = data;
+    return state.googleFonts;
+  },
+  SET_FONT_WEIGHTS(state: CanvasState, data: number[]) {
+    state.fontWeights = data;
+    return state.fontWeights;
+  },
   SET_CURRENT_HOVER_ELEMENT(state: CanvasState, data: CurrentHoverElementType) {
     state.currentHoverElement = data;
     return state.currentHoverElement;

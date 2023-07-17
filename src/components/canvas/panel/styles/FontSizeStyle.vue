@@ -33,7 +33,6 @@ export default defineComponent({
         sizeWithUnit.value = newVal + unit;
       }
       focusedElement.value.attributes.style.value[name] = sizeWithUnit.value;
-      // store.dispatch("canvas/updateFocusedElement", focusedElement.value);
       store.dispatch("canvas/updateFocusedElement", focusedElement.value);
     });
 

@@ -8,6 +8,7 @@
   >
     <CanvasWorkspaceEmpty v-if="workspaceComponents.length === 0" />
     <WorkspaceComponentItemsListItem
+      style="font-family: 'Agdasima', sans-serif"
       v-for="(componentItem, itemIndex) in workspaceComponents"
       :key="componentItem.id"
       @clicked="handleClick"
@@ -28,6 +29,7 @@ import store from "@/store";
 import { useRoute } from "vue-router";
 import { updateDom } from "@/composables/canvas/update_dom";
 import { layers } from "@/composables/canvas/layers";
+import WebFont from "webfontloader";
 
 export default defineComponent({
   name: "WorkspaceComponentItemsContainer",
@@ -50,7 +52,17 @@ export default defineComponent({
     const projectId = route.params.id as string;
     const isMounted = ref(false);
 
+    const googleFonts = computed(() => {
+      return store.getters["canvas/googleFonts"];
+    });
+
     onMounted(() => {
+      const families = googleFonts.value.map((font: any) => font.family);
+      WebFont.load({
+        google: {
+          families,
+        },
+      });
       store.commit("canvas/SET_CURRENT_HOVER_ELEMENT", {
         id: null,
         componentIndex: null,

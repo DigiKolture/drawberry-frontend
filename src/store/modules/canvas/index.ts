@@ -21,6 +21,8 @@ const state: CanvasState = {
     backgroundImage: "",
     previewText: "",
   },
+  googleFonts: [],
+  fontWeights: [],
   sidebarNavContent: null,
   sidebarDock: false,
 };

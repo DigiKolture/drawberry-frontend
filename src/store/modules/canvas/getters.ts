@@ -22,6 +22,12 @@ export const getters: GetterTree<CanvasState, RootState> = {
   style(state: CanvasState): ProjectStyle {
     return state.style;
   },
+  googleFonts(state: CanvasState): any[] {
+    return state.googleFonts;
+  },
+  fontWeights(state: CanvasState): number[] {
+    return state.fontWeights;
+  },
   sidebarNavContent(state: CanvasState): string | null {
     return state.sidebarNavContent;
   },

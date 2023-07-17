@@ -1,3 +1,4 @@
+/*@import url('https://fonts.googleapis.com/css2?family=Agdasima:wght@400;700&display=swap');*/
 .canvas__workspace__empty{
     @apply text-center flex flex-col items-center;
     margin-top: 117px;

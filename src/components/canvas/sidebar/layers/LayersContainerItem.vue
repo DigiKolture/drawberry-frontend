@@ -21,7 +21,9 @@
         @click="toggleShowElements"
         class="layers__component__item__header__switch"
       >
-        <BaseIcon icon="canvas/sidebar/layers/open" />
+        <BaseIcon
+          :icon="`canvas/sidebar/layers/${showElements ? 'open' : 'closed'}`"
+        />
       </button>
       <BaseIcon icon="canvas/sidebar/layers/component" />
       <h5 class="layers__component__item__title">Component</h5>

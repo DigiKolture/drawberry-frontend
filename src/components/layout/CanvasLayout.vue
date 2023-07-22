@@ -46,6 +46,7 @@ export default defineComponent({
     const styles = computed(() => {
       return {
         backgroundColor: style.value.backgroundColor,
+        backgroundImage: `url('${style.value.backgroundImage}')`,
       };
     });
 

@@ -2,25 +2,30 @@
   <button @click="handleUploadClick" class="content__style__media__upload">
     <span>Replace Image</span>
     <BaseIcon icon="canvas/panel/styles/media/upload" />
+    <input
+      type="file"
+      class="hidden"
+      ref="fileInputRef"
+      @change="handleImageUpload"
+      accept="image/*"
+    />
   </button>
-  <input
-    type="file"
-    class="hidden"
-    ref="fileInputRef"
-    @change="handleImageUpload"
-    accept="image/*"
-  />
 </template>
 <script lang="ts">
-import { computed, defineComponent, onMounted, ref, watch } from "vue";
+import { computed, defineComponent, onMounted, ref } from "vue";
 import store from "@/store";
 import BaseIcon from "@/components/icon/BaseIcon.vue";
 
 export default defineComponent({
-  name: "MediaImageUpload",
+  name: "BaseMediaImageUpload",
   components: { BaseIcon },
-
-  setup() {
+  props: {
+    modelValue: {
+      type: String,
+      default: "",
+    },
+  },
+  setup(_, { emit }) {
     const name = "src";
 
     const focusedElement = computed(() => {
@@ -51,15 +56,13 @@ export default defineComponent({
     };
 
     const uploadToServer = async (image: string) => {
-      console.log(image);
       const res = await store.dispatch("canvas/uploadImageToCloudinary", {
         image,
         folder: "drawberry/styles/images",
       });
       if (res.error || !res.url) return;
-      console.log(res.url);
-      focusedElement.value.attributes[name].value = res.url;
-      await store.dispatch("canvas/updateFocusedElement", focusedElement.value);
+      emit("update:modelValue", res.url);
+      emit("update", res.url);
     };
 
     return {

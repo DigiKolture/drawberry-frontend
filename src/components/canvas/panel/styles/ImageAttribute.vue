@@ -2,7 +2,12 @@
   <PanelStyle title="IMAGE LINK">
     <div class="content__style">
       <PanelStyleTabs @update="updateTab" :titles="titles">
-        <MediaImageUpload v-if="activeIndex === 0" />
+        <img v-if="src" :src="src" alt="Selected Image" />
+        <BaseMediaImageUpload
+          v-model="src"
+          @update="updateImage"
+          v-if="activeIndex === 0"
+        />
         <div v-if="activeIndex === 1" class="content__style__media__text">
           <input v-model="src" type="url" required class="input__style__text" />
           <BaseButtonIcon
@@ -22,12 +27,12 @@ import store from "@/store";
 import PanelStyleTabs from "@/components/canvas/panel/PanelStyleTabs.vue";
 import BaseButtonIcon from "@/components/icon/BaseButtonIcon.vue";
 import { helpers } from "@/composables/helpers";
-import MediaImageUpload from "@/components/canvas/panel/MediaImageUpload.vue";
-
+import BaseMediaImageUpload from "@/components/canvas/panel/BaseMediaImageUpload.vue";
+//TODO Split Image Components
 export default defineComponent({
   name: "ImageAttribute",
   components: {
-    MediaImageUpload,
+    BaseMediaImageUpload,
     BaseButtonIcon,
     PanelStyleTabs,
     PanelStyle,

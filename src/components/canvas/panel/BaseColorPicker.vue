@@ -1,102 +1,3 @@
-<script>
-// import colorMixin from "@ckpack/vue-color/src/mixin/color";
-import colorMixin from "@/packages/@ckpack/vue-color/src/mixin/color";
-import editableInput from "@/packages/@ckpack/vue-color/src/components/editable-input";
-import saturation from "@/packages/@ckpack/vue-color/src/components/saturation";
-import hue from "@/packages/@ckpack/vue-color/src/components/hue";
-import alpha from "@/packages/@ckpack/vue-color/src/components/alpha";
-import checkboard from "@/packages/@ckpack/vue-color/src/components/checkboard";
-import BaseIcon from "@/components/icon/BaseIcon";
-
-const presetColors = [
-  "#FFFFFF",
-  "#1E1F26",
-  // "#F8E71C",
-  // "#8B572A",
-  // "#7ED321",
-  // "#417505",
-  // "#BD10E0",
-  // "#9013FE",
-  // "#4A90E2",
-  // "#50E3C2",
-  // "#B8E986",
-  // "#000000",
-  // "#4A4A4A",
-  // "#9B9B9B",
-  // "#FFFFFF",
-  // "rgba(0,0,0,0)",
-];
-
-export default {
-  name: "BaseColorPicker",
-  components: {
-    BaseIcon,
-    Saturation: saturation,
-    Hue: hue,
-    Alpha: alpha,
-    EdIn: editableInput,
-    Checkboard: checkboard,
-  },
-  mixins: [colorMixin],
-  props: {
-    presetColors: {
-      type: Array,
-      default() {
-        return presetColors;
-      },
-    },
-    disableAlpha: {
-      type: Boolean,
-      default: false,
-    },
-    disableFields: {
-      type: Boolean,
-      default: false,
-    },
-  },
-  computed: {
-    hex() {
-      let hex;
-      if (this.colors.a < 1) hex = this.colors.hex8;
-      else hex = this.colors.hex;
-
-      return hex.replace("#", "");
-    },
-    activeColor() {
-      const { rgba } = this.colors;
-      return `rgba(${[rgba.r, rgba.g, rgba.b, rgba.a].join(",")})`;
-    },
-  },
-  methods: {
-    handlePreset(c) {
-      this.colorChange(c);
-    },
-    childChange(data) {
-      this.colorChange(data);
-    },
-    inputChange(data) {
-      if (!data) return;
-
-      if (data.hex) {
-        this.isValidHex(data.hex) &&
-          this.colorChange({
-            hex: data.hex,
-            source: "hex",
-          });
-      } else if (data.r || data.g || data.b || data.a) {
-        this.colorChange({
-          r: data.r || this.colors.rgba.r,
-          g: data.g || this.colors.rgba.g,
-          b: data.b || this.colors.rgba.b,
-          a: data.a || this.colors.rgba.a,
-          source: "rgba",
-        });
-      }
-    },
-  },
-};
-</script>
-
 <template>
   <div
     role="application"
@@ -205,6 +106,105 @@ export default {
     </div>
   </div>
 </template>
+
+<script>
+// import colorMixin from "@ckpack/vue-color/src/mixin/color";
+import colorMixin from "@/packages/@ckpack/vue-color/src/mixin/color";
+import editableInput from "@/packages/@ckpack/vue-color/src/components/editable-input";
+import saturation from "@/packages/@ckpack/vue-color/src/components/saturation";
+import hue from "@/packages/@ckpack/vue-color/src/components/hue";
+import alpha from "@/packages/@ckpack/vue-color/src/components/alpha";
+import checkboard from "@/packages/@ckpack/vue-color/src/components/checkboard";
+import BaseIcon from "@/components/icon/BaseIcon";
+
+const presetColors = [
+  "#FFFFFF",
+  "#1E1F26",
+  // "#F8E71C",
+  // "#8B572A",
+  // "#7ED321",
+  // "#417505",
+  // "#BD10E0",
+  // "#9013FE",
+  // "#4A90E2",
+  // "#50E3C2",
+  // "#B8E986",
+  // "#000000",
+  // "#4A4A4A",
+  // "#9B9B9B",
+  // "#FFFFFF",
+  // "rgba(0,0,0,0)",
+];
+
+export default {
+  name: "BaseColorPicker",
+  components: {
+    BaseIcon,
+    Saturation: saturation,
+    Hue: hue,
+    Alpha: alpha,
+    EdIn: editableInput,
+    Checkboard: checkboard,
+  },
+  mixins: [colorMixin],
+  props: {
+    presetColors: {
+      type: Array,
+      default() {
+        return presetColors;
+      },
+    },
+    disableAlpha: {
+      type: Boolean,
+      default: false,
+    },
+    disableFields: {
+      type: Boolean,
+      default: false,
+    },
+  },
+  computed: {
+    hex() {
+      let hex;
+      if (this.colors.a < 1) hex = this.colors.hex8;
+      else hex = this.colors.hex;
+
+      return hex.replace("#", "");
+    },
+    activeColor() {
+      const { rgba } = this.colors;
+      return `rgba(${[rgba.r, rgba.g, rgba.b, rgba.a].join(",")})`;
+    },
+  },
+  methods: {
+    handlePreset(c) {
+      this.colorChange(c);
+    },
+    childChange(data) {
+      this.colorChange(data);
+    },
+    inputChange(data) {
+      if (!data) return;
+
+      if (data.hex) {
+        this.isValidHex(data.hex) &&
+          this.colorChange({
+            hex: data.hex,
+            source: "hex",
+          });
+      } else if (data.r || data.g || data.b || data.a) {
+        this.colorChange({
+          r: data.r || this.colors.rgba.r,
+          g: data.g || this.colors.rgba.g,
+          b: data.b || this.colors.rgba.b,
+          a: data.a || this.colors.rgba.a,
+          source: "rgba",
+        });
+      }
+    },
+  },
+};
+</script>
 
 <style>
 .vc-sketch {

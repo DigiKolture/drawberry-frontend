@@ -9,8 +9,27 @@ export function helpers() {
     return str.slice(0, num) + "...";
   };
 
+  const isValidImageUrl = async (url: string): Promise<boolean> => {
+    return new Promise((resolve) => {
+      const img = new Image();
+
+      img.onload = function () {
+        // Image loaded successfully, URL is valid
+        resolve(true);
+      };
+
+      img.onerror = function () {
+        // Error occurred while loading the image, URL is not valid
+        resolve(false);
+      };
+
+      img.src = url;
+    });
+  };
+
   return {
     formatDate,
+    isValidImageUrl,
     sliceString,
   };
 }

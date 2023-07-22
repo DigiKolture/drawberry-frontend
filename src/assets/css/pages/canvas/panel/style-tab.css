@@ -1,5 +1,5 @@
 .panel__style__tabs{
-    @apply flex flex-col;
+    @apply flex flex-col w-full;
     row-gap: 12px;
 }
 

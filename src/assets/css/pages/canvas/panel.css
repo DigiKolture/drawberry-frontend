@@ -233,6 +233,21 @@
     @apply flex w-full;
 }
 
+.input__style__text{
+    @apply text-white w-full;
+    background: #454856;
+    border-radius: 4px;
+    height: 40px;
+    padding: 8px 12px;
+    font-weight: 400;
+    font-size: 12px;
+    line-height: 16px;
+}
+.input__style__text:focus{
+    border: 1px solid #1873CD;
+}
+
+
 /*CONTENT STYLE*/
 
 /*FONT STYLE*/
@@ -256,3 +271,30 @@
 
 
 /*TEXT ALIGN STYLE*/
+
+
+/*MEDIA IMAGE*/
+
+.content__style__media__upload{
+    @apply flex justify-between items-center w-full text-white;
+    padding: 15px;
+    height: 40px;
+    font-size: 13px;
+    font-weight: 400;
+    line-height: 16px;
+    background: #454856;
+    border-radius: 4px;
+
+}
+
+.content__style__media__text{
+    @apply flex justify-between items-center w-full;
+}
+
+.content__style__media__text button{
+    border-radius: 0;
+    background: transparent;
+}
+
+
+/*MEDIA IMAGE*/

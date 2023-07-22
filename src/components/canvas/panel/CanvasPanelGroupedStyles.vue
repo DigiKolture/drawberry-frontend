@@ -25,7 +25,7 @@
         :properties="tabsStyles.typography"
         :show-body="activeTab === tabsStyles.typography.index"
       >
-        <FontStyle />
+        <FontStyle v-if="showStyle('font-family')" />
         <TextColorStyle v-if="showStyle('color')" />
         <div class="canvas__panel__styles__row">
           <FontSizeStyle v-if="showStyle('font-size')" />
@@ -68,6 +68,14 @@
       >
         <HrefAttribute v-if="hasAttributes('href')" />
       </PanelTab>
+      <PanelTab
+        v-if="showTab(tabsStyles.media)"
+        @update="setActiveTab"
+        :properties="tabsStyles.media"
+        :show-body="activeTab === tabsStyles.media.index"
+      >
+        <ImageAttribute v-if="hasAttributes('src')" />
+      </PanelTab>
     </div>
   </section>
 </template>
@@ -90,10 +98,12 @@ import HrefAttribute from "@/components/canvas/panel/styles/HrefAttribute.vue";
 import ShadowStyle from "@/components/canvas/panel/styles/ShadowStyle.vue";
 import TextColorStyle from "@/components/canvas/panel/styles/TextColorStyle.vue";
 import BorderRadiusStyle from "@/components/canvas/panel/styles/BorderRadiusStyle.vue";
+import ImageAttribute from "@/components/canvas/panel/styles/ImageAttribute.vue";
 
 export default defineComponent({
   name: "CanvasPanelGroupedStyles",
   components: {
+    ImageAttribute,
     BorderRadiusStyle,
     TextColorStyle,
     ShadowStyle,
@@ -128,7 +138,7 @@ export default defineComponent({
       return style ? styles.value.includes(style) : true;
     };
 
-    const activeTab = ref(-1);
+    const activeTab = ref(7);
 
     const tabsStyles = {
       layout: {
@@ -153,6 +163,7 @@ export default defineComponent({
           "line-height",
           "letter-spacing",
           "text-align",
+          "font-family",
         ],
         attributes: [],
         isContent: true,
@@ -181,6 +192,12 @@ export default defineComponent({
         styles: [],
         attributes: ["href"],
       },
+      media: {
+        title: "Media",
+        index: 7,
+        styles: [],
+        attributes: ["src"],
+      },
     };
 
     const showTab = (tab: any) => {
@@ -192,7 +209,8 @@ export default defineComponent({
         const hasAttr = hasAttributes(attr);
         if (hasAttr) return true;
       }
-      return tab.isContent;
+      // return tab.isContent;
+      return tab.isContent && hasContent();
     };
 
     const hasAttributes = (attribute: string) => {

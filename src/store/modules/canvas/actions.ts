@@ -171,4 +171,16 @@ export const actions: ActionTree<CanvasState, RootState> = {
         }
       });
   },
+  uploadImageToCloudinary(_, data): Promise<void> {
+    return AxiosClient.post(`/utils/upload/image`, data)
+      .then((res: any) => {
+        return res.data;
+      })
+      .catch((err: any): any => {
+        if (err instanceof Error) {
+          const message = err.message;
+          return Promise.reject(new Error(message));
+        }
+      });
+  },
 };

@@ -1,5 +1,5 @@
 <template>
-  <PanelStyle title="HREF">
+  <PanelStyle title="INSERT LINK">
     <div class="content__style">
       <textarea v-model="href" class="canvas__textarea"> </textarea>
     </div>

@@ -76,8 +76,6 @@ input.canvas__input__text:focus{
 
 /*CANVAS TEXTAREA*/
 
-
-
 .canvas__textarea{
     @apply text-white w-full;
     background: #454856;

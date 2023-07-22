@@ -29,10 +29,11 @@ export default defineComponent({
     },
   },
 
-  setup() {
+  setup(props, { emit }) {
     let activeIndex = ref(0);
 
     const toggle = (index: number) => {
+      emit("update", index);
       activeIndex.value = index;
     };
 

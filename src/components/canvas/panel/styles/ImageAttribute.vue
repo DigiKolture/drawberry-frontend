@@ -2,7 +2,6 @@
   <PanelStyle title="IMAGE LINK">
     <div class="content__style">
       <PanelStyleTabs @update="updateTab" :titles="titles">
-        <img v-if="src" :src="src" alt="Selected Image" />
         <BaseMediaImageUpload
           v-model="src"
           @update="updateImage"

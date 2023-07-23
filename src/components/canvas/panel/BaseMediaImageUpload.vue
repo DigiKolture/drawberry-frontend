@@ -26,11 +26,6 @@ export default defineComponent({
     },
   },
   setup(_, { emit }) {
-    const name = "src";
-
-    const focusedElement = computed(() => {
-      return store.getters["canvas/focusedElement"];
-    });
     let activeIndex = ref(0);
     const fileInputRef: any = ref(null);
 
@@ -45,7 +40,7 @@ export default defineComponent({
     const handleImageUpload = async (event: any) => {
       const file = event.target.files[0];
       if (file) {
-        console.log(file);
+        // console.log(file);
         const reader = new FileReader();
         reader.onload = async (e: any) => {
           const base64Image = e.target.result;

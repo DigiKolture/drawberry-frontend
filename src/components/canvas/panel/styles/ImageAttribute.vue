@@ -8,10 +8,16 @@
           v-if="activeIndex === 0"
         />
         <div v-if="activeIndex === 1" class="content__style__media__text">
-          <input v-model="src" type="url" required class="input__style__text" />
+          <input
+            v-model="src"
+            type="url"
+            @focus="isInputFocused = true"
+            required
+            class="input__style__text"
+          />
           <BaseButtonIcon
+            v-if="isInputFocused"
             @click="updateImage"
-            type="submit"
             icon="canvas/panel/styles/media/update"
           />
         </div>
@@ -46,6 +52,7 @@ export default defineComponent({
       return store.getters["canvas/focusedElement"];
     });
     let activeIndex = ref(0);
+    const isInputFocused = ref(false);
 
     const src = ref(focusedElement.value.attributes[name].value);
 
@@ -57,7 +64,8 @@ export default defineComponent({
       const isValid = await isValidImageUrl(src.value);
       if (!isValid) return;
       focusedElement.value.attributes[name].value = src.value;
-      store.dispatch("canvas/updateFocusedElement", focusedElement.value);
+      await store.dispatch("canvas/updateFocusedElement", focusedElement.value);
+      isInputFocused.value = false;
     };
 
     watch(focusedElement, (newVal) => {
@@ -70,6 +78,7 @@ export default defineComponent({
       titles,
       updateTab,
       updateImage,
+      isInputFocused,
     };
   },
 });

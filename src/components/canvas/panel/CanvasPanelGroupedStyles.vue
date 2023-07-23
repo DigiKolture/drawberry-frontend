@@ -138,7 +138,7 @@ export default defineComponent({
       return style ? styles.value.includes(style) : true;
     };
 
-    const activeTab = ref(7);
+    const activeTab = ref(-1);
 
     const tabsStyles = {
       layout: {

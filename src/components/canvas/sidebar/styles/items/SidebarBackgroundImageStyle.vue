@@ -8,10 +8,15 @@
           v-if="activeIndex === 0"
         />
         <div v-if="activeIndex === 1" class="content__style__media__text">
-          <input v-model="src" type="url" required class="input__style__text" />
+          <input
+            v-model="src"
+            type="url"
+            @focus="isInputFocused = true"
+            class="input__style__text"
+          />
           <BaseButtonIcon
+            v-if="isInputFocused"
             @click="updateImage"
-            type="submit"
             icon="canvas/panel/styles/media/update"
           />
         </div>
@@ -44,6 +49,7 @@ export default defineComponent({
       return store.getters["canvas/style"];
     });
     let activeIndex = ref(0);
+    const isInputFocused = ref(false);
 
     const src = ref(style.value.backgroundImage);
 
@@ -56,10 +62,12 @@ export default defineComponent({
       if (!isValid && src.value) return;
       style.value.backgroundImage = src.value;
       await store.dispatch("canvas/updateProjectStyle", style.value);
+      isInputFocused.value = false;
     };
 
     return {
       activeIndex,
+      isInputFocused,
       src,
       titles,
       updateTab,

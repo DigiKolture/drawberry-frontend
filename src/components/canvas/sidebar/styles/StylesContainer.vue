@@ -3,7 +3,6 @@
     <SidebarLayoutStyle />
     <SidebarBackgroundColorStyle />
     <SidebarFontStyle />
-    <SidebarButtonColorStyle />
     <SidebarBackgroundImageStyle />
     <SidebarPreviewTextStyle />
   </div>
@@ -14,7 +13,6 @@ import store from "@/store";
 import SidebarLayoutStyle from "@/components/canvas/sidebar/styles/items/SidebarLayoutStyle.vue";
 import SidebarBackgroundColorStyle from "@/components/canvas/sidebar/styles/items/SidebarBackgroundColorStyle.vue";
 import SidebarFontStyle from "@/components/canvas/sidebar/styles/items/SidebarFontStyle.vue";
-import SidebarButtonColorStyle from "@/components/canvas/sidebar/styles/items/SidebarButtonColorStyle.vue";
 import SidebarBackgroundImageStyle from "@/components/canvas/sidebar/styles/items/SidebarBackgroundImageStyle.vue";
 import SidebarPreviewTextStyle from "@/components/canvas/sidebar/styles/items/SidebarPreviewTextStyle.vue";
 
@@ -23,7 +21,6 @@ export default defineComponent({
   components: {
     SidebarPreviewTextStyle,
     SidebarBackgroundImageStyle,
-    SidebarButtonColorStyle,
     SidebarFontStyle,
     SidebarBackgroundColorStyle,
     SidebarLayoutStyle,

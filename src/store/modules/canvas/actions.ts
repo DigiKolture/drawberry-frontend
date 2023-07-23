@@ -153,12 +153,30 @@ export const actions: ActionTree<CanvasState, RootState> = {
       data: { style },
     });
   },
-  updateProjectComponentStyles(
+  updateFirstProjectComponentsStyles(
     { commit },
     { projectId, style }
   ): Promise<void> {
-    commit("UPDATE_PROJECT_COMPONENTS_STYLE", style);
-    return AxiosClient.put(`/projects/${projectId}/components/styles`, {
+    commit("UPDATE_FIRST_PROJECT_COMPONENTS_STYLE", style);
+    return AxiosClient.put(`/projects/${projectId}/components/first/styles`, {
+      style,
+    })
+      .then((res: any) => {
+        return res.data;
+      })
+      .catch((err: any): any => {
+        if (err instanceof Error) {
+          const message = err.message;
+          return Promise.reject(new Error(message));
+        }
+      });
+  },
+  updateAllProjectComponentsStyles(
+    { commit },
+    { projectId, style }
+  ): Promise<void> {
+    commit("UPDATE_ALL_PROJECT_COMPONENTS_STYLE", style);
+    return AxiosClient.put(`/projects/${projectId}/components/all/styles`, {
       style,
     })
       .then((res: any) => {

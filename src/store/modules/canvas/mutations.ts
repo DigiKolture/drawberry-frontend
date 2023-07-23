@@ -53,7 +53,10 @@ export const mutations: MutationTree<CanvasState> = {
     state.workspaceComponents = workspaceComponents;
     return state.focusedElement;
   },
-  UPDATE_PROJECT_COMPONENTS_STYLE(state: CanvasState, style: object): any {
+  UPDATE_FIRST_PROJECT_COMPONENTS_STYLE(
+    state: CanvasState,
+    style: object
+  ): any {
     for (const workspaceComponent of state.workspaceComponents) {
       const element = workspaceComponent.json[0];
       element.attributes.style.value = {
@@ -65,6 +68,25 @@ export const mutations: MutationTree<CanvasState> = {
         workspaceComponent.html,
         element
       );
+    }
+    return state.workspaceComponents;
+  },
+  UPDATE_ALL_PROJECT_COMPONENTS_STYLE(state: CanvasState, style: object): any {
+    for (const workspaceComponent of state.workspaceComponents) {
+      for (const element of workspaceComponent.json) {
+        for (const [property, value] of Object.entries(style))
+          if (
+            element.attributes.style.value &&
+            property in element.attributes.style.value
+          ) {
+            element.attributes.style.value[property] = value;
+          }
+        //TODO: Create an update element dom for array of elements
+        workspaceComponent.html = updateElementDom(
+          workspaceComponent.html,
+          element
+        );
+      }
     }
     return state.workspaceComponents;
   },

@@ -16,7 +16,7 @@ const state: CanvasState = {
   style: {
     layout: "",
     backgroundColor: "",
-    font: "",
+    fontFamily: "",
     buttonColor: "",
     backgroundImage: "",
     previewText: "",

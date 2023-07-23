@@ -32,7 +32,6 @@ import { computed, defineComponent, onMounted } from "vue";
 import BaseLayout from "@/components/layout/BaseLayout.vue";
 import { ui } from "@/assets/js/canvas";
 import store from "@/store";
-import component from "*.vue";
 
 export default defineComponent({
   name: "CanvasLayout",

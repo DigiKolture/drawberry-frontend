@@ -6,7 +6,7 @@ export interface CurrentHoverElementType {
 export interface ProjectStyle {
   layout: string;
   backgroundColor: string;
-  font: string;
+  fontFamily: string;
   buttonColor: string;
   backgroundImage: string;
   previewText: string;

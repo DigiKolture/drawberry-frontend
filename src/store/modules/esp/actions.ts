@@ -7,7 +7,11 @@ const baseUrl = "/esp";
 
 export const actions: ActionTree<ESPState, RootState> = {
   getESPRedirectURL({ commit }, esp): Promise<void> {
-    const redirectUrl = `${process.env.VUE_APP_BASE_URL}/esp/${esp}/callback`;
+    const baseURL =
+      esp === "mailchimp"
+        ? "http://127.0.0.1:8081"
+        : process.env.VUE_APP_BASE_URL;
+    const redirectUrl = `${baseURL}/esp/${esp}/callback`;
     return AxiosClient.get(
       `${baseUrl}/${esp}/authenticate?redirectUrl=${redirectUrl}`
     )

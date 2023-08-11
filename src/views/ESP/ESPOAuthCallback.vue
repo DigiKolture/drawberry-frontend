@@ -23,6 +23,9 @@ export default defineComponent({
     const query = route.query;
     const params = route.params;
 
+    console.log({ query });
+    console.log({ params });
+
     await store.dispatch("esp/connectESP", {
       esp: params.esp,
       data: query,

@@ -1,0 +1,55 @@
+.header-export.action-dropdown{
+    width: 216px;
+    left: 125px;
+    top: 60px;
+}
+
+
+.action-dropdown.open{
+    @apply flex;
+}
+
+.action-dropdown{
+    @apply hidden flex-col absolute z-20;
+    width: 152px;
+    left: 55px;
+    top: 45px;
+    row-gap: 18px;
+    padding: 20px 10px;
+    background: #454856;
+    box-shadow: 0 4px 25px rgba(0, 0, 0, 0.08), 0 1px 4px rgba(23, 27, 30, 0.08);
+    border-radius: 8px;
+}
+
+.action-dropdown .action{
+    @apply flex cursor-pointer;
+    column-gap: 7px;
+}
+
+.action-dropdown .action__titles{
+    @apply flex-col;
+}
+
+.action-dropdown .action .action__icon{
+    @apply flex justify-center items-center;
+    width: 30px;
+}
+
+.action-dropdown .action .action__icon svg{
+    fill: #454856;
+}
+
+.action-dropdown .action .name{
+    @apply text-white;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 16px;
+}
+
+.action-dropdown .action .desc{
+    color: #848F9F;
+    font-size: 10px;
+    font-weight: 400;
+    line-height: 16px;
+}
+

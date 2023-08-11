@@ -53,7 +53,7 @@ header.header{
 }
 
 .header__container__right{
-    @apply flex items-center justify-center h-full;
+    @apply relative flex items-center justify-center h-full;
     column-gap: 14px;
 }
 

@@ -5,6 +5,7 @@ import ProjectIndex from "@/views/Projects/ProjectIndex.vue";
 import CreateFolder from "@/views/Projects/CreateFolder.vue";
 import Canvas from "@/views/Projects/Canvas.vue";
 import store from "@/store";
+import ESPOAuthCallback from "@/views/ESP/ESPOAuthCallback.vue";
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -45,6 +46,16 @@ const routes: Array<RouteRecordRaw> = [
     name: "Canvas",
     props: true,
     component: Canvas,
+    meta: {
+      authRequired: true,
+    },
+  },
+
+  {
+    path: "/esp/:esp/callback",
+    name: "ESPOAuthCallback",
+    props: true,
+    component: ESPOAuthCallback,
     meta: {
       authRequired: true,
     },

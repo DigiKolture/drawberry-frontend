@@ -26,30 +26,37 @@
         <button class="button__text__icon">
           <BaseIcon icon="header/preview" /><span>Preview</span>
         </button>
-        <button class="button__text__icon success">
+        <button @click="toggleExport" class="button__text__icon success">
           <BaseIcon icon="header/export" /> <span>Export</span>
         </button>
+        <ExportDropdown :class="{ open: openExport }" />
       </div>
     </div>
   </header>
 </template>
 
 <script>
-import { computed, defineComponent } from "vue";
+import { computed, defineComponent, ref } from "vue";
 import BaseIcon from "@/components/icon/BaseIcon";
 import { useRoute } from "vue-router";
 
 import store from "@/store";
+import ExportDropdown from "@/components/header/dropdown/ExportDropdown";
 export default defineComponent({
   name: "HeaderComponent",
-  components: { BaseIcon },
+  components: { ExportDropdown, BaseIcon },
 
   setup() {
+    const route = useRoute();
+    const openExport = ref(true);
+
+    const toggleExport = () => {
+      openExport.value = !openExport.value;
+    };
+
     const project = computed(() => {
       return store.getters["projects/project"];
     });
-
-    const route = useRoute();
 
     const isCanvas = computed(() => {
       return route.name === "Canvas";
@@ -67,7 +74,9 @@ export default defineComponent({
     return {
       project,
       route,
+      openExport,
       isCanvas,
+      toggleExport,
       updateProjectName,
     };
   },

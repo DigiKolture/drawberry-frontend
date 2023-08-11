@@ -1,12 +1,13 @@
 <template>
-  <div class="projects-dropdown">
+  <div class="action-dropdown">
     <button
+      class="action"
       @click="callEvent(dropdown)"
       :key="key"
       v-for="(dropdown, key) in data"
     >
       <span><BaseIcon :icon="dropdown.icon" /></span>
-      <span>{{ dropdown.name }}</span>
+      <span class="name">{{ dropdown.name }}</span>
     </button>
   </div>
 </template>

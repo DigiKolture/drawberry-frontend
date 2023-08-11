@@ -29,14 +29,14 @@ export const actions: ActionTree<ESPState, RootState> = {
     const redirectUrl = `${process.env.VUE_APP_BASE_URL}/esp/${esp}/callback`;
     return AxiosClient.post(
       `${baseUrl}/${esp}/callback?redirectUrl=${redirectUrl}`,
-      data
+      { code: data.code, query: data }
     )
       .then((res: any) => {
         const data = res.data.data;
-        console.log({ data });
         return res.data;
       })
       .catch((err: any): any => {
+        //  TODO: Redirect back to cnavas incase of error
         if (err instanceof Error) {
           const message = err.message;
           return Promise.reject(new Error(message));

@@ -18,18 +18,16 @@ export default defineComponent({
 
   async mounted() {
     const route = this.$route;
-
     const router = useRouter();
 
     const query = route.query;
     const params = route.params;
-    console.log({ query, params });
 
     await store.dispatch("esp/connectESP", {
       esp: params.esp,
       data: query,
     });
-    // router.push({ name: "Canvas", params: { id: this.project.id } });
+    router.push({ name: "Canvas", params: { id: this.project.id } });
   },
 });
 </script>

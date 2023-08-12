@@ -1,8 +1,17 @@
 <template>
   <BaseLayout>
     <section class="canvas__layout">
-      <div class="canvas__container" :class="{ nav__content__docked: docked }">
-        <aside class="canvas__sidebar">
+      <div
+        class="canvas__container"
+        :class="[
+          {
+            nav__content__docked: docked,
+            preview: currentPreview !== null,
+          },
+          currentPreview,
+        ]"
+      >
+        <aside v-if="!currentPreview" class="canvas__sidebar">
           <div class="canvas__sidebar__container">
             <slot name="sidebar" />
           </div>
@@ -17,7 +26,7 @@
           </div>
         </section>
 
-        <section class="canvas__panel" id="canvas-panel">
+        <section v-if="!currentPreview" class="canvas__panel" id="canvas-panel">
           <div class="canvas__panel__container">
             <slot name="panel" />
           </div>
@@ -40,6 +49,10 @@ export default defineComponent({
   setup() {
     onMounted(() => {
       ui.mainIndex();
+    });
+
+    const currentPreview = computed(() => {
+      return store.getters["canvas/currentPreview"];
     });
 
     const styles = computed(() => {
@@ -69,6 +82,7 @@ export default defineComponent({
       sidebarDock,
       docked,
       styles,
+      currentPreview,
     };
   },
 });

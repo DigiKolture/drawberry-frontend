@@ -4,7 +4,7 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import ProjectDropdownLayout from "@/components/layout/dropdown/ProjectDropdownLayout.vue";
+import ProjectDropdownLayout from "@/components/layout/dropdown/DropdownLayout.vue";
 import store from "@/store";
 import router from "@/router";
 export default defineComponent({

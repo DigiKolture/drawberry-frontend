@@ -1,14 +1,16 @@
 <template>
   <div class="action-dropdown">
-    <button
+    <div
       class="action"
       @click="callEvent(dropdown)"
       :key="key"
       v-for="(dropdown, key) in data"
     >
-      <span><BaseIcon :icon="dropdown.icon" /></span>
-      <span class="name">{{ dropdown.name }}</span>
-    </button>
+      <span class="action__icon"><BaseIcon :icon="dropdown.icon" /></span>
+      <div class="action__titles">
+        <span class="name">{{ dropdown.name }}</span>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -16,7 +18,7 @@
 import { defineComponent } from "vue";
 import BaseIcon from "@/components/icon/BaseIcon.vue";
 export default defineComponent({
-  name: "ProjectDropdownLayout",
+  name: "DropdownLayout",
   components: { BaseIcon },
 
   props: {
@@ -28,7 +30,7 @@ export default defineComponent({
 
   setup(props, { emit }) {
     const callEvent = (dropdown: any) => {
-      if (dropdown.event) emit("events", dropdown.event);
+      if (dropdown.event) emit("clicks", dropdown.event);
     };
 
     return {

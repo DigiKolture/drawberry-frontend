@@ -64,7 +64,7 @@ button.button.success{
 }
 
 button.button__text__icon{
-    @apply flex text-white bg-transparent text-white;
+    @apply flex items-center text-white bg-transparent text-white;
     column-gap: 11px;
     font-weight: 500;
     font-size: 14px;

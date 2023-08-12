@@ -40,6 +40,10 @@ header.header{
 }
 
 .header__container__middle{
+    @apply h-full;
+}
+
+.header__middle__input__container{
     @apply flex items-center justify-center h-full header-border;
     padding: 12px;
 }
@@ -52,8 +56,39 @@ header.header{
     line-height: 18px;
 }
 
+.header__middle__preview{
+    @apply flex items-center justify-center h-full;
+}
+
+.header__middle__preview button{
+    background: #454856;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 16px;
+}
+
+.header__middle__preview button.active{
+    background: #848F9F;
+    font-weight: 500;
+}
+.header__middle__preview button.active svg path {
+    @apply fill-white;
+}
+
+.header__middle__preview button:first-child{
+    border-radius: 4px 0 0 4px;
+}
+
+.header__middle__preview button:nth-child(2){
+    border-radius: 0 4px 4px 0;
+}
+
 .header__container__right{
-    @apply relative flex items-center justify-center h-full;
+    @apply relative;
+}
+
+.header__right__canvas__actions{
+    @apply flex items-center justify-center h-full;
     column-gap: 14px;
 }
 
@@ -65,4 +100,17 @@ header.header{
 
 .header__redo button{
     padding: 11px;
+}
+
+.header__right__preview{
+    margin-right: 27px;
+}
+
+.header__right__preview button{
+    border-radius: 4px;
+    background: #454856;
+}
+
+.header__right__preview button svg path {
+    fill: #ADAFBB;
 }

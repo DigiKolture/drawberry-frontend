@@ -4,6 +4,10 @@
     top: 60px;
 }
 
+.header-preview.action-dropdown{
+    left: 80px;
+    top: 55px;
+}
 
 .action-dropdown.open{
     @apply flex;

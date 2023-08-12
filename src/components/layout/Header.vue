@@ -48,7 +48,7 @@ export default defineComponent({
 
   setup() {
     const route = useRoute();
-    const openExport = ref(true);
+    const openExport = ref(false);
 
     const toggleExport = () => {
       openExport.value = !openExport.value;

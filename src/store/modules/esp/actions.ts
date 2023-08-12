@@ -6,6 +6,21 @@ import AxiosClient from "@/services/api";
 const baseUrl = "/esp";
 
 export const actions: ActionTree<ESPState, RootState> = {
+  getESPs({ commit }): Promise<void> {
+    return AxiosClient.get(`${baseUrl}`)
+      .then((res: any) => {
+        const data = res.data.data;
+        commit("SET_ESPS", data.esps);
+        return res.data;
+      })
+      .catch((err: any): any => {
+        if (err instanceof Error) {
+          const message = err.message;
+          return Promise.reject(new Error(message));
+        }
+      });
+  },
+
   getESPRedirectURL({ commit }, esp): Promise<void> {
     const baseURL =
       esp === "mailchimp"

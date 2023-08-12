@@ -33,7 +33,7 @@ export default defineComponent({
     const handleClick = (dropdownName: string) => {
       if (dropdownName === "mobile" || dropdownName === "desktop") {
         store.commit("canvas/SET_CURRENT_PREVIEW", dropdownName);
-        //  TODO: Might refresh to remove unnecessary padding added by hover/fcosu
+        //  TODO: Might refresh to remove unnecessary padding added by hover/focus
       }
     };
 

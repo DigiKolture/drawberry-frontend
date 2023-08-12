@@ -42,6 +42,11 @@ export default defineComponent({
         name: "Send to Google",
         esp: "google",
       },
+      {
+        icon: "header/export/mailchimp",
+        name: "Send to Hubspot",
+        esp: "hubspot",
+      },
     ];
 
     onMounted(() => {

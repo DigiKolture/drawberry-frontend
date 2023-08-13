@@ -1,0 +1,39 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - dev
+  pull_request:
+    branches:
+      - dev
+
+jobs:
+  deployment:
+    runs-on: self-hosted
+    steps:
+      - name: Checkout main branch
+        uses: actions/checkout@v2
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: '14.x'
+
+      - name: List files
+        run: ls
+
+      - name: Install dependencies
+        run: npm i
+
+      - name: 'Create env file'
+        run: |
+          touch .env
+          echo VUE_APP_BASE_URL="https://dev.app.drawberry.io" >> .env
+
+          cat .env
+
+      - name: Build
+        run: |
+          rm -rf build
+          npm run build

@@ -9,6 +9,14 @@ import ESPOAuthCallback from "@/views/ESP/ESPOAuthCallback.vue";
 
 const routes: Array<RouteRecordRaw> = [
   {
+    path: "/",
+    name: "Home",
+    component: Login,
+    meta: {
+      authRequired: false,
+    },
+  },
+  {
     path: "/login",
     name: "Login",
     component: Login,

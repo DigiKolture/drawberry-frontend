@@ -35,5 +35,5 @@ jobs:
 
       - name: Build
         run: |
-          rm -rf build
+          rm -rf dist
           npm run build

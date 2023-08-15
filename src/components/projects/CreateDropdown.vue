@@ -1,5 +1,5 @@
 <template>
-  <ProjectDropdownLayout :data="data" @events="handleEvents" />
+  <ProjectDropdownLayout :data="data" @clicks="handleEvents" />
 </template>
 
 <script lang="ts">
@@ -26,14 +26,17 @@ export default defineComponent({
     ];
 
     const handleEvents = (event: string) => {
+      console.log({ event });
       switch (event) {
-        case data[0].event:
+        case data[0].event: {
           createProject();
           break;
+        }
 
-        case data[1].event:
+        case data[1].event: {
           router.push({ name: "CreateFolder" });
           break;
+        }
       }
     };
 

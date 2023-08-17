@@ -9,7 +9,11 @@
       <div class="export__empty__content">
         <h6>No connected apps</h6>
         <p>You haven't let any apps access your account yet.</p>
-        <BaseButton class="button__outline" title="Manage apps" />
+        <BaseButton
+          @click="openManage"
+          class="button__outline"
+          title="Manage apps"
+        />
       </div>
     </div>
     <div class="export__footer">
@@ -80,6 +84,10 @@ export default defineComponent({
       return esps.value.find((esp: any) => esp.esp === dropdown.esp);
     };
 
+    const openManage = () => {
+      store.commit("modals/TOGGLE_MODAL", "manage_esp");
+    };
+
     const handleExport = (dropdown: any) => {
       if (!dropdown.esp) return;
       if (checkESPForUser(dropdown)) return;
@@ -103,6 +111,7 @@ export default defineComponent({
       isEspEmpty,
       getESPDescription,
       handleExport,
+      openManage,
       downloadData,
     };
   },

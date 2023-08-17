@@ -5,6 +5,7 @@ import components from "@/store/modules/components";
 import canvas from "@/store/modules/canvas";
 import folders from "@/store/modules/folders";
 import esp from "@/store/modules/esp";
+import modals from "@/store/modules/modals";
 import createPersistedState from "vuex-persistedstate";
 
 export default createStore({
@@ -21,6 +22,7 @@ export default createStore({
     components,
     canvas,
     esp,
+    modals,
   },
   plugins: [
     createPersistedState({

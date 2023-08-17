@@ -1,15 +1,11 @@
 
 
 .manage__esps{
-    @apply absolute hidden h-full text-white;
+    @apply  flex flex-col absolute  h-full text-white;
     top: 0;
     right: 0;
     width: 378px;
     background: #2D3039;
-}
-
-.manage__esps.active{
-    @apply flex flex-col;
 }
 
 .manage__esps__header{

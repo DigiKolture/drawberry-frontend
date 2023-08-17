@@ -27,12 +27,16 @@ export default defineComponent({
       return store.getters["auth/authUser"];
     });
 
+    const showManageESP = computed(() => {
+      return store.getters["modals/manageESP"];
+    });
+
     const isCanvas = computed(() => {
       return route.name === "Canvas";
     });
 
     const showESPMange = computed(() => {
-      return authUser.value && isCanvas.value;
+      return authUser.value && isCanvas.value && showManageESP.value;
     });
 
     return {

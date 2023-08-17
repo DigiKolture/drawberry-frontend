@@ -1,8 +1,12 @@
 <template>
-  <div class="manage__esps active">
+  <div class="manage__esps">
     <div class="manage__esps__header">
       <h4>Manage apps</h4>
-      <BaseButtonIcon class="manage__esps__header__close" icon="close" />
+      <BaseButtonIcon
+        @click="close"
+        class="manage__esps__header__close"
+        icon="close"
+      />
     </div>
     <div class="manage__esps__list">
       <ESPListItem
@@ -19,6 +23,7 @@
 import { defineComponent } from "vue";
 import BaseButtonIcon from "@/components/icon/BaseButtonIcon.vue";
 import ESPListItem from "@/components/esp/ESPListItem.vue";
+import store from "@/store";
 
 export default defineComponent({
   name: "ManageESPs",
@@ -43,8 +48,13 @@ export default defineComponent({
       },
     ];
 
+    const close = () => {
+      store.commit("modals/TOGGLE_MODAL", "manage_esp");
+    };
+
     return {
       data,
+      close,
     };
   },
 });

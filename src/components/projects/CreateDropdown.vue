@@ -34,7 +34,7 @@ export default defineComponent({
         }
 
         case data[1].event: {
-          router.push({ name: "CreateFolder" });
+          // router.push({ name: "CreateFolder" });
           break;
         }
       }

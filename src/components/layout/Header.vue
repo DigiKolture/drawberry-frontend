@@ -63,7 +63,7 @@ import BaseIcon from "@/components/icon/BaseIcon";
 import { useRoute } from "vue-router";
 
 import store from "@/store";
-import ExportDropdown from "@/components/header/dropdown/ExportDropdown";
+import ExportDropdown from "@/components/header/dropdown/export/ExportDropdown";
 import PreviewDropdown from "@/components/header/dropdown/PreviewDropdown";
 import BaseButtonTextIcon from "@/components/button/BaseButtonTextIcon";
 import BaseButtonIcon from "@/components/icon/BaseButtonIcon";

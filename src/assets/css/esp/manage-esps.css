@@ -1,0 +1,69 @@
+
+
+.manage__esps{
+    @apply absolute hidden h-full text-white;
+    top: 0;
+    right: 0;
+    width: 378px;
+    background: #2D3039;
+}
+
+.manage__esps.active{
+    @apply flex flex-col;
+}
+
+.manage__esps__header{
+    @apply flex justify-between;
+    height: 40px;
+    padding: 8px 12px;
+    border-bottom: 1px solid #1E1F26;
+}
+
+.manage__esps__header h4{
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.manage__esps__header__close{
+    @apply flex items-center;
+    background-color: transparent;
+    padding: 0;
+    width: 20px;
+    height: 20px;
+}
+
+.manage__esps__header__close svg{
+    background-color: transparent;
+}
+
+.manage__esps__list{
+    @apply flex flex-col;
+    padding: 16px;
+    row-gap: 8px;
+}
+
+.manage__esps__list__item{
+    @apply flex justify-between;
+    height: 49px;
+    padding: 8px;
+    border-radius: 6px;
+    border: 1px solid #454856;
+}
+
+.manage__esps__list__item__content{
+    @apply flex items-center;
+    column-gap: 12px;
+
+}
+
+.esps__list__item__icon{
+    border-radius: 4px;
+    background: #353843;
+    padding: 6px;
+}
+
+.manage__esps__list__item__action .button__outline{
+    font-size: 12px;
+    font-weight: 400;
+    height: 28px;
+}

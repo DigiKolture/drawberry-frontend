@@ -44,13 +44,18 @@ textarea:focus-visible{
 }
 
 button.button{
-    @apply text-white;
+    @apply text-white flex items-center justify-center;
     border-radius: 4px;
     padding-top: 13px;
     padding-bottom: 13px;
-    font-size: 14px;
+    font-size: 12px;
     font-weight: 500;
     line-height: 18px;
+}
+
+.button.button__outline{
+    border: 1px solid #848F9F;
+    padding: 8px;
 }
 
 button:disabled{

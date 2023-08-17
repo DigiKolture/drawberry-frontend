@@ -1,19 +1,15 @@
-.header-export.action-dropdown{
-    width: 216px;
-    left: 125px;
-    top: 60px;
-}
 
-.header-preview.action-dropdown{
+
+.header-preview.action__dropdown{
     left: 80px;
     top: 55px;
 }
 
-.action-dropdown.open{
+.action__dropdown.open{
     @apply flex;
 }
 
-.action-dropdown{
+.action__dropdown{
     @apply hidden flex-col absolute z-20;
     width: 152px;
     left: 55px;
@@ -25,32 +21,32 @@
     border-radius: 8px;
 }
 
-.action-dropdown .action{
-    @apply flex cursor-pointer;
+.action__dropdown__item{
+    @apply flex items-center cursor-pointer;
     column-gap: 7px;
 }
 
-.action-dropdown .action__titles{
+.action__dropdown__item__titles{
     @apply flex-col;
 }
 
-.action-dropdown .action .action__icon{
+.action__dropdown__item__icon{
     @apply flex justify-center items-center;
     width: 30px;
 }
 
-.action-dropdown .action .action__icon svg{
+.action__dropdown__item__icon svg{
     fill: #454856;
 }
 
-.action-dropdown .action .name{
+.dropdown__item__titles__name{
     @apply text-white;
     font-weight: 400;
     font-size: 14px;
     line-height: 16px;
 }
 
-.action-dropdown .action .desc{
+.dropdown__item__titles__desc{
     color: #848F9F;
     font-size: 10px;
     font-weight: 400;

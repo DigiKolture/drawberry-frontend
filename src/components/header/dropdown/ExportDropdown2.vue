@@ -1,15 +1,17 @@
 <template>
-  <div class="header-export action-dropdown">
+  <div class="header-export action__dropdown">
     <div
       @click="handleExport(dropdown)"
-      class="action"
+      class="action__dropdown__item"
       :key="key"
       v-for="(dropdown, key) in data"
     >
-      <span class="action__icon"><BaseIcon :icon="dropdown.icon" /></span>
-      <div class="action__titles">
-        <h5 class="name">{{ dropdown.name }}</h5>
-        <p v-if="dropdown.esp" class="desc">
+      <span class="action__dropdown__item__icon"
+        ><BaseIcon :icon="dropdown.icon"
+      /></span>
+      <div class="action__dropdown__item__titles">
+        <h5 class="dropdown__item__titles__name">{{ dropdown.name }}</h5>
+        <p v-if="dropdown.esp" class="dropdown__item__titles__desc">
           {{ getESPDescription(dropdown) }}
         </p>
       </div>
@@ -23,13 +25,13 @@ import BaseIcon from "@/components/icon/BaseIcon.vue";
 import store from "@/store";
 
 export default defineComponent({
-  name: "ExportDropdown",
+  name: "ExportDropdown2",
   components: { BaseIcon },
 
   setup(props, { emit }) {
     const data = [
       {
-        icon: "header/export/html",
+        icon: "header/export/download",
         name: "Download HTML",
       },
       {

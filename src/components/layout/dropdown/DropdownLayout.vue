@@ -1,5 +1,5 @@
 <template>
-  <div class="action-dropdown">
+  <div class="action__dropdown">
     <div
       class="action"
       @click="callEvent(dropdown)"

@@ -1,0 +1,57 @@
+.header-export.action__dropdown{
+    width: 216px;
+    left: 125px;
+    top: 60px;
+    padding: 0;
+}
+
+.export__empty{
+    @apply flex flex-col;
+    row-gap: 8px;
+    padding-top: 16px;
+}
+
+.export__empty__icons{
+    @apply flex items-center justify-center;
+}
+
+.export__empty__icon{
+    @apply rounded-full overflow-hidden;
+    padding: 6px;
+    border: 1.5px solid #454856;
+    background: #353843;
+    margin-left: -5px;
+}
+
+.export__empty__icon svg{
+    width: 16px;
+    height: 16px;
+}
+
+.export__empty__content{
+    @apply flex flex-col items-center text-white;
+    row-gap: 5px;
+}
+
+.export__empty__content h6{
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.4px;
+}
+
+.export__empty__content p{
+    font-size: 10px;
+    font-weight: 400;
+    letter-spacing: 0.4px;
+    text-align: center;
+}
+
+.export__empty__content button{
+    @apply mt-1;
+    font-weight: 700;
+}
+
+.export__footer{
+    border-top: 1px solid #353843;
+    padding: 16px 16px 16px 16px;
+}

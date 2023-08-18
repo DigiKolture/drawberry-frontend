@@ -3,6 +3,7 @@
     left: 125px;
     top: 60px;
     padding: 0;
+    row-gap: 0;
 }
 
 .export__empty{

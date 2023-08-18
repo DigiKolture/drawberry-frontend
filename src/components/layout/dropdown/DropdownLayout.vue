@@ -1,25 +1,21 @@
 <template>
   <div class="action__dropdown">
-    <div
-      class="action"
+    <ActionDropdownItem
       @click="callEvent(dropdown)"
       :key="key"
       v-for="(dropdown, key) in data"
-    >
-      <span class="action__icon"><BaseIcon :icon="dropdown.icon" /></span>
-      <div class="action__titles">
-        <span class="name">{{ dropdown.name }}</span>
-      </div>
-    </div>
+      :title="dropdown.name"
+      :icon="dropdown.icon"
+    />
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import BaseIcon from "@/components/icon/BaseIcon.vue";
+import ActionDropdownItem from "@/components/dropdown/ActionDropdownItem.vue";
 export default defineComponent({
   name: "DropdownLayout",
-  components: { BaseIcon },
+  components: { ActionDropdownItem },
 
   props: {
     data: {

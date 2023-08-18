@@ -14,7 +14,7 @@
     width: 152px;
     left: 55px;
     top: 45px;
-    /*row-gap: 18px;*/
+    row-gap: 18px;
     padding: 20px 10px;
     background: #454856;
     box-shadow: 0 4px 25px rgba(0, 0, 0, 0.08), 0 1px 4px rgba(23, 27, 30, 0.08);

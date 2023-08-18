@@ -9,6 +9,7 @@
     @apply flex flex-col;
     row-gap: 8px;
     padding-top: 16px;
+    padding-bottom: 16px;
 }
 
 .export__empty__icons{
@@ -53,5 +54,30 @@
 
 .export__footer{
     border-top: 1px solid #353843;
-    padding: 16px 16px 16px 16px;
+    padding: 10px 16px 16px 16px;
+}
+
+.export__esps{
+    @apply flex flex-col text-white;
+    padding: 16px 16px 9px 16px;
+    row-gap: 15px;
+}
+
+.export__esps__header{
+    @apply flex items-center justify-between;
+}
+
+.export__esps__header h5{
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.export__esps__lists{
+    @apply flex flex-col;
+    row-gap: 16px;
+}
+
+.export__esps__lists__add .action__dropdown__item__icon svg{
+    width: 18px;
+    height: 18px;
 }

@@ -6,6 +6,14 @@ export const mutations: MutationTree<ModalState> = {
     state[modal] = !state[modal];
     return state[modal];
   },
+  OPEN_MODAL(state: ModalState, modal: string): boolean {
+    state[modal] = true;
+    return state[modal];
+  },
+  CLOSE_MODAL(state: ModalState, modal: string): boolean {
+    state[modal] = false;
+    return state[modal];
+  },
   CLOSE_ALL_MODALS(state: ModalState): ModalState {
     state.manageESP = false;
     return state;

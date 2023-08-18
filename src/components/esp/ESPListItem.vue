@@ -10,7 +10,11 @@
       </div>
     </div>
     <div class="manage__esps__list__item__action">
-      <BaseButton class="button__outline" title="Connect" />
+      <BaseButton
+        @click="handleExport"
+        class="button__outline"
+        :title="buttonText"
+      />
     </div>
   </div>
 </template>
@@ -45,7 +49,12 @@ export default defineComponent({
     });
 
     const checkESPForUser = (esp: string) => {
-      return esps.value.find((esp: any) => esp.esp === esp);
+      return esps.value.find((espItem: any) => espItem.esp === esp);
+    };
+
+    const handleExport = () => {
+      if (checkESPForUser(props.esp)) return;
+      store.dispatch("esp/getESPRedirectURL", props.esp);
     };
 
     const getESPSubTitle = () => {
@@ -58,8 +67,14 @@ export default defineComponent({
       return desc;
     };
 
+    const buttonText = computed(() => {
+      return checkESPForUser(props.esp) ? "Reconnect" : "Connect";
+    });
+
     return {
       getESPSubTitle,
+      handleExport,
+      buttonText,
     };
   },
 });

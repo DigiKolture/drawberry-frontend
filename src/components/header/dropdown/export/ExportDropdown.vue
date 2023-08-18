@@ -16,6 +16,28 @@
         />
       </div>
     </div>
+    <div class="export__esps" v-else>
+      <div class="export__esps__header">
+        <h5>Connected apps</h5>
+        <button @click="openManage"><BaseIcon icon="settings" /></button>
+      </div>
+      <div class="export__esps__lists">
+        <ActionDropdownItem
+          v-for="esp_item in esps"
+          :key="esp_item.id"
+          :title="`Send to ${capitalizeFirstLetter(esp_item.esp)}`"
+          :icon="`header/export/${esp_item.esp}`"
+          subtitle="App connected"
+        />
+        <ActionDropdownItem
+          @click="openManage"
+          class="export__esps__lists__add"
+          title="Add new app"
+          icon="add"
+          subtitle="5+ apps to integrate with"
+        />
+      </div>
+    </div>
     <div class="export__footer">
       <ActionDropdownItem
         :title="downloadData.name"
@@ -80,37 +102,20 @@ export default defineComponent({
       if (dropdown.event) emit("events", dropdown.event);
     };
 
-    const checkESPForUser = (dropdown: any) => {
-      return esps.value.find((esp: any) => esp.esp === dropdown.esp);
+    const capitalizeFirstLetter = (inputString: string) => {
+      return inputString.charAt(0).toUpperCase() + inputString.slice(1);
     };
 
     const openManage = () => {
-      store.commit("modals/TOGGLE_MODAL", "manage_esp");
-    };
-
-    const handleExport = (dropdown: any) => {
-      if (!dropdown.esp) return;
-      if (checkESPForUser(dropdown)) return;
-      store.dispatch("esp/getESPRedirectURL", dropdown.esp);
-    };
-
-    const getESPDescription = (dropdown: any) => {
-      let desc = "";
-      if (!dropdown.esp) return desc;
-      if (checkESPForUser(dropdown)) {
-        desc = "App integration connected";
-      } else {
-        desc = "App integration needed";
-      }
-      return desc;
+      store.commit("modals/OPEN_MODAL", "manage_esp");
     };
 
     return {
       callEvent,
       data,
+      esps,
+      capitalizeFirstLetter,
       isEspEmpty,
-      getESPDescription,
-      handleExport,
       openManage,
       downloadData,
     };

@@ -49,7 +49,7 @@ export default defineComponent({
     ];
 
     const close = () => {
-      store.commit("modals/TOGGLE_MODAL", "manage_esp");
+      store.commit("modals/CLOSE_MODAL", "manage_esp");
     };
 
     return {

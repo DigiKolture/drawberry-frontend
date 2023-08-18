@@ -40,12 +40,21 @@
             <button><BaseIcon icon="header/redo/backward" /></button>
             <button><BaseIcon icon="header/redo/forward" /></button>
           </div>
-          <button @click="togglePreview" class="button__text__icon">
-            <BaseIcon icon="header/preview" /><span>Preview</span>
-          </button>
-          <button @click="toggleExport" class="button__text__icon success">
-            <BaseIcon icon="header/export" /> <span>Export</span>
-          </button>
+          <BaseButtonTextIcon
+            @click="togglePreview"
+            text="Preview"
+            icon="header/preview"
+          />
+          <BaseButton
+            class="header__right__share button__outline"
+            title="Share"
+          />
+          <BaseButtonTextIcon
+            @click="toggleExport"
+            class="success"
+            text="Export"
+            icon="header/export"
+          />
           <ExportDropdown :class="{ open: openExport }" />
           <PreviewDropdown :class="{ open: openPreview }" />
         </div>
@@ -67,9 +76,11 @@ import ExportDropdown from "@/components/header/dropdown/export/ExportDropdown";
 import PreviewDropdown from "@/components/header/dropdown/PreviewDropdown";
 import BaseButtonTextIcon from "@/components/button/BaseButtonTextIcon";
 import BaseButtonIcon from "@/components/icon/BaseButtonIcon";
+import BaseButton from "@/components/layout/BaseButton";
 export default defineComponent({
   name: "HeaderComponent",
   components: {
+    BaseButton,
     BaseButtonIcon,
     BaseButtonTextIcon,
     PreviewDropdown,

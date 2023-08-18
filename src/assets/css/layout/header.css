@@ -115,4 +115,10 @@ header.header{
     fill: #ADAFBB;
 }
 
+.header__right__canvas__actions .header__right__share{
+    height: 100%;
+    padding: 11px 12px;
+    font-size: 14px;
+    font-weight: 400;
+}
 

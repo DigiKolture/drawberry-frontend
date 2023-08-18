@@ -9,7 +9,7 @@
       />
     </div>
     <div class="manage__esps__list">
-      <ESPListItem
+      <ManageESPListItem
         :key="key"
         v-for="(dropdown, key) in data"
         :title="dropdown.title"
@@ -22,12 +22,12 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 import BaseButtonIcon from "@/components/icon/BaseButtonIcon.vue";
-import ESPListItem from "@/components/esp/ESPListItem.vue";
+import ManageESPListItem from "@/components/esp/ManageESPListItem.vue";
 import store from "@/store";
 
 export default defineComponent({
   name: "ManageESPs",
-  components: { ESPListItem, BaseButtonIcon },
+  components: { ManageESPListItem, BaseButtonIcon },
   setup() {
     const data = [
       {

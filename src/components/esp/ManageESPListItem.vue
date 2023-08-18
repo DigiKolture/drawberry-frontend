@@ -26,7 +26,7 @@ import BaseButton from "@/components/layout/BaseButton.vue";
 import store from "@/store";
 
 export default defineComponent({
-  name: "ESPListItem",
+  name: "ManageESPListItem",
   components: { BaseButton, BaseIcon },
   props: {
     title: {
@@ -53,7 +53,7 @@ export default defineComponent({
     };
 
     const handleExport = () => {
-      if (checkESPForUser(props.esp)) return;
+      // if (checkESPForUser(props.esp)) return;
       store.dispatch("esp/getESPRedirectURL", props.esp);
     };
 

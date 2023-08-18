@@ -23,7 +23,7 @@ export const actions: ActionTree<ESPState, RootState> = {
 
   getESPRedirectURL({ commit }, esp): Promise<void> {
     const baseURL =
-      esp === "mailchimp"
+      esp === "mailchimp" && process.env.VUE_APP_ENVIRONMENT === "local"
         ? "http://127.0.0.1:8081"
         : process.env.VUE_APP_BASE_URL;
     const redirectUrl = `${baseURL}/esp/${esp}/callback`;

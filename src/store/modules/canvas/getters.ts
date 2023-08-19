@@ -31,9 +31,6 @@ export const getters: GetterTree<CanvasState, RootState> = {
   sidebarNavContent(state: CanvasState): string | null {
     return state.sidebarNavContent;
   },
-  currentPreview(state: CanvasState): string | null {
-    return state.currentPreview;
-  },
   sidebarDock(state: CanvasState): boolean {
     return state.sidebarDock;
   },

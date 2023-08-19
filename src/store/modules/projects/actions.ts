@@ -20,6 +20,18 @@ export const actions: ActionTree<ProjectState, RootState> = {
         }
       });
   },
+  getProjectComponentsForPreview(_, projectId: string): Promise<void> {
+    return AxiosClient.get(`${baseUrl}/${projectId}`)
+      .then((res: any) => {
+        return res.data.data.project;
+      })
+      .catch((err: any): any => {
+        if (err instanceof Error) {
+          const message = err.message;
+          return Promise.reject(new Error(message));
+        }
+      });
+  },
 
   storeProject({ commit }, data): Promise<void> {
     return AxiosClient.post(`${baseUrl}`, data)

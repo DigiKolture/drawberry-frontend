@@ -52,7 +52,7 @@ export default defineComponent({
     });
 
     const currentPreview = computed(() => {
-      return store.getters["canvas/currentPreview"];
+      return store.getters["preview/currentPreview"];
     });
 
     const styles = computed(() => {

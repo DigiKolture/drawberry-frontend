@@ -6,6 +6,7 @@ import CreateFolder from "@/views/Projects/CreateFolder.vue";
 import Canvas from "@/views/Projects/Canvas.vue";
 import store from "@/store";
 import ESPOAuthCallback from "@/views/ESP/ESPOAuthCallback.vue";
+import Preview from "@/views/Projects/Preview.vue";
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -56,6 +57,15 @@ const routes: Array<RouteRecordRaw> = [
     component: Canvas,
     meta: {
       authRequired: true,
+    },
+  },
+  {
+    path: "/project/:id/preview",
+    name: "Preview",
+    props: true,
+    component: Preview,
+    meta: {
+      authRequired: false,
     },
   },
 

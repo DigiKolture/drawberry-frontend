@@ -102,12 +102,4 @@ export const mutations: MutationTree<CanvasState> = {
     state.sidebarDock = data;
     return state.sidebarDock;
   },
-  SET_SHOW_PREVIEW(state: CanvasState, data: boolean) {
-    state.showPreview = data;
-    return state.showPreview;
-  },
-  SET_CURRENT_PREVIEW(state: CanvasState, data: string | null) {
-    state.currentPreview = data;
-    return state.currentPreview;
-  },
 };

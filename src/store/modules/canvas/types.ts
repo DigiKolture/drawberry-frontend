@@ -17,9 +17,7 @@ export interface CanvasState {
   focusedIndex: number | null;
   currentHoverElement: CurrentHoverElementType;
   sidebarNavContent: string | null;
-  currentPreview: string | null;
   sidebarDock: boolean;
-  showPreview: boolean;
   workspaceComponents: any[];
   googleFonts: any[];
   fontWeights: number[];

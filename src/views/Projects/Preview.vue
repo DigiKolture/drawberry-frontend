@@ -5,15 +5,21 @@
 import { computed, defineComponent, onMounted, ref } from "vue";
 import store from "@/store";
 import BaseLayout from "@/components/layout/BaseLayout.vue";
+import { useRoute } from "vue-router";
 
 export default defineComponent({
   name: "PreviewPage",
   components: { BaseLayout },
   setup() {
-    onMounted(() => {
-      store.dispatch("components/getComponents");
-      store.dispatch("canvas/getGoogleFonts");
-      // store.commit("canvas/SET_WORKSPACE_COMPONENTS", []);
+    const route = useRoute();
+    const projectId = route.params.id as string;
+
+    onMounted(async () => {
+      const project = await store.dispatch(
+        "projects/getProjectComponentsForPreview",
+        projectId
+      );
+      console.log({ project });
     });
 
     const selectedComponent = ref({});

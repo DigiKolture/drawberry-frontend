@@ -8,7 +8,7 @@ import ProjectDropdownLayout from "@/components/layout/dropdown/DropdownLayout.v
 import store from "@/store";
 import router from "@/router";
 export default defineComponent({
-  name: "CreateDropdown",
+  name: "ProjectCreateDropdown",
   components: { ProjectDropdownLayout },
 
   setup() {
@@ -34,7 +34,7 @@ export default defineComponent({
         }
 
         case data[1].event: {
-          // router.push({ name: "CreateFolder" });
+          router.push({ name: "CreateFolder" });
           break;
         }
       }

@@ -6,4 +6,7 @@ export const getters: GetterTree<ModalState, RootState> = {
   manageESP(state: ModalState): boolean {
     return state.manage_esp;
   },
+  sharePreview(state: ModalState): boolean {
+    return state.share_preview;
+  },
 };

@@ -10,6 +10,9 @@
     <template v-slot:panel>
       <CanvasPanel />
     </template>
+    <template v-slot:modals>
+      <ShareProjectPreviewModal />
+    </template>
   </CanvasLayout>
 </template>
 <script>
@@ -20,10 +23,12 @@ import WorkspaceComponentItemsContainer from "@/components/canvas/workspace/comp
 import CanvasSidebarNav from "@/components/canvas/sidebar/CanvasSidebarNav";
 import CanvasSidebarNavContent from "@/components/canvas/sidebar/CanvasSidebarNavContent";
 import CanvasPanel from "@/components/canvas/panel/CanvasPanel";
+import ShareProjectPreviewModal from "@/components/canvas/modals/ShareProjectPreviewModal";
 
 export default defineComponent({
   name: "CanvasPage",
   components: {
+    ShareProjectPreviewModal,
     CanvasPanel,
     CanvasSidebarNav,
     CanvasSidebarNavContent,

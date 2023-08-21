@@ -14,6 +14,7 @@
         <BaseButton
           class="header__right__share button__outline"
           title="Share"
+          @click="toggleShare"
         />
         <BaseButtonTextIcon
           @click="toggleExport"
@@ -78,6 +79,10 @@ export default defineComponent({
       openExport.value = !openExport.value;
     };
 
+    const toggleShare = () => {
+      store.commit("modals/TOGGLE_MODAL", "share_preview");
+    };
+
     const togglePreview = () => {
       openPreview.value = !openPreview.value;
     };
@@ -97,6 +102,7 @@ export default defineComponent({
     return {
       openPreview,
       openExport,
+      toggleShare,
       toggleExport,
       togglePreview,
       updatePreviewTabs,

@@ -7,6 +7,7 @@ import { ModalState } from "@/store/modules/modals/types";
 
 const state: ModalState = {
   manage_esp: false,
+  share_preview: false,
 };
 
 export const modals: Module<ModalState, RootState> = {

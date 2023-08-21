@@ -5,7 +5,7 @@
       <span>Create</span>
       <BaseIcon :icon="`arrow/${openCreate ? 'down' : 'up'}`" />
     </button>
-    <CreateDropdown :class="{ open: openCreate }" />
+    <ProjectCreateDropdown :class="{ open: openCreate }" />
 
     <div class="projects__header__search">
       <input class="projects__header__search__input" type="text" />
@@ -19,11 +19,11 @@
 <script lang="ts">
 import { defineComponent, ref } from "vue";
 import BaseIcon from "@/components/icon/BaseIcon.vue";
-import CreateDropdown from "@/components/projects/CreateDropdown.vue";
+import ProjectCreateDropdown from "@/components/projects/ProjectCreateDropdown.vue";
 
 export default defineComponent({
   name: "ProjectsHeader",
-  components: { CreateDropdown, BaseIcon },
+  components: { ProjectCreateDropdown, BaseIcon },
 
   setup() {
     const openCreate = ref(false);

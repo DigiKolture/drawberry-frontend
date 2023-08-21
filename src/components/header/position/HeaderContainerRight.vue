@@ -22,17 +22,20 @@
           icon="header/export"
         />
         <ExportDropdown :class="{ open: openExport }" />
-        <PreviewDropdown :class="{ open: openPreview }" />
+        <PreviewDropdown
+          :is-preview="isPreview"
+          :class="{ open: openPreview }"
+        />
       </div>
       <div class="header__right__preview" v-else-if="isPreview">
-        <BaseButtonIcon @click="updatePreviewTabs(null)" icon="close" />
+        <BaseButtonIcon @click="goToProject(null)" icon="close" />
       </div>
     </template>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from "vue";
+import { computed, defineComponent, ref } from "vue";
 
 import store from "@/store";
 import ExportDropdown from "@/components/header/dropdown/export/ExportDropdown.vue";
@@ -41,6 +44,7 @@ import BaseButtonTextIcon from "@/components/button/BaseButtonTextIcon.vue";
 import BaseButtonIcon from "@/components/icon/BaseButtonIcon.vue";
 import BaseButton from "@/components/layout/BaseButton.vue";
 import BaseIcon from "@/components/icon/BaseIcon.vue";
+import router from "@/router";
 export default defineComponent({
   name: "HeaderContainerRight",
   props: {
@@ -78,6 +82,14 @@ export default defineComponent({
       openPreview.value = !openPreview.value;
     };
 
+    const project = computed(() => {
+      return store.getters["projects/project"];
+    });
+
+    const goToProject = () => {
+      router.push({ name: "Canvas", params: { id: project.value.id } });
+    };
+
     const updatePreviewTabs = (preview: string) => {
       store.commit("preview/SET_CURRENT_PREVIEW", preview);
     };
@@ -88,6 +100,7 @@ export default defineComponent({
       toggleExport,
       togglePreview,
       updatePreviewTabs,
+      goToProject,
     };
   },
 });

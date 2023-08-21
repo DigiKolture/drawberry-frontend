@@ -6,9 +6,16 @@
 import { computed, defineComponent, onMounted } from "vue";
 import store from "@/store";
 import DropdownLayout from "@/components/layout/dropdown/DropdownLayout.vue";
+import router from "@/router";
 
 export default defineComponent({
   name: "PreviewDropdown",
+  props: {
+    isPreview: {
+      type: Boolean,
+      required: true,
+    },
+  },
   components: { DropdownLayout },
 
   setup(props, { emit }) {
@@ -30,9 +37,16 @@ export default defineComponent({
       },
     ];
 
+    const project = computed(() => {
+      return store.getters["projects/project"];
+    });
+
     const handleClick = (dropdownName: string) => {
       if (dropdownName === "mobile" || dropdownName === "desktop") {
-        store.commit("canvas/SET_CURRENT_PREVIEW", dropdownName);
+        store.commit("preview/SET_CURRENT_PREVIEW", dropdownName);
+        if (!props.isPreview) {
+          router.push({ name: "Preview", params: { id: project.value.id } });
+        }
         //  TODO: Might refresh to remove unnecessary padding added by hover/focus
       }
     };

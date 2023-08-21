@@ -1,0 +1,17 @@
+.preview__container{
+    @apply flex justify-center w-full;
+    padding: 41px;
+}
+
+.preview__component__items__container{
+    @apply flex flex-col;
+    width: 600px;
+}
+
+.preview__component__items__container.cards{
+    row-gap: 20px;
+}
+
+.preview__component__items__container.mobile{
+    width: 375px;
+}

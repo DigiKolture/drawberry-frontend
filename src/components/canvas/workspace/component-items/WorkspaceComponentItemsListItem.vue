@@ -2,7 +2,6 @@
   <div class="workspace__component__items__list">
     <div
       class="workspace__component__items__list__item"
-      style="font-family: 'Agdasima', sans-serif"
       v-html="componentItem.html"
       :draggable="true"
       @dragstart.self="moveComponentItemPosition($event, itemIndex)"

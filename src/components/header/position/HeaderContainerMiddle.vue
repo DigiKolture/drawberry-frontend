@@ -20,7 +20,7 @@
       </div>
     </template>
     <template v-else>
-      <div class="header__middle__preview">
+      <div v-if="isPreview" class="header__middle__preview">
         <BaseButtonTextIcon
           :key="key"
           v-for="(preview, key) in previewTabsData"
@@ -39,6 +39,7 @@ import { computed, defineComponent, ref } from "vue";
 
 import store from "@/store";
 import BaseButtonTextIcon from "@/components/button/BaseButtonTextIcon.vue";
+import router from "@/router";
 export default defineComponent({
   name: "HeaderContainerMiddle",
   props: {
@@ -63,7 +64,7 @@ export default defineComponent({
     BaseButtonTextIcon,
   },
 
-  setup() {
+  setup(props) {
     const previewTabsData = [
       {
         icon: "header/preview/desktop",

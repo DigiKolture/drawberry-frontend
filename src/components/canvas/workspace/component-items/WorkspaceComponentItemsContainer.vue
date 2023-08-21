@@ -75,10 +75,6 @@ export default defineComponent({
       return store.getters["canvas/style"];
     });
 
-    const currentPreview = computed(() => {
-      return store.getters["preview/currentPreview"];
-    });
-
     const workspaceComponents = computed(() => {
       return store.getters["canvas/workspaceComponents"];
     });
@@ -116,8 +112,7 @@ export default defineComponent({
       const target = event.target;
       if (
         !target.classList.contains("editable") ||
-        target.classList.contains("focus") ||
-        currentPreview.value !== null
+        target.classList.contains("focus")
       ) {
         return;
       }
@@ -180,10 +175,7 @@ export default defineComponent({
       event.preventDefault();
       const target = event.target;
       const elementId = event.target.id;
-      if (
-        !target.classList.contains("editable") ||
-        currentPreview.value !== null
-      ) {
+      if (!target.classList.contains("editable")) {
         return;
       }
       if (hasFocused.value) {

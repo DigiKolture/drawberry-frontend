@@ -1,8 +1,22 @@
 <template>
-  <BaseLayout> </BaseLayout>
+  <BaseLayout>
+    <div class="preview__container" :style="styles">
+      <div
+        class="preview__component__items__container"
+        :class="[currentPreview, style.layout]"
+      >
+        <div
+          v-for="(componentItem, itemIndex) in workspaceComponents"
+          :key="itemIndex"
+          class="preview__component__items__list__item"
+          v-html="componentItem.html"
+        ></div>
+      </div>
+    </div>
+  </BaseLayout>
 </template>
 <script lang="ts">
-import { computed, defineComponent, onMounted, ref } from "vue";
+import { computed, defineComponent, onMounted } from "vue";
 import store from "@/store";
 import BaseLayout from "@/components/layout/BaseLayout.vue";
 import { useRoute } from "vue-router";
@@ -22,7 +36,24 @@ export default defineComponent({
       console.log({ project });
     });
 
-    const selectedComponent = ref({});
+    const workspaceComponents = computed(() => {
+      return store.getters["canvas/workspaceComponents"];
+    });
+
+    const style = computed(() => {
+      return store.getters["canvas/style"];
+    });
+
+    const currentPreview = computed(() => {
+      return store.getters["preview/currentPreview"];
+    });
+
+    const styles = computed(() => {
+      return {
+        backgroundColor: style.value.backgroundColor,
+        backgroundImage: `url('${style.value.backgroundImage}')`,
+      };
+    });
 
     const project = computed(() => {
       return store.getters["projects/project"];
@@ -30,7 +61,10 @@ export default defineComponent({
 
     return {
       project,
-      selectedComponent,
+      style,
+      styles,
+      currentPreview,
+      workspaceComponents,
     };
   },
 });

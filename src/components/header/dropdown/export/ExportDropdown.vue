@@ -22,13 +22,7 @@
         <button @click="openManage"><BaseIcon icon="settings" /></button>
       </div>
       <div class="export__esps__lists">
-        <ActionDropdownItem
-          v-for="esp_item in esps"
-          :key="esp_item.id"
-          :title="`Send to ${capitalizeFirstLetter(esp_item.esp)}`"
-          :icon="`header/export/${esp_item.esp}`"
-          subtitle="App connected"
-        />
+        <ExportESPsList />
         <ActionDropdownItem
           @click="openManage"
           class="export__esps__lists__add"
@@ -53,10 +47,12 @@ import BaseIcon from "@/components/icon/BaseIcon.vue";
 import store from "@/store";
 import BaseButton from "@/components/layout/BaseButton.vue";
 import ActionDropdownItem from "@/components/dropdown/ActionDropdownItem.vue";
+import ExportESPsList from "@/components/header/dropdown/export/ExportESPsList.vue";
+import { helpers } from "@/composables/helpers";
 
 export default defineComponent({
   name: "ExportDropdown",
-  components: { ActionDropdownItem, BaseButton, BaseIcon },
+  components: { ExportESPsList, ActionDropdownItem, BaseButton, BaseIcon },
 
   setup(props, { emit }) {
     const downloadData = {
@@ -86,6 +82,8 @@ export default defineComponent({
       },
     ];
 
+    const { capitalizeFirstLetter } = helpers();
+
     onMounted(() => {
       store.dispatch("esp/getESPs");
     });
@@ -100,10 +98,6 @@ export default defineComponent({
 
     const callEvent = (dropdown: any) => {
       if (dropdown.event) emit("events", dropdown.event);
-    };
-
-    const capitalizeFirstLetter = (inputString: string) => {
-      return inputString.charAt(0).toUpperCase() + inputString.slice(1);
     };
 
     const openManage = () => {

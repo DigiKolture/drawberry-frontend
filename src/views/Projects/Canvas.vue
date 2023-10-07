@@ -39,7 +39,6 @@ export default defineComponent({
   setup() {
     onMounted(() => {
       store.dispatch("components/getComponents");
-      store.dispatch("canvas/getGoogleFonts");
       // store.commit("canvas/SET_WORKSPACE_COMPONENTS", []);
     });
 

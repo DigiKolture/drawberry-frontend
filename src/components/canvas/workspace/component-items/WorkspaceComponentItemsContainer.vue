@@ -56,8 +56,10 @@ export default defineComponent({
       return store.getters["canvas/googleFonts"];
     });
 
-    onMounted(() => {
+    onMounted(async () => {
+      await store.dispatch("canvas/getGoogleFonts");
       const families = googleFonts.value.map((font: any) => font.family);
+
       WebFont.load({
         google: {
           families,

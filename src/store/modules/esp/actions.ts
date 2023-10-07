@@ -45,17 +45,30 @@ export const actions: ActionTree<ESPState, RootState> = {
   },
 
   connectESP({ commit }, { esp, data }): Promise<void> {
-    const redirectUrl = `${process.env.VUE_APP_BASE_URL}/esp/${esp}/callback`;
-    return AxiosClient.post(
-      `${baseUrl}/${esp}/callback?redirectUrl=${redirectUrl}`,
-      { code: data.code, query: data }
-    )
+    return AxiosClient.post(`${baseUrl}/${esp}/callback`, {
+      code: data.code,
+      query: data,
+    })
       .then((res: any) => {
         const data = res.data.data;
         return res.data;
       })
       .catch((err: any): any => {
         //  TODO: Redirect back to cnavas incase of error
+        if (err instanceof Error) {
+          const message = err.message;
+          return Promise.reject(new Error(message));
+        }
+      });
+  },
+
+  exportProject({ commit }, { esp, projectId }): Promise<void> {
+    return AxiosClient.post(`${baseUrl}/${esp}/export/project/${projectId}`)
+      .then((res: any) => {
+        const data = res.data.data;
+        return res.data;
+      })
+      .catch((err: any): any => {
         if (err instanceof Error) {
           const message = err.message;
           return Promise.reject(new Error(message));

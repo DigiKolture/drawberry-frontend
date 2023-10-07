@@ -1,7 +1,7 @@
 <template>
   <div class="header__container__middle">
     <template v-if="isAuth">
-      <div class="header__middle__input__container" v-if="isCanvas">
+      <div class="header__middle__input__container" v-if="isCanvas && project">
         <input
           v-model="project.name"
           type="text"

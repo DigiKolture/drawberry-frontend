@@ -4,6 +4,10 @@ export function helpers() {
     return moment(date).format("MMMM DD, YYYY");
   };
 
+  const capitalizeFirstLetter = (inputString: string) => {
+    return inputString.charAt(0).toUpperCase() + inputString.slice(1);
+  };
+
   const sliceString = (str: string, num = 12) => {
     if (str.length <= num) return str;
     return str.slice(0, num) + "...";
@@ -54,6 +58,7 @@ export function helpers() {
   return {
     formatDate,
     isValidImageUrl,
+    capitalizeFirstLetter,
     copy,
     sliceString,
   };

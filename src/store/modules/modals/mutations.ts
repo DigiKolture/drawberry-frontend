@@ -15,7 +15,11 @@ export const mutations: MutationTree<ModalState> = {
     return state[modal];
   },
   CLOSE_ALL_MODALS(state: ModalState): ModalState {
-    state.manageESP = false;
+    state.manage_esp = false;
+    return state;
+  },
+  CLOSE_ALL_RIGHT_PANELS(state: ModalState): ModalState {
+    state.manage_esp = false;
     return state;
   },
 };

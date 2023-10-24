@@ -6,6 +6,7 @@
         :class="[
           {
             nav__content__docked: docked,
+            has__right__panel: hasWorkspaceComponent,
           },
         ]"
       >
@@ -23,7 +24,11 @@
             <slot name="workspace" />
           </div>
         </section>
-        <section class="canvas__panel" id="canvas-panel">
+        <section
+          v-if="hasWorkspaceComponent"
+          class="canvas__panel"
+          id="canvas-panel"
+        >
           <div class="canvas__panel__container">
             <slot name="panel" />
           </div>
@@ -39,6 +44,7 @@ import { computed, defineComponent, onMounted } from "vue";
 import BaseLayout from "@/components/layout/BaseLayout.vue";
 import { ui } from "@/assets/js/canvas";
 import store from "@/store";
+import { canvas } from "@/composables/canvas/canvas";
 
 export default defineComponent({
   name: "CanvasLayout",
@@ -48,6 +54,8 @@ export default defineComponent({
     onMounted(() => {
       ui.mainIndex();
     });
+
+    const { hasWorkspaceComponent } = canvas();
 
     const styles = computed(() => {
       return {
@@ -76,6 +84,7 @@ export default defineComponent({
       sidebarDock,
       docked,
       styles,
+      hasWorkspaceComponent,
     };
   },
 });

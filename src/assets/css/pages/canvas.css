@@ -4,13 +4,21 @@ section.canvas__layout{
 
 .canvas__container{
     @apply grid w-full;
-    grid-template-columns: var(--canvas-sidebar-nav-width) 1fr 239px;
+    grid-template-columns: var(--canvas-sidebar-nav-width) 1fr;
     grid-auto-rows: 1fr;
     /*grid-gap: 10px;*/
 }
 
+.canvas__container.has__right__panel{
+    grid-template-columns: var(--canvas-sidebar-nav-width) 1fr var(--canvas-right-panel-width);
+}
+
 .canvas__container.nav__content__docked{
-    grid-template-columns: calc(var(--canvas-sidebar-nav-width) + var(--canvas-sidebar-nav-content-width)) 1fr 239px;
+    grid-template-columns: calc(var(--canvas-sidebar-nav-width) + var(--canvas-sidebar-nav-content-width)) 1fr;
+}
+
+.canvas__container.nav__content__docked.has__right__panel{
+    grid-template-columns: calc(var(--canvas-sidebar-nav-width) + var(--canvas-sidebar-nav-content-width)) 1fr var(--canvas-right-panel-width);
 }
 
 .canvas__container.preview{

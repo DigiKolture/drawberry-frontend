@@ -20,9 +20,7 @@
           :style="styles"
           id="canvas-workspace"
         >
-          <div class="canvas__workspace__container">
-            <slot name="workspace" />
-          </div>
+          <slot name="workspace" />
         </section>
         <section
           v-if="hasWorkspaceComponent"

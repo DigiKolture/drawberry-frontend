@@ -33,7 +33,6 @@
 .workspace__component__items__container{
     @apply flex flex-col items-center;
     width: 600px;
-    /* background-color: red; */
     /*height: 100vh;*/
 }
 

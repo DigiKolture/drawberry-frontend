@@ -1,23 +1,28 @@
 <template>
   <div
-    class="workspace__component__items__container"
-    :class="style.layout"
-    @drop.self="upsertComponentItem($event, 0, projectId)"
-    @dragover.prevent
-    @dragenter.prevent
+    class="canvas__workspace__container"
+    @mouseover.self="handleMouseLeave($event)"
   >
-    <CanvasWorkspaceEmpty v-if="workspaceComponents.length === 0" />
-    <WorkspaceComponentItemsListItem
-      style="font-family: 'Agdasima', sans-serif"
-      v-for="(componentItem, itemIndex) in workspaceComponents"
-      :key="componentItem.id"
-      @clicked="handleClick"
-      @hover="handleMouseOver"
-      :component-item="componentItem"
-      :item-index="itemIndex"
-      :project-id="projectId"
-      :is-mounted="isMounted"
-    />
+    <div
+      class="workspace__component__items__container"
+      :class="style.layout"
+      @drop.self="upsertComponentItem($event, 0, projectId)"
+      @dragover.prevent
+      @dragenter.prevent
+    >
+      <CanvasWorkspaceEmpty v-if="workspaceComponents.length === 0" />
+      <WorkspaceComponentItemsListItem
+        style="font-family: 'Agdasima', sans-serif"
+        v-for="(componentItem, itemIndex) in workspaceComponents"
+        :key="componentItem.id"
+        @clicked="handleClick"
+        @hover="handleMouseOver"
+        :component-item="componentItem"
+        :item-index="itemIndex"
+        :project-id="projectId"
+        :is-mounted="isMounted"
+      />
+    </div>
   </div>
 </template>
 <script lang="ts">
@@ -29,6 +34,7 @@ import store from "@/store";
 import { useRoute } from "vue-router";
 import { updateDom } from "@/composables/canvas/update_dom";
 import { layers } from "@/composables/canvas/layers";
+import { hover } from "@/composables/canvas/hover";
 import WebFont from "webfontloader";
 
 export default defineComponent({
@@ -42,6 +48,8 @@ export default defineComponent({
     const { upsertComponentItem } = drag_and_drop();
 
     const { updateElementDom } = updateDom();
+
+    const { removeHoverElement } = hover();
     const {
       addClassToElement,
       removeClassFromElement,
@@ -81,10 +89,6 @@ export default defineComponent({
       return store.getters["canvas/workspaceComponents"];
     });
 
-    const currentHoverElement = computed(() => {
-      return store.getters["canvas/currentHoverElement"];
-    });
-
     const focusedElement = computed(() => {
       return store.getters["canvas/focusedElement"];
     });
@@ -118,42 +122,11 @@ export default defineComponent({
       ) {
         return;
       }
-      if (
-        currentHoverElement.value.id &&
-        currentHoverElement.value.componentIndex !== null &&
-        currentHoverElement.value.componentIndex > -1
-      ) {
-        let currentComponentItem =
-          workspaceComponents.value[currentHoverElement.value.componentIndex];
 
-        const jsonIndex = getComponentElementIndexUsingId(
-          currentComponentItem,
-          currentHoverElement.value.id
-        );
+      // If any of the component has an hover element, REMOVE it
+      await removeHoverElement();
 
-        if (jsonIndex > -1) {
-          let currElement = currentComponentItem.json[jsonIndex];
-
-          if (
-            currElement.classes &&
-            typeof currElement.classes == "object" &&
-            currElement.classes.includes("hover")
-          ) {
-            currElement = removeClassFromElement(
-              currentComponentItem.json[jsonIndex]
-            );
-
-            workspaceComponents.value[
-              currentHoverElement.value.componentIndex
-            ].html = updateElementDom(
-              currentComponentItem.html,
-              currElement,
-              true
-            );
-          }
-        }
-      }
-
+      // ADD hover to the hovered element
       const elementId = target.id;
       store.commit("canvas/SET_CURRENT_HOVER_ELEMENT", {
         id: elementId,
@@ -168,9 +141,12 @@ export default defineComponent({
       );
       workspaceComponents.value[itemIndex].html = updateElementDom(
         componentItem.html,
-        componentItem.json[jsonIndex],
-        true
+        componentItem.json[jsonIndex]
       );
+    };
+
+    const handleMouseLeave = () => {
+      removeHoverElement();
     };
 
     const handleClick = (componentItem: any, itemIndex: any, event: any) => {
@@ -239,6 +215,7 @@ export default defineComponent({
       handleClick,
       style,
       handleMouseOver,
+      handleMouseLeave,
     };
   },
 });

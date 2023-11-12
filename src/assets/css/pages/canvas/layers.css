@@ -29,8 +29,12 @@
     height: 15px;
 }
 
-.layers__component__item__header:hover, .layers__component__item__header.active{
-    background: #494B57;
+.layers__component__item__header.hover, .layers__component__item__element.hover{
+  background-color: #353843;
+}
+
+.layers__component__item__header.focus, .layers__component__item__element.focus{
+    background-color: #494B57;
 }
 
 .layers__component__item__header:hover svg path{
@@ -58,10 +62,6 @@
     @apply flex items-center cursor-pointer;
     column-gap: 6px;
     padding: 8px 40px 8px 53px;
-}
-
-.layers__component__item__element.active{
-    background: #494B57;
 }
 
 .layers__component__item__element:hover svg path, .layers__component__item__element.active svg path{

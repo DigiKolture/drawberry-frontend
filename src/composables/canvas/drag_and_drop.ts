@@ -79,7 +79,6 @@ export function drag_and_drop() {
     fromIndex: number,
     toIndex: number
   ) => {
-    console.log({ fromIndex, toIndex });
     if (focusedIndex.value === fromIndex) {
       store.commit("canvas/SET_FOCUSED_INDEX", toIndex);
     }

@@ -2,7 +2,7 @@
   <div>
     <div
       v-if="!header"
-      :class="{ active: isActive }"
+      :class="{ hover: isHover, focus: isFocus }"
       class="layers__component__item__element"
     >
       <BaseIcon :icon="icon" />
@@ -10,7 +10,7 @@
     </div>
     <div
       v-else
-      :class="{ active: isActive }"
+      :class="{ hover: isHover, focus: isFocus }"
       class="layers__component__item__header"
     >
       <slot />
@@ -47,19 +47,27 @@ export default defineComponent({
     const title = getLayerElementTitle(props.element);
     const icon = getLayerElementIcon(props.element);
 
-    const isActive = computed(() => {
+    const isActive = (state: string) => {
       return (
         props.element.classes &&
         typeof props.element.classes == "object" &&
-        (props.element.classes.includes("hover") ||
-          props.element.classes.includes("focus"))
+        props.element.classes.includes(state)
       );
+    };
+
+    const isHover = computed(() => {
+      return isActive("hover");
+    });
+
+    const isFocus = computed(() => {
+      return isActive("focus");
     });
 
     return {
       title,
       icon,
-      isActive,
+      isHover,
+      isFocus,
     };
   },
 });

@@ -106,9 +106,10 @@ export default defineComponent({
     });
 
     watch(currentHoverElement, (val) => {
-      if (val && val.componentIndex == props.itemIndex) {
-        showElements.value = true;
-      }
+      // Allows layer component header to show elements when hovered
+      // if (val && val.componentIndex == props.itemIndex) {
+      // showElements.value = true;
+      // }
     });
 
     const handleMouseOver = async (element: any) => {

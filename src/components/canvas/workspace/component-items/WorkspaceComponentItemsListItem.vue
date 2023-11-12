@@ -40,7 +40,7 @@ export default defineComponent({
       required: true,
     },
     itemIndex: {
-      type: Number,
+      type: [Number, String],
       required: true,
     },
     isMounted: {

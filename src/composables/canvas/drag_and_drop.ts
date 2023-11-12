@@ -46,6 +46,10 @@ export function drag_and_drop() {
     e.dataTransfer.setData("type", "from-workspace");
   };
 
+  const focusedIndex = computed(() => {
+    return store.getters["canvas/focusedIndex"];
+  });
+
   const upsertComponentItem = async (
     e: any,
     toIndex: any,
@@ -75,7 +79,11 @@ export function drag_and_drop() {
     fromIndex: number,
     toIndex: number
   ) => {
-    console.log({ projectId });
+    console.log({ fromIndex, toIndex });
+    if (focusedIndex.value === fromIndex) {
+      store.commit("canvas/SET_FOCUSED_INDEX", toIndex);
+    }
+
     const projectComponentItem = workspaceComponents.value[fromIndex];
 
     workspaceComponents.value.splice(fromIndex, 1);

@@ -36,6 +36,7 @@ import { updateDom } from "@/composables/canvas/update_dom";
 import { layers } from "@/composables/canvas/layers";
 import { hover } from "@/composables/canvas/hover";
 import WebFont from "webfontloader";
+import { canvas } from "@/composables/canvas/canvas";
 
 export default defineComponent({
   name: "WorkspaceComponentItemsContainer",
@@ -55,6 +56,8 @@ export default defineComponent({
       removeClassFromElement,
       getComponentElementIndexUsingId,
     } = layers();
+
+    const { hasWorkspaceComponent } = canvas();
 
     const route = useRoute();
     const projectId = route.params.id as string;
@@ -97,16 +100,30 @@ export default defineComponent({
       return store.getters["canvas/focusedIndex"];
     });
 
+    const sidebarNavContent = computed(() => {
+      return store.getters["canvas/sidebarNavContent"];
+    });
+
     const hasFocused = computed(() => {
       return focusedElement.value !== null && focusedIndex.value !== null;
     });
 
     onMounted(async () => {
       //TODO: Look into the glitches that occuress before the page the styles is completely loaded
+
+      const sidebarNavContentVal = sidebarNavContent.value;
+      store.commit("canvas/SET_SIDEBAR_NAVBAR_CONTENT", null);
+
       await Promise.all([
         store.dispatch("canvas/getProjectComponentItems", projectId),
         store.commit("projects/SET_PROJECT_ID", projectId),
       ]);
+
+      if (!hasWorkspaceComponent.value) {
+        store.commit("canvas/SET_SIDEBAR_NAVBAR_CONTENT", null);
+      } else {
+        store.commit("canvas/SET_SIDEBAR_NAVBAR_CONTENT", sidebarNavContentVal);
+      }
       isMounted.value = true;
     });
 

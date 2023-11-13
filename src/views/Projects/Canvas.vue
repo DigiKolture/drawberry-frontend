@@ -24,7 +24,6 @@ import CanvasSidebarNav from "@/components/canvas/sidebar/CanvasSidebarNav";
 import CanvasSidebarNavContent from "@/components/canvas/sidebar/CanvasSidebarNavContent";
 import CanvasPanel from "@/components/canvas/panel/CanvasPanel";
 import ShareProjectPreviewModal from "@/components/canvas/modals/ShareProjectPreviewModal";
-import { canvas } from "@/composables/canvas/canvas";
 
 export default defineComponent({
   name: "CanvasPage",
@@ -38,17 +37,9 @@ export default defineComponent({
   },
 
   setup() {
-    const { hasWorkspaceComponent } = canvas();
-
     onMounted(() => {
       store.commit("modals/CLOSE_ALL_RIGHT_PANELS");
-
-      if (!hasWorkspaceComponent.value) {
-        store.commit("canvas/SET_SIDEBAR_NAVBAR_CONTENT", null);
-      }
-
       store.dispatch("components/getComponents");
-
       // store.commit("canvas/SET_WORKSPACE_COMPONENTS", []);
     });
 

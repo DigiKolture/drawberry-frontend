@@ -13,6 +13,7 @@ const state: CanvasState = {
   },
   focusedIndex: null,
   workspaceComponents: [],
+  hasWorkspaceComponent: false,
   style: {
     layout: "",
     backgroundColor: "",

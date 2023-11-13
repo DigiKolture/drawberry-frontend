@@ -19,6 +19,7 @@ export interface CanvasState {
   sidebarNavContent: string | null;
   sidebarDock: boolean;
   workspaceComponents: any[];
+  hasWorkspaceComponent: boolean;
   googleFonts: any[];
   fontWeights: number[];
   style: ProjectStyle;

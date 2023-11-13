@@ -10,13 +10,29 @@ import store from "@/store";
 const { updateComponentItemDom } = updateDom();
 
 export const actions: ActionTree<CanvasState, RootState> = {
-  getProjectComponentItems({ commit }, projectId: string): Promise<void> {
+  getProjectComponentItems(
+    { commit, getters },
+    projectId: string
+  ): Promise<void> {
+    commit("SET_HAS_WORKSPACE_COMPONENTS", false);
+    const sidebarNavContentVal = getters.sidebarNavContent;
+    commit("SET_SIDEBAR_NAVBAR_CONTENT", null);
     return AxiosClient.get(`/projects/${projectId}`)
       .then((res: any) => {
         const data = res.data;
         commit("projects/SET_PROJECT", data.data.project, { root: true });
         commit("SET_WORKSPACE_COMPONENTS", data.data.project.components);
         commit("SET_STYLE", data.data.project.style);
+
+        const hasWorkspaceComponent =
+          data.data.project.components &&
+          data.data.project.components.length > 0;
+
+        commit("SET_HAS_WORKSPACE_COMPONENTS", hasWorkspaceComponent);
+        if (hasWorkspaceComponent) {
+          commit("SET_SIDEBAR_NAVBAR_CONTENT", sidebarNavContentVal);
+        }
+
         return res.data;
       })
       .catch((err: any): any => {

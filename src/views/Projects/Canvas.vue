@@ -38,8 +38,8 @@ export default defineComponent({
 
   setup() {
     onMounted(() => {
-      store.commit("modals/CLOSE_ALL_RIGHT_PANELS");
       store.dispatch("components/getComponents");
+
       // store.commit("canvas/SET_WORKSPACE_COMPONENTS", []);
     });
 

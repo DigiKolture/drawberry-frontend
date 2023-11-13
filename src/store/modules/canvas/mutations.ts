@@ -16,6 +16,10 @@ export const mutations: MutationTree<CanvasState> = {
     state.workspaceComponents = data;
     return state.workspaceComponents;
   },
+  SET_HAS_WORKSPACE_COMPONENTS(state: CanvasState, data: boolean) {
+    state.hasWorkspaceComponent = data;
+    return state.hasWorkspaceComponent;
+  },
   SET_STYLE(state: CanvasState, data: ProjectStyle) {
     state.style = data;
     return state.style;

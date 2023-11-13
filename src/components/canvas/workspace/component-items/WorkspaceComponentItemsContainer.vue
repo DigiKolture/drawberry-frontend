@@ -84,6 +84,16 @@ export default defineComponent({
       store.commit("canvas/SET_FOCUSED_INDEX", null);
     });
 
+    onMounted(async () => {
+      //TODO: Look into the glitches that occuress before the page the styles is completely loaded
+      await Promise.all([
+        store.dispatch("canvas/getProjectComponentItems", projectId),
+        store.commit("projects/SET_PROJECT_ID", projectId),
+      ]);
+      store.commit("modals/CLOSE_ALL_RIGHT_PANELS");
+      isMounted.value = true;
+    });
+
     const style = computed(() => {
       return store.getters["canvas/style"];
     });
@@ -106,25 +116,6 @@ export default defineComponent({
 
     const hasFocused = computed(() => {
       return focusedElement.value !== null && focusedIndex.value !== null;
-    });
-
-    onMounted(async () => {
-      //TODO: Look into the glitches that occuress before the page the styles is completely loaded
-
-      const sidebarNavContentVal = sidebarNavContent.value;
-      store.commit("canvas/SET_SIDEBAR_NAVBAR_CONTENT", null);
-
-      await Promise.all([
-        store.dispatch("canvas/getProjectComponentItems", projectId),
-        store.commit("projects/SET_PROJECT_ID", projectId),
-      ]);
-
-      if (!hasWorkspaceComponent.value) {
-        store.commit("canvas/SET_SIDEBAR_NAVBAR_CONTENT", null);
-      } else {
-        store.commit("canvas/SET_SIDEBAR_NAVBAR_CONTENT", sidebarNavContentVal);
-      }
-      isMounted.value = true;
     });
 
     const handleMouseOver = async (

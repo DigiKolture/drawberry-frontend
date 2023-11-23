@@ -46,8 +46,8 @@
       <div v-if="!disableAlpha" class="vc-sketch-field--single">
         <EdIn
           label="a"
-          :value="colors.a"
-          :arrow-offset="0.01"
+          :value="colors.a.toFixed(1)"
+          :arrow-offset="0.1"
           :max="1"
           @change="inputChange"
         />

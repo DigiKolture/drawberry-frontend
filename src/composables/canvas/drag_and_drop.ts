@@ -4,7 +4,7 @@ import { ui } from "@/assets/js/canvas";
 import { focus } from "@/composables/canvas/focus";
 
 export function drag_and_drop() {
-  const { focusComponentElement } = focus();
+  const { removeCurrentFocus, focusComponentElement } = focus();
 
   const workspaceComponents = computed(() => {
     return store.getters["canvas/workspaceComponents"];
@@ -64,6 +64,7 @@ export function drag_and_drop() {
     if (type === "from-sidebar") {
       ui.changeComponentItemsStatus(false);
       await moveComponentItem(e, projectId);
+      removeCurrentFocus();
       focusComponentElement(workspaceComponents.value.length - 1, 0);
     } else {
       const fromComponentItemIndex = e.dataTransfer.getData(

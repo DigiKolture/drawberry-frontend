@@ -37,6 +37,7 @@ import { layers } from "@/composables/canvas/layers";
 import { hover } from "@/composables/canvas/hover";
 import WebFont from "webfontloader";
 import { canvas } from "@/composables/canvas/canvas";
+import { focus } from "@/composables/canvas/focus";
 
 export default defineComponent({
   name: "WorkspaceComponentItemsContainer",
@@ -47,10 +48,10 @@ export default defineComponent({
 
   setup() {
     const { upsertComponentItem } = drag_and_drop();
-
     const { updateElementDom } = updateDom();
-
     const { removeHoverElement } = hover();
+    const { removeFocus, removeCurrentFocus, focusComponentElement } = focus();
+
     const {
       addClassToElement,
       removeClassFromElement,
@@ -80,8 +81,8 @@ export default defineComponent({
         id: null,
         componentIndex: null,
       });
-      store.commit("canvas/SET_FOCUSED_ELEMENT", null);
-      store.commit("canvas/SET_FOCUSED_INDEX", null);
+
+      removeFocus();
     });
 
     onMounted(async () => {
@@ -161,58 +162,20 @@ export default defineComponent({
       event.preventDefault();
       const target = event.target;
       const elementId = event.target.id;
+      // console.log(`Element: ${elementId}`);
+      // console.log(target);
       if (!target.classList.contains("editable")) {
         return;
       }
-      if (hasFocused.value) {
-        let focusedComponentItem =
-          workspaceComponents.value[focusedIndex.value];
 
-        const jsonIndex = getComponentElementIndexUsingId(
-          focusedComponentItem,
-          focusedElement.value.id
-        );
-
-        if (jsonIndex > -1) {
-          let focusedElement = focusedComponentItem.json[jsonIndex];
-
-          if (
-            focusedElement.classes &&
-            typeof focusedElement.classes == "object" &&
-            focusedElement.classes.includes("focus")
-          ) {
-            focusedElement = removeClassFromElement(
-              focusedComponentItem.json[jsonIndex],
-              "focus"
-            );
-            workspaceComponents.value[focusedIndex.value].html =
-              updateElementDom(focusedComponentItem.html, focusedElement, true);
-          }
-        }
-      }
+      removeCurrentFocus();
 
       const jsonIndex = getComponentElementIndexUsingId(
         componentItem,
         elementId
       );
 
-      if (jsonIndex > -1) {
-        componentItem.json[jsonIndex] = addClassToElement(
-          componentItem.json[jsonIndex],
-          "focus"
-        );
-
-        workspaceComponents.value[itemIndex].html = updateElementDom(
-          componentItem.html,
-          componentItem.json[jsonIndex],
-          true
-        );
-        store.commit(
-          "canvas/SET_FOCUSED_ELEMENT",
-          componentItem.json[jsonIndex]
-        );
-        store.commit("canvas/SET_FOCUSED_INDEX", itemIndex);
-      }
+      focusComponentElement(itemIndex, jsonIndex);
     };
 
     return {

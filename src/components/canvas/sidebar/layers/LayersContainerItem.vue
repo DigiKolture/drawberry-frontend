@@ -49,6 +49,7 @@ import { layers } from "@/composables/canvas/layers";
 import { updateDom } from "@/composables/canvas/update_dom";
 import store from "@/store";
 import { drag_and_drop } from "@/composables/canvas/drag_and_drop";
+import { focus } from "@/composables/canvas/focus";
 
 export default defineComponent({
   name: "LayersContainerItem",
@@ -74,6 +75,8 @@ export default defineComponent({
     const { changeComponentItemPosition } = drag_and_drop();
 
     const { updateElementDom } = updateDom();
+
+    const { focusComponentElement, removeCurrentFocus } = focus();
 
     const showElements = ref(true);
 
@@ -179,32 +182,8 @@ export default defineComponent({
     };
 
     const handleClick = (element: any) => {
-      if (hasFocused.value) {
-        let focusedComponentItem =
-          workspaceComponents.value[focusedIndex.value];
+      removeCurrentFocus();
 
-        const jsonIndex = getComponentElementIndexUsingId(
-          focusedComponentItem,
-          focusedElement.value.id
-        );
-
-        if (jsonIndex > -1) {
-          let focusedElement = focusedComponentItem.json[jsonIndex];
-
-          if (
-            focusedElement.classes &&
-            typeof focusedElement.classes == "object" &&
-            focusedElement.classes.includes("focus")
-          ) {
-            focusedElement = removeClassFromElement(
-              focusedComponentItem.json[jsonIndex],
-              "focus"
-            );
-            workspaceComponents.value[focusedIndex.value].html =
-              updateElementDom(focusedComponentItem.html, focusedElement, true);
-          }
-        }
-      }
       const elementId = element.id;
       const componentItem = props.componentItem;
       const itemIndex = props.itemIndex;
@@ -214,18 +193,7 @@ export default defineComponent({
         elementId
       );
 
-      componentItem.json[jsonIndex] = addClassToElement(
-        componentItem.json[jsonIndex],
-        "focus"
-      );
-
-      workspaceComponents.value[itemIndex].html = updateElementDom(
-        componentItem.html,
-        componentItem.json[jsonIndex],
-        true
-      );
-      store.commit("canvas/SET_FOCUSED_ELEMENT", componentItem.json[jsonIndex]);
-      store.commit("canvas/SET_FOCUSED_INDEX", itemIndex);
+      focusComponentElement(itemIndex, jsonIndex);
     };
 
     const dragComponentItemLayer = (e: any) => {
@@ -238,7 +206,6 @@ export default defineComponent({
 
     const dropComponentItemLayer = async (e: any) => {
       const toIndex = props.itemIndex;
-      console.log("Drop Index", toIndex);
       const fromIndex = e.dataTransfer.getData("fromLayerComponentItemIndex");
       if (!fromIndex) return;
 

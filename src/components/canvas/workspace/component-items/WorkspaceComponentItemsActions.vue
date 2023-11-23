@@ -31,6 +31,7 @@ import { computed, defineComponent, ref } from "vue";
 import { drag_and_drop } from "@/composables/canvas/drag_and_drop";
 import BaseButtonIcon from "@/components/icon/BaseButtonIcon.vue";
 import store from "@/store";
+import { focus } from "@/composables/canvas/focus";
 
 export default defineComponent({
   name: "WorkspaceComponentItemsActions",
@@ -57,6 +58,8 @@ export default defineComponent({
     } = drag_and_drop();
 
     const disabledButton = ref(false);
+
+    const { removeFocus } = focus();
 
     const workspaceComponents = computed(() => {
       return store.getters["canvas/workspaceComponents"];
@@ -121,9 +124,7 @@ export default defineComponent({
         projectComponentItemId: projectComponentItem.id,
         positionIndex: props.itemIndex,
       });
-      store.commit("canvas/SET_FOCUSED_ELEMENT", null);
-      store.commit("canvas/SET_FOCUSED_ELEMENT", null);
-
+      removeFocus();
       disabledButton.value = false;
     };
 

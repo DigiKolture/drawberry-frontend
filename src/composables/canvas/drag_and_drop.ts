@@ -1,7 +1,11 @@
 import store from "@/store";
 import { computed } from "vue";
+import { ui } from "@/assets/js/canvas";
+import { focus } from "@/composables/canvas/focus";
 
 export function drag_and_drop() {
+  const { focusComponentElement } = focus();
+
   const workspaceComponents = computed(() => {
     return store.getters["canvas/workspaceComponents"];
   });
@@ -58,7 +62,9 @@ export function drag_and_drop() {
     const type = e.dataTransfer.getData("type");
 
     if (type === "from-sidebar") {
+      ui.changeComponentItemsStatus(false);
       await moveComponentItem(e, projectId);
+      focusComponentElement(workspaceComponents.value.length - 1, 0);
     } else {
       const fromComponentItemIndex = e.dataTransfer.getData(
         "fromComponentItemIndex"

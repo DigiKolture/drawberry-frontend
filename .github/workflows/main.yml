@@ -38,5 +38,5 @@ jobs:
       - name: Build
         run: |
           rm -rf dist
-          nvm use v21.1.0
+          node --version
           npm run build

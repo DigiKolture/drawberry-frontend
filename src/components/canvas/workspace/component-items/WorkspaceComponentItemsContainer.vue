@@ -36,7 +36,6 @@ import { updateDom } from "@/composables/canvas/update_dom";
 import { layers } from "@/composables/canvas/layers";
 import { hover } from "@/composables/canvas/hover";
 import WebFont from "webfontloader";
-import { canvas } from "@/composables/canvas/canvas";
 import { focus } from "@/composables/canvas/focus";
 
 export default defineComponent({
@@ -52,13 +51,7 @@ export default defineComponent({
     const { removeHoverElement } = hover();
     const { removeFocus, removeCurrentFocus, focusComponentElement } = focus();
 
-    const {
-      addClassToElement,
-      removeClassFromElement,
-      getComponentElementIndexUsingId,
-    } = layers();
-
-    const { hasWorkspaceComponent } = canvas();
+    const { addClassToElement, getComponentElementIndexUsingId } = layers();
 
     const route = useRoute();
     const projectId = route.params.id as string;
@@ -101,22 +94,6 @@ export default defineComponent({
 
     const workspaceComponents = computed(() => {
       return store.getters["canvas/workspaceComponents"];
-    });
-
-    const focusedElement = computed(() => {
-      return store.getters["canvas/focusedElement"];
-    });
-
-    const focusedIndex = computed(() => {
-      return store.getters["canvas/focusedIndex"];
-    });
-
-    const sidebarNavContent = computed(() => {
-      return store.getters["canvas/sidebarNavContent"];
-    });
-
-    const hasFocused = computed(() => {
-      return focusedElement.value !== null && focusedIndex.value !== null;
     });
 
     const handleMouseOver = async (
@@ -162,8 +139,6 @@ export default defineComponent({
       event.preventDefault();
       const target = event.target;
       const elementId = event.target.id;
-      // console.log(`Element: ${elementId}`);
-      // console.log(target);
       if (!target.classList.contains("editable")) {
         return;
       }

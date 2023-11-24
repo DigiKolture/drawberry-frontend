@@ -66,6 +66,10 @@ div#app{
     @apply flex flex-col w-full h-full;
 }
 
+img{
+    max-width: none;
+}
+
 main.main{
     @apply flex w-full h-full relative;
     margin-top: var(--header-height);
@@ -98,3 +102,4 @@ button.button__icon__text{
     background: #353843;
     border-radius: 4px;
 }
+

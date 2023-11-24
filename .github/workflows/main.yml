@@ -18,7 +18,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v1
         with:
-          node-version: '14.x'
+          node-version: '21.x'
 
       - name: List files
         run: ls
@@ -38,4 +38,5 @@ jobs:
       - name: Build
         run: |
           rm -rf dist
+          nvm use v21.1.0
           npm run build

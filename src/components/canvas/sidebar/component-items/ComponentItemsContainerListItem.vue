@@ -3,14 +3,16 @@
     <div
       :draggable="true"
       class="component__items__list__item"
-      @dragstart.self="dragComponentItemToCanvas($event, itemIndex)"
       v-html="componentItem.html"
+      @dragstart="dragComponentItemToCanvas($event, itemIndex)"
+      @click="clickEvent($event)"
     ></div>
   </div>
 </template>
 <script>
 import { defineComponent } from "vue";
 import { drag_and_drop } from "@/composables/canvas/drag_and_drop";
+const { dragComponentItemToCanvas } = drag_and_drop();
 
 export default defineComponent({
   name: "ComponentItemsContainerListItem",
@@ -27,10 +29,13 @@ export default defineComponent({
   },
 
   setup() {
-    const { dragComponentItemToCanvas } = drag_and_drop();
+    const clickEvent = (event) => {
+      event.preventDefault();
+    };
 
     return {
       dragComponentItemToCanvas,
+      clickEvent,
     };
   },
 });

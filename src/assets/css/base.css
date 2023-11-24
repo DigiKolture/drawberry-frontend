@@ -67,7 +67,7 @@ div#app{
 }
 
 img{
-    max-width: none;
+    /*max-width: none;*/
 }
 
 main.main{

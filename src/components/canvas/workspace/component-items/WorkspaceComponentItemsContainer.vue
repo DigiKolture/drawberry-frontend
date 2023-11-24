@@ -136,7 +136,7 @@ export default defineComponent({
     };
 
     const handleClick = (componentItem: any, itemIndex: any, event: any) => {
-      event.preventDefault();
+      // event.preventDefault();
       const target = event.target;
       const elementId = event.target.id;
       if (!target.classList.contains("editable")) {

@@ -73,9 +73,7 @@ export default defineComponent({
     } = layers();
 
     const { changeComponentItemPosition } = drag_and_drop();
-
     const { updateElementDom } = updateDom();
-
     const { focusComponentElement, removeCurrentFocus } = focus();
 
     const showElements = ref(true);
@@ -102,10 +100,6 @@ export default defineComponent({
 
     const focusedIndex = computed(() => {
       return store.getters["canvas/focusedIndex"];
-    });
-
-    const hasFocused = computed(() => {
-      return focusedElement.value !== null && focusedIndex.value !== null;
     });
 
     watch(currentHoverElement, (val) => {
@@ -150,11 +144,7 @@ export default defineComponent({
 
             workspaceComponents.value[
               currentHoverElement.value.componentIndex
-            ].html = updateElementDom(
-              currentComponentItem.html,
-              currElement,
-              true
-            );
+            ].html = updateElementDom(currentComponentItem.html, currElement);
           }
         }
       }

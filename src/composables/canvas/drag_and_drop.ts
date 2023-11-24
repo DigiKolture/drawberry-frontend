@@ -15,6 +15,15 @@ export function drag_and_drop() {
   });
 
   const dragComponentItemToCanvas = (e: any, itemIndex: any) => {
+    const isDraggableElement = e.target.classList.contains(
+      "component__items__list__item"
+    );
+
+    if (!isDraggableElement) {
+      e.preventDefault();
+      return;
+    }
+
     e.dataTransfer.effectAllowed = "move";
     e.dataTransfer.dropEffect = "move";
 

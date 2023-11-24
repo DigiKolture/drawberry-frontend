@@ -12,6 +12,7 @@
             v-model="src"
             type="url"
             @focus="isInputFocused = true"
+            @blur="isInputFocused = false"
             required
             class="input__style__text"
           />
@@ -19,6 +20,11 @@
             v-if="isInputFocused"
             @click="updateImage"
             icon="canvas/panel/styles/media/update"
+          />
+          <BaseButtonIcon
+            v-if="!isInputFocused && src"
+            @click="clearLink"
+            icon="canvas/panel/styles/media/cancel"
           />
         </div>
       </PanelStyleTabs>
@@ -68,6 +74,10 @@ export default defineComponent({
       isInputFocused.value = false;
     };
 
+    const clearLink = async () => {
+      src.value = "";
+    };
+
     watch(focusedElement, (newVal) => {
       src.value = newVal.attributes[name].value;
     });
@@ -78,6 +88,7 @@ export default defineComponent({
       titles,
       updateTab,
       updateImage,
+      clearLink,
       isInputFocused,
     };
   },

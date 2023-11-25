@@ -3,13 +3,7 @@
     class="canvas__workspace__container"
     @mouseover.self="handleMouseLeave($event)"
   >
-    <div
-      class="workspace__component__items__container"
-      :class="style.layout"
-      @drop.self="upsertComponentItem($event, 0, projectId)"
-      @dragover.prevent
-      @dragenter.prevent
-    >
+    <div class="workspace__component__items__container" :class="style.layout">
       <CanvasWorkspaceEmpty v-if="workspaceComponents.length === 0" />
       <WorkspaceComponentItemsListItem
         style="font-family: 'Agdasima', sans-serif"

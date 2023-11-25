@@ -31,7 +31,11 @@ export function drag_and_drop() {
     e.dataTransfer.setData("type", "from-sidebar");
   };
 
-  const moveComponentItem = async (e: any, projectId: string) => {
+  const moveComponentItem = async (
+    e: any,
+    toIndex: number,
+    projectId: string
+  ) => {
     const componentItemIndex = e.dataTransfer.getData("componentItemIndex");
     if (!componentItemIndex) return;
 
@@ -41,12 +45,12 @@ export function drag_and_drop() {
     // workspaceComponents.value.push(componentItem);
     // store.commit("canvas/SET_WORKSPACE_COMPONENTS", workspaceComponents.value);
 
-    // TODO: We will need a loader here
+    // // TODO: We will need a loader here
     await store.dispatch("canvas/storeProjectComponent", {
       projectId,
       data: {
         componentItemId: componentItem.id,
-        positionIndex: workspaceComponents.value.length,
+        positionIndex: toIndex,
       },
     });
   };
@@ -65,16 +69,16 @@ export function drag_and_drop() {
 
   const upsertComponentItem = async (
     e: any,
-    toIndex: any,
+    toIndex: number,
     projectId: string
   ) => {
     const type = e.dataTransfer.getData("type");
 
     if (type === "from-sidebar") {
       ui.changeComponentItemsStatus(false);
-      await moveComponentItem(e, projectId);
+      await moveComponentItem(e, toIndex, projectId);
       removeCurrentFocus();
-      focusComponentElement(workspaceComponents.value.length - 1, 0);
+      focusComponentElement(toIndex, 0);
     } else {
       const fromComponentItemIndex = e.dataTransfer.getData(
         "fromComponentItemIndex"
@@ -85,7 +89,7 @@ export function drag_and_drop() {
       await changeComponentItemPosition(
         projectId,
         parseInt(fromComponentItemIndex),
-        parseInt(toIndex)
+        toIndex
       );
     }
   };

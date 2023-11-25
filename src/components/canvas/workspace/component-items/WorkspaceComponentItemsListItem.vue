@@ -1,17 +1,28 @@
 <template>
   <div class="workspace__component__items__list">
     <div
+      v-if="dropIndex === itemIndex"
+      class="workspace__component__drop__indicator"
+      :class="style.layout"
+    >
+      <span><BaseIcon icon="canvas/workspace/drop-indicator" /></span>
+    </div>
+    <div
       class="workspace__component__items__list__item"
       v-html="componentItem.html"
       :draggable="true"
       @dragstart.self="moveComponentItemPosition($event, itemIndex)"
-      @drop="upsertComponentItem($event, itemIndex, projectId)"
+      @drop="dropComponent($event, itemIndex, projectId)"
       @click="clickEvent($event)"
       @mouseover.stop="hoverEvent($event)"
+      @dragover="handleDragOver($event)"
+      @dragenter="handleDragEnter($event)"
+      @dragleave="handleDragLeave($event)"
       @dragover.prevent
       @dragenter.prevent
       v-if="isMounted"
     ></div>
+
     <WorkspaceComponentItemsActions
       v-if="showActions"
       :component-item="componentItem"
@@ -26,10 +37,11 @@ import { drag_and_drop } from "@/composables/canvas/drag_and_drop";
 import { updateDom } from "@/composables/canvas/update_dom";
 import store from "@/store";
 import WorkspaceComponentItemsActions from "@/components/canvas/workspace/component-items/WorkspaceComponentItemsActions.vue";
+import BaseIcon from "@/components/icon/BaseIcon.vue";
 
 export default defineComponent({
   name: "WorkspaceComponentItemsListItem",
-  components: { WorkspaceComponentItemsActions },
+  components: { BaseIcon, WorkspaceComponentItemsActions },
   props: {
     projectId: {
       type: String,
@@ -40,7 +52,7 @@ export default defineComponent({
       required: true,
     },
     itemIndex: {
-      type: [Number, String],
+      type: Number,
       required: true,
     },
     isMounted: {
@@ -54,6 +66,8 @@ export default defineComponent({
 
     const { updateElementDom } = updateDom();
     const disabledButton = ref(false);
+
+    const dropIndex = ref(-1);
 
     onMounted(() => {
       // store.commit("canvas/SET_WORKSPACE_COMPONENTS", []);
@@ -74,6 +88,10 @@ export default defineComponent({
 
     const focusedElement = computed(() => {
       return store.getters["canvas/focusedElement"];
+    });
+
+    const style = computed(() => {
+      return store.getters["canvas/style"];
     });
 
     const workspaceComponents = computed(() => {
@@ -120,6 +138,19 @@ export default defineComponent({
       props.componentItem.html = html;
     };
 
+    const handleDragOver = (event: Event) => {
+      // console.log(`<<<<<< HANDLE DRAG OVER >>>>> ${props.itemIndex}`);
+      dropIndex.value = parseInt(props.itemIndex);
+    };
+    const handleDragEnter = (event: Event) => {
+      // console.log(`<<<<<< HANDLE DRAG ENTER >>>>> ${props.itemIndex}`);
+    };
+
+    const handleDragLeave = (event: Event) => {
+      // console.log(`<<<<<< HANDLE DRAG LEAVE >>>>> ${props.toIndex}`);
+      dropIndex.value = -1;
+    };
+
     const clickEvent = (event: any) => {
       emit("clicked", props.componentItem, props.itemIndex, event);
     };
@@ -128,12 +159,28 @@ export default defineComponent({
       emit("hover", props.componentItem, props.itemIndex, event);
     };
 
+    const dropComponent = (
+      event: Event,
+      itemIndex: number,
+      projectId: string
+    ) => {
+      dropIndex.value = -1;
+
+      upsertComponentItem(event, itemIndex, projectId);
+    };
+
     return {
+      dropIndex,
       disabledButton,
       classes,
+      style,
       showActions,
       clickEvent,
       hoverEvent,
+      handleDragOver,
+      handleDragEnter,
+      handleDragLeave,
+      dropComponent,
       moveComponentItemPosition,
       upsertComponentItem,
       disabledTopModifyPosition,

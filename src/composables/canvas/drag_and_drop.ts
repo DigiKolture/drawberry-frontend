@@ -88,7 +88,7 @@ export function drag_and_drop() {
 
       if (toIndex > 0) toIndex = toIndex - 1;
 
-      await changeComponentItemPosition(
+      changeComponentItemPosition(
         projectId,
         parseInt(fromComponentItemIndex),
         toIndex

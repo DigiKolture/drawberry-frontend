@@ -63,6 +63,30 @@
     @apply absolute;
 }
 
+.workspace__component__drop__loading{
+    @apply  flex items-center justify-center w-full;
+    height: 69px;
+    border: 1px dashed rgba(132, 143, 159, 0.50);
+}
+
+.workspace__component__drop__loading.cards{
+    border-radius: 8px;
+    margin-bottom: 15px;
+}
+
+.workspace__component__drop__loading svg {
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
 .workspace__component__drop__indicator span{
     @apply flex items-center justify-center;
     height: 16px;

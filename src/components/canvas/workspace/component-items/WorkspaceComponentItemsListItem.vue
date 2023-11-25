@@ -8,6 +8,13 @@
       <span><BaseIcon icon="canvas/workspace/drop-indicator" /></span>
     </div>
     <div
+      v-if="dropLoadingIndex === itemIndex"
+      class="workspace__component__drop__loading"
+      :class="style.layout"
+    >
+      <BaseIcon icon="canvas/workspace/loading" />
+    </div>
+    <div
       class="workspace__component__items__list__item"
       v-html="componentItem.html"
       :draggable="true"
@@ -68,6 +75,7 @@ export default defineComponent({
     const disabledButton = ref(false);
 
     const dropIndex = ref(-1);
+    const dropLoadingIndex = ref(-1);
 
     onMounted(() => {
       // store.commit("canvas/SET_WORKSPACE_COMPONENTS", []);
@@ -159,18 +167,20 @@ export default defineComponent({
       emit("hover", props.componentItem, props.itemIndex, event);
     };
 
-    const dropComponent = (
+    const dropComponent = async (
       event: Event,
       itemIndex: number,
       projectId: string
     ) => {
+      dropLoadingIndex.value = dropIndex.value;
       dropIndex.value = -1;
-
-      upsertComponentItem(event, itemIndex, projectId);
+      await upsertComponentItem(event, itemIndex, projectId);
+      dropLoadingIndex.value = -1;
     };
 
     return {
       dropIndex,
+      dropLoadingIndex,
       disabledButton,
       classes,
       style,

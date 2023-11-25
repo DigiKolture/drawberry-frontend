@@ -148,7 +148,7 @@ export default defineComponent({
 
     const handleDragOver = (event: Event) => {
       // console.log(`<<<<<< HANDLE DRAG OVER >>>>> ${props.itemIndex}`);
-      dropIndex.value = parseInt(props.itemIndex);
+      dropIndex.value = props.itemIndex;
     };
     const handleDragEnter = (event: Event) => {
       // console.log(`<<<<<< HANDLE DRAG ENTER >>>>> ${props.itemIndex}`);

@@ -86,7 +86,7 @@ export function drag_and_drop() {
 
       if (!fromComponentItemIndex || !projectId) return;
 
-      console.log({ toIndex });
+      if (toIndex > 0) toIndex = toIndex - 1;
 
       await changeComponentItemPosition(
         projectId,
@@ -104,10 +104,7 @@ export function drag_and_drop() {
     if (focusedIndex.value === fromIndex) {
       store.commit("canvas/SET_FOCUSED_INDEX", toIndex);
     }
-
     const projectComponentItem = workspaceComponents.value[fromIndex];
-
-    if (toIndex > 0) toIndex = toIndex - 1;
 
     workspaceComponents.value.splice(fromIndex, 1);
     workspaceComponents.value.splice(toIndex, 0, projectComponentItem);

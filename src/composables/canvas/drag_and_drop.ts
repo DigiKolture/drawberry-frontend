@@ -86,6 +86,8 @@ export function drag_and_drop() {
 
       if (!fromComponentItemIndex || !projectId) return;
 
+      console.log({ toIndex });
+
       await changeComponentItemPosition(
         projectId,
         parseInt(fromComponentItemIndex),
@@ -104,6 +106,8 @@ export function drag_and_drop() {
     }
 
     const projectComponentItem = workspaceComponents.value[fromIndex];
+
+    if (toIndex > 0) toIndex = toIndex - 1;
 
     workspaceComponents.value.splice(fromIndex, 1);
     workspaceComponents.value.splice(toIndex, 0, projectComponentItem);

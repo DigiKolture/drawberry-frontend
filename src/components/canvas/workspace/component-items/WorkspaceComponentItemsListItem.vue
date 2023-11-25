@@ -139,15 +139,15 @@ export default defineComponent({
     };
 
     const handleDragOver = (event: Event) => {
-      // console.log(`<<<<<< HANDLE DRAG OVER >>>>> ${props.itemIndex}`);
+      console.log(`<<<<<< HANDLE DRAG OVER >>>>> ${props.itemIndex}`);
       dropIndex.value = parseInt(props.itemIndex);
     };
     const handleDragEnter = (event: Event) => {
-      // console.log(`<<<<<< HANDLE DRAG ENTER >>>>> ${props.itemIndex}`);
+      console.log(`<<<<<< HANDLE DRAG ENTER >>>>> ${props.itemIndex}`);
     };
 
     const handleDragLeave = (event: Event) => {
-      // console.log(`<<<<<< HANDLE DRAG LEAVE >>>>> ${props.toIndex}`);
+      console.log(`<<<<<< HANDLE DRAG LEAVE >>>>> ${props.toIndex}`);
       dropIndex.value = -1;
     };
 

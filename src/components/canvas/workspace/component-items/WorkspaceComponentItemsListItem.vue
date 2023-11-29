@@ -1,19 +1,8 @@
 <template>
   <div class="workspace__component__items__list">
-    <div
-      v-if="dropIndex === itemIndex"
-      class="workspace__component__drop__indicator"
-      :class="style.layout"
-    >
-      <span><BaseIcon icon="canvas/workspace/drop-indicator" /></span>
-    </div>
-    <div
-      v-if="dropLoadingIndex === itemIndex"
-      class="workspace__component__drop__loading"
-      :class="style.layout"
-    >
-      <BaseIcon icon="canvas/workspace/loading" />
-    </div>
+    <WorkspaceComponentDropIndicator v-if="dropIndex === itemIndex" />
+    <WorkspaceComponentDropSkeleton v-if="dropLoadingIndex === itemIndex" />
+
     <div
       class="workspace__component__items__list__item"
       v-html="componentItem.html"
@@ -44,11 +33,16 @@ import { drag_and_drop } from "@/composables/canvas/drag_and_drop";
 import { updateDom } from "@/composables/canvas/update_dom";
 import store from "@/store";
 import WorkspaceComponentItemsActions from "@/components/canvas/workspace/component-items/WorkspaceComponentItemsActions.vue";
-import BaseIcon from "@/components/icon/BaseIcon.vue";
+import WorkspaceComponentDropSkeleton from "@/components/canvas/workspace/utilities/WorkspaceComponentDropSkeleton.vue";
+import WorkspaceComponentDropIndicator from "@/components/canvas/workspace/utilities/WorkspaceComponentDropIndicator.vue";
 
 export default defineComponent({
   name: "WorkspaceComponentItemsListItem",
-  components: { BaseIcon, WorkspaceComponentItemsActions },
+  components: {
+    WorkspaceComponentDropIndicator,
+    WorkspaceComponentDropSkeleton,
+    WorkspaceComponentItemsActions,
+  },
   props: {
     projectId: {
       type: String,
@@ -96,10 +90,6 @@ export default defineComponent({
 
     const focusedElement = computed(() => {
       return store.getters["canvas/focusedElement"];
-    });
-
-    const style = computed(() => {
-      return store.getters["canvas/style"];
     });
 
     const workspaceComponents = computed(() => {
@@ -183,7 +173,6 @@ export default defineComponent({
       dropLoadingIndex,
       disabledButton,
       classes,
-      style,
       showActions,
       clickEvent,
       hoverEvent,

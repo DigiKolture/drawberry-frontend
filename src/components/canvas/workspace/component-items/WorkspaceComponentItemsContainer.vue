@@ -4,7 +4,10 @@
     @mouseover.self="handleMouseLeave($event)"
   >
     <div class="workspace__component__items__container" :class="style.layout">
-      <CanvasWorkspaceEmpty v-if="workspaceComponents.length === 0" />
+      <CanvasWorkspaceEmpty
+        :project-id="projectId"
+        v-if="workspaceComponents.length === 0"
+      />
       <WorkspaceComponentItemsListItem
         style="font-family: 'Agdasima', sans-serif"
         v-for="(componentItem, itemIndex) in workspaceComponents"
@@ -15,6 +18,11 @@
         :item-index="itemIndex"
         :project-id="projectId"
         :is-mounted="isMounted"
+      />
+
+      <WorkspaceLastComponentDecoy
+        v-if="workspaceComponents.length > 0"
+        :project-id="projectId"
       />
     </div>
   </div>
@@ -31,10 +39,12 @@ import { layers } from "@/composables/canvas/layers";
 import { hover } from "@/composables/canvas/hover";
 import WebFont from "webfontloader";
 import { focus } from "@/composables/canvas/focus";
+import WorkspaceLastComponentDecoy from "@/components/canvas/workspace/component-items/WorkspaceLastComponentDecoy.vue";
 
 export default defineComponent({
   name: "WorkspaceComponentItemsContainer",
   components: {
+    WorkspaceLastComponentDecoy,
     CanvasWorkspaceEmpty,
     WorkspaceComponentItemsListItem,
   },

@@ -25,27 +25,28 @@ export function hover() {
       const currentComponentItem =
         workspaceComponents.value[currentHoverElement.value.componentIndex];
 
+      if (!currentComponentItem) return;
+
       const jsonIndex = getComponentElementIndexUsingId(
         currentComponentItem,
         currentHoverElement.value.id
       );
 
-      if (jsonIndex > -1) {
-        let currElement = currentComponentItem.json[jsonIndex];
+      if (jsonIndex < 0) return;
+      let currElement = currentComponentItem.json[jsonIndex];
 
-        if (
-          currElement.classes &&
-          typeof currElement.classes == "object" &&
-          currElement.classes.includes("hover")
-        ) {
-          currElement = removeClassFromElement(
-            currentComponentItem.json[jsonIndex]
-          );
+      if (
+        currElement.classes &&
+        typeof currElement.classes == "object" &&
+        currElement.classes.includes("hover")
+      ) {
+        currElement = removeClassFromElement(
+          currentComponentItem.json[jsonIndex]
+        );
 
-          workspaceComponents.value[
-            currentHoverElement.value.componentIndex
-          ].html = updateElementDom(currentComponentItem.html, currElement);
-        }
+        workspaceComponents.value[
+          currentHoverElement.value.componentIndex
+        ].html = updateElementDom(currentComponentItem.html, currElement);
       }
     }
   };

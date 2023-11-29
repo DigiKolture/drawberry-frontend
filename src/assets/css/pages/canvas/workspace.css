@@ -1,7 +1,15 @@
 /*@import url('https://fonts.googleapis.com/css2?family=Agdasima:wght@400;700&display=swap');*/
+
+.canvas__workspace__empty__container{
+    @apply h-full w-full flex justify-center;
+    /*background-color: chartreuse;*/
+}
+
+
 .canvas__workspace__empty{
-    @apply text-center flex flex-col items-center;
+    @apply text-center flex flex-col items-center justify-center;
     margin-top: 117px;
+    height: 127px;
     width: 362px;
     row-gap: 24px;
 }
@@ -31,7 +39,7 @@
 }
 
 .workspace__component__items__container{
-    @apply flex flex-col items-center;
+    @apply flex flex-col items-center h-full;
     width: 600px;
     /*height: 100vh;*/
 }
@@ -52,6 +60,10 @@
     @apply cursor-pointer w-full;
 }
 
+.workspace__component__items__list__item.decoy{
+    height: 50px;
+}
+
 .workspace__component__drop__indicator{
     @apply  flex items-center justify-center w-full;
     height: 2px;
@@ -63,18 +75,19 @@
     @apply absolute;
 }
 
-.workspace__component__drop__loading{
+.workspace__component__drop__skeleton{
     @apply  flex items-center justify-center w-full;
     height: 69px;
     border: 1px dashed rgba(132, 143, 159, 0.50);
+    background: #F6F6F6;
 }
 
-.workspace__component__drop__loading.cards{
+.workspace__component__drop__skeleton.cards{
     border-radius: 8px;
     margin-bottom: 15px;
 }
 
-.workspace__component__drop__loading svg {
+.workspace__component__drop__skeleton svg {
     animation: spin 1s linear infinite;
 }
 

@@ -4,7 +4,7 @@ import { ui } from "@/assets/js/canvas";
 import { focus } from "@/composables/canvas/focus";
 
 export function drag_and_drop() {
-  const { removeCurrentFocus, focusComponentElement } = focus();
+  const { removeCurrentFocus, removeFocus } = focus();
 
   const workspaceComponents = computed(() => {
     return store.getters["canvas/workspaceComponents"];
@@ -78,7 +78,8 @@ export function drag_and_drop() {
       ui.changeComponentItemsStatus(false);
       await moveComponentItem(e, toIndex, projectId);
       removeCurrentFocus();
-      focusComponentElement(toIndex, 0);
+      removeFocus();
+      // focusComponentElement(toIndex, 0);
     } else {
       const fromComponentItemIndex = e.dataTransfer.getData(
         "fromComponentItemIndex"
@@ -86,7 +87,13 @@ export function drag_and_drop() {
 
       if (!fromComponentItemIndex || !projectId) return;
 
-      if (toIndex > 0) toIndex = toIndex - 1;
+      const fromIndex = parseInt(fromComponentItemIndex);
+
+      console.log({ fromIndex, toIndex });
+
+      if (fromIndex === toIndex) return;
+
+      if (toIndex > 0 && toIndex > fromIndex) toIndex = toIndex - 1;
 
       changeComponentItemPosition(
         projectId,

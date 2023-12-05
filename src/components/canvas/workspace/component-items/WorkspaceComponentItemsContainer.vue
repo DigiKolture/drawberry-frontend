@@ -114,7 +114,7 @@ export default defineComponent({
       }
 
       // If any of the component has an hover element, REMOVE it
-      await removeHoverElement();
+      removeHoverElement();
 
       // ADD hover to the hovered element
       const elementId = target.id;

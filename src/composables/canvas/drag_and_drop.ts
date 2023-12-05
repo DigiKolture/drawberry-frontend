@@ -76,9 +76,9 @@ export function drag_and_drop() {
 
     if (type === "from-sidebar") {
       ui.changeComponentItemsStatus(false);
-      await moveComponentItem(e, toIndex, projectId);
       removeCurrentFocus();
       removeFocus();
+      await moveComponentItem(e, toIndex, projectId);
       // focusComponentElement(toIndex, 0);
     } else {
       const fromComponentItemIndex = e.dataTransfer.getData(

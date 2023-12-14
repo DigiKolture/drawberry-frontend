@@ -23,4 +23,5 @@ export interface CanvasState {
   googleFonts: any[];
   fontWeights: number[];
   style: ProjectStyle;
+  dropLoading: boolean;
 }

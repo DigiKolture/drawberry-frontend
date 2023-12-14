@@ -52,6 +52,7 @@ export default defineComponent({
       if (!componentItem || !projectId) return;
 
       emit("disable");
+      store.commit("canvas/SET_DROP_LOADING", true);
 
       removeCurrentFocus();
       removeFocus();
@@ -65,6 +66,7 @@ export default defineComponent({
       });
 
       emit("enable");
+      store.commit("canvas/SET_DROP_LOADING", false);
     };
 
     return {

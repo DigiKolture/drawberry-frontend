@@ -37,4 +37,7 @@ export const getters: GetterTree<CanvasState, RootState> = {
   sidebarDock(state: CanvasState): boolean {
     return state.sidebarDock;
   },
+  dropLoading(state: CanvasState): boolean {
+    return state.dropLoading;
+  },
 };

@@ -8,7 +8,7 @@
     @dragleave="handleDragLeave"
   >
     <WorkspaceComponentDropIndicator v-if="drop" />
-    <WorkspaceComponentDropSkeleton v-if="dropLoading" />
+    <WorkspaceComponentDropSkeleton v-if="dropLoading || dropLoadingState" />
 
     <div class="workspace__component__items__list__item decoy"></div>
   </div>
@@ -43,6 +43,10 @@ export default defineComponent({
       return store.getters["canvas/workspaceComponents"];
     });
 
+    const dropLoadingState = computed(() => {
+      return store.getters["canvas/dropLoading"];
+    });
+
     const itemIndex = computed(() => {
       return workspaceComponents.value.length;
     });
@@ -69,6 +73,7 @@ export default defineComponent({
     return {
       workspaceComponents,
       drop,
+      dropLoadingState,
       dropLoading,
       itemIndex,
       handleDragOver,

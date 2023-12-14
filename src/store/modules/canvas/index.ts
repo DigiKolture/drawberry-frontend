@@ -26,6 +26,7 @@ const state: CanvasState = {
   fontWeights: [],
   sidebarNavContent: null,
   sidebarDock: false,
+  dropLoading: false,
 };
 
 export const data: Module<CanvasState, RootState> = {

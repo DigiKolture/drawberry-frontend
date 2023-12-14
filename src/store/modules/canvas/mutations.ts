@@ -106,4 +106,8 @@ export const mutations: MutationTree<CanvasState> = {
     state.sidebarDock = data;
     return state.sidebarDock;
   },
+  SET_DROP_LOADING(state: CanvasState, data: boolean) {
+    state.dropLoading = data;
+    return state.dropLoading;
+  },
 };

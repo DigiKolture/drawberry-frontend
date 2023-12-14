@@ -1,14 +1,18 @@
 <template>
   <div class="layers__component__item">
+    <LayerElementDropIndicator v-if="dropIndex === itemIndex" />
     <LayersContainerElementItem
       @mouseover.stop="handleMouseOver(componentItem.json[0])"
       @click="handleClick(componentItem.json[0])"
       :element="componentItem.json[0]"
       :componentItem="componentItem"
+      :item-index="itemIndex"
       :header="true"
       :draggable="true"
       @dragstart.self="dragComponentItemLayer($event)"
       @drop="dropComponentItemLayer($event)"
+      @dragover="handleDragOver($event)"
+      @dragleave="handleDragLeave($event)"
       @dragover.prevent
       @dragenter.prevent
     >
@@ -50,10 +54,15 @@ import { updateDom } from "@/composables/canvas/update_dom";
 import store from "@/store";
 import { drag_and_drop } from "@/composables/canvas/drag_and_drop";
 import { focus } from "@/composables/canvas/focus";
+import LayerElementDropIndicator from "@/components/canvas/sidebar/layers/utilities/LayerElementDropIndicator.vue";
 
 export default defineComponent({
   name: "LayersContainerItem",
-  components: { LayersContainerElementItem, BaseIcon },
+  components: {
+    LayerElementDropIndicator,
+    LayersContainerElementItem,
+    BaseIcon,
+  },
   props: {
     componentItem: {
       type: Object,
@@ -77,6 +86,7 @@ export default defineComponent({
     const { focusComponentElement, removeCurrentFocus } = focus();
 
     const showElements = ref(true);
+    const dropIndex = ref(-1);
 
     const toggleShowElements = () => {
       return (showElements.value = !showElements.value);
@@ -199,6 +209,8 @@ export default defineComponent({
       const fromIndex = e.dataTransfer.getData("fromLayerComponentItemIndex");
       if (!fromIndex) return;
 
+      dropIndex.value = -1;
+
       await changeComponentItemPosition(
         project.value.id,
         parseInt(fromIndex),
@@ -206,11 +218,22 @@ export default defineComponent({
       );
     };
 
+    const handleDragOver = (event: Event) => {
+      dropIndex.value = props.itemIndex;
+    };
+
+    const handleDragLeave = (event: Event) => {
+      dropIndex.value = -1;
+    };
+
     return {
+      dropIndex,
       handleMouseOver,
       handleClick,
       toggleShowElements,
       showElements,
+      handleDragOver,
+      handleDragLeave,
       dragComponentItemLayer,
       dropComponentItemLayer,
     };

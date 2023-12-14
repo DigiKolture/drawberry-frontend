@@ -3,6 +3,7 @@
     class="canvas__workspace__container"
     @mouseover.self="handleMouseLeave($event)"
   >
+    {{ focusedIndex }} - {{ focusedElement?.id }}
     <div class="workspace__component__items__container" :class="style.layout">
       <CanvasWorkspaceEmpty
         :project-id="projectId"
@@ -63,6 +64,14 @@ export default defineComponent({
 
     const googleFonts = computed(() => {
       return store.getters["canvas/googleFonts"];
+    });
+
+    const focusedElement = computed(() => {
+      return store.getters["canvas/focusedElement"];
+    });
+
+    const focusedIndex = computed(() => {
+      return store.getters["canvas/focusedIndex"];
     });
 
     onMounted(async () => {
@@ -158,6 +167,8 @@ export default defineComponent({
     };
 
     return {
+      focusedElement,
+      focusedIndex,
       workspaceComponents,
       upsertComponentItem,
       projectId,

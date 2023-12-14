@@ -89,12 +89,6 @@ export function drag_and_drop() {
 
       const fromIndex = parseInt(fromComponentItemIndex);
 
-      console.log({ fromIndex, toIndex });
-
-      if (fromIndex === toIndex) return;
-
-      if (toIndex > 0 && toIndex > fromIndex) toIndex = toIndex - 1;
-
       changeComponentItemPosition(
         projectId,
         parseInt(fromComponentItemIndex),
@@ -108,6 +102,9 @@ export function drag_and_drop() {
     fromIndex: number,
     toIndex: number
   ) => {
+    if (fromIndex === toIndex) return;
+
+    if (toIndex > 0 && toIndex > fromIndex) toIndex = toIndex - 1;
     if (focusedIndex.value === fromIndex) {
       store.commit("canvas/SET_FOCUSED_INDEX", toIndex);
     }

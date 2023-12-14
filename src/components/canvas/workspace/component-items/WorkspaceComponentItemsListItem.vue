@@ -2,7 +2,6 @@
   <div class="workspace__component__items__list">
     <WorkspaceComponentDropIndicator v-if="dropIndex === itemIndex" />
     <WorkspaceComponentDropSkeleton v-if="dropLoadingIndex === itemIndex" />
-
     <div
       class="workspace__component__items__list__item"
       v-html="componentItem.html"

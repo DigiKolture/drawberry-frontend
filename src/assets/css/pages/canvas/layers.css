@@ -1,7 +1,6 @@
 .layers__component__items{
     margin-top: 4px;
     @apply flex flex-col h-full overflow-x-auto;
-    row-gap: 5px;
 }
 
 .layers__component__item__header{
@@ -35,6 +34,13 @@
 
 .layers__component__item__header.focus, .layers__component__item__element.focus{
     background-color: #494B57;
+}
+
+.layer__element__drop__indicator{
+    @apply w-full;
+    height: 2px;
+    background-color: #1873CD;
+
 }
 
 .layers__component__item__header:hover svg path{

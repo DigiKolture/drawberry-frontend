@@ -145,7 +145,16 @@ div.components__container{
 }
 
 
+
+
 .component__items__list__item{
     @apply cursor-pointer;
 }
 
+/*.component__items__container.disabled .component__items__list__item{*/
+/*    @apply  pointer-events-none;*/
+/*}*/
+
+.component__items__list__item.disabled{
+    @apply  pointer-events-none;
+}

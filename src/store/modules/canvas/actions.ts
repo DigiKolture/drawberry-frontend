@@ -4,8 +4,7 @@ import { RootState } from "@/store/types";
 import AxiosClient from "@/services/api";
 import { updateDom } from "@/composables/canvas/update_dom";
 import store from "@/store";
-
-// const baseUrl = "/components";
+import router from "@/router";
 
 const { updateComponentItemDom } = updateDom();
 
@@ -56,7 +55,10 @@ export const actions: ActionTree<CanvasState, RootState> = {
         }
       });
   },
-  storeProjectComponent({ state, commit }, { projectId, data }): Promise<void> {
+  storeProjectComponent({ state, commit }, { data }): Promise<void> {
+    const currentRoute: any = router.currentRoute;
+    const projectId = currentRoute._value.params.id;
+
     return AxiosClient.post(`/projects/${projectId}/components`, data)
       .then((res: any) => {
         // dispatch("getProjectComponentItems", projectId);

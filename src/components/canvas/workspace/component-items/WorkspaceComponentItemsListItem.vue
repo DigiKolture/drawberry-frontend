@@ -11,8 +11,8 @@
       @click="clickEvent($event)"
       @mouseover.stop="hoverEvent($event)"
       @dragover="handleDragOver($event)"
-      @dragenter="handleDragEnter($event)"
-      @dragleave="handleDragLeave($event)"
+      @dragenter="handleDragEnter"
+      @dragleave="handleDragLeave"
       @dragover.prevent
       @dragenter.prevent
       v-if="isMounted"
@@ -135,16 +135,19 @@ export default defineComponent({
       props.componentItem.html = html;
     };
 
-    const handleDragOver = (event: Event) => {
-      // console.log(`<<<<<< HANDLE DRAG OVER >>>>> ${props.itemIndex}`);
+    const handleDragOver = (e: any) => {
+      let fromIndex = e.dataTransfer.getData("fromComponentItemIndex");
+      if (fromIndex) fromIndex = parseInt(fromIndex);
+      else return;
+
+      if (Math.abs(fromIndex - props.itemIndex) < 2) return;
       dropIndex.value = props.itemIndex;
     };
-    const handleDragEnter = (event: Event) => {
+    const handleDragEnter = () => {
       // console.log(`<<<<<< HANDLE DRAG ENTER >>>>> ${props.itemIndex}`);
     };
 
-    const handleDragLeave = (event: Event) => {
-      // console.log(`<<<<<< HANDLE DRAG LEAVE >>>>> ${props.toIndex}`);
+    const handleDragLeave = () => {
       dropIndex.value = -1;
     };
 

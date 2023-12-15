@@ -1,9 +1,5 @@
 <template>
-  <div
-    class="canvas__workspace__container"
-    @mouseover.self="handleMouseLeave($event)"
-  >
-    {{ focusedIndex }} - {{ focusedElement?.id }}
+  <div class="canvas__workspace__container" @mouseover.self="handleMouseLeave">
     <div class="workspace__component__items__container" :class="style.layout">
       <CanvasWorkspaceEmpty
         :project-id="projectId"

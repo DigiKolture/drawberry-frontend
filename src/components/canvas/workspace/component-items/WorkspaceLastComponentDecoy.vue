@@ -53,7 +53,7 @@ export default defineComponent({
       return workspaceComponents.value.length;
     });
 
-    const handleDragOver = (e) => {
+    const handleDragOver = (e: any) => {
       const fromIndex = e.dataTransfer.getData("fromComponentItemIndex");
       const type = e.dataTransfer.getData("type");
       const toIndex = itemIndex.value;

@@ -45,7 +45,7 @@ export default defineComponent({
       await changeComponentItemPosition(parseInt(fromIndex), itemIndex.value);
     };
 
-    const handleDragOver = (e) => {
+    const handleDragOver = (e: any) => {
       let fromIndex = e.dataTransfer.getData("fromLayerComponentItemIndex");
       let toIndex = itemIndex.value;
       const show = validateIndicator(fromIndex, toIndex);

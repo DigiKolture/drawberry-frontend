@@ -10,6 +10,10 @@
     padding-bottom: 8px;
 }
 
+.layers__component__item__header.decoy{
+    height: 40px;
+}
+
 .layers__component__item__header__move{
     @apply flex items-center justify-center;
     width: 24px;

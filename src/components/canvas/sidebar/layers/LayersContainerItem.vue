@@ -96,20 +96,8 @@ export default defineComponent({
       return store.getters["canvas/workspaceComponents"];
     });
 
-    const project = computed(() => {
-      return store.getters["projects/project"];
-    });
-
     const currentHoverElement = computed(() => {
       return store.getters["canvas/currentHoverElement"];
-    });
-
-    const focusedElement = computed(() => {
-      return store.getters["canvas/focusedElement"];
-    });
-
-    const focusedIndex = computed(() => {
-      return store.getters["canvas/focusedIndex"];
     });
 
     watch(currentHoverElement, (val) => {
@@ -198,7 +186,6 @@ export default defineComponent({
 
     const dragComponentItemLayer = (e: any) => {
       const itemIndex = props.itemIndex;
-      console.log("Drag Index", itemIndex);
       e.dataTransfer.effectAllowed = "move";
       e.dataTransfer.dropEffect = "move";
       e.dataTransfer.setData("fromLayerComponentItemIndex", itemIndex);
@@ -211,18 +198,14 @@ export default defineComponent({
 
       dropIndex.value = -1;
 
-      await changeComponentItemPosition(
-        project.value.id,
-        parseInt(fromIndex),
-        toIndex
-      );
+      await changeComponentItemPosition(parseInt(fromIndex), toIndex);
     };
 
-    const handleDragOver = (event: Event) => {
+    const handleDragOver = () => {
       dropIndex.value = props.itemIndex;
     };
 
-    const handleDragLeave = (event: Event) => {
+    const handleDragLeave = () => {
       dropIndex.value = -1;
     };
 

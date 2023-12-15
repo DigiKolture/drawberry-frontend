@@ -7,6 +7,7 @@
         :componentItem="component"
         :itemIndex="itemIndex"
       />
+      <LayerLastContainerElementDecoy v-if="workspaceComponents.length > 0" />
     </div>
   </div>
 </template>
@@ -14,10 +15,14 @@
 import { computed, defineComponent } from "vue";
 import LayersContainerItem from "@/components/canvas/sidebar/layers/LayersContainerItem.vue";
 import store from "@/store";
+import LayerLastContainerElementDecoy from "@/components/canvas/sidebar/layers/LayerLastContainerElementDecoy.vue";
 
 export default defineComponent({
   name: "LayersContainer",
-  components: { LayersContainerItem },
+  components: {
+    LayerLastContainerElementDecoy,
+    LayersContainerItem,
+  },
 
   setup() {
     const workspaceComponents = computed(() => {

@@ -2,9 +2,10 @@ import store from "@/store";
 import { computed } from "vue";
 import { ui } from "@/assets/js/canvas";
 import { focus } from "@/composables/canvas/focus";
+import router from "@/router";
 
 export function drag_and_drop() {
-  const { removeCurrentFocus, removeFocus } = focus();
+  const { removeCurrentFocus, removeFocus, removeAllFocus } = focus();
 
   const workspaceComponents = computed(() => {
     return store.getters["canvas/workspaceComponents"];
@@ -87,26 +88,23 @@ export function drag_and_drop() {
 
       if (!fromComponentItemIndex || !projectId) return;
 
-      const fromIndex = parseInt(fromComponentItemIndex);
-
-      changeComponentItemPosition(
-        projectId,
-        parseInt(fromComponentItemIndex),
-        toIndex
-      );
+      changeComponentItemPosition(parseInt(fromComponentItemIndex), toIndex);
     }
   };
 
   const changeComponentItemPosition = async (
-    projectId: string,
     fromIndex: number,
     toIndex: number
   ) => {
     if (fromIndex === toIndex) return;
 
+    const projectId = router.currentRoute.value.params.id;
+
     if (toIndex > 0 && toIndex > fromIndex) toIndex = toIndex - 1;
     if (focusedIndex.value === fromIndex) {
       store.commit("canvas/SET_FOCUSED_INDEX", toIndex);
+    } else {
+      removeAllFocus();
     }
     const projectComponentItem = workspaceComponents.value[fromIndex];
 

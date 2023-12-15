@@ -79,8 +79,14 @@ export function focus() {
     store.commit("canvas/SET_FOCUSED_INDEX", itemIndex);
   };
 
+  const removeAllFocus = () => {
+    removeCurrentFocus();
+    removeFocus();
+  };
+
   return {
     removeFocus,
+    removeAllFocus,
     removeCurrentFocus,
     focusComponentElement,
   };

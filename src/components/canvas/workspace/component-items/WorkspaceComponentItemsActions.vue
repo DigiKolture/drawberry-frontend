@@ -84,17 +84,9 @@ export default defineComponent({
       store.commit("canvas/SET_FOCUSED_INDEX", updatedIndex);
 
       if (increment) {
-        await changeComponentItemPosition(
-          props.projectId,
-          currentIndex,
-          updatedIndex
-        );
+        await changeComponentItemPosition(currentIndex, updatedIndex);
       } else {
-        await changeComponentItemPosition(
-          props.projectId,
-          currentIndex,
-          updatedIndex
-        );
+        await changeComponentItemPosition(currentIndex, updatedIndex);
       }
     };
 

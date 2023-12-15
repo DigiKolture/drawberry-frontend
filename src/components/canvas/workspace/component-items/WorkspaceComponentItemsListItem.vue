@@ -137,10 +137,14 @@ export default defineComponent({
 
     const handleDragOver = (e: any) => {
       let fromIndex = e.dataTransfer.getData("fromComponentItemIndex");
+      let type = e.dataTransfer.getData("type");
       if (fromIndex) fromIndex = parseInt(fromIndex);
       else return;
 
-      if (Math.abs(fromIndex - props.itemIndex) < 2) return;
+      console.log("<<<< >>>>>>>");
+
+      // if (Math.abs(fromIndex - props.itemIndex) < 2 && type == "from-workspace")
+      //   return;
       dropIndex.value = props.itemIndex;
     };
     const handleDragEnter = () => {
@@ -164,6 +168,8 @@ export default defineComponent({
       itemIndex: number,
       projectId: string
     ) => {
+      console.log("<<<<< ****** >>>>>>>>");
+
       dropLoadingIndex.value = dropIndex.value;
       dropIndex.value = -1;
       await upsertComponentItem(event, itemIndex, projectId);

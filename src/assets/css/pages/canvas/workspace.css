@@ -66,6 +66,7 @@
 
 .workspace__component__drop__indicator{
     @apply  flex items-center justify-center w-full;
+    /*z-index: 10;*/
     height: 2px;
     background-color: #1873CD;
     top: -10px;

@@ -85,7 +85,7 @@ export default defineComponent({
     const { updateElementDom } = updateDom();
     const { focusComponentElement, removeCurrentFocus } = focus();
 
-    const showElements = ref(true);
+    const showElements = ref(false);
     const dropIndex = ref(-1);
 
     const toggleShowElements = () => {
@@ -203,9 +203,12 @@ export default defineComponent({
 
     const handleDragOver = (e: any) => {
       let fromIndex = e.dataTransfer.getData("fromLayerComponentItemIndex");
+      let toIndex = props.itemIndex;
       if (fromIndex) fromIndex = parseInt(fromIndex);
       else return;
-      if (Math.abs(fromIndex - props.itemIndex) < 2) return;
+      if (fromIndex == toIndex) return;
+      if (fromIndex < toIndex && Math.abs(fromIndex - toIndex) < 2) return;
+      if (toIndex > fromIndex && Math.abs(fromIndex - toIndex) < 1) return;
 
       dropIndex.value = props.itemIndex;
     };

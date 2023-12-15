@@ -43,7 +43,15 @@ export default defineComponent({
       await changeComponentItemPosition(parseInt(fromIndex), itemIndex.value);
     };
 
-    const handleDragOver = () => {
+    const handleDragOver = (e) => {
+      let fromIndex = e.dataTransfer.getData("fromLayerComponentItemIndex");
+      let toIndex = itemIndex.value;
+      if (fromIndex) fromIndex = parseInt(fromIndex);
+      else return;
+      if (fromIndex == toIndex) return;
+      if (fromIndex < toIndex && Math.abs(fromIndex - toIndex) < 2) return;
+      if (toIndex > fromIndex && Math.abs(fromIndex - toIndex) < 1) return;
+
       drop.value = true;
     };
 

@@ -7,6 +7,7 @@ import store from "@/store";
 import router from "@/router";
 
 const { updateComponentItemDom } = updateDom();
+const { updateElementDom } = updateDom();
 
 export const actions: ActionTree<CanvasState, RootState> = {
   getProjectComponentItems(
@@ -63,6 +64,7 @@ export const actions: ActionTree<CanvasState, RootState> = {
       .then((res: any) => {
         // dispatch("getProjectComponentItems", projectId);
         const component = res.data.data.component;
+        component.html = updateElementDom(component.html, component.json[0]);
 
         state.workspaceComponents.splice(data.positionIndex, 0, component);
         commit("SET_WORKSPACE_COMPONENTS", state.workspaceComponents);

@@ -17,6 +17,7 @@ import { computed, defineComponent, ref } from "vue";
 import LayerElementDropIndicator from "@/components/canvas/sidebar/layers/utilities/LayerElementDropIndicator.vue";
 import store from "@/store";
 import { drag_and_drop } from "@/composables/canvas/drag_and_drop";
+import { indicators } from "@/composables/canvas/indicators";
 
 export default defineComponent({
   name: "LayerLastContainerElementDecoy",
@@ -25,6 +26,7 @@ export default defineComponent({
   setup() {
     const drop = ref(false);
     const { changeComponentItemPosition } = drag_and_drop();
+    const { validateIndicator } = indicators();
 
     const workspaceComponents = computed(() => {
       return store.getters["canvas/workspaceComponents"];
@@ -46,11 +48,8 @@ export default defineComponent({
     const handleDragOver = (e) => {
       let fromIndex = e.dataTransfer.getData("fromLayerComponentItemIndex");
       let toIndex = itemIndex.value;
-      if (fromIndex) fromIndex = parseInt(fromIndex);
-      else return;
-      if (fromIndex == toIndex) return;
-      if (fromIndex < toIndex && Math.abs(fromIndex - toIndex) < 2) return;
-      if (toIndex > fromIndex && Math.abs(fromIndex - toIndex) < 1) return;
+      const show = validateIndicator(fromIndex, toIndex);
+      if (!show) return;
 
       drop.value = true;
     };

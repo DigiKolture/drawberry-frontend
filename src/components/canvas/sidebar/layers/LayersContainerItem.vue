@@ -55,6 +55,7 @@ import store from "@/store";
 import { drag_and_drop } from "@/composables/canvas/drag_and_drop";
 import { focus } from "@/composables/canvas/focus";
 import LayerElementDropIndicator from "@/components/canvas/sidebar/layers/utilities/LayerElementDropIndicator.vue";
+import { indicators } from "@/composables/canvas/indicators";
 
 export default defineComponent({
   name: "LayersContainerItem",
@@ -83,6 +84,7 @@ export default defineComponent({
 
     const { changeComponentItemPosition } = drag_and_drop();
     const { updateElementDom } = updateDom();
+    const { validateIndicator } = indicators();
     const { focusComponentElement, removeCurrentFocus } = focus();
 
     const showElements = ref(false);
@@ -204,11 +206,9 @@ export default defineComponent({
     const handleDragOver = (e: any) => {
       let fromIndex = e.dataTransfer.getData("fromLayerComponentItemIndex");
       let toIndex = props.itemIndex;
-      if (fromIndex) fromIndex = parseInt(fromIndex);
-      else return;
-      if (fromIndex == toIndex) return;
-      if (fromIndex < toIndex && Math.abs(fromIndex - toIndex) < 2) return;
-      if (toIndex > fromIndex && Math.abs(fromIndex - toIndex) < 1) return;
+
+      const show = validateIndicator(fromIndex, toIndex);
+      if (!show) return;
 
       dropIndex.value = props.itemIndex;
     };

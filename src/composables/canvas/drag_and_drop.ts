@@ -82,7 +82,6 @@ export function drag_and_drop() {
       await moveComponentItem(e, toIndex, projectId);
       // focusComponentElement(toIndex, 0);
     } else {
-      console.log("<<<<< >>>>>>>>");
       const fromComponentItemIndex = e.dataTransfer.getData(
         "fromComponentItemIndex"
       );

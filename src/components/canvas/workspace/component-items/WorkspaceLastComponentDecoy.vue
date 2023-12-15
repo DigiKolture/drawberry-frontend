@@ -20,6 +20,7 @@ import WorkspaceComponentDropSkeleton from "@/components/canvas/workspace/utilit
 import WorkspaceComponentDropIndicator from "@/components/canvas/workspace/utilities/WorkspaceComponentDropIndicator.vue";
 import store from "@/store";
 import { drag_and_drop } from "@/composables/canvas/drag_and_drop";
+import { indicators } from "@/composables/canvas/indicators";
 
 export default defineComponent({
   name: "WorkspaceLastComponentDecoy",
@@ -35,6 +36,7 @@ export default defineComponent({
   },
   setup() {
     const { upsertComponentItem } = drag_and_drop();
+    const { validateWorkspaceIndicator } = indicators();
 
     const drop = ref(false);
     const dropLoading = ref(false);
@@ -51,7 +53,14 @@ export default defineComponent({
       return workspaceComponents.value.length;
     });
 
-    const handleDragOver = () => {
+    const handleDragOver = (e) => {
+      const fromIndex = e.dataTransfer.getData("fromComponentItemIndex");
+      const type = e.dataTransfer.getData("type");
+      const toIndex = itemIndex.value;
+
+      const show = validateWorkspaceIndicator(type, fromIndex, toIndex);
+      if (!show) return;
+
       drop.value = true;
     };
 

@@ -34,6 +34,7 @@ import store from "@/store";
 import WorkspaceComponentItemsActions from "@/components/canvas/workspace/component-items/WorkspaceComponentItemsActions.vue";
 import WorkspaceComponentDropSkeleton from "@/components/canvas/workspace/utilities/WorkspaceComponentDropSkeleton.vue";
 import WorkspaceComponentDropIndicator from "@/components/canvas/workspace/utilities/WorkspaceComponentDropIndicator.vue";
+import { indicators } from "@/composables/canvas/indicators";
 
 export default defineComponent({
   name: "WorkspaceComponentItemsListItem",
@@ -63,6 +64,7 @@ export default defineComponent({
 
   setup(props, { emit }) {
     const { moveComponentItemPosition, upsertComponentItem } = drag_and_drop();
+    const { validateWorkspaceIndicator } = indicators();
 
     const { updateElementDom } = updateDom();
     const disabledButton = ref(false);
@@ -136,15 +138,13 @@ export default defineComponent({
     };
 
     const handleDragOver = (e: any) => {
-      let fromIndex = e.dataTransfer.getData("fromComponentItemIndex");
-      let type = e.dataTransfer.getData("type");
-      if (fromIndex) fromIndex = parseInt(fromIndex);
-      else return;
+      const fromIndex = e.dataTransfer.getData("fromComponentItemIndex");
+      const type = e.dataTransfer.getData("type");
+      const toIndex = props.itemIndex;
 
-      console.log("<<<< >>>>>>>");
+      const show = validateWorkspaceIndicator(type, fromIndex, toIndex);
+      if (!show) return;
 
-      // if (Math.abs(fromIndex - props.itemIndex) < 2 && type == "from-workspace")
-      //   return;
       dropIndex.value = props.itemIndex;
     };
     const handleDragEnter = () => {
@@ -168,8 +168,6 @@ export default defineComponent({
       itemIndex: number,
       projectId: string
     ) => {
-      console.log("<<<<< ****** >>>>>>>>");
-
       dropLoadingIndex.value = dropIndex.value;
       dropIndex.value = -1;
       await upsertComponentItem(event, itemIndex, projectId);

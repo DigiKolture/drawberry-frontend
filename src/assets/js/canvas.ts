@@ -7,9 +7,13 @@ export const ui = {
     const componentItems = document.getElementById("component-items");
     if (componentItems) {
       if (show) {
-        componentItems.classList.remove("hide");
+        if (componentItems.classList.contains("hide")) {
+          componentItems.classList.remove("hide");
+        }
       } else {
-        componentItems.classList.add("hide");
+        if (!componentItems.classList.contains("hide")) {
+          componentItems.classList.add("hide");
+        }
       }
     }
   },

@@ -94,13 +94,17 @@ export function drag_and_drop() {
 
   const changeComponentItemPosition = async (
     fromIndex: number,
-    toIndex: number
+    toIndex: number,
+    dragAndDrop = true
   ) => {
     if (fromIndex === toIndex) return;
 
     const projectId = router.currentRoute.value.params.id;
 
-    if (toIndex > 0 && toIndex > fromIndex) toIndex = toIndex - 1;
+    if (dragAndDrop) {
+      if (toIndex > 0 && toIndex > fromIndex) toIndex = toIndex - 1;
+    }
+
     if (focusedIndex.value === fromIndex) {
       store.commit("canvas/SET_FOCUSED_INDEX", toIndex);
     } else {

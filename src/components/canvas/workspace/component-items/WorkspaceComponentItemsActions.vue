@@ -81,12 +81,11 @@ export default defineComponent({
       const updatedIndex = increment
         ? props.itemIndex + 1
         : props.itemIndex - 1;
-      store.commit("canvas/SET_FOCUSED_INDEX", updatedIndex);
 
       if (increment) {
-        await changeComponentItemPosition(currentIndex, updatedIndex);
+        await changeComponentItemPosition(currentIndex, updatedIndex, false);
       } else {
-        await changeComponentItemPosition(currentIndex, updatedIndex);
+        await changeComponentItemPosition(currentIndex, updatedIndex, false);
       }
     };
 

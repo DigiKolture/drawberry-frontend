@@ -1,11 +1,12 @@
 
 
 nav.canvas__sidebar__nav{
-    @apply h-full flex flex-col justify-between items-center;
+    @apply fixed flex flex-col justify-between items-center;
     width: var(--canvas-sidebar-nav-width);
     background-color: #1E1F26;
     padding-top: 4px;
     padding-bottom: 16px;
+    height: calc(100vh - var(--header-height));
 }
 
 .sidebar__nav__top, .sidebar__nav__bottom{

@@ -10,7 +10,7 @@
   </section>
 </template>
 <script>
-import { defineComponent } from "vue";
+import { defineComponent, ref } from "vue";
 import BaseIcon from "@/components/icon/BaseIcon";
 
 export default defineComponent({
@@ -28,11 +28,18 @@ export default defineComponent({
     },
   },
   setup(props, { emit }) {
+    const open = ref(false);
+
+    const toggle = () => {
+      open.value = !open.value;
+    };
+
     const setActiveTab = () => {
       emit("update", props.properties.index);
     };
 
     return {
+      open,
       setActiveTab,
     };
   },

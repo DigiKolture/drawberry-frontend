@@ -4,8 +4,9 @@
       <PanelTab
         v-if="showTab(tabsStyles.layout)"
         @update="setActiveTab"
+        @dblclick="closeAllTabs"
         :properties="tabsStyles.layout"
-        :show-body="activeTab === tabsStyles.layout.index"
+        :show-body="tabStates[tabsStyles.layout.index]"
       >
         <HorizontalAlignStyle v-if="hasAttributes('align')" />
         <VerticalAlignStyle v-if="hasAttributes('valign')" />
@@ -13,8 +14,9 @@
       <PanelTab
         v-if="showTab(tabsStyles.spacing)"
         @update="setActiveTab"
+        @dblclick="closeAllTabs"
         :properties="tabsStyles.spacing"
-        :show-body="activeTab === tabsStyles.spacing.index"
+        :show-body="tabStates[tabsStyles.spacing.index]"
       >
         <PaddingStyle v-if="showStyle('padding')" />
       </PanelTab>
@@ -22,8 +24,9 @@
       <PanelTab
         v-if="showTab(tabsStyles.typography)"
         @update="setActiveTab"
+        @dblclick="closeAllTabs"
         :properties="tabsStyles.typography"
-        :show-body="activeTab === tabsStyles.typography.index"
+        :show-body="tabStates[tabsStyles.typography.index]"
       >
         <FontStyle v-if="showStyle('font-family')" />
         <TextColorStyle v-if="showStyle('color')" />
@@ -39,40 +42,45 @@
       <PanelTab
         v-if="showTab(tabsStyles.background)"
         @update="setActiveTab"
+        @dblclick="closeAllTabs"
         :properties="tabsStyles.background"
-        :show-body="activeTab === tabsStyles.background.index"
+        :show-body="tabStates[tabsStyles.background.index]"
       >
         <BackgroundColorStyle v-if="showStyle('background-color')" />
       </PanelTab>
       <PanelTab
         v-if="showTab(tabsStyles.borders)"
         @update="setActiveTab"
+        @dblclick="closeAllTabs"
         :properties="tabsStyles.borders"
-        :show-body="activeTab === tabsStyles.borders.index"
+        :show-body="tabStates[tabsStyles.borders.index]"
       >
         <BorderRadiusStyle v-if="showStyle('border-radius')" />
       </PanelTab>
       <PanelTab
         v-if="showTab(tabsStyles.effects)"
         @update="setActiveTab"
+        @dblclick="closeAllTabs"
         :properties="tabsStyles.effects"
-        :show-body="activeTab === tabsStyles.effects.index"
+        :show-body="tabStates[tabsStyles.effects.index]"
       >
         <ShadowStyle v-if="showStyle('box-shadow')" />
       </PanelTab>
       <PanelTab
         v-if="showTab(tabsStyles.link)"
         @update="setActiveTab"
+        @dblclick="closeAllTabs"
         :properties="tabsStyles.link"
-        :show-body="activeTab === tabsStyles.link.index"
+        :show-body="tabStates[tabsStyles.link.index]"
       >
         <HrefAttribute v-if="hasAttributes('href')" />
       </PanelTab>
       <PanelTab
         v-if="showTab(tabsStyles.media)"
         @update="setActiveTab"
+        @dblclick="closeAllTabs"
         :properties="tabsStyles.media"
-        :show-body="activeTab === tabsStyles.media.index"
+        :show-body="tabStates[tabsStyles.media.index]"
       >
         <ImageAttribute v-if="hasAttributes('src')" />
       </PanelTab>
@@ -80,7 +88,7 @@
   </section>
 </template>
 <script lang="ts">
-import { computed, defineComponent, ref } from "vue";
+import { computed, defineComponent, reactive, ref, watch } from "vue";
 import store from "@/store";
 import PanelTab from "@/components/canvas/panel/tabs/PanelTab.vue";
 import HorizontalAlignStyle from "@/components/canvas/panel/styles/HorizontalAlignStyle.vue";
@@ -99,6 +107,14 @@ import ShadowStyle from "@/components/canvas/panel/styles/ShadowStyle.vue";
 import TextColorStyle from "@/components/canvas/panel/styles/TextColorStyle.vue";
 import BorderRadiusStyle from "@/components/canvas/panel/styles/BorderRadiusStyle.vue";
 import ImageAttribute from "@/components/canvas/panel/styles/ImageAttribute.vue";
+
+interface TabStyles {
+  title: string;
+  index: number;
+  styles: string[];
+  attributes: string[];
+  isContent?: boolean;
+}
 
 export default defineComponent({
   name: "CanvasPanelGroupedStyles",
@@ -140,7 +156,7 @@ export default defineComponent({
 
     const activeTab = ref(-1);
 
-    const tabsStyles = {
+    const tabsStyles: Record<string, TabStyles> = {
       layout: {
         title: "Layout",
         index: 0,
@@ -200,6 +216,14 @@ export default defineComponent({
       },
     };
 
+    const hasAttributes = (attribute: string) => {
+      return attribute ? attributes.value.includes(attribute) : true;
+    };
+
+    const hasContent = () => {
+      return focusedElement.value.innerHtml !== null;
+    };
+
     const showTab = (tab: any) => {
       for (let style of tab.styles) {
         const hasStyle = showStyle(style);
@@ -213,19 +237,28 @@ export default defineComponent({
       return tab.isContent && hasContent();
     };
 
-    const hasAttributes = (attribute: string) => {
-      return attribute ? attributes.value.includes(attribute) : true;
-    };
+    const matchingTabIndices = computed(() => {
+      const indices: Record<string, boolean> = {};
+      for (const key in tabsStyles) {
+        const tab = tabsStyles[key];
+        if (showTab(tab)) {
+          indices[tab.index.toString()] = false;
+        }
+      }
+      return indices;
+    });
 
-    const hasContent = () => {
-      return focusedElement.value.innerHtml !== null;
-    };
+    const tabStates = ref(matchingTabIndices.value);
 
     const setActiveTab = (index: number) => {
-      if (index == activeTab.value) {
-        return (activeTab.value = -1);
+      tabStates.value[index.toString()] = !tabStates.value[index.toString()];
+    };
+
+    const closeAllTabs = () => {
+      console.log("<<< close all >>>>");
+      for (const key in tabStates.value) {
+        tabStates.value[key] = false;
       }
-      return (activeTab.value = index);
     };
 
     return {
@@ -238,6 +271,8 @@ export default defineComponent({
       hasAttributes,
       tabsStyles,
       activeTab,
+      tabStates,
+      closeAllTabs,
     };
   },
 });

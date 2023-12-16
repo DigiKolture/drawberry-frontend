@@ -4,7 +4,7 @@
       <PanelTab
         v-if="showTab(tabsStyles.layout)"
         @update="setActiveTab"
-        @dblclick="closeAllTabs"
+        @close_tabs="closeAllTabs"
         :properties="tabsStyles.layout"
         :show-body="tabStates[tabsStyles.layout.index]"
       >
@@ -14,7 +14,7 @@
       <PanelTab
         v-if="showTab(tabsStyles.spacing)"
         @update="setActiveTab"
-        @dblclick="closeAllTabs"
+        @close_tabs="closeAllTabs"
         :properties="tabsStyles.spacing"
         :show-body="tabStates[tabsStyles.spacing.index]"
       >
@@ -24,7 +24,7 @@
       <PanelTab
         v-if="showTab(tabsStyles.typography)"
         @update="setActiveTab"
-        @dblclick="closeAllTabs"
+        @close_tabs="closeAllTabs"
         :properties="tabsStyles.typography"
         :show-body="tabStates[tabsStyles.typography.index]"
       >
@@ -42,7 +42,7 @@
       <PanelTab
         v-if="showTab(tabsStyles.background)"
         @update="setActiveTab"
-        @dblclick="closeAllTabs"
+        @close_tabs="closeAllTabs"
         :properties="tabsStyles.background"
         :show-body="tabStates[tabsStyles.background.index]"
       >
@@ -51,7 +51,7 @@
       <PanelTab
         v-if="showTab(tabsStyles.borders)"
         @update="setActiveTab"
-        @dblclick="closeAllTabs"
+        @close_tabs="closeAllTabs"
         :properties="tabsStyles.borders"
         :show-body="tabStates[tabsStyles.borders.index]"
       >
@@ -60,7 +60,7 @@
       <PanelTab
         v-if="showTab(tabsStyles.effects)"
         @update="setActiveTab"
-        @dblclick="closeAllTabs"
+        @close_tabs="closeAllTabs"
         :properties="tabsStyles.effects"
         :show-body="tabStates[tabsStyles.effects.index]"
       >
@@ -69,7 +69,7 @@
       <PanelTab
         v-if="showTab(tabsStyles.link)"
         @update="setActiveTab"
-        @dblclick="closeAllTabs"
+        @close_tabs="closeAllTabs"
         :properties="tabsStyles.link"
         :show-body="tabStates[tabsStyles.link.index]"
       >
@@ -78,7 +78,7 @@
       <PanelTab
         v-if="showTab(tabsStyles.media)"
         @update="setActiveTab"
-        @dblclick="closeAllTabs"
+        @close_tabs="closeAllTabs"
         :properties="tabsStyles.media"
         :show-body="tabStates[tabsStyles.media.index]"
       >
@@ -255,7 +255,6 @@ export default defineComponent({
     };
 
     const closeAllTabs = () => {
-      console.log("<<< close all >>>>");
       for (const key in tabStates.value) {
         tabStates.value[key] = false;
       }

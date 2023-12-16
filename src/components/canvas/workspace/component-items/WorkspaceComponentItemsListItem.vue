@@ -35,6 +35,7 @@ import WorkspaceComponentItemsActions from "@/components/canvas/workspace/compon
 import WorkspaceComponentDropSkeleton from "@/components/canvas/workspace/utilities/WorkspaceComponentDropSkeleton.vue";
 import WorkspaceComponentDropIndicator from "@/components/canvas/workspace/utilities/WorkspaceComponentDropIndicator.vue";
 import { indicators } from "@/composables/canvas/indicators";
+import { ui } from "@/assets/js/canvas";
 
 export default defineComponent({
   name: "WorkspaceComponentItemsListItem",
@@ -141,6 +142,8 @@ export default defineComponent({
       const fromIndex = e.dataTransfer.getData("fromComponentItemIndex");
       const type = e.dataTransfer.getData("type");
       const toIndex = props.itemIndex;
+
+      ui.changeComponentItemsStatus(false);
 
       const show = validateWorkspaceIndicator(type, fromIndex, toIndex);
       if (!show) return;

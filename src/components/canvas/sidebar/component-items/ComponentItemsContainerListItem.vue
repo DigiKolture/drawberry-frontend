@@ -13,6 +13,7 @@ import { drag_and_drop } from "@/composables/canvas/drag_and_drop";
 import { useRoute } from "vue-router";
 import store from "@/store";
 import { focus } from "@/composables/canvas/focus";
+import { ui } from "@/assets/js/canvas";
 const { dragComponentItemToCanvas } = drag_and_drop();
 
 export default defineComponent({
@@ -50,6 +51,8 @@ export default defineComponent({
 
       const componentItem = componentItems.value[parseInt(props.itemIndex)];
       if (!componentItem || !projectId) return;
+
+      ui.changeComponentItemsStatus(false);
 
       emit("disable");
       store.commit("canvas/SET_DROP_LOADING", true);

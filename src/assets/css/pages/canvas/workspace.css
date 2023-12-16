@@ -65,15 +65,19 @@
 }
 
 .workspace__component__drop__indicator{
-    @apply  flex items-center justify-center w-full;
-    /*z-index: 10;*/
+    @apply relative  flex items-center justify-center w-full;
+    z-index: 20;
     height: 2px;
     background-color: #1873CD;
-    top: -10px;
+    /*margin-top: -10px;*/
 }
 
 .workspace__component__drop__indicator.cards{
     @apply absolute;
+    margin-top: -10px;
+}
+
+.workspace__component__drop__indicator svg{
 }
 
 .workspace__component__drop__skeleton{

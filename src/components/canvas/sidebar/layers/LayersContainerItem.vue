@@ -87,7 +87,7 @@ export default defineComponent({
     const { validateIndicator } = indicators();
     const { focusComponentElement, removeCurrentFocus } = focus();
 
-    const showElements = ref(false);
+    const showElements = ref(true);
     const dropIndex = ref(-1);
 
     const toggleShowElements = () => {

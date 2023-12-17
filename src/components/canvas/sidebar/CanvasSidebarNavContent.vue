@@ -33,7 +33,7 @@
   </div>
 </template>
 <script lang="ts">
-import { computed, defineComponent, ref } from "vue";
+import { computed, defineComponent } from "vue";
 import BaseButtonIcon from "@/components/icon/BaseButtonIcon.vue";
 import store from "@/store";
 import ComponentsContainer from "@/components/canvas/sidebar/components/ComponentsContainer.vue";

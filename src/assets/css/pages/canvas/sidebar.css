@@ -1,4 +1,7 @@
 
+:root{
+    --sidebar-nav-content-header-height: 40px;
+}
 
 nav.canvas__sidebar__nav{
     @apply fixed flex flex-col justify-between items-center;
@@ -52,18 +55,21 @@ nav.canvas__sidebar__nav{
 }
 
 .sidebar__nav__contents__header{
-    @apply flex justify-between items-center;
-    height: 40px;
+    @apply fixed flex justify-between items-center;
+    height: var(--sidebar-nav-content-header-height);
+    width: var(--canvas-sidebar-nav-content-width);
     padding: 11px 0 11px 12px;
+    border-bottom: 1px solid #1E1F26;
+    z-index: 150;
+    background: #2D3039;
 }
 
-.sidebar__nav__contents__header{
+.sidebar__nav__contents__header h4{
     @apply text-white;
     font-weight: 400;
     font-size: 14px;
     line-height: 18px;
     letter-spacing: 0.04em;
-    border-bottom: 1px solid #1E1F26;
 }
 
 .sidebar__nav__contents__header__icons{
@@ -71,7 +77,10 @@ nav.canvas__sidebar__nav{
 }
 
 .sidebar__nav__contents__body{
-    @apply overflow-x-auto h-full;
+    @apply fixed overflow-y-auto h-full;
+    padding-top: var(--sidebar-nav-content-header-height);
+    width: var(--canvas-sidebar-nav-content-width);
+    z-index: 100;
 }
 
 .sidebar__nav__contents__header__icons .button__icon{

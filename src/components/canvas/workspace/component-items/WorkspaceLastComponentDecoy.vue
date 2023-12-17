@@ -21,6 +21,7 @@ import WorkspaceComponentDropIndicator from "@/components/canvas/workspace/utili
 import store from "@/store";
 import { drag_and_drop } from "@/composables/canvas/drag_and_drop";
 import { indicators } from "@/composables/canvas/indicators";
+import { ui } from "@/assets/js/canvas";
 
 export default defineComponent({
   name: "WorkspaceLastComponentDecoy",
@@ -57,6 +58,8 @@ export default defineComponent({
       const fromIndex = e.dataTransfer.getData("fromComponentItemIndex");
       const type = e.dataTransfer.getData("type");
       const toIndex = itemIndex.value;
+
+      ui.changeComponentItemsStatus(false);
 
       const show = validateWorkspaceIndicator(type, fromIndex, toIndex);
       if (!show) return;

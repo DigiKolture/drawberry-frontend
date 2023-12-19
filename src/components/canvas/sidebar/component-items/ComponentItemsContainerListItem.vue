@@ -8,7 +8,7 @@
   ></div>
 </template>
 <script>
-import { computed, defineComponent, ref } from "vue";
+import { computed, defineComponent, onMounted, ref } from "vue";
 import { drag_and_drop } from "@/composables/canvas/drag_and_drop";
 import { useRoute } from "vue-router";
 import store from "@/store";
@@ -33,6 +33,10 @@ export default defineComponent({
   setup(props, { emit }) {
     const route = useRoute();
     const { removeCurrentFocus, removeFocus } = focus();
+
+    onMounted(() => {
+      store.commit("canvas/SET_DROP_LOADING", false);
+    });
 
     const disabled = ref(false);
 

@@ -1,7 +1,7 @@
 <template>
   <div
     :draggable="true"
-    class="component__items__list__item"
+    class="component__items__list__item sm"
     v-html="componentItem.html"
     @dragstart="dragComponentItemToCanvas($event, itemIndex)"
     @click="clickEvent($event)"

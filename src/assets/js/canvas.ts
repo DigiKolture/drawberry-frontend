@@ -1,6 +1,6 @@
 export const ui = {
   mainIndex(): void {
-    this.closeComponentItemsWhenWorkspaceIsClicked();
+    // this.closeComponentItemsWhenWorkspaceIsClicked();
   },
 
   changeComponentItemsStatus(show = true): void {

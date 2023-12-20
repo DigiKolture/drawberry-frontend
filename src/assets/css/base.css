@@ -2,6 +2,13 @@
 @tailwind components;
 @tailwind utilities;
 
+
+
+audio,canvas,embed,iframe,img,object,svg,video{
+    display:initial;
+    vertical-align:initial
+}
+
 /*@font-face {*/
 /*    font-family: 'Airbnb Cereal';*/
 /*    src: url('../fonts/AirbnbCereal_W_Lt.otf')  format('opentype');*/
@@ -28,7 +35,7 @@
 
 
 *{
-    box-sizing: border-box;
+    /*box-sizing: border-box;*/
     list-style: none;
     text-decoration: none;
 }

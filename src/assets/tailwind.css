@@ -14,6 +14,7 @@
 @import "css/pages/canvas/sidebar.css";
 @import "css/pages/canvas/share.css";
 @import "css/pages/canvas/workspace.css";
+@import "css/pages/canvas/templates/components-template.scss";
 @import "css/pages/canvas/panel.css";
 @import "css/pages/canvas/layers.css";
 @import "css/pages/canvas/styles.css";

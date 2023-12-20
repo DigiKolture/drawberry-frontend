@@ -45,3 +45,9 @@ export default defineComponent({
   },
 });
 </script>
+
+<style scoped>
+* {
+  box-sizing: content-box;
+}
+</style>

@@ -1,5 +1,7 @@
+//Using Specificity for order
 
-.component__items__container .component__items__list__item.xs {
+.component__items__container .component__items__list__item.xs,
+.preview__container .preview__component__items__container.mobile .preview__component__items__list__item {
     /* header */
     .pc-xs-p-20 {
         padding: 20px !important

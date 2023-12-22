@@ -15,15 +15,22 @@ export function drag_and_drop() {
     return store.getters["components/componentItems"];
   });
 
-  const dragComponentItemToCanvas = (e: any, itemIndex: any) => {
-    const isDraggableElement = e.target.classList.contains(
-      "component__items__list__item"
-    );
+  const checkIfParentIsBeenDragged = (e: any) => {
+    const isDraggableElement =
+      e.target.classList.contains("component__items__list__item") ||
+      e.target.classList.contains("workspace__component__items__list__item");
 
     if (!isDraggableElement) {
       e.preventDefault();
-      return;
+      return false;
     }
+
+    return true;
+  };
+
+  const dragComponentItemToCanvas = (e: any, itemIndex: any) => {
+    const isParent = checkIfParentIsBeenDragged(e);
+    if (!isParent) return;
 
     e.dataTransfer.effectAllowed = "move";
     e.dataTransfer.dropEffect = "move";
@@ -57,6 +64,9 @@ export function drag_and_drop() {
   };
 
   const moveComponentItemPosition = (e: any, itemIndex: any) => {
+    const isParent = checkIfParentIsBeenDragged(e);
+    if (!isParent) return;
+
     e.dataTransfer.effectAllowed = "move";
     e.dataTransfer.dropEffect = "move";
 

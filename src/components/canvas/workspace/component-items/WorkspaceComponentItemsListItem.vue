@@ -6,7 +6,7 @@
       class="workspace__component__items__list__item"
       v-html="componentItem.html"
       :draggable="true"
-      @dragstart.self="moveComponentItemPosition($event, itemIndex)"
+      @dragstart="moveComponentItemPosition($event, itemIndex)"
       @drop="dropComponent($event, itemIndex, projectId)"
       @click="clickEvent($event)"
       @mouseover.stop="hoverEvent($event)"

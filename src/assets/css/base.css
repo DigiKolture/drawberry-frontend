@@ -1,12 +1,15 @@
 @tailwind base;
+/*@import "basetail.css";*/
 @tailwind components;
 @tailwind utilities;
-
-
 
 audio,canvas,embed,iframe,img,object,svg,video{
     display:initial;
     vertical-align:initial
+}
+
+img,video{
+    max-width: initial;
 }
 
 /*@font-face {*/
@@ -35,7 +38,7 @@ audio,canvas,embed,iframe,img,object,svg,video{
 
 
 *{
-    /*box-sizing: border-box;*/
+    box-sizing: border-box;
     list-style: none;
     text-decoration: none;
 }

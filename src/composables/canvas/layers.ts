@@ -107,7 +107,7 @@ export function layers() {
   const resetTabStates = () => {
     const indices: Record<string, boolean> = {};
     for (let i = 0; i < workspaceComponents.value.length; i++) {
-      indices[i.toString()] = true;
+      indices[i.toString()] = false;
     }
     return indices;
   };

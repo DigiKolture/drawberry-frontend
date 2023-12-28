@@ -56,6 +56,12 @@ export function layers() {
     return jsonIndex;
   };
 
+  const dragComponentItemLayer = (e: any, itemIndex: number) => {
+    e.dataTransfer.effectAllowed = "move";
+    e.dataTransfer.dropEffect = "move";
+    e.dataTransfer.setData("fromLayerComponentItemIndex", itemIndex);
+  };
+
   const addHoverClassToElement = (element: any) => {
     element.classes =
       element.classes &&
@@ -109,6 +115,7 @@ export function layers() {
   return {
     getLayerElementTitle,
     getLayerElementIcon,
+    dragComponentItemLayer,
     getComponentElementIndexUsingId,
     addHoverClassToElement,
     removeClassFromElement,

@@ -10,7 +10,7 @@
       :item-index="itemIndex"
       :header="true"
       :draggable="true"
-      @dragstart.self="dragComponentItemLayer($event)"
+      @dragstart.self="dragComponentItem($event)"
       @drop="dropComponentItemLayer($event)"
       @dragover="handleDragOver($event)"
       @dragleave="handleDragLeave($event)"
@@ -81,7 +81,8 @@ export default defineComponent({
   },
 
   setup(props) {
-    const { getComponentElementIndexUsingId } = layers();
+    const { getComponentElementIndexUsingId, dragComponentItemLayer } =
+      layers();
 
     const { changeComponentItemPosition } = drag_and_drop();
     const { removeHoverElement, addHoverToElement } = hover();
@@ -138,11 +139,8 @@ export default defineComponent({
       focusComponentElement(itemIndex, jsonIndex);
     };
 
-    const dragComponentItemLayer = (e: any) => {
-      const itemIndex = props.itemIndex;
-      e.dataTransfer.effectAllowed = "move";
-      e.dataTransfer.dropEffect = "move";
-      e.dataTransfer.setData("fromLayerComponentItemIndex", itemIndex);
+    const dragComponentItem = (e: any) => {
+      dragComponentItemLayer(e, props.itemIndex);
     };
 
     const dropComponentItemLayer = async (e: any) => {
@@ -181,7 +179,7 @@ export default defineComponent({
       closeAllTabs,
       handleDragOver,
       handleDragLeave,
-      dragComponentItemLayer,
+      dragComponentItem,
       dropComponentItemLayer,
     };
   },

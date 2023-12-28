@@ -93,7 +93,6 @@ export default defineComponent({
     const dropIndex = ref(-1);
 
     const toggleShowElements = () => {
-      console.log("<<<< >>>>>>", props.itemIndex);
       store.commit("layers/TOGGLE_TAB_STATE", props.itemIndex.toString());
     };
 

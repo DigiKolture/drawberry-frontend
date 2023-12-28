@@ -77,6 +77,12 @@ export function focus() {
     toLayer = true
   ) => {
     if (jsonIndex < 0) return;
+    await new Promise<void>((resolve) => {
+      setTimeout(() => {
+        store.commit("panel/CLOSE_ALL_TAB_STATES");
+        resolve();
+      });
+    });
 
     const componentItem = workspaceComponents.value[itemIndex];
 
@@ -91,8 +97,8 @@ export function focus() {
     );
     store.commit("canvas/SET_FOCUSED_ELEMENT", componentItem.json[jsonIndex]);
     store.commit("canvas/SET_FOCUSED_INDEX", itemIndex);
-    store.commit("panel/RESET_TAB_STATES");
     store.commit("layers/SET_ACTIVE_TAB_STATE", itemIndex);
+    store.commit("panel/RESET_TAB_STATES");
     store.commit("panel/ACTIVATE_FIRST_TAB_STATE");
 
     if (toLayer) {

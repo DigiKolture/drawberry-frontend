@@ -24,7 +24,7 @@
         </button>
       </div>
       <button
-        @click="toggleShowElements"
+        @click.stop="toggleShowElements"
         class="layers__component__item__header__switch"
       >
         <BaseIcon
@@ -93,7 +93,8 @@ export default defineComponent({
     const dropIndex = ref(-1);
 
     const toggleShowElements = () => {
-      store.commit("layers/TOGGLE_TAB_STATE", props.itemIndex);
+      console.log("<<<< >>>>>>", props.itemIndex);
+      store.commit("layers/TOGGLE_TAB_STATE", props.itemIndex.toString());
     };
 
     const currentHoverElement = computed(() => {

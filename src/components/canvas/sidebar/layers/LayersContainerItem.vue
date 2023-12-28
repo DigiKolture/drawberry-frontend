@@ -2,6 +2,7 @@
   <div class="layers__component__item">
     <LayerElementDropIndicator v-if="dropIndex === itemIndex" />
     <LayersContainerElementItem
+      :id="`layer-component-item-${itemIndex}`"
       @mouseover.stop="handleMouseOver(componentItem.json[0])"
       @click="handleClick(componentItem.json[0])"
       @dblclick="closeAllTabs"
@@ -136,7 +137,7 @@ export default defineComponent({
         elementId
       );
 
-      focusComponentElement(itemIndex, jsonIndex);
+      focusComponentElement(itemIndex, jsonIndex, false);
     };
 
     const dragComponentItem = (e: any) => {

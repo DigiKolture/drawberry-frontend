@@ -5,6 +5,7 @@
     <div
       class="workspace__component__items__list__item"
       v-html="componentItem.html"
+      :id="`workspace-component-item-${itemIndex}`"
       :draggable="true"
       @dragstart="moveComponentItemPosition($event, itemIndex)"
       @drop="dropComponent($event, itemIndex, projectId)"

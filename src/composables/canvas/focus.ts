@@ -60,8 +60,22 @@ export function focus() {
     }
   };
 
+  const scrollTo = (itemIndex: number, toLayer = true) => {
+    let item = null;
+    if (toLayer) {
+      item = document.querySelector(`#layer-component-item-${itemIndex}`);
+    } else {
+      item = document.querySelector(`#workspace-component-item-${itemIndex}`);
+    }
+    item?.scrollIntoView({ behavior: "smooth", block: "center" });
+  };
+
   // This will focus the component on and index and the element index
-  const focusComponentElement = (itemIndex: number, jsonIndex = 0) => {
+  const focusComponentElement = (
+    itemIndex: number,
+    jsonIndex = 0,
+    toLayer = true
+  ) => {
     if (jsonIndex < 0) return;
 
     const componentItem = workspaceComponents.value[itemIndex];
@@ -78,6 +92,8 @@ export function focus() {
     store.commit("canvas/SET_FOCUSED_ELEMENT", componentItem.json[jsonIndex]);
     store.commit("canvas/SET_FOCUSED_INDEX", itemIndex);
     store.commit("panel/RESET_TAB_STATES");
+
+    scrollTo(itemIndex, toLayer);
   };
 
   const removeAllFocus = () => {

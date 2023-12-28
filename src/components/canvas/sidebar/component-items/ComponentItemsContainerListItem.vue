@@ -32,7 +32,7 @@ export default defineComponent({
 
   setup(props, { emit }) {
     const route = useRoute();
-    const { removeCurrentFocus, removeFocus } = focus();
+    const { removeCurrentFocus, removeFocus, scrollTo } = focus();
 
     onMounted(() => {
       store.commit("canvas/SET_DROP_LOADING", false);
@@ -59,7 +59,13 @@ export default defineComponent({
       ui.changeComponentItemsStatus(false);
 
       emit("disable");
+      // scrollTo(workspaceComponents.value.length - 1, false);
+
       store.commit("canvas/SET_DROP_LOADING", true);
+      window.scrollTo({
+        top: document.body.scrollHeight,
+        behavior: "smooth",
+      });
 
       removeCurrentFocus();
       removeFocus();

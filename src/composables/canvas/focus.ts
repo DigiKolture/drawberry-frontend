@@ -106,5 +106,6 @@ export function focus() {
     removeAllFocus,
     removeCurrentFocus,
     focusComponentElement,
+    scrollTo,
   };
 }

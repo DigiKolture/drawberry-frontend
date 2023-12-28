@@ -4,7 +4,11 @@ import { layers } from "@/composables/canvas/layers";
 import { updateDom } from "@/composables/canvas/update_dom";
 
 export function hover() {
-  const { removeClassFromElement, getComponentElementIndexUsingId } = layers();
+  const {
+    removeClassFromElement,
+    getComponentElementIndexUsingId,
+    addClassToElement,
+  } = layers();
 
   const { updateElementDom } = updateDom();
 
@@ -16,7 +20,7 @@ export function hover() {
     return store.getters["canvas/currentHoverElement"];
   });
 
-  const removeHoverElement = async () => {
+  const removeHoverElement = () => {
     if (
       currentHoverElement.value.id &&
       currentHoverElement.value.componentIndex !== null &&
@@ -51,6 +55,25 @@ export function hover() {
     }
   };
 
+  const addHoverToElement = (
+    itemIndex: number,
+    elementId: string,
+    componentItem: any
+  ) => {
+    store.commit("canvas/SET_CURRENT_HOVER_ELEMENT", {
+      id: elementId,
+      componentIndex: itemIndex,
+    });
+    const jsonIndex = getComponentElementIndexUsingId(componentItem, elementId);
+    componentItem.json[jsonIndex] = addClassToElement(
+      componentItem.json[jsonIndex]
+    );
+    workspaceComponents.value[itemIndex].html = updateElementDom(
+      componentItem.html,
+      componentItem.json[jsonIndex]
+    );
+  };
+
   const hasWorkspaceComponent = computed(() => {
     return workspaceComponents.value && workspaceComponents.value.length > 0;
   });
@@ -58,5 +81,6 @@ export function hover() {
   return {
     hasWorkspaceComponent,
     removeHoverElement,
+    addHoverToElement,
   };
 }

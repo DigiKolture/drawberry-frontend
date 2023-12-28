@@ -51,7 +51,7 @@ import { computed, defineComponent, ref, watch } from "vue";
 import BaseIcon from "@/components/icon/BaseIcon.vue";
 import LayersContainerElementItem from "@/components/canvas/sidebar/layers/LayersContainerElementItem.vue";
 import { layers } from "@/composables/canvas/layers";
-import { updateDom } from "@/composables/canvas/update_dom";
+import { hover } from "@/composables/canvas/hover";
 import store from "@/store";
 import { drag_and_drop } from "@/composables/canvas/drag_and_drop";
 import { focus } from "@/composables/canvas/focus";
@@ -81,14 +81,10 @@ export default defineComponent({
   },
 
   setup(props) {
-    const {
-      getComponentElementIndexUsingId,
-      addClassToElement,
-      removeClassFromElement,
-    } = layers();
+    const { getComponentElementIndexUsingId } = layers();
 
     const { changeComponentItemPosition } = drag_and_drop();
-    const { updateElementDom } = updateDom();
+    const { removeHoverElement, addHoverToElement } = hover();
     const { validateIndicator } = indicators();
     const { focusComponentElement, removeCurrentFocus } = focus();
 
@@ -122,57 +118,13 @@ export default defineComponent({
         return;
       }
 
-      if (
-        currentHoverElement.value.id &&
-        currentHoverElement.value.componentIndex > -1
-      ) {
-        let currentComponentItem =
-          workspaceComponents.value[currentHoverElement.value.componentIndex];
-
-        const jsonIndex = getComponentElementIndexUsingId(
-          currentComponentItem,
-          currentHoverElement.value.id
-        );
-
-        if (jsonIndex > -1) {
-          let currElement = currentComponentItem.json[jsonIndex];
-
-          if (
-            currElement.classes &&
-            typeof currElement.classes == "object" &&
-            currElement.classes.includes("hover")
-          ) {
-            currElement = removeClassFromElement(
-              currentComponentItem.json[jsonIndex]
-            );
-
-            workspaceComponents.value[
-              currentHoverElement.value.componentIndex
-            ].html = updateElementDom(currentComponentItem.html, currElement);
-          }
-        }
-      }
+      removeHoverElement();
 
       const elementId = element.id;
       const componentItem = props.componentItem;
       const itemIndex = props.itemIndex;
 
-      store.commit("canvas/SET_CURRENT_HOVER_ELEMENT", {
-        id: elementId,
-        componentIndex: itemIndex,
-      });
-      const jsonIndex = getComponentElementIndexUsingId(
-        componentItem,
-        elementId
-      );
-      componentItem.json[jsonIndex] = addClassToElement(
-        componentItem.json[jsonIndex]
-      );
-      workspaceComponents.value[itemIndex].html = updateElementDom(
-        componentItem.html,
-        componentItem.json[jsonIndex],
-        true
-      );
+      addHoverToElement(itemIndex, elementId, componentItem);
     };
 
     const handleClick = (element: any) => {

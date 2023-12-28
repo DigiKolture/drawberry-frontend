@@ -31,7 +31,6 @@ import CanvasWorkspaceEmpty from "../CanvasWorkspaceEmpty.vue";
 import { drag_and_drop } from "@/composables/canvas/drag_and_drop";
 import store from "@/store";
 import { useRoute } from "vue-router";
-import { updateDom } from "@/composables/canvas/update_dom";
 import { layers } from "@/composables/canvas/layers";
 import { hover } from "@/composables/canvas/hover";
 import WebFont from "webfontloader";
@@ -48,11 +47,10 @@ export default defineComponent({
 
   setup() {
     const { upsertComponentItem } = drag_and_drop();
-    const { updateElementDom } = updateDom();
-    const { removeHoverElement } = hover();
+    const { removeHoverElement, addHoverToElement } = hover();
     const { removeFocus, removeCurrentFocus, focusComponentElement } = focus();
 
-    const { addClassToElement, getComponentElementIndexUsingId } = layers();
+    const { getComponentElementIndexUsingId } = layers();
 
     const route = useRoute();
     const projectId = route.params.id as string;
@@ -123,21 +121,7 @@ export default defineComponent({
 
       // ADD hover to the hovered element
       const elementId = target.id;
-      store.commit("canvas/SET_CURRENT_HOVER_ELEMENT", {
-        id: elementId,
-        componentIndex: itemIndex,
-      });
-      const jsonIndex = getComponentElementIndexUsingId(
-        componentItem,
-        elementId
-      );
-      componentItem.json[jsonIndex] = addClassToElement(
-        componentItem.json[jsonIndex]
-      );
-      workspaceComponents.value[itemIndex].html = updateElementDom(
-        componentItem.html,
-        componentItem.json[jsonIndex]
-      );
+      addHoverToElement(itemIndex, elementId, componentItem);
     };
 
     const handleMouseLeave = () => {

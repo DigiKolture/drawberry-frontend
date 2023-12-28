@@ -94,10 +94,6 @@ export default defineComponent({
       store.commit("layers/TOGGLE_TAB_STATE", props.itemIndex);
     };
 
-    const workspaceComponents = computed(() => {
-      return store.getters["canvas/workspaceComponents"];
-    });
-
     const currentHoverElement = computed(() => {
       return store.getters["canvas/currentHoverElement"];
     });

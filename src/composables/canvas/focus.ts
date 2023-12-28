@@ -77,6 +77,7 @@ export function focus() {
     );
     store.commit("canvas/SET_FOCUSED_ELEMENT", componentItem.json[jsonIndex]);
     store.commit("canvas/SET_FOCUSED_INDEX", itemIndex);
+    store.commit("panel/RESET_TAB_STATES");
   };
 
   const removeAllFocus = () => {

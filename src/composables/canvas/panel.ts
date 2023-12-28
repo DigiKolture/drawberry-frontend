@@ -1,0 +1,129 @@
+import store from "@/store";
+import { computed } from "vue";
+
+export function panel() {
+  interface TabStyles {
+    title: string;
+    index: number;
+    styles: string[];
+    attributes: string[];
+    isContent?: boolean;
+  }
+
+  const tabsStyles: Record<string, TabStyles> = {
+    layout: {
+      title: "Layout",
+      index: 0,
+      styles: [],
+      attributes: ["align", "valign"],
+    },
+    spacing: {
+      title: "Spacing",
+      index: 1,
+      styles: ["padding"],
+      attributes: [],
+    },
+    typography: {
+      title: "Typography",
+      index: 2,
+      styles: [
+        "color",
+        "font-size",
+        "font-weight",
+        "line-height",
+        "letter-spacing",
+        "text-align",
+        "font-family",
+      ],
+      attributes: [],
+      isContent: true,
+    },
+    background: {
+      title: "Background",
+      index: 3,
+      styles: ["background-color"],
+      attributes: [],
+    },
+    borders: {
+      title: "Borders",
+      index: 4,
+      styles: ["border-radius"],
+      attributes: [],
+    },
+    effects: {
+      title: "Effects",
+      index: 5,
+      styles: ["box-shadow"],
+      attributes: [],
+    },
+    link: {
+      title: "Link",
+      index: 6,
+      styles: [],
+      attributes: ["href"],
+    },
+    media: {
+      title: "Media",
+      index: 7,
+      styles: [],
+      attributes: ["src"],
+    },
+  };
+
+  const focusedElement = computed(() => {
+    return store.getters["canvas/focusedElement"];
+  });
+
+  const styles = computed(() => {
+    return Object.keys(focusedElement.value.attributes?.style?.value || []);
+  });
+
+  const showStyle = (style: string) => {
+    return style ? styles.value.includes(style) : true;
+  };
+
+  const attributes = computed(() => {
+    return Object.keys(focusedElement.value.attributes);
+  });
+
+  const hasAttributes = (attribute: string) => {
+    return attribute ? attributes.value.includes(attribute) : true;
+  };
+
+  const hasContent = () => {
+    return focusedElement.value.innerHtml !== null;
+  };
+
+  const showTab = (tab: any) => {
+    for (const style of tab.styles) {
+      const hasStyle = showStyle(style);
+      if (hasStyle) return true;
+    }
+    for (const attr of tab.attributes) {
+      const hasAttr = hasAttributes(attr);
+      if (hasAttr) return true;
+    }
+    // return tab.isContent;
+    return tab.isContent && hasContent();
+  };
+
+  const resetTabStates = () => {
+    const indices: Record<string, boolean> = {};
+    for (const key in tabsStyles) {
+      const tab = tabsStyles[key];
+      if (showTab(tab)) {
+        indices[tab.index.toString()] = false;
+      }
+    }
+    return indices;
+  };
+
+  return {
+    showTab,
+    showStyle,
+    hasAttributes,
+    hasContent,
+    tabsStyles,
+    resetTabStates,
+  };
+}

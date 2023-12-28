@@ -107,14 +107,7 @@ import ShadowStyle from "@/components/canvas/panel/styles/ShadowStyle.vue";
 import TextColorStyle from "@/components/canvas/panel/styles/TextColorStyle.vue";
 import BorderRadiusStyle from "@/components/canvas/panel/styles/BorderRadiusStyle.vue";
 import ImageAttribute from "@/components/canvas/panel/styles/ImageAttribute.vue";
-
-interface TabStyles {
-  title: string;
-  index: number;
-  styles: string[];
-  attributes: string[];
-  isContent?: boolean;
-}
+import { panel } from "@/composables/canvas/panel";
 
 export default defineComponent({
   name: "CanvasPanelGroupedStyles",
@@ -138,6 +131,9 @@ export default defineComponent({
     PanelTab,
   },
   setup() {
+    const { showTab, hasAttributes, hasContent, tabsStyles, showStyle } =
+      panel();
+
     const focusedElement = computed(() => {
       return store.getters["canvas/focusedElement"];
     });
@@ -146,118 +142,16 @@ export default defineComponent({
       return Object.keys(focusedElement.value.attributes?.style?.value || []);
     });
 
-    const attributes = computed(() => {
-      return Object.keys(focusedElement.value.attributes);
+    const tabStates = computed(() => {
+      return store.getters["panel/tabStates"];
     });
-
-    const showStyle = (style: string) => {
-      return style ? styles.value.includes(style) : true;
-    };
-
-    const activeTab = ref(-1);
-
-    const tabsStyles: Record<string, TabStyles> = {
-      layout: {
-        title: "Layout",
-        index: 0,
-        styles: [],
-        attributes: ["align", "valign"],
-      },
-      spacing: {
-        title: "Spacing",
-        index: 1,
-        styles: ["padding"],
-        attributes: [],
-      },
-      typography: {
-        title: "Typography",
-        index: 2,
-        styles: [
-          "color",
-          "font-size",
-          "font-weight",
-          "line-height",
-          "letter-spacing",
-          "text-align",
-          "font-family",
-        ],
-        attributes: [],
-        isContent: true,
-      },
-      background: {
-        title: "Background",
-        index: 3,
-        styles: ["background-color"],
-        attributes: [],
-      },
-      borders: {
-        title: "Borders",
-        index: 4,
-        styles: ["border-radius"],
-        attributes: [],
-      },
-      effects: {
-        title: "Effects",
-        index: 5,
-        styles: ["box-shadow"],
-        attributes: [],
-      },
-      link: {
-        title: "Link",
-        index: 6,
-        styles: [],
-        attributes: ["href"],
-      },
-      media: {
-        title: "Media",
-        index: 7,
-        styles: [],
-        attributes: ["src"],
-      },
-    };
-
-    const hasAttributes = (attribute: string) => {
-      return attribute ? attributes.value.includes(attribute) : true;
-    };
-
-    const hasContent = () => {
-      return focusedElement.value.innerHtml !== null;
-    };
-
-    const showTab = (tab: any) => {
-      for (let style of tab.styles) {
-        const hasStyle = showStyle(style);
-        if (hasStyle) return true;
-      }
-      for (let attr of tab.attributes) {
-        const hasAttr = hasAttributes(attr);
-        if (hasAttr) return true;
-      }
-      // return tab.isContent;
-      return tab.isContent && hasContent();
-    };
-
-    const matchingTabIndices = computed(() => {
-      const indices: Record<string, boolean> = {};
-      for (const key in tabsStyles) {
-        const tab = tabsStyles[key];
-        if (showTab(tab)) {
-          indices[tab.index.toString()] = false;
-        }
-      }
-      return indices;
-    });
-
-    const tabStates = ref(matchingTabIndices.value);
 
     const setActiveTab = (index: number) => {
-      tabStates.value[index.toString()] = !tabStates.value[index.toString()];
+      store.commit("panel/SET_ACTIVE_TAB_STATE", index.toString());
     };
 
     const closeAllTabs = () => {
-      for (const key in tabStates.value) {
-        tabStates.value[key] = false;
-      }
+      store.commit("panel/CLOSE_ALL_TAB_STATES");
     };
 
     return {
@@ -269,7 +163,6 @@ export default defineComponent({
       focusedElement,
       hasAttributes,
       tabsStyles,
-      activeTab,
       tabStates,
       closeAllTabs,
     };

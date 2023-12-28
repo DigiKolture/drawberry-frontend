@@ -5,7 +5,6 @@
     /*background-color: chartreuse;*/
 }
 
-
 .canvas__workspace__empty{
     @apply text-center flex flex-col items-center justify-center;
     margin-top: 117px;

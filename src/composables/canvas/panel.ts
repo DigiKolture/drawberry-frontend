@@ -94,7 +94,7 @@ export function panel() {
     return focusedElement.value.innerHtml !== null;
   };
 
-  const showTab = (tab: any) => {
+  const showTab = (tab: TabStyles) => {
     for (const style of tab.styles) {
       const hasStyle = showStyle(style);
       if (hasStyle) return true;
@@ -109,10 +109,12 @@ export function panel() {
 
   const resetTabStates = () => {
     const indices: Record<string, boolean> = {};
+    let setFirst = false;
     for (const key in tabsStyles) {
       const tab = tabsStyles[key];
       if (showTab(tab)) {
-        indices[tab.index.toString()] = false;
+        indices[tab.index.toString()] = !setFirst;
+        setFirst = true;
       }
     }
     return indices;

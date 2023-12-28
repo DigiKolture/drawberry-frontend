@@ -92,6 +92,8 @@ export function focus() {
     store.commit("canvas/SET_FOCUSED_ELEMENT", componentItem.json[jsonIndex]);
     store.commit("canvas/SET_FOCUSED_INDEX", itemIndex);
     store.commit("panel/RESET_TAB_STATES");
+    store.commit("layers/SET_ACTIVE_TAB_STATE", itemIndex);
+    store.commit("panel/ACTIVATE_FIRST_TAB_STATE");
 
     if (toLayer) {
       await store.dispatch("canvas/setSidebarNavbarContent", "layers");

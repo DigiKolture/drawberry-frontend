@@ -75,7 +75,7 @@ export function panel() {
   });
 
   const styles = computed(() => {
-    return Object.keys(focusedElement.value.attributes?.style?.value || []);
+    return Object.keys(focusedElement.value?.attributes?.style?.value || []);
   });
 
   const showStyle = (style: string) => {
@@ -83,7 +83,7 @@ export function panel() {
   };
 
   const attributes = computed(() => {
-    return Object.keys(focusedElement.value.attributes);
+    return Object.keys(focusedElement.value?.attributes || {});
   });
 
   const hasAttributes = (attribute: string) => {
@@ -91,6 +91,7 @@ export function panel() {
   };
 
   const hasContent = () => {
+    if (!focusedElement.value) return false;
     return focusedElement.value.innerHtml !== null;
   };
 
@@ -109,12 +110,10 @@ export function panel() {
 
   const resetTabStates = () => {
     const indices: Record<string, boolean> = {};
-    let setFirst = false;
     for (const key in tabsStyles) {
       const tab = tabsStyles[key];
       if (showTab(tab)) {
-        indices[tab.index.toString()] = !setFirst;
-        setFirst = true;
+        indices[tab.index.toString()] = false;
       }
     }
     return indices;

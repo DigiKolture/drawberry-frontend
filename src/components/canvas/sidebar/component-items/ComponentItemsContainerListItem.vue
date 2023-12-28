@@ -61,10 +61,16 @@ export default defineComponent({
       emit("disable");
       // scrollTo(workspaceComponents.value.length - 1, false);
 
-      store.commit("canvas/SET_DROP_LOADING", true);
+      await new Promise((resolve) => {
+        setTimeout(() => {
+          store.commit("canvas/SET_DROP_LOADING", true);
+          resolve();
+        });
+      });
+      window.scrollTo(0, document.body.scrollHeight);
+
       removeCurrentFocus();
       removeFocus();
-      window.scrollTo(0, document.body.scrollHeight);
 
       await store.dispatch("canvas/storeProjectComponent", {
         projectId,
@@ -76,7 +82,6 @@ export default defineComponent({
 
       emit("enable");
       store.commit("canvas/SET_DROP_LOADING", false);
-      window.scrollTo(0, document.body.scrollHeight);
     };
 
     return {

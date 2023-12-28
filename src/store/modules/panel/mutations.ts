@@ -17,6 +17,16 @@ export const mutations: MutationTree<PanelState> = {
     return state.tabStates;
   },
 
+  ACTIVATE_FIRST_TAB_STATE(state: PanelState): Record<string, boolean> {
+    const indexes = Object.keys(state.tabStates)
+      .map((index) => Number(index))
+      .sort((a, b) => a - b);
+
+    if (indexes.length > 0) state.tabStates[indexes[0]] = true;
+
+    return state.tabStates;
+  },
+
   SET_ACTIVE_TAB_STATE(
     state: PanelState,
     data: string

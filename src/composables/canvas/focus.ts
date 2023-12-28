@@ -71,7 +71,7 @@ export function focus() {
   };
 
   // This will focus the component on and index and the element index
-  const focusComponentElement = (
+  const focusComponentElement = async (
     itemIndex: number,
     jsonIndex = 0,
     toLayer = true
@@ -92,6 +92,10 @@ export function focus() {
     store.commit("canvas/SET_FOCUSED_ELEMENT", componentItem.json[jsonIndex]);
     store.commit("canvas/SET_FOCUSED_INDEX", itemIndex);
     store.commit("panel/RESET_TAB_STATES");
+
+    if (toLayer) {
+      await store.dispatch("canvas/setSidebarNavbarContent", "layers");
+    }
 
     scrollTo(itemIndex, toLayer);
   };

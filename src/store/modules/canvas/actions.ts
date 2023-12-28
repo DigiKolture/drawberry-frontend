@@ -221,4 +221,12 @@ export const actions: ActionTree<CanvasState, RootState> = {
         }
       });
   },
+  async setSidebarNavbarContent({ commit }, content): Promise<void> {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        commit("SET_SIDEBAR_NAVBAR_CONTENT", content);
+        resolve();
+      });
+    });
+  },
 };

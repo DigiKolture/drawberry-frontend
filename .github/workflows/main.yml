@@ -29,7 +29,7 @@ jobs:
       - name: 'Create env file'
         run: |
           touch .env
-          echo VUE_APP_ENVIRONMENT="dev" >> .env
+          echo VUE_APP_ENVIRONMENT="development" >> .env
           echo VUE_APP_BASE_URL="https://dev.app.drawberry.io" >> .env
           echo  VUE_APP_BASE_API_URL="https://dev.api.drawberry.io" >> .env
 

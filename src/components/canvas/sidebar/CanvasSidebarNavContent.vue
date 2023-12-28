@@ -33,7 +33,7 @@
   </div>
 </template>
 <script lang="ts">
-import { computed, defineComponent } from "vue";
+import { computed, defineComponent, watch } from "vue";
 import BaseButtonIcon from "@/components/icon/BaseButtonIcon.vue";
 import store from "@/store";
 import ComponentsContainer from "@/components/canvas/sidebar/components/ComponentsContainer.vue";
@@ -70,6 +70,17 @@ export default defineComponent({
       const [firstLetter, ...remLetters] = title;
       return firstLetter.toUpperCase() + remLetters.join("");
     });
+
+    const workspaceComponents = computed(() => {
+      return store.getters["canvas/workspaceComponents"];
+    });
+
+    watch(
+      () => workspaceComponents.value.length,
+      () => {
+        store.commit("layers/RESET_TAB_STATES");
+      }
+    );
 
     const closeSidebarNavContent = () => {
       store.commit("canvas/SET_SIDEBAR_NAVBAR_CONTENT", null);

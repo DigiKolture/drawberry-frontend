@@ -73,6 +73,10 @@ export default defineComponent({
       type: Number,
       required: true,
     },
+    showElements: {
+      type: Boolean,
+      required: true,
+    },
   },
 
   setup(props) {
@@ -87,11 +91,10 @@ export default defineComponent({
     const { validateIndicator } = indicators();
     const { focusComponentElement, removeCurrentFocus } = focus();
 
-    const showElements = ref(false);
     const dropIndex = ref(-1);
 
     const toggleShowElements = () => {
-      return (showElements.value = !showElements.value);
+      store.commit("layers/TOGGLE_TAB_STATE", props.itemIndex);
     };
 
     const workspaceComponents = computed(() => {
@@ -222,7 +225,6 @@ export default defineComponent({
       handleMouseOver,
       handleClick,
       toggleShowElements,
-      showElements,
       handleDragOver,
       handleDragLeave,
       dragComponentItemLayer,

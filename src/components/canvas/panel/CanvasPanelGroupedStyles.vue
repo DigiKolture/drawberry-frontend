@@ -147,7 +147,7 @@ export default defineComponent({
     });
 
     const setActiveTab = (index: number) => {
-      store.commit("panel/SET_ACTIVE_TAB_STATE", index.toString());
+      store.commit("panel/TOGGLE_TAB_STATE", index.toString());
     };
 
     const closeAllTabs = () => {

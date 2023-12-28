@@ -1,7 +1,13 @@
 import { helpers } from "@/composables/helpers";
+import { computed } from "vue";
+import store from "@/store";
 
 export function layers() {
   const { sliceString } = helpers();
+
+  const workspaceComponents = computed(() => {
+    return store.getters["canvas/workspaceComponents"];
+  });
   const getLayerElementTitle = (element: any): string => {
     const id = element.id.toLowerCase();
     const text = element.innerHtml
@@ -92,6 +98,14 @@ export function layers() {
     return element;
   };
 
+  const resetTabStates = () => {
+    const indices: Record<string, boolean> = {};
+    for (let i = 0; i < workspaceComponents.value.length; i++) {
+      indices[i.toString()] = false;
+    }
+    return indices;
+  };
+
   return {
     getLayerElementTitle,
     getLayerElementIcon,
@@ -100,5 +114,6 @@ export function layers() {
     removeClassFromElement,
     addClassToElement,
     removeHoverClassFromElement,
+    resetTabStates,
   };
 }

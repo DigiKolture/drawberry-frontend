@@ -8,6 +8,7 @@ import esp from "@/store/modules/esp";
 import modals from "@/store/modules/modals";
 import preview from "@/store/modules/preview";
 import panel from "@/store/modules/panel";
+import layers from "@/store/modules/layers";
 import createPersistedState from "vuex-persistedstate";
 
 export default createStore({
@@ -27,6 +28,7 @@ export default createStore({
     modals,
     preview,
     panel,
+    layers,
   },
   plugins: [
     createPersistedState({

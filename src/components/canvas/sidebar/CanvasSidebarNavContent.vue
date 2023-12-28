@@ -79,7 +79,8 @@ export default defineComponent({
       () => workspaceComponents.value.length,
       () => {
         store.commit("layers/RESET_TAB_STATES");
-      }
+      },
+      { deep: true }
     );
 
     const closeSidebarNavContent = () => {

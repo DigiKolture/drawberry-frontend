@@ -32,12 +32,6 @@ export default defineComponent({
     },
   },
   setup(props, { emit }) {
-    const open = ref(false);
-
-    const toggle = () => {
-      open.value = !open.value;
-    };
-
     const setActiveTab = () => {
       emit("update", props.properties.index);
     };
@@ -47,7 +41,6 @@ export default defineComponent({
     };
 
     return {
-      open,
       setActiveTab,
       closeAllTabs,
     };

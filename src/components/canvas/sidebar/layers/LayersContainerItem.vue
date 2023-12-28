@@ -4,6 +4,7 @@
     <LayersContainerElementItem
       @mouseover.stop="handleMouseOver(componentItem.json[0])"
       @click="handleClick(componentItem.json[0])"
+      @dblclick="closeAllTabs"
       :element="componentItem.json[0]"
       :componentItem="componentItem"
       :item-index="itemIndex"
@@ -220,11 +221,16 @@ export default defineComponent({
       dropIndex.value = -1;
     };
 
+    const closeAllTabs = () => {
+      store.commit("layers/CLOSE_ALL_TAB_STATES");
+    };
+
     return {
       dropIndex,
       handleMouseOver,
       handleClick,
       toggleShowElements,
+      closeAllTabs,
       handleDragOver,
       handleDragLeave,
       dragComponentItemLayer,

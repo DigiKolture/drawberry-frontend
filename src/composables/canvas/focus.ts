@@ -77,6 +77,8 @@ export function focus() {
     toLayer = true
   ) => {
     if (jsonIndex < 0) return;
+
+    // Close all the panel styles on the right before opening a new one. This prevents prev styles from showing before new one are loaded
     await new Promise<void>((resolve) => {
       setTimeout(() => {
         store.commit("panel/CLOSE_ALL_TAB_STATES");

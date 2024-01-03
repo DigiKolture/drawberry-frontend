@@ -131,9 +131,10 @@ export default defineComponent({
     const handleClick = (componentItem: any, itemIndex: any, event: any) => {
       event.preventDefault();
       const target = event.target;
-      const elementId = event.target.id;
+      let elementId = event.target.id;
+
       if (!target.classList.contains("editable")) {
-        return;
+        elementId = componentItem.json[0].id;
       }
 
       removeCurrentFocus();

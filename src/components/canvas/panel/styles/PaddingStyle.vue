@@ -41,8 +41,15 @@ import { styles } from "@/composables/canvas/styles";
 export default defineComponent({
   name: "PaddingStyle",
   components: { BaseSliderIcon, PanelStyle },
+  props: {
+    isParent: {
+      type: Boolean,
+      default: false,
+      required: false,
+    },
+  },
 
-  setup() {
+  setup(props) {
     const name = "padding";
     const unit = "px";
     const { parsePadding, getDefaultPaddingValue, getDefaultPaddingPosition } =
@@ -54,8 +61,14 @@ export default defineComponent({
       return store.getters["canvas/focusedElement"];
     });
 
+    const focusedParentElement = computed(() => {
+      return store.getters["canvas/focusedParentElement"];
+    });
+
     let padding: any = reactive(
-      parsePadding(focusedElement.value.attributes.style.value[name])
+      !props.isParent
+        ? parsePadding(focusedElement.value.attributes.style.value[name])
+        : parsePadding(focusedParentElement.value.attributes.style.value[name])
     );
 
     const activePadding = ref(getDefaultPaddingPosition(padding));
@@ -86,10 +99,18 @@ export default defineComponent({
     });
 
     watch(padding, (newVal) => {
-      focusedElement.value.attributes.style.value[
-        name
-      ] = `${newVal.top}${unit} ${newVal.right}${unit} ${newVal.bottom}${unit} ${newVal.left}${unit}`;
-      store.dispatch("canvas/updateFocusedElement", focusedElement.value);
+      const newPadding = `${newVal.top}${unit} ${newVal.right}${unit} ${newVal.bottom}${unit} ${newVal.left}${unit}`;
+
+      if (!props.isParent) {
+        focusedElement.value.attributes.style.value[name] = newPadding;
+        store.dispatch("canvas/updateFocusedElement", focusedElement.value);
+      } else {
+        focusedParentElement.value.attributes.style.value[name] = newPadding;
+        store.dispatch(
+          "canvas/updateFocusedParentElement",
+          focusedParentElement.value
+        );
+      }
     });
 
     const changePaddingOption = (option: string) => {

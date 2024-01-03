@@ -18,7 +18,10 @@
         :properties="tabsStyles.spacing"
         :show-body="tabStates[tabsStyles.spacing.index]"
       >
-        <PaddingStyle v-if="showStyle('padding')" />
+        <PaddingStyle
+          :is-parent="isParentStyle('padding')"
+          v-if="showStyle('padding')"
+        />
       </PanelTab>
 
       <PanelTab
@@ -141,6 +144,7 @@ export default defineComponent({
       tabsStyles,
       showStyle,
       isParentAttribute,
+      isParentStyle,
     } = panel();
 
     const focusedElement = computed(() => {
@@ -167,6 +171,7 @@ export default defineComponent({
       styles,
       showStyle,
       isParentAttribute,
+      isParentStyle,
       hasContent,
       setActiveTab,
       showTab,

@@ -94,6 +94,10 @@ export function panel() {
       : true;
   };
 
+  const isParentStyle = (style: string) => {
+    return !!(style && parentStyles.value.includes(style));
+  };
+
   const attributes = computed(() => {
     return Object.keys(focusedElement.value?.attributes || {});
   });
@@ -145,6 +149,7 @@ export function panel() {
   return {
     showTab,
     isParentAttribute,
+    isParentStyle,
     showStyle,
     hasAttributes,
     hasContent,

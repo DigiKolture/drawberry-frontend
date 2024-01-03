@@ -111,7 +111,8 @@ export default defineComponent({
       const target = event.target;
       if (
         !target.classList.contains("editable") ||
-        target.classList.contains("focus")
+        target.classList.contains("focus") ||
+        target.classList.contains("parent")
       ) {
         return;
       }

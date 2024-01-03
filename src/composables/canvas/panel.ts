@@ -74,20 +74,43 @@ export function panel() {
     return store.getters["canvas/focusedElement"];
   });
 
+  const focusedParentElement = computed(() => {
+    return store.getters["canvas/focusedParentElement"];
+  });
+
   const styles = computed(() => {
     return Object.keys(focusedElement.value?.attributes?.style?.value || []);
   });
 
+  const parentStyles = computed(() => {
+    return Object.keys(
+      focusedParentElement.value?.attributes?.style?.value || []
+    );
+  });
+
   const showStyle = (style: string) => {
-    return style ? styles.value.includes(style) : true;
+    return style
+      ? styles.value.includes(style) || parentStyles.value.includes(style)
+      : true;
   };
 
   const attributes = computed(() => {
     return Object.keys(focusedElement.value?.attributes || {});
   });
 
+  const parentAttributes = computed(() => {
+    return Object.keys(focusedParentElement.value?.attributes || {});
+  });
+
   const hasAttributes = (attribute: string) => {
-    return attribute ? attributes.value.includes(attribute) : true;
+    return attribute
+      ? attributes.value.includes(attribute) ||
+          parentAttributes.value.includes(attribute)
+      : true;
+  };
+
+  const isParentAttribute = (attribute: string) => {
+    return !!(attribute && parentAttributes.value.includes(attribute));
   };
 
   const hasContent = () => {
@@ -121,6 +144,7 @@ export function panel() {
 
   return {
     showTab,
+    isParentAttribute,
     showStyle,
     hasAttributes,
     hasContent,

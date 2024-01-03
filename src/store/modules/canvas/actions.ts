@@ -163,6 +163,37 @@ export const actions: ActionTree<CanvasState, RootState> = {
       },
     });
   },
+
+  updateFocusedParentElement({ state, dispatch, commit, rootState }, element) {
+    if (
+      state.focusedIndex === null ||
+      state.focusedElement === null ||
+      state.focusedParentElement === null
+    )
+      return;
+
+    //Update DOM before the API (Just to prevent waiting for changes)
+    commit("UPDATE_FOCUSED_PARENT_JSON_AND_DOM", element);
+    const projectComponentItem = state.workspaceComponents[state.focusedIndex];
+    const focusedParentElement: any = state.focusedParentElement;
+    const root: any = rootState;
+    const projectId: string = root.projects.projectId;
+
+    dispatch("updateProjectComponent", {
+      projectId,
+      projectComponentItemId: projectComponentItem.id,
+      set: false,
+      data: {
+        elements: [
+          {
+            id: focusedParentElement.id,
+            attributes: focusedParentElement.attributes,
+            innerHtml: focusedParentElement.innerHtml,
+          },
+        ],
+      },
+    });
+  },
   async updateProjectStyle({ commit, rootState }, style): Promise<void> {
     commit("SET_STYLE", style);
     const root: any = rootState;

@@ -10,6 +10,9 @@ export const getters: GetterTree<CanvasState, RootState> = {
   focusedElement(state: CanvasState): object | null {
     return state.focusedElement;
   },
+  focusedParentElement(state: CanvasState): object | null {
+    return state.focusedParentElement;
+  },
   focusedIndex(state: CanvasState): number | null {
     return state.focusedIndex;
   },

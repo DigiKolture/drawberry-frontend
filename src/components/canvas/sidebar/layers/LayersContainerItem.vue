@@ -37,6 +37,7 @@
 
     <div v-if="showElements" class="layers__component__item__elements">
       <LayersContainerElementItem
+        v-show="!element.parent"
         v-for="element in componentItem.json.slice(1)"
         :key="element.id"
         @mouseover.stop="handleMouseOver(element)"
@@ -108,10 +109,12 @@ export default defineComponent({
     });
 
     const handleMouseOver = async (element: any) => {
+      // Dont add hover effect if the element is a parent or already in a focus state
       if (
-        element.classes &&
-        typeof element.classes === "object" &&
-        element.classes.includes("focus")
+        (element.classes &&
+          typeof element.classes === "object" &&
+          element.classes.includes("focus")) ||
+        element.parent
       ) {
         return;
       }

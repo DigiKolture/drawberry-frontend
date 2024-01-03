@@ -73,7 +73,10 @@
         :properties="tabsStyles.link"
         :show-body="tabStates[tabsStyles.link.index]"
       >
-        <HrefAttribute v-if="hasAttributes('href')" />
+        <HrefAttribute
+          :is-parent="isParentAttribute('href')"
+          v-if="hasAttributes('href')"
+        />
       </PanelTab>
       <PanelTab
         v-if="showTab(tabsStyles.media)"
@@ -131,8 +134,14 @@ export default defineComponent({
     PanelTab,
   },
   setup() {
-    const { showTab, hasAttributes, hasContent, tabsStyles, showStyle } =
-      panel();
+    const {
+      showTab,
+      hasAttributes,
+      hasContent,
+      tabsStyles,
+      showStyle,
+      isParentAttribute,
+    } = panel();
 
     const focusedElement = computed(() => {
       return store.getters["canvas/focusedElement"];
@@ -157,6 +166,7 @@ export default defineComponent({
     return {
       styles,
       showStyle,
+      isParentAttribute,
       hasContent,
       setActiveTab,
       showTab,

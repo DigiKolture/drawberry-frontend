@@ -70,6 +70,11 @@ export function updateDom() {
       }
       const mergedClasses = Array.from(new Set(classList.concat(newClasses)));
       el.addClass(mergedClasses.join(" "));
+
+      // Add class parent if the parent field is true
+      if (elementJson.parent) {
+        el.addClass("parent");
+      }
     }
 
     //UPDATE Content

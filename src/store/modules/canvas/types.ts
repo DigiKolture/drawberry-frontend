@@ -14,6 +14,7 @@ export interface ProjectStyle {
 
 export interface CanvasState {
   focusedElement: object | null;
+  focusedParentElement: object | null;
   focusedIndex: number | null;
   currentHoverElement: CurrentHoverElementType;
   sidebarNavContent: string | null;

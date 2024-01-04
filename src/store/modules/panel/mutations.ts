@@ -22,7 +22,7 @@ export const mutations: MutationTree<PanelState> = {
       .map((index) => Number(index))
       .sort((a, b) => a - b);
 
-    if (indexes.length > 0) state.tabStates[indexes[0]] = true;
+    if (indexes.length > 0) state.tabStates[indexes[0].toString()] = true;
 
     return state.tabStates;
   },
@@ -44,6 +44,10 @@ export const mutations: MutationTree<PanelState> = {
     for (const key in state.tabStates) {
       state.tabStates[key] = false;
     }
+    return state.tabStates;
+  },
+  DELETE_ALL_TAB_STATES(state: PanelState): Record<string, boolean> {
+    state.tabStates = {};
     return state.tabStates;
   },
 };

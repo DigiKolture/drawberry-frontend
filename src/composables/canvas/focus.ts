@@ -70,6 +70,21 @@ export function focus() {
     item?.scrollIntoView({ behavior: "smooth", block: "center" });
   };
 
+  const setParentFocusedElement = (focusedElement: any, componentItem: any) => {
+    if (focusedElement.parentId) {
+      const jsonIndex = getComponentElementIndexUsingId(
+        componentItem,
+        focusedElement.parentId
+      );
+      store.commit(
+        "canvas/SET_FOCUSED_PARENT_ELEMENT",
+        componentItem.json[jsonIndex]
+      );
+    } else {
+      store.commit("canvas/SET_FOCUSED_PARENT_ELEMENT", null);
+    }
+  };
+
   // This will focus the component on and index and the element index
   const focusComponentElement = async (
     itemIndex: number,
@@ -81,7 +96,7 @@ export function focus() {
     // Close all the panel styles on the right before opening a new one. This prevents prev styles from showing before new one are loaded
     await new Promise<void>((resolve) => {
       setTimeout(() => {
-        store.commit("panel/CLOSE_ALL_TAB_STATES");
+        store.commit("panel/DELETE_ALL_TAB_STATES");
         resolve();
       });
     });
@@ -100,23 +115,13 @@ export function focus() {
 
     const focusedElement = componentItem.json[jsonIndex];
     store.commit("canvas/SET_FOCUSED_ELEMENT", focusedElement);
+
+    setParentFocusedElement(focusedElement, componentItem);
+
     store.commit("canvas/SET_FOCUSED_INDEX", itemIndex);
     store.commit("layers/SET_ACTIVE_TAB_STATE", itemIndex);
     store.commit("panel/RESET_TAB_STATES");
     store.commit("panel/ACTIVATE_FIRST_TAB_STATE");
-
-    if (focusedElement.parentId) {
-      const jsonIndex = getComponentElementIndexUsingId(
-        componentItem,
-        focusedElement.parentId
-      );
-      store.commit(
-        "canvas/SET_FOCUSED_PARENT_ELEMENT",
-        componentItem.json[jsonIndex]
-      );
-    } else {
-      store.commit("canvas/SET_FOCUSED_PARENT_ELEMENT", null);
-    }
 
     if (toLayer) {
       await store.dispatch("canvas/setSidebarNavbarContent", "layers");

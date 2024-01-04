@@ -134,7 +134,10 @@ export default defineComponent({
       const target = event.target;
       let elementId = event.target.id;
 
-      if (!target.classList.contains("editable")) {
+      if (
+        !target.classList.contains("editable") ||
+        target.classList.contains("parent")
+      ) {
         elementId = componentItem.json[0].id;
       }
 

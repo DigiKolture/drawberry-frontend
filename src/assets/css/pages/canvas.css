@@ -152,7 +152,7 @@ input.canvas__input__text:focus{
 
 .workspace__component__items__list__item .hover {
     @apply relative;
-    z-index: 14;
+    z-index: 4;
     padding: 1px 2px;
     outline: 1px solid #ADAFBB !important;
     /*outline: 1px solid red;*/

@@ -115,11 +115,12 @@ export function focus() {
 
     const focusedElement = componentItem.json[jsonIndex];
     store.commit("canvas/SET_FOCUSED_ELEMENT", focusedElement);
+    store.commit("canvas/SET_FOCUSED_INDEX", itemIndex);
 
     setParentFocusedElement(focusedElement, componentItem);
 
-    store.commit("canvas/SET_FOCUSED_INDEX", itemIndex);
     store.commit("layers/SET_ACTIVE_TAB_STATE", itemIndex);
+
     store.commit("panel/RESET_TAB_STATES");
     store.commit("panel/ACTIVATE_FIRST_TAB_STATE");
 

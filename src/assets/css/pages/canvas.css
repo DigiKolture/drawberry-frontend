@@ -149,7 +149,7 @@ input.canvas__input__text:focus{
 
 
 /*.editable:hover {*/
-/*    border: 1px solid #ADAFBB;*/
+/*    border: 1px solid #848F9F;*/
 /*}*/
 
 
@@ -157,7 +157,7 @@ input.canvas__input__text:focus{
     @apply relative;
     z-index: 4;
     padding: 1px 2px;
-    outline: 1px solid #ADAFBB !important;
+    outline: 1px solid #848F9F !important;
 }
 
 .workspace__component__items__list__item .hover.parent{

@@ -26,7 +26,7 @@
 
 .layout__style__item div{
     @apply w-full h-full;
-    background: #ADAFBB;
+    background: #848F9F;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
     border-radius: 2px;
 }

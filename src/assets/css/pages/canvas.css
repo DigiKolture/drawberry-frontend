@@ -51,9 +51,12 @@ section.canvas__layout{
 
 
 .canvas__panel{
-    @apply h-full;
+    @apply h-full fixed overflow-y-auto;
     background: #2D3039;
     box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
+    right: 0;
+    width: var(--canvas-right-panel-width);
+    height: 100%;
 }
 
 

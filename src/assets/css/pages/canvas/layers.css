@@ -1,6 +1,6 @@
 .layers__component__items{
     margin-top: 4px;
-    @apply flex flex-col h-full overflow-x-auto;
+    @apply flex flex-col h-full overflow-y-auto;
 }
 
 .layers__component__item__header{

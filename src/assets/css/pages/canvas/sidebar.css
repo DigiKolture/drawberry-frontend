@@ -81,6 +81,8 @@ nav.canvas__sidebar__nav{
     padding-top: var(--sidebar-nav-content-header-height);
     width: var(--canvas-sidebar-nav-content-width);
     z-index: 100;
+    background: #2D3039;
+
 }
 
 .sidebar__nav__contents__header__icons .button__icon{

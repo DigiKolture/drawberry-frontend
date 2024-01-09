@@ -103,7 +103,7 @@
   </section>
 </template>
 <script lang="ts">
-import { computed, defineComponent, reactive, ref, watch } from "vue";
+import { computed, defineComponent } from "vue";
 import store from "@/store";
 import PanelTab from "@/components/canvas/panel/tabs/PanelTab.vue";
 import HorizontalAlignStyle from "@/components/canvas/panel/styles/HorizontalAlignStyle.vue";

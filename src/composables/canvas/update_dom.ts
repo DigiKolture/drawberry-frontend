@@ -26,6 +26,7 @@ export function updateDom() {
     tagName = tagName.toLowerCase();
     const elementAttributes = el.attr();
     const attributesValues = attributesSettings[tagName];
+    const tagTypes = elementJson.types;
 
     if (elementAttributes) {
       for (const attribute of attributesValues) {
@@ -75,6 +76,11 @@ export function updateDom() {
       if (elementJson.parent) {
         el.addClass("parent");
       }
+    }
+
+    // Add link URL to image anchor tag
+    if (tagName === "img" && tagTypes.includes("link")) {
+      el.parent().attr("href", elementJson.attributes["href"].value);
     }
 
     //UPDATE Content

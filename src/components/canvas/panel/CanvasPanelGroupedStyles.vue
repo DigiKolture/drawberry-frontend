@@ -8,8 +8,14 @@
         :properties="tabsStyles.layout"
         :show-body="tabStates[tabsStyles.layout.index]"
       >
-        <HorizontalAlignStyle v-if="hasAttributes('align')" />
-        <VerticalAlignStyle v-if="hasAttributes('valign')" />
+        <HorizontalAlignStyle
+          v-if="hasAttributes('align')"
+          :is-parent="isParentAttribute('align')"
+        />
+        <VerticalAlignStyle
+          v-if="hasAttributes('valign')"
+          :is-parent="isParentAttribute('valign')"
+        />
       </PanelTab>
       <PanelTab
         v-if="showTab(tabsStyles.spacing)"

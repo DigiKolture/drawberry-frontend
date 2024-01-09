@@ -20,11 +20,22 @@ import store from "@/store";
 export default defineComponent({
   name: "VerticalAlignStyle",
   components: { BaseButtonIcon, PanelStyle },
-  setup() {
+  props: {
+    isParent: {
+      type: Boolean,
+      default: false,
+      required: false,
+    },
+  },
+  setup(props) {
     const name = "valign";
 
     const focusedElement = computed(() => {
       return store.getters["canvas/focusedElement"];
+    });
+
+    const focusedParentElement = computed(() => {
+      return store.getters["canvas/focusedParentElement"];
     });
 
     const alignOptions = [
@@ -42,15 +53,35 @@ export default defineComponent({
       },
     ];
 
-    const align = ref(focusedElement.value.attributes[name].value);
+    const align = ref(
+      !props.isParent
+        ? focusedElement.value.attributes[name].value
+        : focusedParentElement.value.attributes[name].value
+    );
 
     watch(align, (newVal: string) => {
-      focusedElement.value.attributes[name].value = newVal;
-      store.dispatch("canvas/updateFocusedElement", focusedElement.value);
+      if (!props.isParent) {
+        focusedElement.value.attributes[name].value = newVal;
+        store.dispatch("canvas/updateFocusedElement", focusedElement.value);
+      } else {
+        focusedParentElement.value.attributes[name].value = newVal;
+        store.dispatch(
+          "canvas/updateFocusedParentElement",
+          focusedParentElement.value
+        );
+      }
     });
 
     watch(focusedElement, (newVal) => {
-      align.value = newVal.attributes[name].value;
+      if (!props.isParent) {
+        align.value = newVal.attributes[name].value;
+      }
+    });
+
+    watch(focusedParentElement, (newVal) => {
+      if (props.isParent) {
+        align.value = newVal.attributes[name].value;
+      }
     });
 
     const changeAlignment = (option: string) => {

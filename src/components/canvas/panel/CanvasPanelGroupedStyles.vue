@@ -39,13 +39,16 @@
       >
         <FontStyle v-if="showStyle('font-family')" />
         <TextColorStyle v-if="showStyle('color')" />
-        <div class="canvas__panel__styles__row">
+        <div class="canvas__panel__styles__row" v-if="showTypographyRow">
           <FontSizeStyle v-if="showStyle('font-size')" />
           <FontWeightStyle v-if="showStyle('font-weight')" />
           <LineHeightStyle v-if="showStyle('line-height')" />
           <LetterSpacingStyle v-if="showStyle('letter-spacing')" />
         </div>
-        <TextAlignStyle v-if="showStyle('text-align')" />
+        <TextAlignStyle
+          v-if="showStyle('text-align')"
+          :is-parent="isParentStyle('padding')"
+        />
         <ContentStyle v-if="hasContent()" />
       </PanelTab>
       <PanelTab
@@ -165,6 +168,15 @@ export default defineComponent({
       return store.getters["panel/tabStates"];
     });
 
+    const showTypographyRow = computed(() => {
+      return (
+        showStyle("font-size") ||
+        showStyle("font-weight") ||
+        showStyle("line-height") ||
+        showStyle("letter-spacing")
+      );
+    });
+
     const setActiveTab = (index: number) => {
       store.commit("panel/TOGGLE_TAB_STATE", index.toString());
     };
@@ -186,6 +198,7 @@ export default defineComponent({
       tabsStyles,
       tabStates,
       closeAllTabs,
+      showTypographyRow,
     };
   },
 });

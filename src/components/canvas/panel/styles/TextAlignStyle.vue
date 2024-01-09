@@ -20,12 +20,23 @@ import store from "@/store";
 export default defineComponent({
   name: "TextAlignStyle",
   components: { BaseButtonIcon, PanelStyle },
+  props: {
+    isParent: {
+      type: Boolean,
+      default: false,
+      required: false,
+    },
+  },
 
-  setup() {
+  setup(props) {
     const name = "text-align";
 
     const focusedElement = computed(() => {
       return store.getters["canvas/focusedElement"];
+    });
+
+    const focusedParentElement = computed(() => {
+      return store.getters["canvas/focusedParentElement"];
     });
 
     const alignOptions = [
@@ -43,15 +54,35 @@ export default defineComponent({
       },
     ];
 
-    const align = ref(focusedElement.value.attributes.style.value[name]);
+    const align = ref(
+      !props.isParent
+        ? focusedElement.value.attributes.style.value[name]
+        : focusedParentElement.value.attributes.style.value[name]
+    );
 
     watch(align, (newVal: string) => {
-      focusedElement.value.attributes.style.value[name] = newVal;
-      store.dispatch("canvas/updateFocusedElement", focusedElement.value);
+      if (!props.isParent) {
+        focusedElement.value.attributes.style.value[name] = newVal;
+        store.dispatch("canvas/updateFocusedElement", focusedElement.value);
+      } else {
+        focusedParentElement.value.attributes.style.value[name] = newVal;
+        store.dispatch(
+          "canvas/updateFocusedParentElement",
+          focusedParentElement.value
+        );
+      }
     });
 
     watch(focusedElement, (newVal) => {
-      align.value = newVal.attributes.style.value[name];
+      if (!props.isParent) {
+        align.value = newVal.attributes.style.value[name];
+      }
+    });
+
+    watch(focusedParentElement, (newVal) => {
+      if (props.isParent) {
+        align.value = newVal.attributes.style.value[name];
+      }
     });
 
     const changeAlignment = (option: string) => {

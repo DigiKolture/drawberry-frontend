@@ -63,6 +63,8 @@ export const actions: ActionTree<CanvasState, RootState> = {
     return AxiosClient.post(`/projects/${projectId}/components`, data)
       .then((res: any) => {
         // dispatch("getProjectComponentItems", projectId);
+        commit("SET_HAS_WORKSPACE_COMPONENTS", true);
+
         const component = res.data.data.component;
         component.html = updateElementDom(component.html, component.json[0]);
 
@@ -129,6 +131,10 @@ export const actions: ActionTree<CanvasState, RootState> = {
       .then((res: any) => {
         state.workspaceComponents.splice(positionIndex, 1);
         commit("SET_WORKSPACE_COMPONENTS", state.workspaceComponents);
+
+        if (state.workspaceComponents.length == 0) {
+          commit("SET_HAS_WORKSPACE_COMPONENTS", false);
+        }
         return res.data.data;
       })
       .catch((err: any): any => {

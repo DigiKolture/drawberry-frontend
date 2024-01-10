@@ -148,12 +148,22 @@ export default defineComponent({
 
       removeCurrentFocus();
 
-      const jsonIndex = getComponentElementIndexUsingId(
-        componentItem,
-        elementId
-      );
+      const currentFocusedIndex = focusedIndex.value;
+      let jsonIndex = 0;
 
-      focusComponentElement(itemIndex, jsonIndex, true, clicked);
+      // When clicked Only select/focus on child elements if the current component is active, if not select the whole component
+      // If Command and click are pressed, you can select child elements on an inactive component
+      if (clicked) {
+        if (
+          currentFocusedIndex === itemIndex ||
+          event.metaKey ||
+          event.ctrlKey
+        ) {
+          jsonIndex = getComponentElementIndexUsingId(componentItem, elementId);
+        }
+      }
+
+      focusComponentElement(itemIndex, jsonIndex, true);
     };
 
     return {

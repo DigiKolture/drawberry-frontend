@@ -89,8 +89,7 @@ export function focus() {
   const focusComponentElement = async (
     itemIndex: number,
     jsonIndex = 0,
-    fromWorkspace = true,
-    clicked = true
+    fromWorkspace = true
   ) => {
     if (jsonIndex < 0) return;
 
@@ -101,15 +100,6 @@ export function focus() {
         resolve();
       });
     });
-
-    const currentFocusedIndex = focusedIndex.value;
-
-    // When clicked Only select/focus on element if the current component is active
-    if (fromWorkspace && clicked) {
-      if (currentFocusedIndex !== itemIndex) {
-        jsonIndex = 0;
-      }
-    }
 
     const componentItem = workspaceComponents.value[itemIndex];
 

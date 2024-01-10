@@ -129,7 +129,12 @@ export default defineComponent({
       removeHoverElement();
     };
 
-    const handleClick = (componentItem: any, itemIndex: any, event: any) => {
+    const handleClick = (
+      componentItem: any,
+      itemIndex: any,
+      clicked: true, //click -> true, dbclick -> false
+      event: any
+    ) => {
       event.preventDefault();
       const target = event.target;
       let elementId = event.target.id;
@@ -148,7 +153,7 @@ export default defineComponent({
         elementId
       );
 
-      focusComponentElement(itemIndex, jsonIndex);
+      focusComponentElement(itemIndex, jsonIndex, true, clicked);
     };
 
     return {

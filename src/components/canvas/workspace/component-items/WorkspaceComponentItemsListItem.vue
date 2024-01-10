@@ -9,6 +9,7 @@
       :draggable="true"
       @dragstart="moveComponentItemPosition($event, itemIndex)"
       @drop="dropComponent($event, itemIndex, projectId)"
+      @dblclick="dbClickEvent"
       @click="clickEvent($event)"
       @mouseover.stop="hoverEvent($event)"
       @dragover="handleDragOver($event)"
@@ -160,7 +161,12 @@ export default defineComponent({
     };
 
     const clickEvent = (event: any) => {
-      emit("clicked", props.componentItem, props.itemIndex, event);
+      emit("clicked", props.componentItem, props.itemIndex, true, event);
+    };
+
+    const dbClickEvent = (event: any) => {
+      console.log("<<<<< >>>>>");
+      // emit("dbclicked", props.componentItem, props.itemIndex, false, event);
     };
 
     const hoverEvent = (event: any) => {
@@ -185,6 +191,7 @@ export default defineComponent({
       classes,
       showActions,
       clickEvent,
+      dbClickEvent,
       hoverEvent,
       handleDragOver,
       handleDragEnter,

@@ -89,7 +89,8 @@ export function focus() {
   const focusComponentElement = async (
     itemIndex: number,
     jsonIndex = 0,
-    toLayer = true
+    fromWorkspace = true,
+    clicked = true
   ) => {
     if (jsonIndex < 0) return;
 
@@ -100,6 +101,15 @@ export function focus() {
         resolve();
       });
     });
+
+    const currentFocusedIndex = focusedIndex.value;
+
+    // When clicked Only select/focus on element if the current component is active
+    if (fromWorkspace && clicked) {
+      if (currentFocusedIndex !== itemIndex) {
+        jsonIndex = 0;
+      }
+    }
 
     const componentItem = workspaceComponents.value[itemIndex];
 
@@ -124,11 +134,11 @@ export function focus() {
     store.commit("panel/RESET_TAB_STATES");
     store.commit("panel/ACTIVATE_FIRST_TAB_STATE");
 
-    if (toLayer) {
+    if (fromWorkspace) {
       await store.dispatch("canvas/setSidebarNavbarContent", "layers");
     }
 
-    scrollTo(itemIndex, toLayer);
+    scrollTo(itemIndex, fromWorkspace);
   };
 
   const removeAllFocus = () => {

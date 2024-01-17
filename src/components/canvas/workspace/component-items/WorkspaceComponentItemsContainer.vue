@@ -1,5 +1,10 @@
 <template>
-  <div class="canvas__workspace__container" @mouseover.self="handleMouseLeave">
+  <div
+    class="canvas__workspace__container"
+    id="canvas-workspace-container"
+    @click="handleClickEmpty"
+    @mouseover.self="handleMouseLeave"
+  >
     <div class="workspace__component__items__container" :class="style.layout">
       <CanvasWorkspaceEmpty
         :project-id="projectId"
@@ -49,6 +54,7 @@ export default defineComponent({
     const { upsertComponentItem } = drag_and_drop();
     const { removeHoverElement, addHoverToElement } = hover();
     const { removeFocus, removeCurrentFocus, focusComponentElement } = focus();
+    const id = "canvas-workspace-container";
 
     const { getComponentElementIndexUsingId } = layers();
 
@@ -129,6 +135,15 @@ export default defineComponent({
       removeHoverElement();
     };
 
+    const handleClickEmpty = (e: any) => {
+      // Check if the clicked element is within your component
+      if (e.target.id === id) {
+        removeCurrentFocus();
+        removeFocus();
+        console.log("Clicked on empty space");
+      }
+    };
+
     const handleClick = (
       componentItem: any,
       itemIndex: any,
@@ -167,6 +182,7 @@ export default defineComponent({
     };
 
     return {
+      id,
       focusedElement,
       focusedIndex,
       workspaceComponents,
@@ -177,6 +193,7 @@ export default defineComponent({
       style,
       handleMouseOver,
       handleMouseLeave,
+      handleClickEmpty,
     };
   },
 });

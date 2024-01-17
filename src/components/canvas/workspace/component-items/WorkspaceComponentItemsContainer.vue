@@ -140,7 +140,6 @@ export default defineComponent({
       if (e.target.id === id) {
         removeCurrentFocus();
         removeFocus();
-        console.log("Clicked on empty space");
       }
     };
 

@@ -19,6 +19,7 @@
           class="canvas__workspace"
           :style="styles"
           id="canvas-workspace"
+          @click="handleClickEmpty"
         >
           <slot name="workspace" />
         </section>
@@ -43,6 +44,7 @@ import BaseLayout from "@/components/layout/BaseLayout.vue";
 import { ui } from "@/assets/js/canvas";
 import store from "@/store";
 import { canvas } from "@/composables/canvas/canvas";
+import { focus } from "@/composables/canvas/focus";
 
 export default defineComponent({
   name: "CanvasLayout",
@@ -53,7 +55,10 @@ export default defineComponent({
       ui.mainIndex();
     });
 
+    const id = "canvas-workspace";
+
     const { hasWorkspaceComponent } = canvas();
+    const { removeFocus, removeCurrentFocus } = focus();
 
     const styles = computed(() => {
       return {
@@ -79,11 +84,21 @@ export default defineComponent({
       return sidebarDock.value && sidebarNavContent.value !== null;
     });
 
+    const handleClickEmpty = (e: any) => {
+      // Check if the clicked element is within your component or if the clicked element doesnt have an ID
+      const workspaceId = ["canvas-workspace", "canvas-workspace-container"];
+      if (workspaceId.includes(e.target.id) || !e.target.id) {
+        removeCurrentFocus();
+        removeFocus();
+      }
+    };
+
     return {
       sidebarDock,
       docked,
       styles,
       hasWorkspaceComponent,
+      handleClickEmpty,
     };
   },
 });

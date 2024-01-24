@@ -85,11 +85,11 @@ export default defineComponent({
         id: null,
         componentIndex: null,
       });
-
-      removeFocus();
     });
 
     onMounted(async () => {
+      removeFocus();
+
       //TODO: Look into the glitches that occuress before the page the styles is completely loaded
       await Promise.all([
         store.dispatch("canvas/getProjectComponentItems", projectId),
@@ -142,10 +142,7 @@ export default defineComponent({
       ) {
         return;
       }
-      const elementId = target.id;
-
-      console.log("<<< elementId >>>>");
-
+      // const elementId = target.id;
       // If any of the component has an hover element, REMOVE it
       // removeHoverElement();
       //

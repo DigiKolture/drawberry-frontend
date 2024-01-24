@@ -17,6 +17,8 @@ export const actions: ActionTree<CanvasState, RootState> = {
     commit("SET_HAS_WORKSPACE_COMPONENTS", false);
     const sidebarNavContentVal = getters.sidebarNavContent;
     commit("SET_SIDEBAR_NAVBAR_CONTENT", null);
+    commit("SET_DEFAULT_STYLE");
+    commit("projects/SET_PROJECT", null, { root: true });
     return AxiosClient.get(`/projects/${projectId}`)
       .then((res: any) => {
         const data = res.data;

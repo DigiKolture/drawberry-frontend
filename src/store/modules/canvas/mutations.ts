@@ -28,6 +28,17 @@ export const mutations: MutationTree<CanvasState> = {
     state.style = data;
     return state.style;
   },
+  SET_DEFAULT_STYLE(state: CanvasState) {
+    state.style = {
+      layout: "",
+      backgroundColor: "",
+      fontFamily: "",
+      buttonColor: "",
+      backgroundImage: "",
+      previewText: "",
+    };
+    return state.style;
+  },
   SET_GOOGLE_FONTS(state: CanvasState, data: any[]) {
     state.googleFonts = data;
     return state.googleFonts;

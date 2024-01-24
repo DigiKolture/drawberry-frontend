@@ -11,6 +11,7 @@
       @drop="dropComponent($event, itemIndex, projectId)"
       @dblclick="dbClickEvent"
       @click="clickEvent($event)"
+      @keyup="handleKeyUp($event)"
       @mouseover.stop="hoverEvent($event)"
       @dragover="handleDragOver($event)"
       @dragenter="handleDragEnter"
@@ -164,6 +165,14 @@ export default defineComponent({
       emit("clicked", props.componentItem, props.itemIndex, true, event);
     };
 
+    const handleKeyUp = (event: any) => {
+      console.log("-------");
+      if (event.key === "Meta" || event.key === "Control") {
+        console.log("---------------");
+        emit("keyuped", props.componentItem, props.itemIndex, event);
+      }
+    };
+
     const dbClickEvent = (event: any) => {
       console.log("<<<<< >>>>>");
       // emit("dbclicked", props.componentItem, props.itemIndex, false, event);
@@ -191,6 +200,7 @@ export default defineComponent({
       classes,
       showActions,
       clickEvent,
+      handleKeyUp,
       dbClickEvent,
       hoverEvent,
       handleDragOver,

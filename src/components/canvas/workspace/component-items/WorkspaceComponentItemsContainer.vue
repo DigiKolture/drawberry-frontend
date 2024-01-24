@@ -120,13 +120,37 @@ export default defineComponent({
       ) {
         return;
       }
+      const elementId = target.id;
 
       // If any of the component has an hover element, REMOVE it
       removeHoverElement();
 
       // ADD hover to the hovered element
+      addHoverToElement(itemIndex, elementId, componentItem, event);
+    };
+
+    const handleCommandHold = async (
+      componentItem: any,
+      itemIndex: any,
+      event: any
+    ) => {
+      const target = event.target;
+      if (
+        !target.classList.contains("editable") ||
+        target.classList.contains("focus") ||
+        target.classList.contains("parent")
+      ) {
+        return;
+      }
       const elementId = target.id;
-      addHoverToElement(itemIndex, elementId, componentItem);
+
+      console.log("<<< elementId >>>>");
+
+      // If any of the component has an hover element, REMOVE it
+      // removeHoverElement();
+      //
+      // // ADD hover to the hovered element
+      // addHoverToElement(itemIndex, elementId, componentItem, event);
     };
 
     const handleMouseLeave = () => {
@@ -143,6 +167,7 @@ export default defineComponent({
       const target = event.target;
       let elementId = event.target.id;
 
+      // If the focused element isnt an editable component or contains parent class
       if (
         !target.classList.contains("editable") ||
         target.classList.contains("parent")
@@ -180,6 +205,7 @@ export default defineComponent({
       handleClick,
       style,
       handleMouseOver,
+      handleCommandHold,
       handleMouseLeave,
     };
   },

@@ -20,6 +20,10 @@ export function hover() {
     return store.getters["canvas/currentHoverElement"];
   });
 
+  const focusedIndex = computed(() => {
+    return store.getters["canvas/focusedIndex"];
+  });
+
   const removeHoverElement = () => {
     if (
       currentHoverElement.value.id &&
@@ -58,13 +62,29 @@ export function hover() {
   const addHoverToElement = (
     itemIndex: number,
     elementId: string,
-    componentItem: any
+    componentItem: any,
+    event: any = null
   ) => {
+    const currentFocusedIndex = focusedIndex.value;
+
+    let jsonIndex = 0;
+    // if (event.metaKey || event.ctrlKey) {
+    //   // return;
+    // }
+
+    // If hover os from workspace or current focused component is been hovered on allow children elements to be have the hover class
+    if (!event || currentFocusedIndex === itemIndex) {
+      jsonIndex = getComponentElementIndexUsingId(componentItem, elementId);
+    }
+
+    if (jsonIndex === 0 && currentFocusedIndex === itemIndex) {
+      return;
+    }
+
     store.commit("canvas/SET_CURRENT_HOVER_ELEMENT", {
       id: elementId,
       componentIndex: itemIndex,
     });
-    const jsonIndex = getComponentElementIndexUsingId(componentItem, elementId);
     componentItem.json[jsonIndex] = addClassToElement(
       componentItem.json[jsonIndex]
     );

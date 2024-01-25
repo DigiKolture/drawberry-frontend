@@ -9,6 +9,7 @@ import modals from "@/store/modules/modals";
 import preview from "@/store/modules/preview";
 import panel from "@/store/modules/panel";
 import layers from "@/store/modules/layers";
+import toast from "@/store/modules/toast";
 import createPersistedState from "vuex-persistedstate";
 
 export default createStore({
@@ -29,6 +30,7 @@ export default createStore({
     preview,
     panel,
     layers,
+    toast,
   },
   plugins: [
     createPersistedState({

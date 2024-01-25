@@ -68,9 +68,6 @@ export function hover() {
     const currentFocusedIndex = focusedIndex.value;
 
     let jsonIndex = 0;
-    // if (event.metaKey || event.ctrlKey) {
-    //   // return;
-    // }
 
     // If hover os from workspace or current focused component is been hovered on allow children elements to be have the hover class
     if (!event || currentFocusedIndex === itemIndex) {

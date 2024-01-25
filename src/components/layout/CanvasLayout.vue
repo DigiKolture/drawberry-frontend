@@ -86,8 +86,17 @@ export default defineComponent({
 
     const handleClickEmpty = (e: any) => {
       // Check if the clicked element is within your component or if the clicked element doesnt have an ID
-      const workspaceId = ["canvas-workspace", "canvas-workspace-container"];
-      if (workspaceId.includes(e.target.id) || !e.target.id) {
+      const workspaceId = [
+        "canvas-workspace",
+        "canvas-workspace-container",
+        "canvas-workspace-items-container",
+      ];
+
+      const workspaceClasses = ["workspace__component__items__list__item"];
+      if (
+        workspaceId.includes(e.target.id) ||
+        workspaceClasses.some((clas) => e.target.classList.contains(clas))
+      ) {
         removeCurrentFocus();
         removeFocus();
       }

@@ -4,7 +4,11 @@
     id="canvas-workspace-container"
     @mouseover.self="handleMouseLeave"
   >
-    <div class="workspace__component__items__container" :class="style.layout">
+    <div
+      id="canvas-workspace-items-container"
+      class="workspace__component__items__container"
+      :class="style.layout"
+    >
       <CanvasWorkspaceEmpty
         :project-id="projectId"
         v-if="workspaceComponents.length === 0"

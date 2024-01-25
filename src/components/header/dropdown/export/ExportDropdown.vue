@@ -1,5 +1,5 @@
 <template>
-  <div class="header-export action__dropdown">
+  <div id="modals" class="header-export action__dropdown">
     <div class="export__empty" v-if="isEspEmpty">
       <div class="export__empty__icons">
         <div class="export__empty__icon" :key="key" v-for="(esp, key) in data">
@@ -101,6 +101,7 @@ export default defineComponent({
     };
 
     const openManage = () => {
+      store.commit("modals/CLOSE_MODAL", "export");
       store.commit("modals/OPEN_MODAL", "manage_esp");
     };
 

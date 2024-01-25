@@ -7,16 +7,19 @@
           <button><BaseIcon icon="header/redo/forward" /></button>
         </div>
         <BaseButtonTextIcon
+          :id="modalsTrigger"
           @click="togglePreview"
           text="Preview"
           icon="header/preview"
         />
         <BaseButton
+          :id="modalsTrigger"
           class="header__right__share button__outline"
           title="Share"
           @click="toggleShare"
         />
         <BaseButtonTextIcon
+          :id="modalsTrigger"
           @click="toggleExport"
           class="success"
           text="Export"
@@ -72,11 +75,18 @@ export default defineComponent({
   },
 
   setup() {
-    const openExport = ref(false);
-    const openPreview = ref(false);
+    const modalsTrigger = "modals-trigger";
+
+    const openExport = computed(() => {
+      return store.getters["modals/export"];
+    });
+
+    const openPreview = computed(() => {
+      return store.getters["modals/preview"];
+    });
 
     const toggleExport = () => {
-      openExport.value = !openExport.value;
+      store.commit("modals/TOGGLE_MODAL", "export");
     };
 
     const toggleShare = () => {
@@ -84,7 +94,7 @@ export default defineComponent({
     };
 
     const togglePreview = () => {
-      openPreview.value = !openPreview.value;
+      store.commit("modals/TOGGLE_MODAL", "preview");
     };
 
     const project = computed(() => {
@@ -100,6 +110,7 @@ export default defineComponent({
     };
 
     return {
+      modalsTrigger,
       openPreview,
       openExport,
       toggleShare,

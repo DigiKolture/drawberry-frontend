@@ -9,6 +9,9 @@ export const actions: ActionTree<ModalState, RootState> = {
     }
     commit("TOGGLE_MODAL", modal);
   },
+  closeModals({ commit }): void {
+    commit("CLOSE_MODALS");
+  },
   closeAllModals({ commit }): void {
     commit("CLOSE_ALL_MODALS");
   },

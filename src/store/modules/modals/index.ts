@@ -5,14 +5,16 @@ import { mutations } from "@/store/modules/modals/mutations";
 import { actions } from "@/store/modules/modals/actions";
 import { ModalState } from "@/store/modules/modals/types";
 
-const state: ModalState = {
+export const stated: ModalState = {
+  preview: false,
+  export: false,
   manage_esp: false,
   share_preview: false,
 };
 
 export const modals: Module<ModalState, RootState> = {
   namespaced: true,
-  state,
+  state: stated,
   getters,
   actions,
   mutations,

@@ -1,5 +1,5 @@
 <template>
-  <div class="action__dropdown">
+  <div id="modals" class="action__dropdown">
     <ActionDropdownItem
       @click="callEvent(dropdown)"
       :key="key"

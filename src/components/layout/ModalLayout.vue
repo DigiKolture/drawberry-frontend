@@ -1,7 +1,7 @@
 <template>
-  <div class="modal" :class="{ open: open }">
+  <div id="modals" class="modal" :class="{ open: open }">
     <div class="modal__header">
-      <button @click="close" class="modal__header__close">
+      <button id="modals-trigger" @click="close" class="modal__header__close">
         <BaseIcon icon="close" />
       </button>
       <div class="modal__heading">

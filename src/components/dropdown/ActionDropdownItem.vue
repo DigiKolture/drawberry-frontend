@@ -7,6 +7,11 @@
         {{ subtitle }}
       </p>
     </div>
+    <BaseIcon
+      v-if="disabled && current === type"
+      class="action__dropdown__item__loader"
+      icon="loader"
+    />
   </div>
 </template>
 
@@ -25,6 +30,21 @@ export default defineComponent({
     icon: {
       type: String,
       required: true,
+    },
+    type: {
+      type: String,
+      required: false,
+      default: null,
+    },
+    current: {
+      type: String,
+      required: false,
+      default: null,
+    },
+    disabled: {
+      type: Boolean,
+      required: false,
+      default: false,
     },
     subtitle: {
       type: String,

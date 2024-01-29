@@ -55,7 +55,7 @@ export default defineComponent({
             message: `Authorisation error. Please check connected ${esp} app`,
             type: "error",
           });
-          window.location.reload();
+          store.dispatch("esp/getESPs");
         });
     };
 

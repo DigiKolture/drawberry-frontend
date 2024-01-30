@@ -32,12 +32,7 @@
         />
       </div>
     </div>
-    <div class="export__footer">
-      <ActionDropdownItem
-        :title="downloadData.name"
-        :icon="downloadData.icon"
-      />
-    </div>
+    <DownloadProjectHTML />
   </div>
 </template>
 
@@ -49,16 +44,19 @@ import BaseButton from "@/components/layout/BaseButton.vue";
 import ActionDropdownItem from "@/components/dropdown/ActionDropdownItem.vue";
 import ExportESPsList from "@/components/header/dropdown/export/ExportESPsList.vue";
 import { helpers } from "@/composables/helpers";
+import DownloadProjectHTML from "@/components/header/dropdown/export/DownloadProjectHTML.vue";
 
 export default defineComponent({
   name: "ExportDropdown",
-  components: { ExportESPsList, ActionDropdownItem, BaseButton, BaseIcon },
+  components: {
+    DownloadProjectHTML,
+    ExportESPsList,
+    ActionDropdownItem,
+    BaseButton,
+    BaseIcon,
+  },
 
   setup(props, { emit }) {
-    const downloadData = {
-      icon: "header/export/download",
-      name: "Download HTML",
-    };
     const data = [
       {
         icon: "header/export/mailchimp",
@@ -112,7 +110,6 @@ export default defineComponent({
       capitalizeFirstLetter,
       isEspEmpty,
       openManage,
-      downloadData,
     };
   },
 });

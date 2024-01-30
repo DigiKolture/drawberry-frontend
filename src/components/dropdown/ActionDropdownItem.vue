@@ -8,7 +8,7 @@
       </p>
     </div>
     <BaseIcon
-      v-if="disabled && current === type"
+      v-if="disabled && (current === type || !type)"
       class="action__dropdown__item__loader"
       icon="loader"
     />

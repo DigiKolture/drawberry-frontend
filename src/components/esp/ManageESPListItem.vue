@@ -3,6 +3,10 @@
     <div class="manage__esps__list__item__content">
       <div class="esps__list__item__icon">
         <BaseIcon :icon="`header/export/${esp}`" />
+        <span
+          :class="{ active: checkESPForUser }"
+          class="esp__icon__status"
+        ></span>
       </div>
       <div class="esps__list__item__titles">
         <h5 class="dropdown__item__titles__name">{{ title }}</h5>
@@ -51,9 +55,9 @@ export default defineComponent({
       return store.getters["esp/esps"];
     });
 
-    const checkESPForUser = (esp: string) => {
-      return esps.value.find((espItem: any) => espItem.esp === esp);
-    };
+    const checkESPForUser = computed(() => {
+      return esps.value.find((espItem: any) => espItem.esp === props.esp);
+    });
 
     const connect = () => {
       store.dispatch("esp/getESPRedirectURL", props.esp);
@@ -74,7 +78,7 @@ export default defineComponent({
     };
 
     const handleAction = () => {
-      if (checkESPForUser(props.esp)) {
+      if (checkESPForUser.value) {
         disconnect();
       } else {
         connect();
@@ -83,7 +87,7 @@ export default defineComponent({
 
     const getESPSubTitle = () => {
       let desc = "";
-      if (checkESPForUser(props.esp)) {
+      if (checkESPForUser.value) {
         desc = disabled.value
           ? "Disconnecting account..."
           : "App integration connected";
@@ -94,7 +98,7 @@ export default defineComponent({
     };
 
     const buttonText = computed(() => {
-      return checkESPForUser(props.esp) ? "Disconnect" : "Connect";
+      return checkESPForUser.value ? "Disconnect" : "Connect";
     });
 
     return {
@@ -103,6 +107,7 @@ export default defineComponent({
       handleAction,
       connect,
       buttonText,
+      checkESPForUser,
     };
   },
 });

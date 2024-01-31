@@ -45,6 +45,7 @@ export default defineComponent({
         })
         .then(() => {
           disabled.value = false;
+          store.commit("modals/CLOSE_MODAL", "export");
           store.dispatch("toast/showToast", {
             message: `Email template sent to ${esp}`,
           });

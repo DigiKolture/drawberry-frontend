@@ -24,6 +24,11 @@
 .action__dropdown__item{
     @apply flex items-center cursor-pointer;
     column-gap: 7px;
+    padding: 8px 16px;
+}
+
+.action__dropdown__item:hover{
+    background-color: #353843;
 }
 
 .action__dropdown__item.disabled{

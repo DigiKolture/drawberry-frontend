@@ -33,6 +33,7 @@ export default defineComponent({
         .dispatch("esp/downloadProject")
         .then(() => {
           disabled.value = false;
+          store.commit("modals/CLOSE_MODAL", "export");
         })
         .catch(() => {
           disabled.value = false;

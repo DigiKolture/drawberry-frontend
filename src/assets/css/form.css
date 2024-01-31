@@ -62,6 +62,10 @@ button:disabled{
     @apply pointer-events-none;
 }
 
+svg.loader{
+    animation: rotateAnimation 2s linear infinite;
+}
+
 button.button.success{
     background: #519E47;
     border-radius: 4px;

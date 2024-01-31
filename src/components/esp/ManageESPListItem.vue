@@ -11,16 +11,17 @@
     </div>
     <div class="manage__esps__list__item__action">
       <BaseButton
-        @click="handleExport"
+        @click="handleAction"
         class="button__outline"
-        :title="buttonText"
+        :disabled="disabled"
+        :title="!disabled ? buttonText : 'Disabled'"
       />
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import { computed, defineComponent } from "vue";
+import { computed, defineComponent, ref } from "vue";
 import BaseIcon from "@/components/icon/BaseIcon.vue";
 import BaseButton from "@/components/layout/BaseButton.vue";
 import store from "@/store";
@@ -44,6 +45,8 @@ export default defineComponent({
   },
 
   setup(props) {
+    const disabled = ref(false);
+
     const esps = computed(() => {
       return store.getters["esp/esps"];
     });
@@ -52,15 +55,38 @@ export default defineComponent({
       return esps.value.find((espItem: any) => espItem.esp === esp);
     };
 
-    const handleExport = () => {
-      // if (checkESPForUser(props.esp)) return;
+    const connect = () => {
       store.dispatch("esp/getESPRedirectURL", props.esp);
+    };
+
+    const disconnect = () => {
+      disabled.value = true;
+      store
+        .dispatch("esp/disconnectESP", { esp: props.esp })
+        .then(() => {
+          store.dispatch("esp/getESPs").then(() => {
+            disabled.value = false;
+          });
+        })
+        .catch(() => {
+          disabled.value = false;
+        });
+    };
+
+    const handleAction = () => {
+      if (checkESPForUser(props.esp)) {
+        disconnect();
+      } else {
+        connect();
+      }
     };
 
     const getESPSubTitle = () => {
       let desc = "";
       if (checkESPForUser(props.esp)) {
-        desc = "App integration connected";
+        desc = disabled.value
+          ? "Disconnecting account..."
+          : "App integration connected";
       } else {
         desc = "Not connected";
       }
@@ -68,12 +94,14 @@ export default defineComponent({
     };
 
     const buttonText = computed(() => {
-      return checkESPForUser(props.esp) ? "Reconnect" : "Connect";
+      return checkESPForUser(props.esp) ? "Disconnect" : "Connect";
     });
 
     return {
+      disabled,
       getESPSubTitle,
-      handleExport,
+      handleAction,
+      connect,
       buttonText,
     };
   },

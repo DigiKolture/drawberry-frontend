@@ -53,9 +53,15 @@
 }
 
 .esps__list__item__icon{
+    @apply flex items-center justify-center;
     border-radius: 4px;
     background: #353843;
     padding: 6px;
+}
+
+.esps__list__item__icon svg{
+    height: 16px;
+    width: 16px;
 }
 
 .manage__esps__list__item__action .button__outline{

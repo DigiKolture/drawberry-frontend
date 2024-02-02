@@ -9,6 +9,7 @@
       <input
         v-model="src"
         type="url"
+        :class="{ focus: isInputFocused, not_focused: !isInputFocused }"
         @focus="isInputFocused = true"
         @blur="isInputFocused = false"
         required
@@ -16,7 +17,7 @@
         placeholder="Enter Url"
       />
       <BaseButtonIcon
-        v-if="isInputFocused"
+        v-if="showUpdateButton"
         @mousedown.prevent="updateImage"
         icon="canvas/panel/styles/media/update"
       />
@@ -29,7 +30,7 @@
   </PanelStyleTabs>
 </template>
 <script lang="ts">
-import { defineComponent, onMounted, ref } from "vue";
+import { computed, defineComponent, onMounted, ref } from "vue";
 import BaseMediaImageUpload from "@/components/canvas/panel/BaseMediaImageUpload.vue";
 import PanelStyleTabs from "@/components/canvas/panel/PanelStyleTabs.vue";
 import BaseButtonIcon from "@/components/icon/BaseButtonIcon.vue";
@@ -46,6 +47,11 @@ export default defineComponent({
     modelValue: {
       type: String,
       default: "",
+    },
+    hasSrc: {
+      required: false,
+      type: Boolean,
+      default: true,
     },
   },
   setup(props, { emit }) {
@@ -68,6 +74,13 @@ export default defineComponent({
       src.value = "";
     };
 
+    const showUpdateButton = computed(() => {
+      if (props.hasSrc) {
+        return isInputFocused.value && src.value;
+      }
+      return isInputFocused.value;
+    });
+
     const updateImage = async () => {
       const isValid = await isValidImageUrl(src.value);
       if (!isValid && src.value) return;
@@ -84,6 +97,7 @@ export default defineComponent({
       updateTab,
       updateImage,
       clearLink,
+      showUpdateButton,
     };
   },
 });

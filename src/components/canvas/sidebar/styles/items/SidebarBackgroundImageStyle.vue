@@ -1,7 +1,11 @@
 <template>
   <PanelStyle title="Background Image">
     <div class="content__style">
-      <BaseImageTextUpload v-model="src" @confirm="updateImage" />
+      <BaseImageTextUpload
+        v-model="src"
+        :has-src="false"
+        @confirm="updateImage"
+      />
     </div>
   </PanelStyle>
 </template>

@@ -243,6 +243,14 @@
     font-size: 12px;
     line-height: 16px;
 }
+
+.input__style__text.not_focused{
+    border: none !important;
+}
+.input__style__text.focus{
+    border: 1px solid #1873CD !important;
+}
+
 .input__style__text:focus{
     border: 1px solid #1873CD;
 }

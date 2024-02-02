@@ -68,6 +68,10 @@
     width: 16px;
 }
 
+.esps__list__item__icon svg path{
+    @apply fill-white;
+}
+
  .esp__icon__status{
     @apply absolute rounded-full z-10;
      top: calc(100% - 8px);

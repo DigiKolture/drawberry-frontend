@@ -8,6 +8,16 @@ export function layers() {
   const workspaceComponents = computed(() => {
     return store.getters["canvas/workspaceComponents"];
   });
+
+  const hasNumberBeforeImage = (str: string) => {
+    const regex = /\d+image/;
+    return regex.test(str);
+  };
+
+  const extractImageNames = (elementId: string) => {
+    const arr = elementId.split("_");
+    return arr[1].replace("image", "");
+  };
   const getLayerElementTitle = (element: any): string => {
     const id = element.id.toLowerCase();
     const text = element.innerHtml
@@ -20,6 +30,8 @@ export function layers() {
       return "Background";
     } else if (id.includes("logo")) {
       return "Logo";
+    } else if (hasNumberBeforeImage(id)) {
+      return extractImageNames(id);
     } else if (id.includes("image")) {
       return "Image";
     }

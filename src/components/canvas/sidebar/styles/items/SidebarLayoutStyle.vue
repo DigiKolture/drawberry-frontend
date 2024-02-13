@@ -32,7 +32,7 @@ export default defineComponent({
   setup() {
     const boxShadow: any = {
       cards: "0 2px 4px 0 rgba(0, 0, 0, 0.1)",
-      collapsed: "0 0 0 0 rgba(0, 0, 0, 0.1)",
+      collapsed: "0 0 0 0 rgba(0, 0, 0, 0.0)",
     };
     const borderRadius: any = {
       cards: "8px",

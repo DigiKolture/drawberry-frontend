@@ -53,7 +53,7 @@ export default defineComponent({
         .catch(() => {
           disabled.value = false;
           store.dispatch("toast/showToast", {
-            message: `Authorisation error. Please check connected ${esp} app`,
+            message: `Authorisation error. Please check connected ${esp} account`,
             type: "error",
           });
           store.dispatch("esp/getESPs");

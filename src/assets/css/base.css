@@ -46,7 +46,8 @@ img,video{
 :root{
     --header-height: 64px;
     --canvas-sidebar-nav-width: 48px;
-    --canvas-sidebar-nav-content-width: 238px;
+    /*--canvas-sidebar-nav-content-width: 238px;*/
+    --canvas-sidebar-nav-content-width: 271px;
     --canvas-right-panel-width: 239px;
 }
 

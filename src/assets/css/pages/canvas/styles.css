@@ -1,7 +1,8 @@
 .sidebar__styles__container{
     @apply flex flex-col;
     row-gap: 24px;
-    padding: 16px 24px 32px 16px;
+    padding: 16px 40px 32px 40px;
+    /*padding: 16px 24px 32px 16px;*/
 }
 
 /*LAYOUT*/

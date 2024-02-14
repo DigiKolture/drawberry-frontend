@@ -52,6 +52,7 @@ export default defineComponent({
       return {
         backgroundColor: style.value.backgroundColor,
         backgroundImage: `url('${style.value.backgroundImage}')`,
+        backgroundSize: "cover",
       };
     });
 

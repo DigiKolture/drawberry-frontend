@@ -93,6 +93,8 @@ export function focus() {
   ) => {
     if (jsonIndex < 0) return;
 
+    store.commit("modals/CLOSE_MODAL", "manage_esp");
+
     // Close all the panel styles on the right before opening a new one. This prevents prev styles from showing before new one are loaded
     await new Promise<void>((resolve) => {
       setTimeout(() => {

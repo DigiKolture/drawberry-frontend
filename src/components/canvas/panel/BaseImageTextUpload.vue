@@ -10,8 +10,10 @@
         v-model="src"
         type="url"
         :class="{ focus: isInputFocused, not_focused: !isInputFocused }"
-        @focus="isInputFocused = true"
-        @blur="isInputFocused = false"
+        ref="inputField"
+        @focus="focus"
+        @click="focus"
+        @blur="blur"
         required
         class="input__style__text"
         placeholder="Enter Url"
@@ -29,7 +31,7 @@
     </div>
   </PanelStyleTabs>
 </template>
-<script lang="ts">
+<script>
 import { computed, defineComponent, onMounted, ref } from "vue";
 import BaseMediaImageUpload from "@/components/canvas/panel/BaseMediaImageUpload.vue";
 import PanelStyleTabs from "@/components/canvas/panel/PanelStyleTabs.vue";
@@ -62,11 +64,13 @@ export default defineComponent({
     let activeIndex = ref(0);
     const isInputFocused = ref(false);
 
+    const inputField = ref(null);
+
     onMounted(() => {
       src.value = props.modelValue;
     });
 
-    const updateTab = (index: number) => {
+    const updateTab = (index) => {
       activeIndex.value = index;
     };
 
@@ -81,20 +85,30 @@ export default defineComponent({
       return isInputFocused.value;
     });
 
+    const focus = () => {
+      isInputFocused.value = true;
+    };
+    const blur = () => {
+      isInputFocused.value = false;
+    };
     const updateImage = async () => {
+      inputField.value.blur();
       const isValid = await isValidImageUrl(src.value);
+      isInputFocused.value = false;
       if (!isValid && src.value) return;
       emit("update:modelValue", src.value);
       emit("confirm", src.value);
-      isInputFocused.value = false;
     };
 
     return {
       src,
       titles,
+      inputField,
       activeIndex,
       isInputFocused,
       updateTab,
+      blur,
+      focus,
       updateImage,
       clearLink,
       showUpdateButton,

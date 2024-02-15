@@ -90,7 +90,7 @@ export default defineComponent({
       if (checkESPForUser.value) {
         desc = disabled.value
           ? "Disconnecting account..."
-          : "App integration connected";
+          : checkESPForUser.value.accountEmail || "App integration connected";
       } else {
         desc = "Not connected";
       }

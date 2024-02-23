@@ -286,15 +286,48 @@
 /*MEDIA IMAGE*/
 
 .content__style__media__upload{
-    @apply flex justify-between items-center w-full text-white;
-    padding: 15px;
+    @apply flex justify-between items-center w-full text-white cursor-pointer;
+    padding: 8px;
     height: 40px;
     font-size: 13px;
     font-weight: 400;
     line-height: 16px;
     background: #454856;
     border-radius: 4px;
+}
 
+.content__style__media__upload.disabled{
+    @apply pointer-events-none;
+}
+
+ .content__media__add__image{
+    padding-left: 4px;
+}
+
+.content__style__media__upload__has__img{
+    @apply flex items-center;
+    column-gap: 8px;
+}
+
+.content__media__upload__container{
+    @apply flex items-center justify-center;
+    width:  32px;
+    height: 24px;
+    background-color: #1E1F2680;
+    border-radius: 2px;
+    border: 1px solid #2D3039;
+}
+
+.content__media__upload__container svg{
+    width: 20px;
+    height: 20px;
+}
+
+.content__style__media__upload__has__img img{
+    width:  32px;
+    height: 24px;
+    border-radius: 2px;
+    border: 1px solid #2D3039;
 }
 
 .content__style__media__text{

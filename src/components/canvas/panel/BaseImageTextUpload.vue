@@ -108,7 +108,7 @@ export default defineComponent({
       isInputFocused.value = false;
     };
     const updateImage = async () => {
-      inputField.value.blur();
+      if (inputField.value) inputField.value.blur();
       const isValid = await isValidImageUrl(src.value);
       isInputFocused.value = false;
       if (!isValid && src.value) {

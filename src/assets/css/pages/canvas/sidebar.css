@@ -77,12 +77,12 @@ nav.canvas__sidebar__nav{
 }
 
 .sidebar__nav__contents__body{
-    @apply fixed overflow-y-auto h-full;
+    @apply fixed overflow-y-auto ;
     padding-top: var(--sidebar-nav-content-header-height);
     width: var(--canvas-sidebar-nav-content-width);
     z-index: 100;
     background: #2D3039;
-
+    height: calc(100% - var(--header-height))
 }
 
 .sidebar__nav__contents__header__icons .button__icon{

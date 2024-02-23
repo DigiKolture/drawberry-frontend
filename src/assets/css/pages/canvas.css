@@ -56,7 +56,7 @@ section.canvas__layout{
     box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
     right: 0;
     width: var(--canvas-right-panel-width);
-    height: 100%;
+    height: calc(100% - var(--header-height))
 }
 
 

@@ -6,28 +6,38 @@
       v-if="activeIndex === 0"
     />
     <div v-if="activeIndex === 1" class="content__style__media__text">
-      <input
-        v-model="src"
-        type="url"
-        :class="{ focus: isInputFocused, not_focused: !isInputFocused }"
-        ref="inputField"
-        @focus="focus"
-        @click="focus"
-        @blur="blur"
-        required
-        class="input__style__text"
-        placeholder="Enter Url"
-      />
-      <BaseButtonIcon
-        v-if="showUpdateButton"
-        @mousedown.prevent="updateImage"
-        icon="canvas/panel/styles/media/update"
-      />
-      <BaseButtonIcon
-        v-if="!isInputFocused && src"
-        @click="clearLink"
-        icon="canvas/panel/styles/media/cancel"
-      />
+      <div class="content__style__input__group">
+        <input
+          v-model="src"
+          type="url"
+          :class="{
+            focus: isInputFocused,
+            not_focused: !isInputFocused,
+            invalid: invalidURL,
+          }"
+          ref="inputField"
+          @focus="focus"
+          @click="focus"
+          @blur="blur"
+          @input="input"
+          required
+          class="input__style__text"
+          placeholder="Enter Url"
+        />
+        <BaseButtonIcon
+          v-if="showUpdateButton"
+          @mousedown.prevent="updateImage"
+          icon="canvas/panel/styles/media/update"
+        />
+        <BaseButtonIcon
+          v-if="!isInputFocused && src"
+          @click="clearLink"
+          icon="canvas/panel/styles/media/cancel"
+        />
+      </div>
+      <p v-if="invalidURL" :class="{ invalid: invalidURL }">
+        Enter a valid URL of an image
+      </p>
     </div>
   </PanelStyleTabs>
 </template>
@@ -63,6 +73,7 @@ export default defineComponent({
     const src = ref("");
     let activeIndex = ref(0);
     const isInputFocused = ref(false);
+    const invalidURL = ref(false);
 
     const inputField = ref(null);
 
@@ -88,6 +99,11 @@ export default defineComponent({
     const focus = () => {
       isInputFocused.value = true;
     };
+
+    const input = () => {
+      isInputFocused.value = true;
+      invalidURL.value = false;
+    };
     const blur = () => {
       isInputFocused.value = false;
     };
@@ -95,7 +111,10 @@ export default defineComponent({
       inputField.value.blur();
       const isValid = await isValidImageUrl(src.value);
       isInputFocused.value = false;
-      if (!isValid && src.value) return;
+      if (!isValid && src.value) {
+        invalidURL.value = true;
+        return;
+      }
       emit("update:modelValue", src.value);
       emit("confirm", src.value);
     };
@@ -104,11 +123,13 @@ export default defineComponent({
       src,
       titles,
       inputField,
+      invalidURL,
       activeIndex,
       isInputFocused,
       updateTab,
       blur,
       focus,
+      input,
       updateImage,
       clearLink,
       showUpdateButton,

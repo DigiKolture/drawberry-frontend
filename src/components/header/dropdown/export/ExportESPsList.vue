@@ -6,7 +6,7 @@
     :type="esp_item.esp"
     :title="`Send to ${capitalizeFirstLetter(esp_item.esp)}`"
     :icon="`header/export/${esp_item.esp}`"
-    subtitle="App connected"
+    :subtitle="esp_item.accountEmail"
     :disabled="disabled"
     :current="current"
     :class="{ disabled }"

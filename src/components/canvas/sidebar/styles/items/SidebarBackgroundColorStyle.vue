@@ -17,11 +17,6 @@ import { ColorPickerTypes } from "@/store/modules/modals/types";
 
 export default defineComponent({
   name: "SidebarBackgroundColorStyle",
-  computed: {
-    ColorPickerTypes() {
-      return ColorPickerTypes;
-    },
-  },
   components: { ColorPickerStyle, PanelStyle },
   setup() {
     const show = ref(true);
@@ -46,6 +41,7 @@ export default defineComponent({
     };
     return {
       show,
+      ColorPickerTypes,
       color,
       colorPickerStyleRef,
       updateColor,

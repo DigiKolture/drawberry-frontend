@@ -17,7 +17,9 @@
     </div>
     <div
       class="sidebar__nav__contents__body"
-      :class="{ has__modal: colorPicker }"
+      :class="{
+        has__modal: GENERAL_STYLE_TYPE_COLORS.includes(colorPicker),
+      }"
     >
       <div
         v-if="showContent('add_component')"
@@ -43,6 +45,7 @@ import ComponentsContainer from "@/components/canvas/sidebar/components/Componen
 import ComponentItemsContainer from "@/components/canvas/sidebar/component-items/ComponentItemsContainer.vue";
 import LayersContainer from "@/components/canvas/sidebar/layers/LayersContainer.vue";
 import StylesContainer from "@/components/canvas/sidebar/styles/StylesContainer.vue";
+import { GENERAL_STYLE_TYPE_COLORS } from "@/store/modules/modals/types";
 
 export default defineComponent({
   name: "CanvasSidebarNavContent",
@@ -103,6 +106,7 @@ export default defineComponent({
     return {
       sidebarNavContent,
       sidebarDock,
+      GENERAL_STYLE_TYPE_COLORS,
       showContent,
       colorPicker,
       closeSidebarNavContent,

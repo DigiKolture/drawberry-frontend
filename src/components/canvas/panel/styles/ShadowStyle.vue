@@ -19,6 +19,7 @@
           icon="canvas/panel/styles/shadow/spread"
         />
         <ColorPickerStyle
+          :type="ColorPickerTypes.PANEL_BOX_SHADOW_COLOR"
           @update-color="updateColor"
           :color="shadow.color"
           title="Color"
@@ -34,6 +35,7 @@ import BaseSliderIcon from "../BaseSliderIcon.vue";
 import ColorPickerStyle from "@/components/canvas/panel/ColorPickerStyle.vue";
 import { styles } from "@/composables/canvas/styles";
 import store from "@/store";
+import { ColorPickerTypes } from "@/store/modules/modals/types";
 
 export default defineComponent({
   name: "ShadowStyle",
@@ -69,6 +71,7 @@ export default defineComponent({
 
     return {
       shadow,
+      ColorPickerTypes,
       color,
       updateColor,
     };

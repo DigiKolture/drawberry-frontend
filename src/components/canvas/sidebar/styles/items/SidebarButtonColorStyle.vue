@@ -1,6 +1,7 @@
 <template>
   <PanelStyle title="Button COLOR">
     <ColorPickerStyle
+      :type="ColorPickerTypes.GENERAL_BTN_COLOR"
       ref="colorPickerStyleRef"
       :color="color"
       @update-color="updateColor"
@@ -12,6 +13,7 @@ import { computed, defineComponent, ref, watch } from "vue";
 import PanelStyle from "@/components/canvas/panel/styles/PanelStyle.vue";
 import ColorPickerStyle from "@/components/canvas/panel/ColorPickerStyle.vue";
 import store from "@/store";
+import { ColorPickerTypes } from "@/store/modules/modals/types";
 
 export default defineComponent({
   name: "SidebarButtonColorStyle",
@@ -37,6 +39,7 @@ export default defineComponent({
 
     return {
       show,
+      ColorPickerTypes,
       color,
       colorPickerStyleRef,
       updateColor,

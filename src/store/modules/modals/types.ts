@@ -9,6 +9,19 @@ export interface ModalState {
 
 export enum ColorPickerTypes {
   GENERAL_STYLE_BG_COLOR = "general_style_bg_color",
+  GENERAL_BTN_COLOR = "general_btn_color",
   PANEL_STYLE_BG_COLOR = "panel_style_bg_color",
   PANEL_STYLE_TEXT_COLOR = "panel_style_text_color",
+  PANEL_BOX_SHADOW_COLOR = "panel_box_shadow_color",
 }
+
+export const GENERAL_STYLE_TYPE_COLORS = [
+  ColorPickerTypes.GENERAL_STYLE_BG_COLOR,
+  ColorPickerTypes.GENERAL_BTN_COLOR,
+];
+
+export const PANEL_STYLE_TYPE_COLORS = [
+  ColorPickerTypes.PANEL_STYLE_BG_COLOR,
+  ColorPickerTypes.PANEL_STYLE_TEXT_COLOR,
+  ColorPickerTypes.PANEL_BOX_SHADOW_COLOR,
+];

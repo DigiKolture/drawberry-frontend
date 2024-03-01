@@ -26,7 +26,9 @@
         <section
           v-if="hasWorkspaceComponent"
           class="canvas__panel"
-          :class="{ has__modal: colorPicker }"
+          :class="{
+            has__modal: PANEL_STYLE_TYPE_COLORS.includes(colorPicker),
+          }"
           id="canvas-panel"
         >
           <div class="canvas__panel__container">
@@ -46,6 +48,7 @@ import { ui } from "@/assets/js/canvas";
 import store from "@/store";
 import { canvas } from "@/composables/canvas/canvas";
 import { focus } from "@/composables/canvas/focus";
+import { PANEL_STYLE_TYPE_COLORS } from "@/store/modules/modals/types";
 
 export default defineComponent({
   name: "CanvasLayout",
@@ -110,6 +113,7 @@ export default defineComponent({
     return {
       sidebarDock,
       docked,
+      PANEL_STYLE_TYPE_COLORS,
       colorPicker,
       styles,
       hasWorkspaceComponent,

@@ -1,6 +1,7 @@
 <template>
   <PanelStyle title="BACKGROUND COLOR">
     <ColorPickerStyle
+      :type="ColorPickerTypes.GENERAL_STYLE_BG_COLOR"
       ref="colorPickerStyleRef"
       :color="color"
       @update-color="updateColor"
@@ -12,9 +13,15 @@ import { computed, defineComponent, ref, watch } from "vue";
 import PanelStyle from "@/components/canvas/panel/styles/PanelStyle.vue";
 import ColorPickerStyle from "@/components/canvas/panel/ColorPickerStyle.vue";
 import store from "@/store";
+import { ColorPickerTypes } from "@/store/modules/modals/types";
 
 export default defineComponent({
   name: "SidebarBackgroundColorStyle",
+  computed: {
+    ColorPickerTypes() {
+      return ColorPickerTypes;
+    },
+  },
   components: { ColorPickerStyle, PanelStyle },
   setup() {
     const show = ref(true);

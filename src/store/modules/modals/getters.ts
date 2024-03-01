@@ -15,9 +15,12 @@ export const getters: GetterTree<ModalState, RootState> = {
   export(state: ModalState): boolean {
     return state.export;
   },
+  colorPicker(state: ModalState): string {
+    return state.color_picker;
+  },
   modal:
     (state: ModalState) =>
-    (type: string): boolean => {
+    (type: string): boolean | string => {
       // Use the parameter in your logic
       return state[type];
     },

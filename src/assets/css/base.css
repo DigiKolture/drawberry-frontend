@@ -115,3 +115,7 @@ button.button__icon__text{
     border-radius: 4px;
 }
 
+
+div.has__modal, section.has__modal{
+    @apply overflow-visible;
+}

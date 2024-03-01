@@ -3,6 +3,7 @@
     role="application"
     aria-label="Sketch color picker"
     class="vc-sketch"
+    id="modals"
     :class="[disableAlpha ? 'vc-sketch__disable-alpha' : '']"
   >
     <div class="vc-sketch-saturation-wrap">

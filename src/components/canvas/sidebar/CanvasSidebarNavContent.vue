@@ -15,7 +15,10 @@
         />
       </div>
     </div>
-    <div class="sidebar__nav__contents__body">
+    <div
+      class="sidebar__nav__contents__body"
+      :class="{ has__modal: colorPicker }"
+    >
       <div
         v-if="showContent('add_component')"
         class="sidebar__nav__content__item"
@@ -53,6 +56,10 @@ export default defineComponent({
   setup() {
     const sidebarNavContent = computed(() => {
       return store.getters["canvas/sidebarNavContent"];
+    });
+
+    const colorPicker = computed(() => {
+      return store.getters["modals/colorPicker"];
     });
 
     const sidebarDock = computed(() => {
@@ -97,6 +104,7 @@ export default defineComponent({
       sidebarNavContent,
       sidebarDock,
       showContent,
+      colorPicker,
       closeSidebarNavContent,
       formatContentTitle,
       toggleSidebarDock,

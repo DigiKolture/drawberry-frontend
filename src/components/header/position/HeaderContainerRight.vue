@@ -32,7 +32,7 @@
         />
       </div>
       <div class="header__right__preview" v-else-if="isPreview">
-        <BaseButtonIcon @click="goToProject(null)" icon="close" />
+        <BaseButtonIcon @click="goToProject()" icon="close" />
       </div>
     </template>
   </div>

@@ -10,6 +10,7 @@ export const stated: ModalState = {
   export: false,
   manage_esp: false,
   share_preview: false,
+  color_picker: "",
 };
 
 export const modals: Module<ModalState, RootState> = {

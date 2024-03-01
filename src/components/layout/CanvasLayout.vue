@@ -26,6 +26,7 @@
         <section
           v-if="hasWorkspaceComponent"
           class="canvas__panel"
+          :class="{ has__modal: colorPicker }"
           id="canvas-panel"
         >
           <div class="canvas__panel__container">
@@ -76,6 +77,10 @@ export default defineComponent({
       return store.getters["canvas/sidebarDock"];
     });
 
+    const colorPicker = computed(() => {
+      return store.getters["modals/colorPicker"];
+    });
+
     const style = computed(() => {
       return store.getters["canvas/style"];
     });
@@ -105,6 +110,7 @@ export default defineComponent({
     return {
       sidebarDock,
       docked,
+      colorPicker,
       styles,
       hasWorkspaceComponent,
       handleClickEmpty,

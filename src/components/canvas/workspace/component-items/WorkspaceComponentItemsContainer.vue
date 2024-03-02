@@ -33,7 +33,7 @@
   </div>
 </template>
 <script lang="ts">
-import { computed, defineComponent, onMounted, ref } from "vue";
+import { computed, defineComponent, onMounted, ref, watch } from "vue";
 import WorkspaceComponentItemsListItem from "./WorkspaceComponentItemsListItem.vue";
 import CanvasWorkspaceEmpty from "../CanvasWorkspaceEmpty.vue";
 import { drag_and_drop } from "@/composables/canvas/drag_and_drop";
@@ -44,6 +44,7 @@ import { hover } from "@/composables/canvas/hover";
 import WebFont from "webfontloader";
 import { focus } from "@/composables/canvas/focus";
 import WorkspaceLastComponentDecoy from "@/components/canvas/workspace/component-items/WorkspaceLastComponentDecoy.vue";
+import { fonts } from "@/composables/canvas/fonts";
 
 export default defineComponent({
   name: "WorkspaceComponentItemsContainer",
@@ -57,7 +58,7 @@ export default defineComponent({
     const { upsertComponentItem } = drag_and_drop();
     const { removeHoverElement, addHoverToElement } = hover();
     const { removeFocus, removeCurrentFocus, focusComponentElement } = focus();
-
+    const { extractUniqueFontFamilies } = fonts();
     const { getComponentElementIndexUsingId } = layers();
 
     const route = useRoute();
@@ -76,15 +77,24 @@ export default defineComponent({
       return store.getters["canvas/focusedIndex"];
     });
 
-    onMounted(async () => {
-      await store.dispatch("canvas/getGoogleFonts");
-      const families = googleFonts.value.map((font: any) => font.family);
+    const workspaceComponents = computed(() => {
+      return store.getters["canvas/workspaceComponents"];
+    });
 
+    const fontFamilies = computed(() => {
+      return extractUniqueFontFamilies(workspaceComponents.value);
+    });
+
+    watch(fontFamilies, (value) => {
       WebFont.load({
         google: {
-          families,
+          families: fontFamilies.value,
         },
       });
+    });
+
+    onMounted(async () => {
+      await store.dispatch("canvas/getGoogleFonts");
       store.commit("canvas/SET_CURRENT_HOVER_ELEMENT", {
         id: null,
         componentIndex: null,
@@ -105,10 +115,6 @@ export default defineComponent({
 
     const style = computed(() => {
       return store.getters["canvas/style"];
-    });
-
-    const workspaceComponents = computed(() => {
-      return store.getters["canvas/workspaceComponents"];
     });
 
     const handleMouseOver = async (
@@ -198,6 +204,7 @@ export default defineComponent({
 
     return {
       focusedElement,
+      fontFamilies,
       focusedIndex,
       workspaceComponents,
       upsertComponentItem,

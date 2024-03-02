@@ -43,11 +43,38 @@ export function fonts() {
     return getFontWeights(font.variants);
   };
 
+  const extractUniqueFontFamilies = (data: any[]) => {
+    const uniqueFontFamilies: Set<string> = new Set();
+
+    data.forEach((item) => {
+      item.json.forEach((obj: any) => {
+        if (
+          obj.attributes &&
+          obj.attributes.style &&
+          obj.attributes.style.value &&
+          obj.attributes.style.value["font-family"]
+        ) {
+          const fontFamilyValue: string = obj.attributes.style.value[
+            "font-family"
+          ] as string;
+          const fontFamilyName: string = fontFamilyValue
+            .split(",")[0]
+            .replace(/'/g, "")
+            .trim();
+          uniqueFontFamilies.add(fontFamilyName);
+        }
+      });
+    });
+
+    return Array.from(uniqueFontFamilies);
+  };
+
   return {
     extractFirstFontFamily,
     getFont,
     getFullFamily,
     getFontWeightsWithFamily,
     getFontWeights,
+    extractUniqueFontFamilies,
   };
 }

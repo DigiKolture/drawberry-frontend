@@ -88,3 +88,10 @@ button.button__text__icon.success{
     border-radius: 4px;
     padding: 11px 13px 11px 16px;
 }
+
+button.button__text__icon.grey{
+    background: #494B57;
+    border-radius: 4px;
+    padding: 9px 8px 9px 8px;
+
+}

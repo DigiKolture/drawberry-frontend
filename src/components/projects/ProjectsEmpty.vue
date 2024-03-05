@@ -2,19 +2,22 @@
   <div class="projects__empty">
     <h6>Start designing your audience’s inbox</h6>
     <p>Bring your ideas to life!</p>
-    <button @click="createProject" class="button__icon__text">
-      <BaseIcon icon="add" /><span>New Project</span>
-    </button>
+    <BaseButtonTextIcon
+      @click="createProject"
+      class="grey projects__empty__btn"
+      icon="add"
+      text="New Project"
+    />
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import BaseIcon from "@/components/icon/BaseIcon.vue";
+import BaseButtonTextIcon from "@/components/button/BaseButtonTextIcon.vue";
 
 export default defineComponent({
   name: "ProjectsEmpty",
-  components: { BaseIcon },
+  components: { BaseButtonTextIcon },
 
   setup(props, { emit }) {
     const createProject = () => {

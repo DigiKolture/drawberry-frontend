@@ -1,9 +1,9 @@
 <template>
   <AppLayout :title="title" :description="description">
     <div class="projects__container">
-      <ProjectsEmpty v-if="projects.length === 0" />
+      <ProjectsEmpty v-if="projects.length !== 0" />
 
-      <ProjectsSection />
+      <ProjectsSection v-else />
     </div>
     <div class="view__bg">
       <router-view @close="close" />

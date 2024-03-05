@@ -24,6 +24,10 @@
     color: #848F9F;
 }
 
+.projects__empty__btn{
+    margin-top: 20px;
+}
+
 .projects__section{
     @apply flex flex-col;
     row-gap: 30px;

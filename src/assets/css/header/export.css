@@ -3,7 +3,6 @@
     left: 195px;
     top: 60px;
     padding: 0;
-    row-gap: 0;
 }
 
 .export__empty{
@@ -78,6 +77,14 @@
 .export__esps__lists{
     @apply flex flex-col;
     /*row-gap: 16px;*/
+}
+.header-export .action__dropdown__item__icon  {
+    width: 30px;
+}
+
+.header-export .action__dropdown__item__icon svg {
+    width: 24px;
+    height: 24px;
 }
 
 .export__esps__lists__add .action__dropdown__item__icon svg{

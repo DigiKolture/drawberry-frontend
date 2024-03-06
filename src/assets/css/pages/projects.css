@@ -187,17 +187,11 @@
 }
 
 .projects__section .action__dropdown__item{
-    column-gap: 8px;
-    padding: 12px 13px;
-
 }
 
 .projects__section .action__dropdown__item__icon svg {
-    width: 16px;
-    height: 16px;
 }
 
 .projects__section .action__dropdown{
-    row-gap: 0;
 }
 

@@ -14,7 +14,7 @@
     width: 157px;
     left: 55px;
     top: 45px;
-    row-gap: 8px;
+    /*row-gap: 8px;*/
     padding: 8px 0;
     background: #454856;
     box-shadow: 0 4px 25px rgba(0, 0, 0, 0.08), 0 1px 4px rgba(23, 27, 30, 0.08);
@@ -23,8 +23,8 @@
 
 .action__dropdown__item{
     @apply flex items-center cursor-pointer;
-    column-gap: 7px;
-    padding: 8px 16px;
+    column-gap: 8px;
+    padding: 12px 13px;
 }
 
 .action__dropdown__item:hover{
@@ -41,12 +41,11 @@
 
 .action__dropdown__item__icon{
     @apply flex justify-center items-center;
-    /*width: 30px;*/
 }
 
 .action__dropdown__item__icon svg{
-    width: 24px;
-    height: 24px;
+    width: 16px;
+    height: 16px;
 }
 
 .action__dropdown__item__icon svg path{

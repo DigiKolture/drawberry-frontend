@@ -17,7 +17,7 @@
         <BaseIcon icon="hamburger/horizontal" />
       </span>
     </div>
-    <ProjectDropdown :class="{ open }" />
+    <ProjectItemDropdown :class="{ open }" />
   </div>
 </template>
 
@@ -26,12 +26,12 @@ import { computed, defineComponent } from "vue";
 import BaseIcon from "@/components/icon/BaseIcon.vue";
 import { helpers } from "@/composables/helpers";
 import router from "@/router";
-import ProjectDropdown from "@/components/projects/ProjectItemDropdown.vue";
+import ProjectItemDropdown from "@/components/projects/ProjectItemDropdown.vue";
 import store from "@/store";
 
 export default defineComponent({
   name: "ProjectListItem",
-  components: { ProjectDropdown, BaseIcon },
+  components: { ProjectItemDropdown, BaseIcon },
 
   props: {
     index: {

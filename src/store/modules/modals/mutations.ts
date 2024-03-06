@@ -6,20 +6,28 @@ const isFixed = (modal: string) => {
   return !fixedModals.includes(modal);
 };
 
+const closeModal = (state: ModalState, modal: string) => {
+  if (typeof state[modal] === "boolean") {
+    state[modal] = false;
+  } else if (typeof state[modal] === "string") {
+    state[modal] = "";
+  } else if (typeof state[modal] === "number") {
+    state[modal] = -1;
+  }
+};
+
+const closeModals = (state: ModalState, modals: string[]) => {
+  for (const modal of modals) {
+    closeModal(state, modal);
+  }
+};
+
 export const mutations: MutationTree<ModalState> = {
   TOGGLE_MODAL(state: ModalState, modal: string): boolean | string | number {
     const modals = Object.keys(state).filter(isFixed);
     // Close all open modals before opening another
     if (!state[modal]) {
-      for (const modal of modals) {
-        if (typeof state[modal] === "boolean") {
-          state[modal] = false;
-        } else if (typeof state[modal] === "string") {
-          state[modal] = "";
-        } else if (typeof state[modal] === "number") {
-          state[modal] = -1;
-        }
-      }
+      closeModals(state, modals);
     }
 
     state[modal] = !state[modal];
@@ -31,19 +39,11 @@ export const mutations: MutationTree<ModalState> = {
   ): boolean | string | number {
     const modals = Object.keys(state).filter(isFixed);
     // Close all open modals before opening another
-    if (!state[modal]) {
-      for (const modal of modals) {
-        if (typeof state[modal] === "boolean") {
-          state[modal] = false;
-        } else if (typeof state[modal] === "string") {
-          state[modal] = "";
-        } else if (typeof state[modal] === "number") {
-          state[modal] = -1;
-        }
-      }
+    if (!state[modal] || state[modal] === -1) {
+      closeModals(state, modals);
     }
 
-    if (state[modal] && state[modal] === value) {
+    if (state[modal] === value) {
       if (typeof state[modal] === "string") {
         state[modal] = "";
       } else if (typeof state[modal] === "number") {
@@ -60,41 +60,17 @@ export const mutations: MutationTree<ModalState> = {
     return state[modal];
   },
   CLOSE_MODAL(state: ModalState, modal: string): boolean | string | number {
-    if (typeof state[modal] === "boolean") {
-      state[modal] = false;
-    } else if (typeof state[modal] === "string") {
-      state[modal] = "";
-    } else if (typeof state[modal] === "number") {
-      state[modal] = -1;
-    }
+    closeModal(state, modal);
     return state[modal];
   },
   CLOSE_MODALS(state: ModalState): ModalState {
     const modals = Object.keys(state).filter(isFixed);
-
-    for (const modal of modals) {
-      if (typeof state[modal] === "boolean") {
-        state[modal] = false;
-      } else if (typeof state[modal] === "string") {
-        state[modal] = "";
-      } else if (typeof state[modal] === "number") {
-        state[modal] = -1;
-      }
-    }
+    closeModals(state, modals);
     return state;
   },
   CLOSE_ALL_MODALS(state: ModalState): ModalState {
     const allModals = Object.keys(state);
-
-    for (const modal of allModals) {
-      if (typeof state[modal] === "boolean") {
-        state[modal] = false;
-      } else if (typeof state[modal] === "string") {
-        state[modal] = "";
-      } else if (typeof state[modal] === "number") {
-        state[modal] = -1;
-      }
-    }
+    closeModals(state, allModals);
     return state;
   },
   CLOSE_ALL_RIGHT_PANELS(state: ModalState): ModalState {

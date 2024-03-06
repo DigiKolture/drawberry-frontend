@@ -1,15 +1,15 @@
 <template>
-  <ProjectDropdownLayout :data="data" @clicks="handleEvents" />
+  <DropdownLayout :data="data" @clicks="handleEvents" />
 </template>
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import ProjectDropdownLayout from "@/components/layout/dropdown/DropdownLayout.vue";
+import DropdownLayout from "@/components/layout/dropdown/DropdownLayout.vue";
 import store from "@/store";
 import router from "@/router";
 export default defineComponent({
   name: "ProjectCreateDropdown",
-  components: { ProjectDropdownLayout },
+  components: { DropdownLayout },
 
   setup() {
     const data = [

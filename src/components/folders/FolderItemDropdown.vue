@@ -1,13 +1,13 @@
 <template>
-  <ProjectDropdownLayout :data="data" />
+  <DropdownLayout :data="data" />
 </template>
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import ProjectDropdownLayout from "@/components/layout/dropdown/DropdownLayout.vue";
+import DropdownLayout from "@/components/layout/dropdown/DropdownLayout.vue";
 export default defineComponent({
-  name: "FolderDropdown",
-  components: { ProjectDropdownLayout },
+  name: "FolderItemDropdown",
+  components: { DropdownLayout },
 
   setup() {
     const data = [

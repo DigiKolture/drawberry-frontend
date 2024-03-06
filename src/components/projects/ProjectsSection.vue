@@ -7,7 +7,7 @@
       <div class="folders__body__list__items">
         <FolderListItem
           :key="folder.id"
-          :index="key"
+          :index="key + 1"
           :folder="folder"
           v-for="(folder, key) in folders"
         />
@@ -18,7 +18,7 @@
       <div class="projects__body__list__items">
         <ProjectListItem
           :project="project"
-          :index="key"
+          :index="key + 1"
           :key="project.id"
           v-for="(project, key) in projects"
         />

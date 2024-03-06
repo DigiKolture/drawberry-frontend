@@ -164,6 +164,11 @@
     column-gap: 10px;
 }
 
+.folders__body__list__item .action__dropdown{
+    top: 55px;
+
+}
+
 .folders__body__list__item h6{
     @apply text-white;
     font-weight: 400;
@@ -177,7 +182,8 @@
 }
 
 .folders__list__item__hamburger{
-    @apply ml-auto;
+    @apply ml-auto flex justify-center items-center;
+    padding: 8px;
 }
 
 .projects__section .action__dropdown__item{

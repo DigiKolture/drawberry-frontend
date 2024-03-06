@@ -4,7 +4,10 @@ export interface ModalState {
   manage_esp: boolean;
   share_preview: boolean;
   color_picker: string;
-  [key: string]: boolean | string;
+  project_create: boolean;
+  project_item: number;
+  folder_item: number;
+  [key: string]: boolean | string | number;
 }
 
 export enum ColorPickerTypes {

@@ -7,7 +7,7 @@ const isFixed = (modal: string) => {
 };
 
 export const mutations: MutationTree<ModalState> = {
-  TOGGLE_MODAL(state: ModalState, modal: string): boolean | string {
+  TOGGLE_MODAL(state: ModalState, modal: string): boolean | string | number {
     const modals = Object.keys(state).filter(isFixed);
     // Close all open modals before opening another
     if (!state[modal]) {
@@ -16,6 +16,8 @@ export const mutations: MutationTree<ModalState> = {
           state[modal] = false;
         } else if (typeof state[modal] === "string") {
           state[modal] = "";
+        } else if (typeof state[modal] === "number") {
+          state[modal] = -1;
         }
       }
     }
@@ -23,7 +25,10 @@ export const mutations: MutationTree<ModalState> = {
     state[modal] = !state[modal];
     return state[modal];
   },
-  TOGGLE_STRING_MODAL(state: ModalState, { modal, value }): boolean | string {
+  TOGGLE_STRING_MODAL(
+    state: ModalState,
+    { modal, value }
+  ): boolean | string | number {
     const modals = Object.keys(state).filter(isFixed);
     // Close all open modals before opening another
     if (!state[modal]) {
@@ -32,27 +37,35 @@ export const mutations: MutationTree<ModalState> = {
           state[modal] = false;
         } else if (typeof state[modal] === "string") {
           state[modal] = "";
+        } else if (typeof state[modal] === "number") {
+          state[modal] = -1;
         }
       }
     }
 
     if (state[modal] && state[modal] === value) {
-      state[modal] = "";
+      if (typeof state[modal] === "string") {
+        state[modal] = "";
+      } else if (typeof state[modal] === "number") {
+        state[modal] = -1;
+      }
     } else {
       state[modal] = value;
     }
     return state[modal];
   },
-  OPEN_MODAL(state: ModalState, modal: string): boolean | string {
+  OPEN_MODAL(state: ModalState, modal: string): boolean | string | number {
     if (typeof state[modal] !== "boolean") return state[modal];
     state[modal] = true;
     return state[modal];
   },
-  CLOSE_MODAL(state: ModalState, modal: string): boolean | string {
+  CLOSE_MODAL(state: ModalState, modal: string): boolean | string | number {
     if (typeof state[modal] === "boolean") {
       state[modal] = false;
     } else if (typeof state[modal] === "string") {
       state[modal] = "";
+    } else if (typeof state[modal] === "number") {
+      state[modal] = -1;
     }
     return state[modal];
   },
@@ -64,6 +77,8 @@ export const mutations: MutationTree<ModalState> = {
         state[modal] = false;
       } else if (typeof state[modal] === "string") {
         state[modal] = "";
+      } else if (typeof state[modal] === "number") {
+        state[modal] = -1;
       }
     }
     return state;
@@ -76,6 +91,8 @@ export const mutations: MutationTree<ModalState> = {
         state[modal] = false;
       } else if (typeof state[modal] === "string") {
         state[modal] = "";
+      } else if (typeof state[modal] === "number") {
+        state[modal] = -1;
       }
     }
     return state;

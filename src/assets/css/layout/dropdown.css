@@ -41,7 +41,7 @@
 
 .action__dropdown__item__icon{
     @apply flex justify-center items-center;
-    width: 30px;
+    /*width: 30px;*/
 }
 
 .action__dropdown__item__icon svg{

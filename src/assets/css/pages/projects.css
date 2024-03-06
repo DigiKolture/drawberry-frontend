@@ -171,7 +171,27 @@
     line-height: 18px;
 }
 
+.projects__body__item__body__open{
+    @apply flex justify-center items-center;
+    padding: 3px 6px;
+}
+
 .folders__list__item__hamburger{
     @apply ml-auto;
+}
+
+.projects__section .action__dropdown__item{
+    column-gap: 8px;
+    padding: 12px 13px;
+
+}
+
+.projects__section .action__dropdown__item__icon svg {
+    width: 16px;
+    height: 16px;
+}
+
+.projects__section .action__dropdown{
+    row-gap: 0;
 }
 

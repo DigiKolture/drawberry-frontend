@@ -1,6 +1,10 @@
 <template>
   <div class="projects__header">
-    <button @click="toggleOpenCreate" class="projects__header__create">
+    <button
+      id="modals-trigger"
+      @click="toggleOpenCreate"
+      class="projects__header__create"
+    >
       <BaseIcon icon="add" />
       <span>Create</span>
       <BaseIcon :icon="`arrow/${openCreate ? 'down' : 'up'}`" />
@@ -17,19 +21,22 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from "vue";
+import { computed, defineComponent, ref } from "vue";
 import BaseIcon from "@/components/icon/BaseIcon.vue";
 import ProjectCreateDropdown from "@/components/projects/ProjectCreateDropdown.vue";
+import store from "@/store";
 
 export default defineComponent({
   name: "ProjectsHeader",
   components: { ProjectCreateDropdown, BaseIcon },
 
   setup() {
-    const openCreate = ref(false);
+    const openCreate = computed(() => {
+      return store.getters["modals/projectCreate"];
+    });
 
     const toggleOpenCreate = () => {
-      openCreate.value = !openCreate.value;
+      store.commit("modals/TOGGLE_MODAL", "project_create");
     };
 
     return {

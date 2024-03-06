@@ -11,6 +11,9 @@ export const stated: ModalState = {
   manage_esp: false,
   share_preview: false,
   color_picker: "",
+  project_create: false,
+  project_item: -1,
+  folder_item: -1,
 };
 
 export const modals: Module<ModalState, RootState> = {

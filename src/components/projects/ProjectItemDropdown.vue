@@ -6,7 +6,7 @@
 import { defineComponent } from "vue";
 import ProjectDropdownLayout from "@/components/layout/dropdown/DropdownLayout.vue";
 export default defineComponent({
-  name: "ProjectDropdown",
+  name: "ProjectItemDropdown",
   components: { ProjectDropdownLayout },
 
   setup() {

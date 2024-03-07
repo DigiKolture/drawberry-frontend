@@ -1,10 +1,12 @@
 <template>
   <div class="folders__body__list__item">
-    <BaseIcon icon="projects/folder" />
-    <h6>{{ sliceString(folder.name) }}</h6>
-    <div @click.stop="toggleOpen" class="folders__list__item__hamburger">
+    <span class="folders__body__list__item__icon"
+      ><BaseIcon icon="projects/folder"
+    /></span>
+    <h6>{{ sliceString(folder.name, 10) }}</h6>
+    <span @click.stop="toggleOpen" class="folders__list__item__hamburger">
       <BaseIcon icon="hamburger/horizontal" />
-    </div>
+    </span>
     <FolderItemDropdown :class="{ open }" />
   </div>
 </template>

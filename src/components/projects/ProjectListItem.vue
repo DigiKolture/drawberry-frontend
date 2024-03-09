@@ -1,8 +1,6 @@
 <template>
   <div @click="openProject" class="projects__body__list__item">
-    <div class="projects__body__item__header">
-      <BaseIcon icon="projects/placeholder" />
-    </div>
+    <ProjectListItemPlaceholder :project="project" />
     <div class="projects__body__item__body">
       <div class="projects__body__item__body__content">
         <h3>{{ sliceString(project.name, 17) }}</h3>
@@ -28,10 +26,11 @@ import { helpers } from "@/composables/helpers";
 import router from "@/router";
 import ProjectItemDropdown from "@/components/projects/ProjectItemDropdown.vue";
 import store from "@/store";
+import ProjectListItemPlaceholder from "@/components/projects/ProjectListItemPlaceholder.vue";
 
 export default defineComponent({
   name: "ProjectListItem",
-  components: { ProjectItemDropdown, BaseIcon },
+  components: { ProjectListItemPlaceholder, ProjectItemDropdown, BaseIcon },
 
   props: {
     index: {

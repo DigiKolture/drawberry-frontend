@@ -1,0 +1,862 @@
+import cheerio from "cheerio";
+import { updateDom } from "@/composables/canvas/update_dom";
+import { ProjectStyle } from "@/store/modules/canvas/types";
+import path from "path";
+import fs from "fs";
+
+export function projectHtml() {
+  const { updateComponentItemDom } = updateDom();
+  const getHTML = (project: any): string => {
+    const projectComponents = project.components;
+
+    let resultHTML = null;
+
+    for (const projectComponent of projectComponents) {
+      const { html } = updateComponentItemDom(projectComponent);
+      if (resultHTML == null) {
+        resultHTML = html;
+      } else {
+        // if (project.style && project.style.layout === "cards") {
+        //   resultHTML = await this.htmlService.addSpacing(resultHTML);
+        // }
+        resultHTML = combineHTMLDocumentsWithCheerio(resultHTML, html);
+      }
+    }
+
+    resultHTML = updateBody(project.style, resultHTML);
+    resultHTML = updateHead(resultHTML);
+
+    return resultHTML;
+  };
+
+  const combineHTMLDocumentsWithCheerio = (
+    html1: string,
+    html2: string
+  ): string => {
+    const $doc1 = cheerio.load(html1);
+    const $doc2 = cheerio.load(html2);
+    const body1Content = $doc1("body").html();
+    const body2Content = $doc2("body").html();
+
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    const combinedContent = body1Content + body2Content;
+    const $combined = cheerio.load(`
+    <html>
+    <head></head>
+    <body>${combinedContent}</body>
+
+    </html>`);
+
+    return $combined.html();
+  };
+
+  const updateBody = (style: ProjectStyle, html: string): string => {
+    let $ = cheerio.load(html);
+    const bodyContent = $("body").html();
+
+    $ = cheerio.load(`
+          <html xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
+            <head></head>
+            <body>
+                <!-- Preview Text -->
+                <span style="color: transparent; display: none; height: 0; max-height: 0; max-width: 0; opacity: 0; overflow: hidden; mso-hide: all; visibility: hidden; width: 0;">${
+                  style.previewText || "Preview text"
+                }</span>
+                <!-- Preview Text -->
+                <table class="pc-email-body" width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation" style="table-layout: fixed;">
+                  <tbody>
+                    <tr>
+                      <td class="pc-email-body-inner" align="center" valign="top">
+                        <!--[if gte mso 9]>
+                          <v:background xmlns:v="urn:schemas-microsoft-com:vml" fill="t">
+                              <v:fill type="tile" src="" color="#E8E9E9"/>
+                          </v:background>
+                          <![endif]-->
+                        <!--[if (gte mso 9)|(IE)]><table width="620" align="center" border="0" cellspacing="0" cellpadding="0" role="presentation"><tr><td width="620" align="center" valign="top"><![endif]-->
+                        <table class="pc-email-container" width="100%" align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="margin: 0 auto; max-width: 620px;">
+                          <tbody>
+                            <tr>
+                              <td align="left" valign="top" style="padding: 0 10px;">
+
+                                <!-- Component Spacing -->
+                                <table id="spacing" width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation">
+                                  <tbody>
+                                    <tr>
+                                      <td height="20" style="font-size: 1px; line-height: 1px;">&nbsp;</td>
+                                    </tr>
+                                  </tbody>
+                                </table>
+                                <!-- Component Spacing -->
+
+                                ${bodyContent}
+
+                                <!-- Component Spacing -->
+                                  <table width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation">
+                                    <tbody>
+                                      <tr>
+                                        <td height="20" style="font-size: 1px; line-height: 1px;">&nbsp;</td>
+                                      </tr>
+                                    </tbody>
+                                  </table>
+                                <!-- Component Spacing -->
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </td>
+                    </tr>
+                  </tbody>
+              </table>
+              <!-- Fix for Gmail on iOS -->
+               <div class="pc-gmail-fix" style="white-space: nowrap; font: 15px courier; line-height: 0;">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </div>
+            </body>
+        </html>`);
+
+    const styleAttr: any = {
+      width: "100% !important",
+      margin: 0,
+      padding: 0,
+      "mso-line-height-rule": "exactly",
+      "-webkit-font-smoothing": "antialiased",
+      "-webkit-text-size-adjust": "100%",
+      "-ms-text-size-adjust": "100%",
+      "background-color": style.backgroundColor,
+      "background-image": `url('${style.backgroundImage}')`,
+      "background-size": "cover",
+    };
+
+    const styleString = Object.keys(styleAttr)
+      .map((key: string) => `${key}: ${styleAttr[key]};`)
+      .join(" ");
+
+    $("body").attr("style", styleString);
+
+    return $.html();
+  };
+
+  const updateHead = (html: string): string => {
+    const $ = cheerio.load(html);
+
+    const metaTags = `
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        <!--[if !mso]><!-->
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <!--<![endif]-->
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="format-detection" content="telephone=no">
+        <meta name="x-apple-disable-message-reformatting">
+        <link
+    href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,700;1,400;1,500;1,700&display=swap"
+    rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <style>
+    
+   #outlook a {
+  padding: 0;
+}
+
+.ReadMsgBody,
+.ExternalClass {
+  width: 100%;
+}
+
+.ExternalClass,
+.ExternalClass p,
+.ExternalClass td,
+.ExternalClass div,
+.ExternalClass span,
+.ExternalClass font {
+  line-height: 100%;
+}
+
+div[style*="margin: 14px 0"],
+div[style*="margin: 16px 0"] {
+  margin: 0 !important;
+}
+
+table,
+td {
+  mso-table-lspace: 0;
+  mso-table-rspace: 0;
+}
+
+table,
+tr,
+td {
+  border-collapse: collapse;
+}
+
+body,
+td,
+th,
+p,
+div,
+li,
+a,
+span {
+  -webkit-text-size-adjust: 100%;
+  -ms-text-size-adjust: 100%;
+  mso-line-height-rule: exactly;
+}
+
+img {
+  border: 0;
+  outline: none;
+  line-height: 100%;
+  text-decoration: none;
+  -ms-interpolation-mode: bicubic;
+}
+
+a[x-apple-data-detectors] {
+  color: inherit !important;
+  text-decoration: none !important;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  width: 100% !important;
+  -webkit-font-smoothing: antialiased;
+}
+
+.pc-gmail-fix {
+  display: none;
+  display: none !important;
+}
+
+@media screen and (min-width: 621px) {
+  .pc-email-container {
+    width: 620px !important;
+  }
+}
+
+@media screen and (max-width:620px) {
+
+  /* header */
+
+  .pc-sm-p-30 {
+    padding: 30px !important
+  }
+
+  .pc-sm-p-30-25 {
+    padding: 30px 25px !important
+  }
+
+  .pc-sm-p-25 {
+    padding: 25px !important
+  }
+
+  .pc-sm-mw-100pc {
+    max-width: 100% !important
+  }
+
+  .pc-sm-m-0-auto {
+    margin: 0 auto !important
+  }
+
+  .pc-sm-ta-center {
+    text-align: center !important
+  }
+
+  .pc-sm-w-100pc {
+    width: 100% !important
+  }
+
+  .pc-sm-p-25-15 {
+    padding: 25px 15px !important
+  }
+
+  .pc-sm-p-18-30 {
+    padding: 18px 30px !important
+  }
+
+  .pc-sm-p-25-20 {
+    padding: 25px 20px !important
+  }
+
+  /* banner */
+
+  .pc-sm-p-24-20-30 {
+    padding: 24px 20px 30px !important
+  }
+
+  .pc-sm-mw-100pc {
+    max-width: 100% !important
+  }
+
+  .pc-sm-ta-center {
+    text-align: center !important
+  }
+
+  .pc-sm-p-34-30-55 {
+    padding: 34px 30px 55px !important
+  }
+
+  .pc-sm-h-53 {
+    height: 53px !important
+  }
+
+  .pc-sm-p-20-25-35 {
+    padding: 20px 25px 35px !important
+  }
+
+  .pc-sm-w-100pc {
+    width: 100% !important
+  }
+
+  .pc-sm-p-20-20-25 {
+    padding: 20px 20px 25px !important
+  }
+
+  .pc-sm-p-29-16-26 {
+    padding: 29px 16px 26px !important
+  }
+
+  .pc-sm-m-0-auto {
+    margin: 0 auto !important
+  }
+
+  /* content info */
+
+  .pc-sm-p-35-10-15 {
+    padding: 35px 10px 15px !important
+  }
+
+  .pc-sm-p-25-10-15 {
+    padding: 25px 10px 15px !important
+  }
+
+  .pc-sm-mw-100pc {
+    max-width: 100% !important
+  }
+
+  .pc-sm-p-15-10 {
+    padding: 15px 10px !important
+  }
+
+  .pc-sm-mw-50pc {
+    max-width: 50% !important
+  }
+
+  .pc-sm-p-25-30-35 {
+    padding: 25px 30px 35px !important
+  }
+
+  .pc-sm-m-0-auto {
+    float: none !important;
+    margin: 0 auto !important
+  }
+
+  .pc-sm-p-25-10-30 {
+    padding: 25px 10px 30px !important
+  }
+
+  .pc-sm-p-10-0 {
+    padding: 10px 0 !important
+  }
+
+  .pc-sm-ta-center {
+    text-align: center !important
+  }
+
+  .pc-sm-p-20-20-0 {
+    padding: 20px 20px 0 !important
+  }
+
+  .pc-sm-p-16-20-20 {
+    padding: 16px 20px 20px !important
+  }
+
+  .pc-post-s2.pc-m-invert {
+    direction: ltr !important
+  }
+
+  .pc-sm-p-35-30 {
+    padding: 35px 30px !important
+  }
+
+  /* features */
+
+  .pc-sm-p-35-10-15 {
+    padding: 35px 10px 15px !important
+  }
+
+  .pc-sm-mw-50pc {
+    max-width: 50% !important
+  }
+
+  .pc-sm-dir-ltr {
+    direction: ltr !important
+  }
+
+  .pc-sm-p-35-10-25 {
+    padding: 35px 10px 25px !important
+  }
+
+  .pc-sm-p-35-10-30 {
+    padding: 35px 10px 30px !important
+  }
+
+  .pc-sm-p-40-30 {
+    padding: 40px 30px !important
+  }
+
+  /* cta */
+
+  .pc-sm-p-35-30 {
+    padding: 35px 30px !important
+  }
+
+  .pc-sm-p-35-30-76 {
+    padding: 35px 30px 76px !important
+  }
+
+  .pc-sm-p-35-30-30 {
+    padding: 35px 30px 30px !important
+  }
+
+  .pc-sm-p-35-25-30 {
+    padding: 35px 25px 30px !important
+  }
+
+  .pc-sm-p-35-30-0 {
+    padding: 35px 30px 0 !important
+  }
+
+  /* footer */
+
+  .pc-sm-p-21-10-14 {
+    padding: 21px 10px 14px !important
+  }
+
+  .pc-sm-h-20 {
+    height: 20px !important
+  }
+
+  .pc-sm-mw-100pc {
+    max-width: 100% !important
+  }
+
+  .pc-sm-p-31-20 {
+    padding: 31px 20px !important
+  }
+
+  .pc-sm-w-100pc {
+    width: 100% !important
+  }
+
+  .pc-sm-ta-center {
+    text-align: center !important
+  }
+
+  .pc-sm-p-31-20-39 {
+    padding: 31px 20px 39px !important
+  }
+
+  .pc-sm-p-38-30-40 {
+    padding: 38px 30px 40px !important
+  }
+
+  /* transaction */
+
+  .pc-sm-p-30-20 {
+    padding: 30px 20px !important
+  }
+
+  .pc-sm-fs-30 {
+    font-size: 30px !important
+  }
+
+  .pc-sm-fs-18 {
+    font-size: 18px !important
+  }
+
+  .pc-sm-p-30-20-25 {
+    padding: 30px 20px 25px !important
+  }
+
+  .pc-sm-p-10-15 {
+    padding: 10px 15px !important
+  }
+
+  .pc-sm-fs-36 {
+    font-size: 36px !important
+  }
+
+  .pc-sm-fs-16 {
+    font-size: 16px !important
+  }
+
+  .pc-sm-p-30 {
+    padding: 30px !important
+  }
+
+  .pc-sm-p-30-10 {
+    padding: 30px 10px !important
+  }
+
+  .pc-sm-mw-100pc {
+    max-width: 100% !important;
+    min-width: 100% !important
+  }
+
+  .pc-sm-fs-20 {
+    font-size: 20px !important
+  }
+
+  /*ecommerce */
+
+  .pc-sm-p-30-30-40 {
+    padding: 30px 30px 40px !important
+  }
+
+  .pc-sm-mw-100pc {
+    max-width: 100% !important
+  }
+
+  .pc-sm-m-0-auto {
+    float: none !important;
+    margin: auto !important
+  }
+
+  .pc-sm-p-30-25 {
+    padding: 30px 25px !important
+  }
+
+  .pc-sm-p-30-10 {
+    padding: 30px 10px !important
+  }
+
+  .pc-sm-dir-ltr {
+    direction: ltr !important
+  }
+
+  .pc-sm-p-30-10-20 {
+    padding: 30px 10px 20px !important
+  }
+
+  .pc-sm-mw-50pc {
+    max-width: 50% !important
+  }
+}
+
+@media screen and (max-width:525px) {
+
+  /* header */
+
+  .pc-xs-p-20 {
+    padding: 20px !important
+  }
+
+  .pc-xs-p-20-15 {
+    padding: 20px 15px !important
+  }
+
+  .pc-xs-p-15 {
+    padding: 15px !important
+  }
+
+  .pc-xs-p-15-10 {
+    padding: 15px 10px !important
+  }
+
+  .pc-xs-p-25-20 {
+    padding: 25px 20px !important
+  }
+
+  .pc-xs-p-18-20 {
+    padding: 18px 20px !important
+  }
+
+  .pc-xs-p-0 {
+    padding: 0 !important
+  }
+
+  /* banner */
+
+  .pc-xs-p-15-10-20 {
+    padding: 15px 10px 20px !important
+  }
+
+  .pc-xs-h-100 {
+    height: 100px !important
+  }
+
+  .pc-xs-br-disabled br {
+    display: none !important
+  }
+
+  .pc-xs-fs-30 {
+    font-size: 30px !important
+  }
+
+  .pc-xs-lh-42 {
+    line-height: 42px !important
+  }
+
+  .pc-xs-p-25-20-20 {
+    padding: 25px 20px 20px !important
+  }
+
+  .pc-xs-h-53 {
+    height: 53px !important
+  }
+
+  /* new */
+  .pc-xs-h-56 {
+    height: 56px !important
+  }
+  /* new */
+
+  .pc-xs-p-55-20-50 {
+    padding: 55px 20px 50px !important
+  }
+
+  .pc-xs-h-43 {
+    height: 43px !important
+  }
+
+  .pc-xs-p-15 {
+    padding: 15px !important
+  }
+
+  .pc-xs-p-15-6-5 {
+    padding: 15px 6px 5px !important
+  }
+
+  .pc-xs-h-22 {
+    height: 22px !important
+  }
+
+  /* content info */
+
+  .pc-xs-p-25-0-5 {
+    padding: 25px 0 5px !important
+  }
+
+  .pc-xs-br-disabled br {
+    display: none !important
+  }
+
+  .pc-xs-p-15-0-5 {
+    padding: 15px 0 5px !important
+  }
+
+  .pc-xs-p-5-0 {
+    padding: 5px 0 !important
+  }
+
+  .pc-xs-mw-100pc {
+    max-width: 100% !important
+  }
+
+  .pc-xs-m-0-auto {
+    float: none !important;
+    margin: 0 auto !important
+  }
+
+  .pc-xs-p-15-20-25 {
+    padding: 15px 20px 25px !important
+  }
+
+  .pc-xs-h-70 {
+    font-size: 70px !important;
+    height: 70px !important;
+    line-height: 70px !important
+  }
+
+  .pc-xs-p-15-0-20 {
+    padding: 15px 0 20px !important
+  }
+
+  .pc-xs-p-25-20 {
+    padding: 25px 20px !important
+  }
+
+  /* features */
+
+  .pc-xs-p-25-0-5 {
+    padding: 25px 0 5px !important
+  }
+
+  .pc-xs-mw-100pc {
+    max-width: 100% !important
+  }
+
+  .pc-xs-br-disabled br {
+    display: none !important
+  }
+
+  .pc-xs-p-25-0 {
+    padding: 25px 0 !important
+  }
+
+  .pc-xs-p-25-0-20 {
+    padding: 25px 0 20px !important
+  }
+
+  .pc-xs-p-30-20 {
+    padding: 30px 20px !important
+  }
+
+  /* cta */
+
+  .pc-xs-p-25-20 {
+    padding: 25px 20px !important
+  }
+
+  .pc-xs-fs-30 {
+    font-size: 30px !important
+  }
+
+  .pc-xs-lh-42 {
+    line-height: 42px !important
+  }
+
+  .pc-xs-br-disabled br {
+    display: none !important
+  }
+
+  .pc-xs-fs-24 {
+    font-size: 24px !important
+  }
+
+  .pc-xs-lh-34 {
+    line-height: 34px !important
+  }
+
+  .pc-xs-p-25-20-20 {
+    padding: 25px 20px 20px !important
+  }
+
+  .pc-xs-p-25-15-20 {
+    padding: 25px 15px 20px !important
+  }
+
+  .pc-xs-p-25-20-0 {
+    padding: 25px 20px 0 !important
+  }
+
+  .pc-xs-h-35 {
+    height: 35px !important
+  }
+
+  .pc-xs-w-72 {
+    width: 72px !important
+  }
+
+  .pc-xs-h-auto {
+    height: auto !important
+  }
+
+  /* footer */
+
+  .pc-xs-p-5-0 {
+    padding: 5px 0 !important
+  }
+
+  .pc-xs-br-disabled br {
+    display: none !important
+  }
+
+  .pc-xs-p-15-10-25 {
+    padding: 15px 10px 25px !important
+  }
+
+  .pc-xs-p-25-20 {
+    padding: 25px 20px !important
+  }
+
+  .pc-xs-fs-14 {
+    font-size: 14px !important
+  }
+
+  /* transactional */
+
+  .pc-xs-p-25-10 {
+    padding: 25px 10px !important
+  }
+
+  .pc-xs-fs-16 {
+    font-size: 16px !important
+  }
+
+  .pc-xs-br-disabled br {
+    display: none !important
+  }
+
+  .pc-xs-p-25-10-20 {
+    padding: 25px 10px 20px !important
+  }
+
+  .pc-xs-p-25-20 {
+    padding: 25px 20px !important
+  }
+
+  .pc-xs-p-25-0 {
+    padding: 25px 0 !important
+  }
+
+  /* ecommerce */
+
+  .pc-xs-p-15-20-25 {
+    padding: 15px 20px 25px !important
+  }
+
+  .pc-xs-br-disabled br {
+    display: none !important
+  }
+
+  .pc-xs-p-15 {
+    padding: 15px !important
+  }
+
+  .pc-xs-p-15-0 {
+    padding: 15px 0 !important
+  }
+
+  .pc-xs-p-15-0-25 {
+    padding: 15px 0 25px !important
+  }
+
+  .pc-xs-mw-100pc {
+    max-width: 100% !important
+  }
+
+  .pc-xs-m-0-auto {
+    float: none !important;
+    margin: 0 auto !important
+  }
+
+  .pc-xs-ta-center {
+    text-align: center !important
+  }
+}
+
+ 
+</style>
+        <!--[if mso]>
+          <style type="text/css">
+              .pc-fb-font {
+                  font-family: Helvetica, Arial, sans-serif !important;
+              }
+          </style>
+          <![endif]-->
+        <!--[if gte mso 9]><xml><o:OfficeDocumentSettings><o:AllowPNG/><o:PixelsPerInch>96</o:PixelsPerInch></o:OfficeDocumentSettings></xml><![endif]-->
+      `;
+    $("head").append(metaTags);
+
+    // const cssFilePath = path.join(__dirname, "styles.css");
+    // const cssContent = fs.readFileSync(cssFilePath, "utf8");
+    // const styleElement = $('<style type="text/css"></style>').text(cssContent);
+    // $("head").append(styleElement);
+
+    return $.html({ decodeEntities: false, xmlMode: true });
+  };
+
+  return {
+    getHTML,
+  };
+}

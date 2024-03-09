@@ -30,7 +30,7 @@ export default defineComponent({
 
     onMounted(async () => {
       const project = await store.dispatch(
-        "projects/getProjectComponentsForPreview",
+        "projects/getProjectCodivmponentsForPreview",
         projectId
       );
       console.log({ project });

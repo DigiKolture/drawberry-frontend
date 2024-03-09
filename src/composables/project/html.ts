@@ -16,9 +16,9 @@ export function projectHtml() {
       if (resultHTML == null) {
         resultHTML = html;
       } else {
-        // if (project.style && project.style.layout === "cards") {
-        //   resultHTML = await this.htmlService.addSpacing(resultHTML);
-        // }
+        if (project.style && project.style.layout === "cards") {
+          resultHTML = addSpacing(resultHTML);
+        }
         resultHTML = combineHTMLDocumentsWithCheerio(resultHTML, html);
       }
     }
@@ -27,6 +27,18 @@ export function projectHtml() {
     resultHTML = updateHead(resultHTML);
 
     return resultHTML;
+  };
+
+  const addSpacing = (html: string): string => {
+    const spacingHTML = `
+        <table width="100%" border="0" cellspacing="0" cellpadding="0" role="presentation">
+          <tbody>
+            <tr>
+              <td height="10" style="font-size: 1px; line-height: 1px;">&nbsp;</td>
+            </tr>
+        </tbody>
+      `;
+    return combineHTMLDocumentsWithCheerio(html, spacingHTML);
   };
 
   const combineHTMLDocumentsWithCheerio = (

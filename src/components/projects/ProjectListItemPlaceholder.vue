@@ -20,7 +20,9 @@ export default defineComponent({
     const { getHTML } = projectHtml();
 
     const html = computed(() => {
-      return getHTML(props.project);
+      return props.project.components.length > 0
+        ? getHTML(props.project)
+        : null;
     });
 
     const styles = computed(() => {

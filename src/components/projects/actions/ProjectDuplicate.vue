@@ -87,7 +87,7 @@ export default defineComponent({
         });
     };
 
-    const toastMessage = (projectId) => {
+    const toastMessage = (projectId: string) => {
       store.dispatch("toast/showToast", {
         message: `Project duplicated successfully.`,
         data: {

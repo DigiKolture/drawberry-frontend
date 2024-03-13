@@ -13,6 +13,7 @@ export const stated: ModalState = {
   color_picker: "",
   project_create: false,
   project_duplicate: false,
+  project_delete: false,
   project_item: -1,
   folder_item: -1,
 };

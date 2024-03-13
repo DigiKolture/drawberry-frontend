@@ -72,4 +72,17 @@ export const actions: ActionTree<ProjectState, RootState> = {
         }
       });
   },
+
+  deleteProject({ commit }, projectId: string): Promise<void> {
+    return AxiosClient.delete(`${baseUrl}/${projectId}`)
+      .then((res: any) => {
+        return res.data;
+      })
+      .catch((err: any): any => {
+        if (err instanceof Error) {
+          const message = err.message;
+          return Promise.reject(new Error(message));
+        }
+      });
+  },
 };

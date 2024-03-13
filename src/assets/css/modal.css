@@ -51,8 +51,19 @@ div.modal{
     margin-bottom: 24px;
 }
 
+.modal__content p{
+    font-size: 14px;
+    line-height: 21px;
+    color: #E1E6ED;
+}
+
 .modal__footer{
     margin-right: 8px;
     @apply flex justify-end;
     column-gap: 36px;
+}
+
+.confirm__modal.modal{
+    /*box-shadow: 0px 4px 6px -2px #0000000D;*/
+
 }

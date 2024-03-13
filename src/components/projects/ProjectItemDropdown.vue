@@ -1,15 +1,24 @@
 <template>
-  <DropdownLayout :data="data" @clicks="handleEvents" />
+  <DropdownLayout :class="{ open }" :data="data" @clicks="handleEvents" />
+
+  <ProjectDelete />
 </template>
 
 <script lang="ts">
 import { defineComponent } from "vue";
 import DropdownLayout from "@/components/layout/dropdown/DropdownLayout.vue";
 import store from "@/store";
+import ProjectDelete from "@/components/projects/actions/ProjectDelete.vue";
 export default defineComponent({
   name: "ProjectItemDropdown",
-  components: { DropdownLayout },
-
+  components: { ProjectDelete, DropdownLayout },
+  props: {
+    open: {
+      type: Boolean,
+      required: true,
+      default: false,
+    },
+  },
   setup() {
     const data = [
       {
@@ -35,10 +44,14 @@ export default defineComponent({
     ];
 
     const handleEvents = (event: string) => {
-      console.log({ event });
       switch (event) {
         case data[0].event: {
           store.commit("modals/OPEN_MODAL", "project_duplicate");
+          store.commit("modals/CLOSE_MODAL", "project_item");
+          break;
+        }
+        case data[3].event: {
+          store.commit("modals/OPEN_MODAL", "project_delete");
           store.commit("modals/CLOSE_MODAL", "project_item");
           break;
         }

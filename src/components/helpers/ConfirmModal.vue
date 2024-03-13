@@ -1,20 +1,23 @@
 <template>
-  <ModalLayout class="share__project__preview" @close="close" :open="true">
+  <ModalLayout class="confirm__modal" @close="cancel" :open="true">
     <template v-slot:heading>
-      <h3 class="modal__title">Duplicate project</h3>
+      <h3 class="modal__title">{{ title }}</h3>
     </template>
     <template v-slot:body>
       <div class="modal__content">
         <p>
-          Lorem ipsum dolor sit amet, consectetur adipisicing elit. Consequatur,
-          earum error facere quo repellat voluptatum. Alias, animi doloribus est
-          fuga harum id nobis odio omnis reiciendis reprehenderit sit totam
-          unde.
+          {{ description }}
         </p>
       </div>
       <div class="modal__footer">
-        <BaseButton @click="close" title="No, cancel" />
-        <BaseButton class="danger" title="Yes, delete" type="submit" />
+        <BaseButton @click="cancel" title="No, cancel" />
+        <BaseButton
+          @click.stop="confirm"
+          :disabled="disabled"
+          class="danger"
+          title="Yes, delete"
+          type="submit"
+        />
       </div>
     </template>
   </ModalLayout>
@@ -30,13 +33,38 @@ export default defineComponent({
   name: "ConfirmModal",
   components: { ModalLayout, BaseButton },
 
-  setup() {
+  props: {
+    title: {
+      type: String,
+      required: true,
+    },
+    disabled: {
+      type: Boolean,
+      required: true,
+    },
+    description: {
+      type: String,
+      required: true,
+    },
+  },
+
+  setup(_, { emit }) {
     const visible = computed(() => {
       return store.getters["toast/visible"];
     });
 
+    const confirm = () => {
+      emit("confirm");
+    };
+
+    const cancel = () => {
+      emit("cancel");
+    };
+
     return {
       visible,
+      cancel,
+      confirm,
     };
   },
 });

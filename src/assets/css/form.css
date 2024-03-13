@@ -73,6 +73,12 @@ button.button.success{
     padding: 9px 20px;
 }
 
+button.button.danger{
+    background: #DC4437;
+    border-radius: 4px;
+    padding: 9px 20px;
+}
+
 button.button__text__icon{
     @apply flex items-center text-white bg-transparent text-white;
     column-gap: 11px;

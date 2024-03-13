@@ -15,7 +15,7 @@
         <BaseIcon icon="hamburger/horizontal" />
       </span>
     </div>
-    <ProjectItemDropdown :class="{ open }" />
+    <ProjectItemDropdown :open="open" />
   </div>
 </template>
 

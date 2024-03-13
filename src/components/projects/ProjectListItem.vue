@@ -3,7 +3,7 @@
     <ProjectListItemPlaceholder @click="openProject" :project="project" />
     <div @click="openProject" class="projects__body__item__body">
       <div class="projects__body__item__body__content">
-        <h3>{{ sliceString(project.name, 17) }}</h3>
+        <h3>{{ sliceString(project.name, 16) }}</h3>
         <h4>{{ formatDate(project.createdAt) }}</h4>
       </div>
 

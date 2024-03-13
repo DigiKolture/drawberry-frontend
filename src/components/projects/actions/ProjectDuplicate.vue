@@ -76,10 +76,11 @@ export default defineComponent({
           },
         })
         .then((data) => {
-          close();
-          store.dispatch("projects/getProjects");
-          disabled.value = false;
-          toastMessage(data.project.id);
+          store.dispatch("projects/getProjects").then(() => {
+            disabled.value = false;
+            close();
+            toastMessage(data.project.id);
+          });
         })
         .catch(() => {
           disabled.value = false;

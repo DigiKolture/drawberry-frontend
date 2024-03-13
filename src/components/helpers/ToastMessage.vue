@@ -35,6 +35,7 @@ export default defineComponent({
     });
 
     const toastAction = () => {
+      store.commit("toast/HIDE_TOAST");
       switch (data.value.action) {
         case "open_project": {
           router.push({

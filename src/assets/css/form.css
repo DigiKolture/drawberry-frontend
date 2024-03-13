@@ -63,6 +63,7 @@ button:disabled{
 }
 
 svg.loader{
+    @apply static;
     animation: rotateAnimation 2s linear infinite;
 }
 

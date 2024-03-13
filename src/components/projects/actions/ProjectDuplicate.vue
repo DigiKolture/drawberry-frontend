@@ -26,7 +26,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, onMounted, ref, watch } from "vue";
+import { computed, defineComponent, ref, watch } from "vue";
 import ModalLayout from "@/components/layout/ModalLayout.vue";
 import BaseButton from "@/components/layout/BaseButton.vue";
 import store from "@/store";

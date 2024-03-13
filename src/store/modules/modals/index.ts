@@ -12,6 +12,7 @@ export const stated: ModalState = {
   share_preview: false,
   color_picker: "",
   project_create: false,
+  project_duplicate: false,
   project_item: -1,
   folder_item: -1,
 };

@@ -59,4 +59,17 @@ export const actions: ActionTree<ProjectState, RootState> = {
         }
       });
   },
+
+  duplicateProject({ commit }, { data, id }): Promise<void> {
+    return AxiosClient.post(`${baseUrl}/${id}/duplicate`, data)
+      .then((res: any) => {
+        return res.data.data;
+      })
+      .catch((err: any): any => {
+        if (err instanceof Error) {
+          const message = err.message;
+          return Promise.reject(new Error(message));
+        }
+      });
+  },
 };

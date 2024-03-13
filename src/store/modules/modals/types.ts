@@ -5,6 +5,7 @@ export interface ModalState {
   share_preview: boolean;
   color_picker: string;
   project_create: boolean;
+  project_duplicate: boolean;
   project_item: number;
   folder_item: number;
   [key: string]: boolean | string | number;

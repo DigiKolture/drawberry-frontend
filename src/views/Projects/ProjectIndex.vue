@@ -4,6 +4,8 @@
       <ProjectsEmpty v-if="projects.length === 0" />
 
       <ProjectsSection />
+
+      <ProjectDuplicate />
     </div>
     <div class="view__bg">
       <router-view @close="close" />
@@ -17,10 +19,11 @@ import store from "@/store";
 import router from "@/router";
 import ProjectsEmpty from "@/components/projects/ProjectsEmpty";
 import ProjectsSection from "@/components/projects/ProjectsSection";
+import ProjectDuplicate from "@/components/projects/actions/ProjectDuplicate.vue";
 
 export default defineComponent({
   name: "ProjectIndex",
-  components: { ProjectsSection, ProjectsEmpty, AppLayout },
+  components: { ProjectDuplicate, ProjectsSection, ProjectsEmpty, AppLayout },
 
   setup() {
     const title = "All Projects";

@@ -1,7 +1,7 @@
 <template>
-  <div @click="openProject" class="projects__body__list__item">
-    <ProjectListItemPlaceholder :project="project" />
-    <div class="projects__body__item__body">
+  <div class="projects__body__list__item">
+    <ProjectListItemPlaceholder @click="openProject" :project="project" />
+    <div @click="openProject" class="projects__body__item__body">
       <div class="projects__body__item__body__content">
         <h3>{{ sliceString(project.name, 17) }}</h3>
         <h4>{{ formatDate(project.createdAt) }}</h4>

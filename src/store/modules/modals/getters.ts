@@ -21,6 +21,9 @@ export const getters: GetterTree<ModalState, RootState> = {
   projectCreate(state: ModalState): boolean {
     return state.project_create;
   },
+  projectDuplicate(state: ModalState): boolean {
+    return state.project_duplicate;
+  },
   projectItem(state: ModalState): number {
     return state.project_item;
   },

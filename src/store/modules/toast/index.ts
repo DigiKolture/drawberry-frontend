@@ -9,6 +9,11 @@ export const state: ToastState = {
   visible: false,
   message: "",
   type: "",
+  data: {
+    action: "",
+    actionName: "",
+    body: null,
+  },
 };
 
 export const toast: Module<ToastState, RootState> = {

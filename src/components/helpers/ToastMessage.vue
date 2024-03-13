@@ -3,6 +3,9 @@
     <div>
       <BaseIcon :icon="`toast/${type}`" />
       <h6>{{ message }}</h6>
+      <button @click="toastAction" v-if="data.actionName">
+        {{ data.actionName }}
+      </button>
     </div>
   </div>
 </template>
@@ -11,6 +14,7 @@
 import { computed, defineComponent } from "vue";
 import store from "@/store";
 import BaseIcon from "@/components/icon/BaseIcon.vue";
+import router from "@/router";
 
 export default defineComponent({
   name: "ToastMessage",
@@ -26,11 +30,27 @@ export default defineComponent({
     const type = computed(() => {
       return store.getters["toast/type"];
     });
+    const data = computed(() => {
+      return store.getters["toast/data"];
+    });
+
+    const toastAction = () => {
+      switch (data.value.action) {
+        case "open_project": {
+          router.push({
+            name: "Canvas",
+            params: { id: data.value.body.projectId },
+          });
+        }
+      }
+    };
 
     return {
       visible,
       message,
       type,
+      data,
+      toastAction,
     };
   },
 });

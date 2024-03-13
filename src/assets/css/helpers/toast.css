@@ -26,3 +26,11 @@
     font-size: 14px;
     font-weight: 400;
 }
+
+.toast__message button{
+    @apply underline;
+    color: #163C29;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 18px;
+}

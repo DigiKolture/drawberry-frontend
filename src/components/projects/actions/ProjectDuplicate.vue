@@ -8,7 +8,7 @@
         <div class="modal__content">
           <div class="form-group">
             <BaseLabel title="Project name"></BaseLabel>
-            <BaseInput v-model="project.name" required />
+            <BaseInput v-model="name" required />
           </div>
         </div>
         <div class="modal__footer">
@@ -26,23 +26,19 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, reactive, ref, watch } from "vue";
+import { computed, defineComponent, onMounted, ref, watch } from "vue";
 import ModalLayout from "@/components/layout/ModalLayout.vue";
 import BaseButton from "@/components/layout/BaseButton.vue";
 import store from "@/store";
 import BaseLabel from "@/components/form/BaseLabel.vue";
 import BaseInput from "@/components/form/BaseInput.vue";
-import router from "@/router";
 
 export default defineComponent({
   name: "ProjectDuplicate",
   components: { BaseInput, BaseLabel, BaseButton, ModalLayout },
   setup() {
-    const project = reactive({
-      name: "",
-    });
-
     const currentProjectId = ref("");
+    const name = ref("");
     const disabled = ref(false);
 
     const projectItemIndex = computed(() => {
@@ -57,6 +53,9 @@ export default defineComponent({
       if (projectItemIndex.value >= 0) {
         // One was added to the project index when setting the value, so we need to subtract one
         currentProjectId.value = projects.value[projectItemIndex.value - 1].id;
+        name.value = `Copy of ${
+          projects.value[projectItemIndex.value - 1].name
+        }`;
       }
     });
 
@@ -72,23 +71,39 @@ export default defineComponent({
       store
         .dispatch("projects/duplicateProject", {
           id: currentProjectId.value,
-          data: project,
+          data: {
+            name: name.value,
+          },
         })
-        .then(() => {
-          disabled.value = false;
+        .then((data) => {
           close();
           store.dispatch("projects/getProjects");
+          disabled.value = false;
+          toastMessage(data.project.id);
         })
         .catch(() => {
           disabled.value = false;
         });
     };
 
+    const toastMessage = (projectId) => {
+      store.dispatch("toast/showToast", {
+        message: `Project duplicated successfully.`,
+        data: {
+          actionName: "Open",
+          action: "open_project",
+          body: {
+            projectId,
+          },
+        },
+      });
+    };
+
     return {
       disabled,
       isOpen,
+      name,
       currentProjectId,
-      project,
       close,
       duplicateProject,
     };

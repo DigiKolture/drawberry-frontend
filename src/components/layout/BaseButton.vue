@@ -1,5 +1,5 @@
 <template>
-  <button :disabled="disabled" class="button">
+  <button :disabled="disabled" type="button" class="button">
     <span v-if="!disabled">{{ title }}</span>
     <BaseIcon v-else class="loader" icon="loader" />
   </button>

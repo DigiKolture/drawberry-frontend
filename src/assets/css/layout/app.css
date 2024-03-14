@@ -1,5 +1,7 @@
 section.app__layout{
     @apply flex w-full h-full;
+    /*filter: blur(1px);*/
+    /*opacity: 80%;*/
 }
 
 .app__container{

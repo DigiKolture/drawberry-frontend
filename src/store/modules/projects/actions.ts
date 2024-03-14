@@ -85,4 +85,16 @@ export const actions: ActionTree<ProjectState, RootState> = {
         }
       });
   },
+  undoDeletedProject({ commit }, projectId: string): Promise<void> {
+    return AxiosClient.post(`${baseUrl}/${projectId}/undo/delete`)
+      .then((res: any) => {
+        return res.data;
+      })
+      .catch((err: any): any => {
+        if (err instanceof Error) {
+          const message = err.message;
+          return Promise.reject(new Error(message));
+        }
+      });
+  },
 };

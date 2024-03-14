@@ -42,6 +42,15 @@ export default defineComponent({
             name: "Canvas",
             params: { id: data.value.body.projectId },
           });
+          break;
+        }
+        case "undo_project": {
+          store
+            .dispatch("projects/undoDeletedProject", data.value.body.projectId)
+            .then(() => {
+              store.dispatch("projects/getProjects");
+            });
+          break;
         }
       }
     };

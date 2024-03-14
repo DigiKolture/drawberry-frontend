@@ -9,7 +9,7 @@
   />
 </template>
 
-<script lang="ts">
+<script>
 import { computed, defineComponent, ref, watch } from "vue";
 import store from "@/store";
 import ConfirmModal from "@/components/helpers/ConfirmModal.vue";
@@ -63,7 +63,7 @@ export default defineComponent({
       store.commit("modals/CLOSE_MODAL", "project_delete");
     };
 
-    const toastMessage = (projectId: string) => {
+    const toastMessage = (projectId) => {
       store.dispatch("toast/showToast", {
         message: `Project deleted.`,
         data: {

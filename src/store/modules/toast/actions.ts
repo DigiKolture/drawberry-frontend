@@ -13,6 +13,6 @@ export const actions: ActionTree<ToastState, RootState> = {
     commit("SHOW_TOAST", { message, type, data });
     setTimeout(() => {
       commit("HIDE_TOAST");
-    }, 7000);
+    }, 5000);
   },
 };

@@ -2,8 +2,8 @@ import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from "axios";
 import store from "@/store";
 import router from "@/router";
 // const baseDomain = process.env.VUE_APP_BASE_API_URL;
-// const baseDomain = "https://dev.api.drawberry.io";
-const baseDomain = "http://localhost:4000";
+const baseDomain = "https://dev.api.drawberry.io";
+// const baseDomain = "http://localhost:4000";
 const baseURL = `${baseDomain}/api/v1`;
 
 const httpClient = axios.create({

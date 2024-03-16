@@ -7,7 +7,10 @@ const baseUrl = "/projects";
 
 export const actions: ActionTree<ProjectState, RootState> = {
   getProjects({ commit }): Promise<void> {
-    return AxiosClient.get(`${baseUrl}`)
+    const params = {
+      sort: "-updatedAt",
+    };
+    return AxiosClient.get(`${baseUrl}`, { params })
       .then((res: any) => {
         const data = res.data;
         commit("SET_PROJECTS", data.data.rows);

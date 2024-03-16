@@ -33,7 +33,7 @@
         </div>
         <div class="auth__submit">
           <a href="">Forgot password?</a>
-          <BaseButton title="Sign In" />
+          <BaseButton type="submit" title="Sign In" />
         </div>
       </form>
       <div class="form__footer">

@@ -1,17 +1,14 @@
 <template>
   <DropdownLayout :class="{ open }" :data="data" @clicks="handleEvents" />
-
-  <ProjectDelete />
 </template>
 
 <script lang="ts">
 import { defineComponent } from "vue";
 import DropdownLayout from "@/components/layout/dropdown/DropdownLayout.vue";
 import store from "@/store";
-import ProjectDelete from "@/components/projects/actions/ProjectDelete.vue";
 export default defineComponent({
   name: "ProjectItemDropdown",
-  components: { ProjectDelete, DropdownLayout },
+  components: { DropdownLayout },
   props: {
     open: {
       type: Boolean,

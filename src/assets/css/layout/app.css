@@ -4,6 +4,10 @@ section.app__layout{
     /*opacity: 80%;*/
 }
 
+section.app__layout.with__modal{
+    filter: blur(2px);
+}
+
 .app__container{
     @apply flex flex-col w-full;
 }

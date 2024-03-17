@@ -12,6 +12,8 @@ export interface ModalState {
   [key: string]: boolean | string | number;
 }
 
+export const centerModals = ["project_duplicate", "project_delete"];
+
 export enum ColorPickerTypes {
   GENERAL_STYLE_BG_COLOR = "general_style_bg_color",
   GENERAL_BTN_COLOR = "general_btn_color",

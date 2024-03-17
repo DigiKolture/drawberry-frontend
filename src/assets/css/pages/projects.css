@@ -1,6 +1,6 @@
 
 .projects__container{
-    @apply flex flex-col;
+    @apply flex flex-col relative;
     padding-top: 24px;
 }
 
@@ -214,3 +214,6 @@
 .projects__section .action__dropdown{
 }
 
+.view__bg{
+    /*filter: blur(2px);*/
+}

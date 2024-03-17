@@ -1,6 +1,6 @@
 import { GetterTree } from "vuex";
 import { RootState } from "@/store/types";
-import { ModalState } from "@/store/modules/modals/types";
+import { centerModals, ModalState } from "@/store/modules/modals/types";
 
 export const getters: GetterTree<ModalState, RootState> = {
   manageESP(state: ModalState): boolean {
@@ -32,6 +32,9 @@ export const getters: GetterTree<ModalState, RootState> = {
   },
   folderItem(state: ModalState): number {
     return state.folder_item;
+  },
+  isCenterModals(state: ModalState): boolean {
+    return centerModals.some((key: string) => state[key] === true);
   },
   modal:
     (state: ModalState) =>

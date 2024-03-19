@@ -9,10 +9,15 @@ export interface ModalState {
   project_delete: boolean;
   project_item: number;
   folder_item: number;
+  folder_duplicate: boolean;
   [key: string]: boolean | string | number;
 }
 
-export const centerModals = ["project_duplicate", "project_delete"];
+export const centerModals = [
+  "project_duplicate",
+  "project_delete",
+  "folder_duplicate",
+];
 
 export enum ColorPickerTypes {
   GENERAL_STYLE_BG_COLOR = "general_style_bg_color",

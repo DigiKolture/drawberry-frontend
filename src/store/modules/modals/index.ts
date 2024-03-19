@@ -16,6 +16,7 @@ export const stated: ModalState = {
   project_delete: false,
   project_item: -1,
   folder_item: -1,
+  folder_duplicate: false,
 };
 
 export const modals: Module<ModalState, RootState> = {

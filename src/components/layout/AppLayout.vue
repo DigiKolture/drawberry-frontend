@@ -4,7 +4,7 @@
       <div class="app__container">
         <div class="app__header">
           <div class="app__content__container">
-            <h2>{{ title }} - {{ hasModal }}</h2>
+            <h2>{{ title }}</h2>
             <p>{{ description }}</p>
           </div>
         </div>
@@ -18,6 +18,7 @@
 
     <ProjectDuplicate />
     <ProjectDelete />
+    <FolderDuplicate />
   </BaseLayout>
 </template>
 
@@ -27,10 +28,11 @@ import BaseLayout from "@/components/layout/BaseLayout.vue";
 import store from "@/store";
 import ProjectDuplicate from "@/components/projects/actions/ProjectDuplicate.vue";
 import ProjectDelete from "@/components/projects/actions/ProjectDelete.vue";
+import FolderDuplicate from "@/components/folders/actions/FolderDuplicate.vue";
 
 export default defineComponent({
   name: "AppLayout",
-  components: { ProjectDelete, ProjectDuplicate, BaseLayout },
+  components: { FolderDuplicate, ProjectDelete, ProjectDuplicate, BaseLayout },
   props: {
     title: {
       type: String,

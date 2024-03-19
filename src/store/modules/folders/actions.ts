@@ -49,4 +49,17 @@ export const actions: ActionTree<FolderState, RootState> = {
         }
       });
   },
+
+  duplicateFolder({ commit }, { data, id }): Promise<void> {
+    return AxiosClient.post(`${baseUrl}/${id}/duplicate`, data)
+      .then((res: any) => {
+        return res.data.data;
+      })
+      .catch((err: any): any => {
+        if (err instanceof Error) {
+          const message = err.message;
+          return Promise.reject(new Error(message));
+        }
+      });
+  },
 };

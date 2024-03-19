@@ -33,6 +33,9 @@ export const getters: GetterTree<ModalState, RootState> = {
   folderItem(state: ModalState): number {
     return state.folder_item;
   },
+  folderDuplicate(state: ModalState): boolean {
+    return state.folder_duplicate;
+  },
   isCenterModals(state: ModalState): boolean {
     return centerModals.some((key: string) => state[key] === true);
   },

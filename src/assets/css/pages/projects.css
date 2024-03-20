@@ -28,6 +28,44 @@
     margin-top: 20px;
 }
 
+.projects__skeletons{
+    @apply flex flex-wrap;
+    row-gap: 24px;
+    column-gap: 24px;
+    margin-top: 30px;
+}
+
+.projects__skeletons__item{
+    @apply flex flex-col;
+    width: 180px;
+    height: 122px;
+    row-gap: 10px;
+}
+
+.projects__skeletons__item__img{
+    border: 1px solid #454856;
+    background: #454856;
+    border-radius: 6px;
+    width: 180px;
+    height: 81px;
+}
+
+.projects__skeletons__item__title{
+    border: 1px solid #454856;
+    background: #454856;
+    border-radius: 6px;
+    width: 127px;
+    height: 12px;
+}
+
+.projects__skeletons__item__desc{
+    border: 1px solid #454856;
+    background: #454856;
+    border-radius: 6px;
+    width: 97px;
+    height: 12px;
+}
+
 .projects__section{
     @apply flex flex-col;
     row-gap: 30px;

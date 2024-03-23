@@ -4,7 +4,7 @@
       <ProjectsSkeleton v-if="loading" />
 
       <template v-else>
-        <ProjectsEmpty v-if="projects.length === 0" />
+        <ProjectsEmpty v-if="projects.length === 0 && folders.length === 0" />
         <ProjectsSection />
       </template>
     </div>
@@ -36,6 +36,9 @@ export default defineComponent({
     const projects = computed(() => {
       return store.getters["projects/projects"];
     });
+    const folders = computed(() => {
+      return store.getters["folders/folders"];
+    });
 
     onMounted(async () => {
       loading.value = true;
@@ -56,6 +59,7 @@ export default defineComponent({
       description,
       close,
       projects,
+      folders,
     };
   },
 });

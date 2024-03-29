@@ -12,11 +12,15 @@ export const stated: ModalState = {
   share_preview: false,
   color_picker: "",
   project_create: false,
+  project_update: false,
   project_duplicate: false,
   project_delete: false,
   project_item: -1,
   folder_item: -1,
+  folder_create: false,
+  folder_update: false,
   folder_duplicate: false,
+  folder_delete: false,
 };
 
 export const modals: Module<ModalState, RootState> = {

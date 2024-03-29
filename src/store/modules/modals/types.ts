@@ -5,17 +5,23 @@ export interface ModalState {
   share_preview: boolean;
   color_picker: string;
   project_create: boolean;
+  project_update: boolean;
   project_duplicate: boolean;
   project_delete: boolean;
   project_item: number;
   folder_item: number;
+  folder_create: boolean;
+  folder_update: boolean;
   folder_duplicate: boolean;
+  folder_delete: boolean;
   [key: string]: boolean | string | number;
 }
 
 export const centerModals = [
   "project_duplicate",
   "project_delete",
+  "folder_create",
+  "folder_update",
   "folder_duplicate",
 ];
 

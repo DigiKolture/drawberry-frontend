@@ -21,6 +21,9 @@ export const getters: GetterTree<ModalState, RootState> = {
   projectCreate(state: ModalState): boolean {
     return state.project_create;
   },
+  projectUpdate(state: ModalState): boolean {
+    return state.project_update;
+  },
   projectDuplicate(state: ModalState): boolean {
     return state.project_duplicate;
   },
@@ -33,8 +36,17 @@ export const getters: GetterTree<ModalState, RootState> = {
   folderItem(state: ModalState): number {
     return state.folder_item;
   },
+  folderCreate(state: ModalState): boolean {
+    return state.folder_create;
+  },
+  folderUpdate(state: ModalState): boolean {
+    return state.folder_update;
+  },
   folderDuplicate(state: ModalState): boolean {
     return state.folder_duplicate;
+  },
+  folderDelete(state: ModalState): boolean {
+    return state.folder_delete;
   },
   isCenterModals(state: ModalState): boolean {
     return centerModals.some((key: string) => state[key] === true);

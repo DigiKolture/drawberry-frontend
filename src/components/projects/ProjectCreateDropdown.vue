@@ -26,15 +26,16 @@ export default defineComponent({
     ];
 
     const handleEvents = (event: string) => {
-      console.log({ event });
       switch (event) {
         case data[0].event: {
+          store.commit("modals/CLOSE_MODAL", "project_create");
           createProject();
           break;
         }
 
         case data[1].event: {
-          router.push({ name: "CreateFolder" });
+          store.commit("modals/OPEN_MODAL", "folder_create");
+          store.commit("modals/CLOSE_MODAL", "project_create");
           break;
         }
       }

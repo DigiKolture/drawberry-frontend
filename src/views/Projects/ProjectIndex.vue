@@ -2,14 +2,10 @@
   <AppLayout :title="title" :description="description">
     <div class="projects__container">
       <ProjectsSkeleton v-if="loading" />
-
       <template v-else>
         <ProjectsEmpty v-if="projects.length === 0 && folders.length === 0" />
         <ProjectsSection />
       </template>
-    </div>
-    <div class="view__bg">
-      <router-view @close="close" />
     </div>
   </AppLayout>
 </template>

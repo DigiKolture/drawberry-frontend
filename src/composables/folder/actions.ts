@@ -1,7 +1,7 @@
 import { computed, ref, watch } from "vue";
 import store from "@/store";
 
-export function folderActions() {
+export function folderActions(action = "") {
   const name = ref("");
   const currentFolderId = ref("");
 
@@ -17,7 +17,11 @@ export function folderActions() {
     if (folderItemIndex.value >= 0) {
       // One was added to the folder index when setting the value, so we need to subtract one
       currentFolderId.value = folders.value[folderItemIndex.value - 1].id;
-      name.value = `Copy of ${folders.value[folderItemIndex.value - 1].name}`;
+      if (action === "update") {
+        name.value = `${folders.value[folderItemIndex.value - 1].name}`;
+      } else if (action === "duplicate") {
+        name.value = `Copy of ${folders.value[folderItemIndex.value - 1].name}`;
+      }
     }
   });
 

@@ -1,10 +1,10 @@
 <template>
   <ModalLayout @close="close" :open="isOpen">
     <template v-slot:heading>
-      <h3 class="modal__title">Create Folder</h3>
+      <h3 class="modal__title">Rename folder</h3>
     </template>
     <template v-slot:body>
-      <form @submit.prevent="storeFolder">
+      <form @submit.prevent="updateFolder">
         <div class="modal__content">
           <div class="form-group">
             <BaseLabel title="Folder name"></BaseLabel>
@@ -17,7 +17,7 @@
           <BaseButton
             :disabled="disabled"
             class="success"
-            title="Create Folder"
+            title="Save"
             type="submit"
           />
         </div>
@@ -35,7 +35,7 @@ import ModalLayout from "@/components/layout/ModalLayout";
 import { folderActions } from "@/composables/folder/actions";
 
 export default defineComponent({
-  name: "FolderCreate",
+  name: "FolderUpdate",
   components: {
     ModalLayout,
     BaseButton,
@@ -44,22 +44,25 @@ export default defineComponent({
   },
 
   setup() {
-    const { name } = folderActions();
+    const { name, currentFolderId } = folderActions("update");
     const disabled = ref(false);
 
     const isOpen = computed(() => {
-      return store.getters["modals/folderCreate"];
+      return store.getters["modals/folderUpdate"];
     });
 
     const close = () => {
-      store.commit("modals/CLOSE_MODAL", "folder_create");
+      store.commit("modals/CLOSE_MODAL", "folder_update");
     };
 
-    const storeFolder = async () => {
+    const updateFolder = async () => {
       disabled.value = true;
       store
-        .dispatch("folders/storeFolder", {
-          name: name.value,
+        .dispatch("folders/updateFolder", {
+          id: currentFolderId.value,
+          data: {
+            name: name.value,
+          },
         })
         .then(() => {
           disabled.value = false;
@@ -73,7 +76,7 @@ export default defineComponent({
 
     const toastMessage = () => {
       store.dispatch("toast/showToast", {
-        message: `Folder created successfully.`,
+        message: `Folder updated successfully.`,
       });
     };
 
@@ -81,8 +84,9 @@ export default defineComponent({
       name,
       disabled,
       isOpen,
+      currentFolderId,
       close,
-      storeFolder,
+      updateFolder,
     };
   },
 });

@@ -20,6 +20,7 @@
     <ProjectDelete />
     <FolderDuplicate />
     <FolderCreate />
+    <FolderUpdate />
   </BaseLayout>
 </template>
 
@@ -31,10 +32,12 @@ import ProjectDuplicate from "@/components/projects/actions/ProjectDuplicate.vue
 import ProjectDelete from "@/components/projects/actions/ProjectDelete.vue";
 import FolderDuplicate from "@/components/folders/actions/FolderDuplicate.vue";
 import FolderCreate from "@/components/folders/actions/FolderCreate.vue";
+import FolderUpdate from "@/components/folders/actions/FolderUpdate.vue";
 
 export default defineComponent({
   name: "AppLayout",
   components: {
+    FolderUpdate,
     FolderCreate,
     FolderDuplicate,
     ProjectDelete,

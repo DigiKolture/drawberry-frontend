@@ -32,30 +32,14 @@ import BaseButton from "@/components/layout/BaseButton.vue";
 import store from "@/store";
 import BaseLabel from "@/components/form/BaseLabel.vue";
 import BaseInput from "@/components/form/BaseInput.vue";
+import { folderActions } from "@/composables/folder/actions";
 
 export default defineComponent({
   name: "FolderDuplicate",
   components: { BaseInput, BaseLabel, BaseButton, ModalLayout },
   setup() {
-    const currentFolderId = ref("");
-    const name = ref("");
+    const { name, currentFolderId } = folderActions("duplicate");
     const disabled = ref(false);
-
-    const folderItemIndex = computed(() => {
-      return store.getters["modals/folderItem"];
-    });
-
-    const folders = computed(() => {
-      return store.getters["folders/folders"];
-    });
-
-    watch(folderItemIndex, () => {
-      if (folderItemIndex.value >= 0) {
-        // One was added to the folder index when setting the value, so we need to subtract one
-        currentFolderId.value = folders.value[folderItemIndex.value - 1].id;
-        name.value = `Copy of ${folders.value[folderItemIndex.value - 1].name}`;
-      }
-    });
 
     const isOpen = computed(() => {
       return store.getters["modals/folderDuplicate"];

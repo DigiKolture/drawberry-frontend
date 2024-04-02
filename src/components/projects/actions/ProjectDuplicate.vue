@@ -32,32 +32,14 @@ import BaseButton from "@/components/layout/BaseButton.vue";
 import store from "@/store";
 import BaseLabel from "@/components/form/BaseLabel.vue";
 import BaseInput from "@/components/form/BaseInput.vue";
+import { projectActions } from "@/composables/project/actions";
 
 export default defineComponent({
   name: "ProjectDuplicate",
   components: { BaseInput, BaseLabel, BaseButton, ModalLayout },
   setup() {
-    const currentProjectId = ref("");
-    const name = ref("");
+    const { currentProjectId, name } = projectActions("duplicate");
     const disabled = ref(false);
-
-    const projectItemIndex = computed(() => {
-      return store.getters["modals/projectItem"];
-    });
-
-    const projects = computed(() => {
-      return store.getters["projects/projects"];
-    });
-
-    watch(projectItemIndex, () => {
-      if (projectItemIndex.value >= 0) {
-        // One was added to the project index when setting the value, so we need to subtract one
-        currentProjectId.value = projects.value[projectItemIndex.value - 1].id;
-        name.value = `Copy of ${
-          projects.value[projectItemIndex.value - 1].name
-        }`;
-      }
-    });
 
     const isOpen = computed(() => {
       return store.getters["modals/projectDuplicate"];
@@ -76,11 +58,9 @@ export default defineComponent({
           },
         })
         .then((data) => {
-          store.dispatch("projects/getProjects").then(() => {
-            disabled.value = false;
-            close();
-            toastMessage(data.project.id);
-          });
+          disabled.value = false;
+          close();
+          toastMessage(data.project.id);
         })
         .catch(() => {
           disabled.value = false;

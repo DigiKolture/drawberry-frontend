@@ -63,9 +63,10 @@ export const actions: ActionTree<ProjectState, RootState> = {
       });
   },
 
-  duplicateProject({ commit }, { data, id }): Promise<void> {
+  duplicateProject({ commit, dispatch }, { data, id }): Promise<void> {
     return AxiosClient.post(`${baseUrl}/${id}/duplicate`, data)
       .then((res: any) => {
+        dispatch("getProjects");
         return res.data.data;
       })
       .catch((err: any): any => {
@@ -76,9 +77,10 @@ export const actions: ActionTree<ProjectState, RootState> = {
       });
   },
 
-  deleteProject({ commit }, projectId: string): Promise<void> {
+  deleteProject({ commit, dispatch }, projectId: string): Promise<void> {
     return AxiosClient.delete(`${baseUrl}/${projectId}`)
       .then((res: any) => {
+        dispatch("getProjects");
         return res.data;
       })
       .catch((err: any): any => {

@@ -52,6 +52,10 @@ export default defineComponent({
             });
           break;
         }
+        case "undo_delete": {
+          store.dispatch("folders/undoDeletedFolder", data.value.body.folderId);
+          break;
+        }
       }
     };
 

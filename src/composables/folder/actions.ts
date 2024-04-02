@@ -3,6 +3,8 @@ import store from "@/store";
 
 export function folderActions(action = "") {
   const name = ref("");
+  const description = ref("");
+
   const currentFolderId = ref("");
 
   const folderItemIndex = computed(() => {
@@ -21,12 +23,17 @@ export function folderActions(action = "") {
         name.value = `${folders.value[folderItemIndex.value - 1].name}`;
       } else if (action === "duplicate") {
         name.value = `Copy of ${folders.value[folderItemIndex.value - 1].name}`;
+      } else if (action === "delete") {
+        description.value = `${
+          folders.value[folderItemIndex.value - 1].name
+        } will be deleted permanently.`;
       }
     }
   });
 
   return {
     name,
+    description,
     currentFolderId,
   };
 }

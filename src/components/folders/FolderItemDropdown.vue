@@ -46,6 +46,11 @@ export default defineComponent({
           store.commit("modals/CLOSE_MODAL", "folder_item");
           break;
         }
+        case data[3].event: {
+          store.commit("modals/OPEN_MODAL", "folder_delete");
+          store.commit("modals/CLOSE_MODAL", "folder_item");
+          break;
+        }
       }
     };
 

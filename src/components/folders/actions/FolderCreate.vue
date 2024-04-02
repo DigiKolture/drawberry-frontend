@@ -26,7 +26,7 @@
   </ModalLayout>
 </template>
 <script>
-import { computed, defineComponent, ref } from "vue";
+import { computed, defineComponent, onMounted, ref, watch } from "vue";
 import BaseInput from "@/components/form/BaseInput";
 import BaseLabel from "@/components/form/BaseLabel";
 import BaseButton from "@/components/layout/BaseButton";
@@ -49,6 +49,10 @@ export default defineComponent({
 
     const isOpen = computed(() => {
       return store.getters["modals/folderCreate"];
+    });
+
+    watch(isOpen, () => {
+      name.value = "";
     });
 
     const close = () => {

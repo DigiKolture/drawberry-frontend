@@ -48,7 +48,7 @@ export default defineComponent({
         message: `Folder deleted.`,
         data: {
           actionName: "Undo",
-          action: "undo_delete",
+          action: "undo_folder",
           body: {
             folderId,
           },

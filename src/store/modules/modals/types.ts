@@ -20,9 +20,11 @@ export interface ModalState {
 export const centerModals = [
   "project_duplicate",
   "project_delete",
+  "project_update",
   "folder_create",
   "folder_update",
   "folder_duplicate",
+  "folder_delete",
 ];
 
 export enum ColorPickerTypes {

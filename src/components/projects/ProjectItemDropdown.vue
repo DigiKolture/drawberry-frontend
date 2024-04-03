@@ -30,8 +30,8 @@ export default defineComponent({
       },
       {
         icon: "projects/dropdown/edit",
-        name: "Edit file",
-        event: "edit",
+        name: "Rename project",
+        event: "rename",
       },
       {
         icon: "projects/dropdown/delete",
@@ -44,6 +44,11 @@ export default defineComponent({
       switch (event) {
         case data[0].event: {
           store.commit("modals/OPEN_MODAL", "project_duplicate");
+          store.commit("modals/CLOSE_MODAL", "project_item");
+          break;
+        }
+        case data[2].event: {
+          store.commit("modals/OPEN_MODAL", "project_update");
           store.commit("modals/CLOSE_MODAL", "project_item");
           break;
         }

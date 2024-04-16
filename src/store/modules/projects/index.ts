@@ -7,6 +7,7 @@ import { actions } from "@/store/modules/projects/actions";
 
 const state: ProjectState = {
   projects: [],
+  filteredProjects: [],
   project: null,
   projectId: null,
 };

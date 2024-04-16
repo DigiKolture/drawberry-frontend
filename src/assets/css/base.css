@@ -49,6 +49,21 @@ img,video{
     --canvas-sidebar-nav-content-width: 238px;
     /*--canvas-sidebar-nav-content-width: 263px;*/
     --canvas-right-panel-width: 239px;
+
+    --color-grey-00: #fff;
+    --color-grey-10: #e1e6ed;
+    --color-grey-20: #848f9f;
+    --color-grey-30: #454856;
+    --color-grey-40: #353843;
+    --color-grey-50: #2d3039;
+    --color-grey-60: #1e1f26;
+    --color-brand-blue: #1873cd;
+    --color-brand-green: #519e47;
+    --color-brand-red: #cd1a29;
+    --color-brand-light-blue: #6eb4e0;
+    --color-brand-dark-blue: #0a61b9;
+    --color-brand-dark-green: #2a7920;
+    --color-brand-orange: #ec9b40;
 }
 
 html{

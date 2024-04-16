@@ -14,6 +14,7 @@ export const actions: ActionTree<ProjectState, RootState> = {
       .then((res: any) => {
         const data = res.data;
         commit("SET_PROJECTS", data.data.rows);
+        commit("SET_FILTERED_PROJECTS", data.data.rows);
         return res.data;
       })
       .catch((err: any): any => {

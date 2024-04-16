@@ -40,7 +40,7 @@ export default defineComponent({
 
   setup(props, { emit }) {
     const projects = computed(() => {
-      return store.getters["projects/projects"];
+      return store.getters["projects/filteredProjects"];
     });
 
     const folders = computed(() => {

@@ -106,18 +106,34 @@
     height: 36px;
 }
 
+.projects__header__search.focus{
+    border: 1px solid #1873CD;
+}
+
 
 .projects__header__search__input{
     background: #454856;
-    color: #848F9F;
+    color: white;
     border-radius: 6px;
     padding-left: 8px;
+    font-weight: 400;
+    font-size: 14px;
+    caret-color: #1873CD;
 }
+
+.projects__header__search__input::placeholder{
+    color: var(--color-grey-20);
+}
+
 
 .projects__header__search__icon{
     @apply flex items-center justify-center;
     padding-left: 12px;
     padding-right: 12px;
+}
+
+.projects__header__search__icon .active{
+    @apply cursor-pointer;
 }
 
 

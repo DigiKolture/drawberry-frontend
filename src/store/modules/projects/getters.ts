@@ -6,6 +6,9 @@ export const getters: GetterTree<ProjectState, RootState> = {
   projects(state: ProjectState): object[] | null {
     return state.projects;
   },
+  filteredProjects(state: ProjectState): object[] | null {
+    return state.filteredProjects;
+  },
   project(state: ProjectState): object | null {
     return state.project;
   },

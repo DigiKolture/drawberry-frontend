@@ -44,7 +44,7 @@ export default defineComponent({
   name: "ProjectsHeader",
   components: { ProjectCreateDropdown, BaseIcon },
 
-  setup() {
+  setup(_, { emit }) {
     const searchName = ref("");
     const isInputFocused = ref(false);
 
@@ -62,6 +62,7 @@ export default defineComponent({
 
     watch(searchName, () => {
       // TODO: Include search in API when we add pagination
+      emit("update-search-name", searchName.value);
       if (searchName.value) {
         const regex = new RegExp(searchName.value, "i");
         store.commit(

@@ -20,7 +20,12 @@ import ProjectsSkeleton from "@/components/projects/ProjectsSkeleton.vue";
 
 export default defineComponent({
   name: "ProjectIndex",
-  components: { ProjectsSkeleton, ProjectsSection, ProjectsEmpty, AppLayout },
+  components: {
+    ProjectsSkeleton,
+    ProjectsSection,
+    ProjectsEmpty,
+    AppLayout,
+  },
 
   setup() {
     const title = "All Projects";

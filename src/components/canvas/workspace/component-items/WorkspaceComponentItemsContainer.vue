@@ -85,7 +85,8 @@ export default defineComponent({
       return extractUniqueFontFamilies(workspaceComponents.value);
     });
 
-    watch(fontFamilies, (value) => {
+    watch(fontFamilies, () => {
+      if (fontFamilies.value.length === 0) return;
       WebFont.load({
         google: {
           families: fontFamilies.value,
@@ -94,7 +95,7 @@ export default defineComponent({
     });
 
     onMounted(async () => {
-      await store.dispatch("canvas/getGoogleFonts");
+      store.dispatch("canvas/getGoogleFonts");
       store.commit("canvas/SET_CURRENT_HOVER_ELEMENT", {
         id: null,
         componentIndex: null,

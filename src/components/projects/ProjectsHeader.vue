@@ -2,14 +2,12 @@
   <div class="projects__header">
     <button
       id="modals-trigger"
-      @click="toggleOpenCreate"
+      @click="createProject"
       class="projects__header__create"
     >
       <BaseIcon icon="add" />
-      <span>Create</span>
-      <BaseIcon :icon="`arrow/${openCreate ? 'down' : 'up'}`" />
+      <span>Create new project</span>
     </button>
-    <ProjectCreateDropdown :class="{ open: openCreate }" />
 
     <div
       class="projects__header__search"
@@ -37,24 +35,16 @@
 <script lang="ts">
 import { computed, defineComponent, ref, watch } from "vue";
 import BaseIcon from "@/components/icon/BaseIcon.vue";
-import ProjectCreateDropdown from "@/components/projects/ProjectCreateDropdown.vue";
 import store from "@/store";
+import router from "@/router";
 
 export default defineComponent({
   name: "ProjectsHeader",
-  components: { ProjectCreateDropdown, BaseIcon },
+  components: { BaseIcon },
 
   setup(_, { emit }) {
     const searchName = ref("");
     const isInputFocused = ref(false);
-
-    const openCreate = computed(() => {
-      return store.getters["modals/projectCreate"];
-    });
-
-    const toggleOpenCreate = () => {
-      store.commit("modals/TOGGLE_MODAL", "project_create");
-    };
 
     const projects = computed(() => {
       return store.getters["projects/projects"];
@@ -86,14 +76,24 @@ export default defineComponent({
       store.commit("projects/SET_FILTERED_PROJECTS", projects.value);
     };
 
+    const createProject = async () => {
+      await store
+        .dispatch("projects/storeProject", {
+          name: "Untitled project",
+        })
+        .then((data) => {
+          store.commit("projects/SET_PROJECT", data.project);
+          router.push({ name: "Canvas", params: { id: data.project.id } });
+        });
+    };
+
     return {
-      toggleOpenCreate,
-      openCreate,
       searchName,
       isInputFocused,
       blur,
       focus,
       reset,
+      createProject,
     };
   },
 });

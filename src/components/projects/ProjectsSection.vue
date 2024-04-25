@@ -2,17 +2,6 @@
   <div class="projects__section">
     <ProjectsHeader @updateSearchName="updateSearchName" />
 
-    <div v-if="folders.length > 0" class="projects__body">
-      <h3 class="projects__body__title">Folder</h3>
-      <div class="folders__body__list__items">
-        <FolderListItem
-          :key="folder.id"
-          :index="key + 1"
-          :folder="folder"
-          v-for="(folder, key) in folders"
-        />
-      </div>
-    </div>
     <FilteredProjectsEmpty
       v-if="filteredProjects.length === 0"
       :search-name="searchName"
@@ -36,7 +25,6 @@
 import { computed, defineComponent, ref } from "vue";
 import ProjectListItem from "@/components/projects/ProjectListItem.vue";
 import store from "@/store";
-import FolderListItem from "@/components/folders/FolderListItem.vue";
 import ProjectsHeader from "@/components/projects/ProjectsHeader.vue";
 import FilteredProjectsEmpty from "@/components/projects/FilteredProjectsEmpty.vue";
 
@@ -45,7 +33,6 @@ export default defineComponent({
   components: {
     FilteredProjectsEmpty,
     ProjectsHeader,
-    FolderListItem,
     ProjectListItem,
   },
 
@@ -64,7 +51,6 @@ export default defineComponent({
       emit("create-project");
     };
     const updateSearchName = (name: string) => {
-      console.log("?<<?<<<<");
       searchName.value = name;
     };
 

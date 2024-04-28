@@ -4,6 +4,10 @@ export function helpers() {
     return moment(date).format("MMMM DD, YYYY");
   };
 
+  const diffForHumans = (date: string) => {
+    return moment(date).fromNow();
+  };
+
   const capitalizeFirstLetter = (inputString: string) => {
     return inputString.charAt(0).toUpperCase() + inputString.slice(1);
   };
@@ -61,5 +65,6 @@ export function helpers() {
     capitalizeFirstLetter,
     copy,
     sliceString,
+    diffForHumans,
   };
 }

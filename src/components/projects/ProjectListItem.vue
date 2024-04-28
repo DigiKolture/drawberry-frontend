@@ -4,7 +4,7 @@
     <div @click="openProject" class="projects__body__item__body">
       <div class="projects__body__item__body__content">
         <h3>{{ sliceString(project.name, 16) }}</h3>
-        <h4>{{ formatDate(project.createdAt) }}</h4>
+        <h4>{{ diffForHumans(project.updatedAt) }}</h4>
       </div>
 
       <span
@@ -44,7 +44,7 @@ export default defineComponent({
   },
 
   setup(props, { emit }) {
-    const { formatDate, sliceString } = helpers();
+    const { diffForHumans, sliceString } = helpers();
 
     const createProject = () => {
       emit("create-project");
@@ -68,7 +68,7 @@ export default defineComponent({
     return {
       createProject,
       openProject,
-      formatDate,
+      diffForHumans,
       sliceString,
       open,
       toggleOpen,

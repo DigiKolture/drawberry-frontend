@@ -3,6 +3,8 @@
     <div class="preview__container" :style="styles">
       <div
         class="preview__component__items__container"
+        style="margin-bottom: 100px"
+        xd
         :class="[currentPreview, style.layout]"
       >
         <div
@@ -16,11 +18,13 @@
   </BaseLayout>
 </template>
 <script lang="ts">
-import { computed, defineComponent, onMounted, ref } from "vue";
+import { computed, defineComponent, onMounted, ref, watch } from "vue";
 import store from "@/store";
 import BaseLayout from "@/components/layout/BaseLayout.vue";
 import { useRoute } from "vue-router";
 import { updateDom } from "@/composables/canvas/update_dom";
+import { fonts } from "@/composables/canvas/fonts";
+import WebFont from "webfontloader";
 
 export default defineComponent({
   name: "PreviewPage",
@@ -31,6 +35,7 @@ export default defineComponent({
     let style: any = ref({});
     let workspaceComponents = ref([]);
     const { updateComponentItemDom } = updateDom();
+    const { extractUniqueFontFamilies } = fonts();
 
     onMounted(async () => {
       const project = await store.dispatch(
@@ -44,6 +49,19 @@ export default defineComponent({
     const getHTML = (componentItem: any) => {
       return updateComponentItemDom(componentItem).html;
     };
+
+    const fontFamilies = computed(() => {
+      return extractUniqueFontFamilies(workspaceComponents.value);
+    });
+
+    watch(fontFamilies, () => {
+      if (fontFamilies.value.length === 0) return;
+      WebFont.load({
+        google: {
+          families: fontFamilies.value,
+        },
+      });
+    });
 
     const currentPreview = computed(() => {
       return store.getters["preview/currentPreview"];

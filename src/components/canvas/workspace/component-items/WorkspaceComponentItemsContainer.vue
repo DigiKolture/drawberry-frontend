@@ -65,10 +65,6 @@ export default defineComponent({
     const projectId = route.params.id as string;
     const isMounted = ref(false);
 
-    const googleFonts = computed(() => {
-      return store.getters["canvas/googleFonts"];
-    });
-
     const focusedElement = computed(() => {
       return store.getters["canvas/focusedElement"];
     });

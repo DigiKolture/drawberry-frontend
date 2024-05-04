@@ -2,8 +2,10 @@ import { ActionTree } from "vuex";
 import { ProjectState } from "@/store/modules/projects/types";
 import { RootState } from "@/store/types";
 import AxiosClient from "@/services/api";
+import { updateDom } from "@/composables/canvas/update_dom";
 
 const baseUrl = "/projects";
+const { updateElementDom } = updateDom();
 
 export const actions: ActionTree<ProjectState, RootState> = {
   getProjects({ commit }): Promise<void> {
@@ -25,8 +27,24 @@ export const actions: ActionTree<ProjectState, RootState> = {
       });
   },
   getProjectComponentsForPreview(_, projectId: string): Promise<void> {
-    return AxiosClient.get(`${baseUrl}/${projectId}`)
+    return AxiosClient.get(`${baseUrl}/${projectId}/preview`)
       .then((res: any) => {
+        const project = res.data.data.project;
+
+        // const dang = project.components.map((componentItem: any) => {
+        //   console.log({ componentItem });
+        //   const json = componentItem.json;
+        //   let html = componentItem.json;
+        //   for (const elementJson of json) {
+        //     if (!elementJson.attributes.style.value) continue;
+        //     html = updateElementDom(html, elementJson);
+        //   }
+        //
+        //   return { html };
+        // });
+
+        // console.log({ dang });
+
         return res.data.data.project;
       })
       .catch((err: any): any => {

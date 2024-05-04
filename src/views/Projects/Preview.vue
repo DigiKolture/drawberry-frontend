@@ -5,7 +5,7 @@
         class="preview__component__items__container"
         style="margin-bottom: 100px"
         xd
-        :class="[currentPreview, style.layout]"
+        :class="[style.layout, currentPreview]"
       >
         <div
           v-for="(componentItem, itemIndex) in workspaceComponents"

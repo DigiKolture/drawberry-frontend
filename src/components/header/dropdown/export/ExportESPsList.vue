@@ -46,8 +46,15 @@ export default defineComponent({
         .then(() => {
           disabled.value = false;
           store.commit("modals/CLOSE_MODAL", "export");
+
+          let message = "";
+          if (esp === "google") {
+            message = "Email template sent to drafts in Gmail";
+          } else {
+            message = `Email template sent to ${esp}`;
+          }
           store.dispatch("toast/showToast", {
-            message: `Email template sent to ${esp}`,
+            message,
           });
         })
         .catch(() => {

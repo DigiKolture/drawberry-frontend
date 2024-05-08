@@ -11,6 +11,10 @@
     border-top: 2px solid #519E47;
 }
 
+.toast__message .loader path{
+    fill: #519E47;
+}
+
 .toast__message.error{
     border-top: 2px solid #ED1C24;
 }

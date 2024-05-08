@@ -3,15 +3,20 @@
     <div>
       <BaseIcon :icon="`toast/${type}`" />
       <h6>{{ message }}</h6>
-      <button @click="toastAction" v-if="data.actionName">
+      <button @click="toastAction" v-if="data.actionName && !loading">
         {{ data.actionName }}
       </button>
+      <BaseIcon
+        v-if="data.actionName && loading"
+        class="loader"
+        icon="loader"
+      />
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import { computed, defineComponent } from "vue";
+import { computed, defineComponent, ref } from "vue";
 import store from "@/store";
 import BaseIcon from "@/components/icon/BaseIcon.vue";
 import router from "@/router";
@@ -21,6 +26,7 @@ export default defineComponent({
   components: { BaseIcon },
 
   setup() {
+    const loading = ref(false);
     const visible = computed(() => {
       return store.getters["toast/visible"];
     });
@@ -35,9 +41,9 @@ export default defineComponent({
     });
 
     const toastAction = () => {
-      store.commit("toast/HIDE_TOAST");
       switch (data.value.action) {
         case "open_project": {
+          store.commit("toast/HIDE_TOAST");
           router.push({
             name: "Canvas",
             params: { id: data.value.body.projectId },
@@ -45,15 +51,29 @@ export default defineComponent({
           break;
         }
         case "undo_project": {
+          loading.value = true;
           store
             .dispatch("projects/undoDeletedProject", data.value.body.projectId)
             .then(() => {
-              store.dispatch("projects/getProjects");
+              store.dispatch("projects/getProjects").then(() => {
+                loading.value = false;
+                store.dispatch("toast/showToast", {
+                  message: `Project restored.`,
+                });
+              });
             });
           break;
         }
         case "undo_folder": {
-          store.dispatch("folders/undoDeletedFolder", data.value.body.folderId);
+          loading.value = true;
+          store
+            .dispatch("folders/undoDeletedFolder", data.value.body.folderId)
+            .then(() => {
+              store.dispatch("toast/showToast", {
+                message: `Folder restored.`,
+              });
+              loading.value = false;
+            });
           break;
         }
       }
@@ -64,6 +84,7 @@ export default defineComponent({
       message,
       type,
       data,
+      loading,
       toastAction,
     };
   },

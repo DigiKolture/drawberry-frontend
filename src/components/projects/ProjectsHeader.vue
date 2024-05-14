@@ -54,11 +54,20 @@ export default defineComponent({
       // TODO: Include search in API when we add pagination
       emit("update-search-name", searchName.value);
       if (searchName.value) {
+        const search = searchName.value.toLowerCase();
         const regex = new RegExp(searchName.value, "i");
-        store.commit(
-          "projects/SET_FILTERED_PROJECTS",
-          projects.value.filter((project: any) => regex.test(project.name))
+
+        const filteredProjects = projects.value.filter((project: any) =>
+          regex.test(project.name)
         );
+
+        filteredProjects.sort((a: any, b: any) => {
+          const aIndex = a.name.toLowerCase().indexOf(search);
+          const bIndex = b.name.toLowerCase().indexOf(search);
+          return aIndex - bIndex;
+        });
+
+        store.commit("projects/SET_FILTERED_PROJECTS", filteredProjects);
       } else {
         store.commit("projects/SET_FILTERED_PROJECTS", projects.value);
       }

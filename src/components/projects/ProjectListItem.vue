@@ -4,7 +4,7 @@
     <div @click="openProject" class="projects__body__item__body">
       <div class="projects__body__item__body__content">
         <h3>{{ sliceString(project.name, 16) }}</h3>
-        <h4>{{ diffForHumans(project.updatedAt) }}</h4>
+        <h4>Edited {{ diffForHumans(project.updatedAt) }}</h4>
       </div>
 
       <span

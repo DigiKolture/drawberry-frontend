@@ -16,6 +16,7 @@ input.base__input::placeholder {
 }
 
 input.base__input, select.base__select{
+    @apply w-full;
     background: #E1E6ED;
     border-radius: 4px;
     padding: 13px 16px;
@@ -80,7 +81,7 @@ button.button.danger{
 }
 
 button.button__text__icon{
-    @apply flex items-center text-white bg-transparent text-white;
+    @apply flex items-center text-white bg-transparent;
     column-gap: 11px;
     font-weight: 500;
     font-size: 14px;
@@ -102,3 +103,16 @@ button.button__text__icon.grey{
     padding: 9px 8px 9px 8px;
 
 }
+
+.input__group{
+    @apply relative w-full;
+}
+
+.input__group__append{
+    @apply absolute flex items-center;
+    top: 0;
+    bottom: 0;
+    inset-inline-end: 0;
+    padding-right: 17px;
+}
+

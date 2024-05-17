@@ -29,15 +29,7 @@
               required
             />
           </FormGroup>
-          <FormGroup>
-            <BaseLabel title="Password" />
-            <BaseInput
-              v-model="user.password"
-              type="password"
-              placeholder="Password"
-              required
-            />
-          </FormGroup>
+          <FormGroupPassword v-model="user.password" />
         </div>
         <div class="auth__submit">
           <a href="">Forgot password?</a>
@@ -63,10 +55,12 @@ import BaseButton from "@/components/layout/BaseButton";
 import store from "@/store";
 import router from "@/router";
 import BaseIcon from "@/components/icon/BaseIcon.vue";
+import FormGroupPassword from "@/components/form/FormGroupPassword.vue";
 
 export default defineComponent({
   name: "LoginPage",
   components: {
+    FormGroupPassword,
     BaseIcon,
     BaseButton,
     BaseInput,

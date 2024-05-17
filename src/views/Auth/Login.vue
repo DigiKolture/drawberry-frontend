@@ -1,16 +1,24 @@
 <template>
   <AuthLayout>
     <div class="auth__main login">
-      <div class="auth__main__close">
-        <button>
-          <BaseIcon icon="close" />
-        </button>
-      </div>
       <form class="auth__form" @submit.prevent="login">
         <div class="auth__form-content">
-          <h3>Login</h3>
-          <p>Enter your account details</p>
+          <h3>Welcome</h3>
         </div>
+
+        <div class="auth__form-socials">
+          <button class="auth__form-socials__google">
+            <BaseIcon icon="auth/social/google" />
+            <span>Continue with Google</span>
+          </button>
+        </div>
+
+        <div class="auth__form__divider">
+          <span></span>
+          <span>or</span>
+          <span></span>
+        </div>
+
         <div class="auth__form-inputs">
           <FormGroup>
             <BaseLabel title="Email" />
@@ -39,7 +47,7 @@
       <div class="form__footer">
         <p>
           Don’t have an account?
-          <router-link to="/register">Sign Up here</router-link>
+          <router-link to="/register">Sign Up</router-link>
         </p>
       </div>
     </div>
@@ -48,22 +56,22 @@
 <script>
 import { defineComponent, reactive } from "vue";
 import AuthLayout from "@/components/layout/AuthLayout";
-import BaseIcon from "@/components/icon/BaseIcon";
 import FormGroup from "@/components/layout/FormGroup";
 import BaseLabel from "@/components/form/BaseLabel";
 import BaseInput from "@/components/form/BaseInput";
 import BaseButton from "@/components/layout/BaseButton";
 import store from "@/store";
 import router from "@/router";
+import BaseIcon from "@/components/icon/BaseIcon.vue";
 
 export default defineComponent({
   name: "LoginPage",
   components: {
+    BaseIcon,
     BaseButton,
     BaseInput,
     BaseLabel,
     FormGroup,
-    BaseIcon,
     AuthLayout,
   },
 

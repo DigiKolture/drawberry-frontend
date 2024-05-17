@@ -1,16 +1,24 @@
 <template>
   <AuthLayout>
     <div class="auth__main">
-      <div class="auth__main__close">
-        <button>
-          <BaseIcon icon="close" />
-        </button>
-      </div>
       <form class="auth__form" @submit.prevent="register">
         <div class="auth__form-content">
-          <h3>Sign Up</h3>
-          <p>Create an account to start designing</p>
+          <h3>Create an account</h3>
         </div>
+
+        <div class="auth__form-socials">
+          <button class="auth__form-socials__google">
+            <BaseIcon icon="auth/social/google" />
+            <span>Continue with Google</span>
+          </button>
+        </div>
+
+        <div class="auth__form__divider">
+          <span></span>
+          <span>or</span>
+          <span></span>
+        </div>
+
         <div class="auth__form-inputs">
           <div class="auth__form__row">
             <FormGroup>
@@ -61,17 +69,14 @@
           </FormGroup>
         </div>
         <div class="auth__submit">
-          <p>
-            By clicking the button below, you accept our
-            <a href="">Terms of Use</a> and <a href="">Privacy Policy</a>
-          </p>
+          <a href="">Forgot password?</a>
           <BaseButton type="submit" title="Create Account" />
         </div>
       </form>
       <div class="form__footer">
         <p>
           Already have an account?
-          <router-link to="/login">Sign in here</router-link>
+          <router-link to="/login">Sign in</router-link>
         </p>
       </div>
     </div>

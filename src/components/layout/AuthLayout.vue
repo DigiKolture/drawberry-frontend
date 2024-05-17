@@ -2,6 +2,11 @@
   <BaseLayout>
     <section class="auth-layout">
       <slot />
+      <div class="auth__terms__privacy">
+        <a>Terms of use</a>
+        <span>|</span>
+        <a>Privacy policy</a>
+      </div>
     </section>
   </BaseLayout>
 </template>

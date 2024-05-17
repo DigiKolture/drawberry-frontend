@@ -1,13 +1,23 @@
 section.auth-layout{
-    @apply flex w-full h-full items-center justify-center;
+    @apply flex flex-col w-full h-full items-center justify-center;
+    background-color: #1E1F26;
+}
+
+.auth__terms__privacy{
+    @apply flex absolute;
+    bottom: 32px;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    column-gap: 7px;
+    font-weight: 400;
+    font-size: 14px;
+    text-align: center;
+    color: var(--color-grey-20);
 }
 
 .auth__main{
     @apply flex flex-col;
-    background: #2D3039;
-    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.16);
-    border-radius: 8px;
-    width: 360px;
+    width: 312px;
 }
 
 .auth__main__close{
@@ -16,7 +26,7 @@ section.auth-layout{
 }
 
 .auth__form{
-    padding: 0 24px 24px;
+    /*padding: 0 24px 24px;*/
 }
 
 .auth__form-content{
@@ -24,6 +34,12 @@ section.auth-layout{
     row-gap: 14px;
 
 }
+
+.auth__form-content {
+    margin-bottom: 40px;
+}
+
+
 
 .auth__form-content h3{
     @apply text-white;
@@ -39,10 +55,42 @@ section.auth-layout{
     color: #C2CBD6;
 }
 
+.auth__form-socials{
+    margin-bottom: 24px;
+}
+
+.auth__form-socials__google{
+    @apply flex items-center w-full;
+    column-gap: 16px;
+    border-radius: 6px;
+    padding-left: 16px;
+    height: 44px;
+    box-shadow: 0 1px 2px 0 rgba(16, 24, 40, 0.05);
+    background: var(--color-grey-00);
+}
+
+
+.auth__form__divider{
+    @apply flex items-center text-white uppercase;
+    column-gap: 16px;
+    font-weight: 400;
+    font-size: 10px;
+}
+
+.auth__form__divider span:first-child, .auth__form__divider span:last-child{
+    @apply w-full;
+    height: 1px;
+    background: var(--color-grey-20);
+}
+
 .auth__form-inputs{
     margin-top: 24px;
     @apply flex flex-col;
     row-gap: 16px;
+}
+
+.auth__form-inputs .base__input{
+
 }
 
 .auth__form__row{
@@ -60,6 +108,12 @@ section.auth-layout{
     row-gap: 24px;
 }
 
+.auth__submit a{
+    font-weight: 400;
+    font-size: 14px;
+    color: #adafbb;
+}
+
 .auth__submit p{
     font-style: normal;
     font-weight: 400;
@@ -74,7 +128,6 @@ section.auth-layout{
 }
 
 .form__footer{
-    border-top: 1px solid #848F9F;
     padding: 24px;
 }
 
@@ -93,13 +146,4 @@ section.auth-layout{
 
 /* LOGIN */
 
-.login .auth__submit{
-    margin-top: 12px;
-    row-gap: 18px;
-}
 
-.login .auth__submit a{
-    @apply text-white underline;
-    font-size: 12px;
-    line-height: 16px;
-}

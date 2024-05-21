@@ -2,8 +2,11 @@ import { ActionTree } from "vuex";
 import { AuthState } from "@/store/modules/auth/types";
 import { RootState } from "@/store/types";
 import AxiosClient from "@/services/api";
+import { helpers } from "@/composables/helpers";
 
 const baseUrl = "/auth";
+
+const { rejectError } = helpers();
 
 export const actions: ActionTree<AuthState, RootState> = {
   login({ commit }, data): Promise<void> {
@@ -18,11 +21,8 @@ export const actions: ActionTree<AuthState, RootState> = {
         }
         return res.data;
       })
-      .catch((err: any): any => {
-        if (err instanceof Error) {
-          const message = err.message;
-          return Promise.reject(new Error(message));
-        }
+      .catch((err) => {
+        return rejectError(err);
       });
   },
 
@@ -38,11 +38,8 @@ export const actions: ActionTree<AuthState, RootState> = {
         }
         return res.data;
       })
-      .catch((err: any): any => {
-        if (err instanceof Error) {
-          const message = err.message;
-          return Promise.reject(new Error(message));
-        }
+      .catch((err) => {
+        return rejectError(err);
       });
   },
 
@@ -52,11 +49,8 @@ export const actions: ActionTree<AuthState, RootState> = {
         commit("SET_AUTH_USER", res.data.data.user);
         return res.data;
       })
-      .catch((err: any): any => {
-        if (err instanceof Error) {
-          const message = err.message;
-          return Promise.reject(new Error(message));
-        }
+      .catch((err) => {
+        return rejectError(err);
       });
   },
 

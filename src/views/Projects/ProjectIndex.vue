@@ -4,7 +4,7 @@
       <ProjectsSkeleton v-if="loading" />
       <template v-else>
         <ProjectsEmpty v-if="projects.length === 0 && folders.length === 0" />
-        <ProjectsSection />
+        <ProjectsSection v-else />
       </template>
     </div>
   </AppLayout>

@@ -19,6 +19,8 @@
           <span></span>
         </div>
 
+        <AuthError :message="errMessage" />
+
         <div class="auth__form-inputs">
           <FormGroup>
             <BaseLabel title="Email" />
@@ -33,7 +35,7 @@
         </div>
         <div class="auth__submit">
           <a href="">Forgot password?</a>
-          <BaseButton type="submit" title="Sign In" />
+          <BaseButton :disabled="disabled" type="submit" title="Continue" />
         </div>
       </form>
       <div class="form__footer">
@@ -46,7 +48,7 @@
   </AuthLayout>
 </template>
 <script>
-import { defineComponent, reactive } from "vue";
+import { defineComponent, reactive, ref } from "vue";
 import AuthLayout from "@/components/layout/AuthLayout";
 import FormGroup from "@/components/layout/FormGroup";
 import BaseLabel from "@/components/form/BaseLabel";
@@ -56,10 +58,12 @@ import store from "@/store";
 import router from "@/router";
 import BaseIcon from "@/components/icon/BaseIcon.vue";
 import FormGroupPassword from "@/components/form/FormGroupPassword.vue";
+import AuthError from "@/components/auth/error/AuthError.vue";
 
 export default defineComponent({
   name: "LoginPage",
   components: {
+    AuthError,
     FormGroupPassword,
     BaseIcon,
     BaseButton,
@@ -75,13 +79,27 @@ export default defineComponent({
       password: "",
     });
 
+    const errMessage = ref("");
+    const disabled = ref(false);
+
     const login = async () => {
-      await store.dispatch("auth/login", user).then(() => {
-        router.push("/projects");
-      });
+      errMessage.value = "";
+      disabled.value = true;
+      store
+        .dispatch("auth/login", user)
+        .then(() => {
+          disabled.value = false;
+          router.push("/projects");
+        })
+        .catch((message) => {
+          disabled.value = false;
+          errMessage.value = message;
+        });
     };
 
     return {
+      errMessage,
+      disabled,
       user,
       login,
     };

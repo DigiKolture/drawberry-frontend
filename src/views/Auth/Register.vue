@@ -19,6 +19,8 @@
           <span></span>
         </div>
 
+        <AuthError :message="errMessage" />
+
         <div class="auth__form-inputs">
           <div class="auth__form__row">
             <FormGroup>
@@ -62,7 +64,11 @@
         </div>
         <div class="auth__submit">
           <a href="">Forgot password?</a>
-          <BaseButton type="submit" title="Create Account" />
+          <BaseButton
+            type="submit"
+            :disabled="disabled"
+            title="Create Account"
+          />
         </div>
       </form>
       <div class="form__footer">
@@ -75,7 +81,7 @@
   </AuthLayout>
 </template>
 <script>
-import { defineComponent, reactive } from "vue";
+import { defineComponent, reactive, ref } from "vue";
 import AuthLayout from "@/components/layout/AuthLayout";
 import BaseIcon from "@/components/icon/BaseIcon";
 import FormGroup from "@/components/layout/FormGroup";
@@ -87,10 +93,12 @@ import store from "@/store";
 import router from "@/router";
 import BasePassword from "@/components/form/FormGroupPassword.vue";
 import FormGroupPassword from "@/components/form/FormGroupPassword.vue";
+import AuthError from "@/components/auth/error/AuthError.vue";
 
 export default defineComponent({
   name: "RegisterPage",
   components: {
+    AuthError,
     FormGroupPassword,
     BaseSelect,
     BaseButton,
@@ -122,14 +130,30 @@ export default defineComponent({
       countryCode: "",
       password: "",
     });
+    const errMessage = ref("");
+    const disabled = ref(false);
 
     const register = async () => {
-      await store.dispatch("auth/register", user).then(() => {
-        router.push("/projects");
-      });
+      errMessage.value = "";
+      disabled.value = true;
+      store
+        .dispatch("auth/register", user)
+        .then(() => {
+          router.push("/projects");
+        })
+        .then(() => {
+          disabled.value = false;
+          router.push("/projects");
+        })
+        .catch((message) => {
+          disabled.value = false;
+          errMessage.value = message;
+        });
     };
 
     return {
+      disabled,
+      errMessage,
       user,
       countries,
       register,

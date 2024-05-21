@@ -59,6 +59,24 @@ export function helpers() {
     }
   };
 
+  interface ResponseData {
+    message?: string;
+  }
+
+  interface Response {
+    data?: ResponseData;
+  }
+
+  const rejectError = ({ response = null }: { response?: Response | null }) => {
+    let message = "Ooops!! something went wrong.";
+
+    if (response && response.data && response.data.message) {
+      message = response.data.message;
+    }
+
+    return Promise.reject(message);
+  };
+
   return {
     formatDate,
     isValidImageUrl,
@@ -66,5 +84,6 @@ export function helpers() {
     copy,
     sliceString,
     diffForHumans,
+    rejectError,
   };
 }

@@ -7,10 +7,7 @@
         </div>
 
         <div class="auth__form-socials">
-          <button class="auth__form-socials__google">
-            <BaseIcon icon="auth/social/google" />
-            <span>Continue with Google</span>
-          </button>
+          <GoogleAuthSocial />
         </div>
 
         <div class="auth__form__divider">
@@ -83,7 +80,6 @@
 <script>
 import { defineComponent, reactive, ref } from "vue";
 import AuthLayout from "@/components/layout/AuthLayout";
-import BaseIcon from "@/components/icon/BaseIcon";
 import FormGroup from "@/components/layout/FormGroup";
 import BaseLabel from "@/components/form/BaseLabel";
 import BaseInput from "@/components/form/BaseInput";
@@ -91,13 +87,14 @@ import BaseButton from "@/components/layout/BaseButton";
 import BaseSelect from "@/components/form/BaseSelect";
 import store from "@/store";
 import router from "@/router";
-import BasePassword from "@/components/form/FormGroupPassword.vue";
 import FormGroupPassword from "@/components/form/FormGroupPassword.vue";
 import AuthError from "@/components/auth/error/AuthError.vue";
+import GoogleAuthSocial from "@/views/Auth/GoogleAuthSocial.vue";
 
 export default defineComponent({
   name: "RegisterPage",
   components: {
+    GoogleAuthSocial,
     AuthError,
     FormGroupPassword,
     BaseSelect,
@@ -105,7 +102,6 @@ export default defineComponent({
     BaseInput,
     BaseLabel,
     FormGroup,
-    BaseIcon,
     AuthLayout,
   },
   setup() {

@@ -5,17 +5,8 @@
         <div class="auth__form-content">
           <h3>Welcome</h3>
         </div>
-        <h1>Is Initialized: {{ Vue3GoogleOauth.isInit }}</h1>
         <div class="auth__form-socials">
-          <button
-            :disabled="!Vue3GoogleOauth.isInit"
-            type="button"
-            class="auth__form-socials__google"
-            @click="handleSignIn"
-          >
-            <BaseIcon icon="auth/social/google" />
-            <span>Continue with Google</span>
-          </button>
+          <GoogleAuthSocial />
         </div>
 
         <div class="auth__form__divider">
@@ -61,16 +52,15 @@ import BaseInput from "@/components/form/BaseInput";
 import BaseButton from "@/components/layout/BaseButton";
 import store from "@/store";
 import router from "@/router";
-import BaseIcon from "@/components/icon/BaseIcon.vue";
 import FormGroupPassword from "@/components/form/FormGroupPassword.vue";
 import AuthError from "@/components/auth/error/AuthError.vue";
-import { inject } from "vue";
+import GoogleAuthSocial from "@/views/Auth/GoogleAuthSocial.vue";
 export default defineComponent({
   name: "LoginPage",
   components: {
+    GoogleAuthSocial,
     AuthError,
     FormGroupPassword,
-    BaseIcon,
     BaseButton,
     BaseInput,
     BaseLabel,
@@ -78,42 +68,11 @@ export default defineComponent({
     AuthLayout,
   },
 
-  methods: {
-    async handleSignIn() {
-      try {
-        const googleUser = await this.$gAuth.signIn();
-
-        if (!googleUser) {
-          return null;
-        }
-        const email = googleUser.getBasicProfile().getEmail();
-        const firstName = googleUser.getBasicProfile().getGivenName();
-        const lastName = googleUser.getBasicProfile().getFamilyName();
-        console.log({ email, firstName, lastName });
-
-        await store
-          .dispatch("auth/oAuthLogin", {
-            email,
-            firstName,
-            lastName,
-          })
-          .then(() => {
-            router.push("/projects");
-          });
-      } catch (error) {
-        console.log(error);
-        return null;
-      }
-    },
-  },
-
   setup() {
     const user = reactive({
       email: "",
       password: "",
     });
-
-    const Vue3GoogleOauth = inject("Vue3GoogleOauth");
 
     const errMessage = ref("");
     const disabled = ref(false);
@@ -135,7 +94,6 @@ export default defineComponent({
 
     return {
       errMessage,
-      Vue3GoogleOauth,
       disabled,
       user,
       login,

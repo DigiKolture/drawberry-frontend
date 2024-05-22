@@ -14,14 +14,24 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 import BaseButtonTextIcon from "@/components/button/BaseButtonTextIcon.vue";
+import store from "@/store";
+import router from "@/router";
 
 export default defineComponent({
   name: "ProjectsEmpty",
   components: { BaseButtonTextIcon },
 
-  setup(props, { emit }) {
+  setup() {
     const createProject = () => {
-      emit("create-project");
+      // emit("create-project");
+      store
+        .dispatch("projects/storeProject", {
+          name: "Untitled project",
+        })
+        .then((data) => {
+          store.commit("projects/SET_PROJECT", data.project);
+          router.push({ name: "Canvas", params: { id: data.project.id } });
+        });
     };
     return {
       createProject,

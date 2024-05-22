@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
 import Login from "@/views/Auth/Login.vue";
+import AuthCallback from "@/views/Auth/AuthCallback.vue";
 import Register from "@/views/Auth/Register.vue";
 import ProjectIndex from "@/views/Projects/ProjectIndex.vue";
 import CreateFolder from "@/views/Projects/CreateFolder.vue";
@@ -13,6 +14,14 @@ const routes: Array<RouteRecordRaw> = [
     path: "/",
     name: "Home",
     component: Login,
+    meta: {
+      authRequired: false,
+    },
+  },
+  {
+    path: "/oauth/login",
+    name: "AuthCallback",
+    component: AuthCallback,
     meta: {
       authRequired: false,
     },
@@ -68,7 +77,6 @@ const routes: Array<RouteRecordRaw> = [
       authRequired: false,
     },
   },
-
   {
     path: "/esp/:esp/callback",
     name: "ESPOAuthCallback",

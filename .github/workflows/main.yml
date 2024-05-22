@@ -32,6 +32,7 @@ jobs:
           echo VUE_APP_ENVIRONMENT="development" >> .env
           echo VUE_APP_BASE_URL="https://dev.app.drawberry.io" >> .env
           echo  VUE_APP_BASE_API_URL="https://dev.api.drawberry.io" >> .env
+          echo  VUE_APP_GOOGLE_CLIENT_ID="${{ secrets.VUE_APP_GOOGLE_CLIENT_ID }}" >> .env
 
           cat .env
 

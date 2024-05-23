@@ -22,8 +22,15 @@ export default defineComponent({
       return ColorPickerTypes;
     },
   },
+  props: {
+    isParent: {
+      type: Boolean,
+      default: false,
+      required: false,
+    },
+  },
   components: { ColorPickerStyle, PanelStyle },
-  setup() {
+  setup(props) {
     const show = ref(true);
 
     const name = "background-color";
@@ -34,18 +41,41 @@ export default defineComponent({
       () => store.getters["canvas/focusedElement"]
     );
 
+    const focusedParentElement = computed(() => {
+      return store.getters["canvas/focusedParentElement"];
+    });
+
     const color = ref({
-      hex8: focusedElement.value.attributes.style.value[name],
+      hex8: !props.isParent
+        ? focusedElement.value.attributes.style.value[name]
+        : focusedParentElement.value.attributes.style.value[name],
     });
 
     watch(color, (newVal: any) => {
-      focusedElement.value.attributes.style.value[name] = newVal.hex8;
-      store.dispatch("canvas/updateFocusedElement", focusedElement.value);
+      if (!props.isParent) {
+        focusedElement.value.attributes.style.value[name] = newVal.hex8;
+        store.dispatch("canvas/updateFocusedElement", focusedElement.value);
+      } else {
+        focusedParentElement.value.attributes.style.value[name] = newVal.hex8;
+        store.dispatch(
+          "canvas/updateFocusedParentElement",
+          focusedParentElement.value
+        );
+      }
     });
 
     watch(focusedElement, (newVal) => {
-      colorPickerStyleRef.value.updateColor(color.value);
-      color.value.hex8 = newVal.attributes.style.value[name];
+      if (!props.isParent) {
+        colorPickerStyleRef.value.updateColor(color.value);
+        color.value.hex8 = newVal.attributes.style.value[name];
+      }
+    });
+
+    watch(focusedParentElement, (newVal) => {
+      if (props.isParent) {
+        colorPickerStyleRef.value.updateColor(color.value);
+        color.value.hex8 = newVal.attributes.style.value[name];
+      }
     });
 
     const updateColor = (newVal: any) => {

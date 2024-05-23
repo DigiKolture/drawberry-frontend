@@ -58,7 +58,10 @@
         :properties="tabsStyles.background"
         :show-body="tabStates[tabsStyles.background.index]"
       >
-        <BackgroundColorStyle v-if="showStyle('background-color')" />
+        <BackgroundColorStyle
+          v-if="showStyle('background-color')"
+          :is-parent="isParentStyle('background-color')"
+        />
       </PanelTab>
       <PanelTab
         v-if="showTab(tabsStyles.borders)"

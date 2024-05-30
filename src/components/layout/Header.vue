@@ -13,6 +13,8 @@
           <button><BaseIcon icon="arrow/left" /></button>
           <button><BaseIcon icon="header/home" /></button>
         </router-link>
+
+        <HeaderProjectInput :is-disabled="true" v-if="isPreview && project" />
       </div>
       <HeaderContainerMiddle
         :is-auth="isAuth"
@@ -37,9 +39,11 @@ import { useRoute } from "vue-router";
 import store from "@/store";
 import HeaderContainerRight from "@/components/header/position/HeaderContainerRight.vue";
 import HeaderContainerMiddle from "@/components/header/position/HeaderContainerMiddle.vue";
+import HeaderProjectInput from "@/components/header/project/HeaderProjectInput.vue";
 export default defineComponent({
   name: "HeaderComponent",
   components: {
+    HeaderProjectInput,
     HeaderContainerMiddle,
     HeaderContainerRight,
     BaseIcon,
@@ -82,7 +86,6 @@ export default defineComponent({
       currentPreview,
       isCanvas,
       updatePreviewTabs,
-
       isPreview,
       isAuth,
     };

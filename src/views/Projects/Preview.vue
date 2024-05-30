@@ -42,6 +42,11 @@ export default defineComponent({
         "projects/getProjectComponentsForPreview",
         projectId
       );
+
+      store.commit("projects/SET_PROJECT", {
+        name: project.name,
+        id: project.id,
+      });
       style.value = project.style;
       workspaceComponents.value = project.components;
     });

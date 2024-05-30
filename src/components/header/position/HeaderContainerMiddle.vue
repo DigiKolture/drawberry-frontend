@@ -1,13 +1,7 @@
 <template>
   <div class="header__container__middle">
     <template v-if="isAuth">
-      <div class="header__middle__input__container" v-if="isCanvas && project">
-        <input
-          v-model="project.name"
-          type="text"
-          @keyup.enter="updateProjectName"
-        />
-      </div>
+      <HeaderProjectInput v-if="isCanvas && project" />
       <div class="header__middle__preview" v-else-if="isPreview">
         <BaseButtonTextIcon
           :key="key"
@@ -34,12 +28,13 @@
   </div>
 </template>
 
-<script lang="ts">
-import { computed, defineComponent, ref } from "vue";
+<script>
+import { computed, defineComponent, onMounted, ref } from "vue";
 
 import store from "@/store";
 import BaseButtonTextIcon from "@/components/button/BaseButtonTextIcon.vue";
 import router from "@/router";
+import HeaderProjectInput from "@/components/header/project/HeaderProjectInput.vue";
 export default defineComponent({
   name: "HeaderContainerMiddle",
   props: {
@@ -61,10 +56,11 @@ export default defineComponent({
     },
   },
   components: {
+    HeaderProjectInput,
     BaseButtonTextIcon,
   },
 
-  setup(props) {
+  setup() {
     const previewTabsData = [
       {
         icon: "header/preview/desktop",
@@ -81,6 +77,18 @@ export default defineComponent({
     const openExport = ref(false);
     const openPreview = ref(false);
 
+    const inputField = ref(null);
+
+    const scrollInputToStart = () => {
+      if (inputField.value) {
+        inputField.value.scrollLeft = 0;
+      }
+    };
+
+    onMounted(() => {
+      scrollInputToStart();
+    });
+
     const toggleExport = () => {
       openExport.value = !openExport.value;
     };
@@ -93,26 +101,29 @@ export default defineComponent({
       openPreview.value = !openPreview.value;
     };
 
-    const updatePreviewTabs = (preview: string) => {
+    const updatePreviewTabs = (preview) => {
       store.commit("preview/SET_CURRENT_PREVIEW", preview);
     };
 
-    const updateProjectName = () => {
+    const updateProjectName = (e) => {
       store.dispatch("projects/updateProject", {
         id: project.value.id,
         data: {
           name: project.value.name,
         },
       });
+      scrollInputToStart();
     };
 
     return {
       openPreview,
       openExport,
       project,
+      inputField,
       toggleExport,
       previewTabsData,
       updateProjectName,
+      scrollInputToStart,
       togglePreview,
       updatePreviewTabs,
     };

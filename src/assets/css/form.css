@@ -44,7 +44,7 @@ textarea:focus-visible{
     outline: none;
 }
 
-button.button{
+button.button, a.button{
     @apply text-white flex items-center justify-center;
     border-radius: 4px;
     padding-top: 13px;
@@ -57,6 +57,15 @@ button.button{
 .button.button__outline{
     border: 1px solid #848F9F;
     padding: 8px;
+}
+.button.grey{
+    font-weight: 500;
+    font-size: 14px;
+    border-radius: 4px;
+    padding: 12px 24px;
+    width: 83px;
+    height: 42px;
+    background: var(--color-grey-30);
 }
 
 button:disabled{

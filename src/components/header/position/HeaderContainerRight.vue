@@ -35,6 +35,9 @@
         <BaseButtonIcon @click="goToProject()" icon="close" />
       </div>
     </template>
+    <template v-else>
+      <router-link to="/login" class="button grey"> Login </router-link>
+    </template>
   </div>
 </template>
 

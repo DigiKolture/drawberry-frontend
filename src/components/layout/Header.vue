@@ -17,6 +17,7 @@
         <HeaderProjectInput :is-disabled="true" v-if="isPreview && project" />
       </div>
       <HeaderContainerMiddle
+        v-if="project"
         :is-auth="isAuth"
         :is-canvas="isCanvas"
         :is-preview="isPreview"

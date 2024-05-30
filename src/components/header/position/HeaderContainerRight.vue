@@ -1,7 +1,7 @@
 <template>
   <div class="header__container__right">
     <template v-if="isAuth">
-      <div class="header__right__canvas__actions" v-if="isCanvas">
+      <div class="header__right__canvas__actions" v-if="isCanvas && project">
         <div class="header__redo">
           <button><BaseIcon icon="header/redo/backward" /></button>
           <button><BaseIcon icon="header/redo/forward" /></button>
@@ -31,8 +31,17 @@
           :class="{ open: openPreview }"
         />
       </div>
-      <div class="header__right__preview" v-else-if="isPreview">
+
+      <div
+        class="header__right__preview"
+        v-else-if="project && isPreview && isUserProject"
+      >
         <BaseButtonIcon @click="goToProject()" icon="close" />
+      </div>
+      <div v-else-if="(isPreview && !isUserProject) || isADiffRoute">
+        <div class="header__right__initials">
+          <span>{{ getInitials }}</span>
+        </div>
       </div>
     </template>
     <template v-else>
@@ -52,6 +61,7 @@ import BaseButtonIcon from "@/components/icon/BaseButtonIcon.vue";
 import BaseButton from "@/components/layout/BaseButton.vue";
 import BaseIcon from "@/components/icon/BaseIcon.vue";
 import router from "@/router";
+import { auth } from "@/composables/auth/auth";
 export default defineComponent({
   name: "HeaderContainerRight",
   props: {
@@ -77,7 +87,8 @@ export default defineComponent({
     ExportDropdown,
   },
 
-  setup() {
+  setup(props) {
+    const { getInitials } = auth();
     const modalsTrigger = "modals-trigger";
 
     const openExport = computed(() => {
@@ -104,23 +115,43 @@ export default defineComponent({
       return store.getters["projects/project"];
     });
 
+    const authUser = computed(() => {
+      return store.getters["auth/authUser"];
+    });
+
+    const isADiffRoute = computed(() => {
+      return !props.isCanvas && !props.isPreview;
+    });
+
     const goToProject = () => {
       router.push({ name: "Canvas", params: { id: project.value.id } });
     };
+
+    const isUserProject = computed(() => {
+      return (
+        props.isAuth &&
+        project.value &&
+        authUser.value.id === project.value.user
+      );
+    });
 
     const updatePreviewTabs = (preview: string) => {
       store.commit("preview/SET_CURRENT_PREVIEW", preview);
     };
 
     return {
+      project,
       modalsTrigger,
       openPreview,
+      getInitials,
       openExport,
       toggleShare,
       toggleExport,
       togglePreview,
       updatePreviewTabs,
       goToProject,
+      isUserProject,
+      isADiffRoute,
     };
   },
 });

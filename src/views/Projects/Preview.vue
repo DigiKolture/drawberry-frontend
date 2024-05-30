@@ -38,6 +38,7 @@ export default defineComponent({
     const { extractUniqueFontFamilies } = fonts();
 
     onMounted(async () => {
+      store.commit("projects/SET_PROJECT", null);
       const project = await store.dispatch(
         "projects/getProjectComponentsForPreview",
         projectId
@@ -46,6 +47,7 @@ export default defineComponent({
       store.commit("projects/SET_PROJECT", {
         name: project.name,
         id: project.id,
+        user: project.user,
       });
       style.value = project.style;
       workspaceComponents.value = project.components;

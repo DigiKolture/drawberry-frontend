@@ -60,14 +60,42 @@ export function focus() {
     }
   };
 
-  const scrollTo = (itemIndex: number, toLayer = true) => {
+  const calculateOffset = (item: any) => {
+    const headerHeight = 64;
+    const topPadding = 40;
+    const bottomPadding = 80;
+
+    // Calculate the position to scroll to
+    const itemTopPosition =
+      item.getBoundingClientRect().top + window.pageYOffset;
+    const itemBottomPosition =
+      item.getBoundingClientRect().bottom + window.pageYOffset;
+    const viewHeight = window.innerHeight;
+
+    // Calculate the offset positions considering header, footer, and padding
+    let offsetPosition = itemTopPosition - headerHeight - topPadding;
+
+    console.log("First offset: ", offsetPosition);
+    if (itemBottomPosition + bottomPadding > window.pageYOffset + viewHeight) {
+      offsetPosition = itemBottomPosition - viewHeight + bottomPadding;
+    }
+
+    return offsetPosition;
+  };
+
+  const scrollTo = (itemIndex: number, id: string, toLayer = true) => {
     let item = null;
     if (toLayer) {
-      item = document.querySelector(`#layer-component-item-${itemIndex}`);
+      item = document.querySelector(
+        `#layer-component-item-${itemIndex} #${id}`
+      );
     } else {
-      item = document.querySelector(`#workspace-component-item-${itemIndex}`);
+      item = document.querySelector(
+        `#workspace-component-item-${itemIndex} #${id}`
+      );
     }
-    item?.scrollIntoView({ behavior: "smooth", block: "center" });
+    if (!item) return;
+    item.scrollIntoView({ behavior: "smooth", inline: "center" });
   };
 
   const setParentFocusedElement = (focusedElement: any, componentItem: any) => {
@@ -130,7 +158,7 @@ export function focus() {
       await store.dispatch("canvas/setSidebarNavbarContent", "layers");
     }
 
-    scrollTo(itemIndex, fromWorkspace);
+    scrollTo(itemIndex, focusedElement.id, fromWorkspace);
   };
 
   const removeAllFocus = () => {

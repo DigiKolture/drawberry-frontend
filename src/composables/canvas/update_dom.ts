@@ -19,6 +19,11 @@ export function updateDom() {
     return componentItem;
   };
 
+  const isChild = (element: any) => {
+    // return !element.parent && element.parentId !== null;
+    return element.parent;
+  };
+
   const updateElementDom = (html: string, elementJson: any, here = false) => {
     const $ = cheerio.load(html);
     const el = $(`#${elementJson.id}`);
@@ -98,6 +103,7 @@ export function updateDom() {
 
   return {
     updateElementDom,
+    isChild,
     updateComponentItemDom,
   };
 }

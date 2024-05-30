@@ -1,20 +1,18 @@
 <template>
-  <div>
-    <div
-      v-if="!header"
-      :class="{ hover: isHover, focus: isFocus }"
-      class="layers__component__item__element"
-    >
-      <BaseIcon :icon="icon" />
-      <h5>{{ title }}</h5>
-    </div>
-    <div
-      v-else
-      :class="{ hover: isHover, focus: isFocus }"
-      class="layers__component__item__header"
-    >
-      <slot />
-    </div>
+  <div
+    v-if="!header"
+    :class="{ hover: isHover, focus: isFocus }"
+    class="layers__component__item__element"
+  >
+    <BaseIcon :icon="icon" />
+    <h5>{{ title }}</h5>
+  </div>
+  <div
+    v-else
+    :class="{ hover: isHover, focus: isFocus }"
+    class="layers__component__item__header"
+  >
+    <slot />
   </div>
 </template>
 <script lang="ts">

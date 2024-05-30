@@ -1,10 +1,13 @@
 <template>
-  <div class="layers__component__item">
+  <div
+    class="layers__component__item"
+    :id="`layer-component-item-${itemIndex}`"
+  >
     <LayerElementDropIndicator v-if="dropIndex === itemIndex" />
     <LayersContainerElementItem
-      :id="`layer-component-item-${itemIndex}`"
       @mouseover.stop="handleMouseOver(componentItem.json[0])"
       @click="handleClick(componentItem.json[0])"
+      :id="componentItem.json[0].id"
       @dblclick="closeAllTabs"
       :element="componentItem.json[0]"
       :componentItem="componentItem"
@@ -37,8 +40,9 @@
 
     <div v-if="showElements" class="layers__component__item__elements">
       <LayersContainerElementItem
-        v-show="!element.parent"
+        v-show="!isChild(element)"
         v-for="element in componentItem.json.slice(1)"
+        :id="element.id"
         :key="element.id"
         @mouseover.stop="handleMouseOver(element)"
         @click="handleClick(element)"
@@ -59,6 +63,7 @@ import { drag_and_drop } from "@/composables/canvas/drag_and_drop";
 import { focus } from "@/composables/canvas/focus";
 import LayerElementDropIndicator from "@/components/canvas/sidebar/layers/utilities/LayerElementDropIndicator.vue";
 import { indicators } from "@/composables/canvas/indicators";
+import { updateDom } from "@/composables/canvas/update_dom";
 
 export default defineComponent({
   name: "LayersContainerItem",
@@ -87,6 +92,7 @@ export default defineComponent({
       layers();
 
     const { changeComponentItemPosition } = drag_and_drop();
+    const { isChild } = updateDom();
     const { removeHoverElement, addHoverToElement } = hover();
     const { validateIndicator } = indicators();
     const { focusComponentElement, removeCurrentFocus } = focus();
@@ -177,6 +183,7 @@ export default defineComponent({
 
     return {
       dropIndex,
+      isChild,
       handleMouseOver,
       handleClick,
       toggleShowElements,

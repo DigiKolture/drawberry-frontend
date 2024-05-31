@@ -45,7 +45,9 @@
       </div>
     </template>
     <template v-else>
-      <router-link to="/login" class="button grey"> Login </router-link>
+      <router-link v-if="isPreview" to="/login" class="button grey">
+        Login
+      </router-link>
     </template>
   </div>
 </template>

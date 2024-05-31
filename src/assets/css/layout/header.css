@@ -27,6 +27,8 @@ header.header{
 .header__container__left{
     @apply flex items-center justify-center h-full;
     column-gap: 24px;
+    /*width: 33%;*/
+    width: 324px;
 }
 
 .header__logo{
@@ -40,18 +42,19 @@ header.header{
 }
 
 .header__container__middle{
-    @apply h-full;
+    @apply h-full w-full flex items-center justify-center;
 }
 
 .header__middle__input__container{
     @apply flex items-center justify-center h-full header-border;
+    width: 129px;
     padding: 12px;
 }
 
 .header__middle__input__container input{
     @apply text-white bg-transparent;
-    width: 117px;
     font-weight: 500;
+    width: 105px;
     font-size: 14px;
     line-height: 18px;
 }
@@ -93,7 +96,9 @@ header.header{
 }
 
 .header__container__right{
-    @apply relative;
+    @apply relative flex justify-end;
+    /*width: 33%;*/
+    width: 425px;
 }
 
 .header__right__canvas__actions{

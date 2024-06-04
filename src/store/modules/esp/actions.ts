@@ -33,7 +33,6 @@ export const actions: ActionTree<ESPState, RootState> = {
     )
       .then((res: any) => {
         const data = res.data.data;
-        console.log({ data });
         window.location.href = data.authenticateUrl;
         return res.data;
       })

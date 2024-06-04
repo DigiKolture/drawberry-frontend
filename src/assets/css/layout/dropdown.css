@@ -5,6 +5,12 @@
     top: 55px;
 }
 
+.user-initials.action__dropdown{
+    left: -150px;
+    top: 40px;
+    width: 196px;
+}
+
 .action__dropdown.open{
     @apply flex;
 }

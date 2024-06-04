@@ -39,8 +39,13 @@
         <BaseButtonIcon @click="goToProject()" icon="close" />
       </div>
       <div v-else-if="(isPreview && !isUserProject) || isADiffRoute">
-        <div class="header__right__initials">
+        <div
+          class="header__right__initials"
+          :id="modalsTrigger"
+          @click="toggleUserInitials"
+        >
           <span>{{ getInitials }}</span>
+          <UserInitialsDropdown :class="{ open: openUserInitials }" />
         </div>
       </div>
     </template>
@@ -64,6 +69,7 @@ import BaseButton from "@/components/layout/BaseButton.vue";
 import BaseIcon from "@/components/icon/BaseIcon.vue";
 import router from "@/router";
 import { auth } from "@/composables/auth/auth";
+import UserInitialsDropdown from "@/components/header/dropdown/UserInitialsDropdown.vue";
 export default defineComponent({
   name: "HeaderContainerRight",
   props: {
@@ -81,6 +87,7 @@ export default defineComponent({
     },
   },
   components: {
+    UserInitialsDropdown,
     BaseIcon,
     BaseButton,
     BaseButtonIcon,
@@ -101,12 +108,19 @@ export default defineComponent({
       return store.getters["modals/preview"];
     });
 
+    const openUserInitials = computed(() => {
+      return store.getters["modals/userInitials"];
+    });
+
     const toggleExport = () => {
       store.commit("modals/TOGGLE_MODAL", "export");
     };
 
     const toggleShare = () => {
       store.commit("modals/TOGGLE_MODAL", "share_preview");
+    };
+    const toggleUserInitials = () => {
+      store.commit("modals/TOGGLE_MODAL", "user_initials");
     };
 
     const togglePreview = () => {
@@ -151,9 +165,11 @@ export default defineComponent({
       toggleExport,
       togglePreview,
       updatePreviewTabs,
+      openUserInitials,
       goToProject,
       isUserProject,
       isADiffRoute,
+      toggleUserInitials,
     };
   },
 });

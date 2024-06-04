@@ -15,6 +15,9 @@ export const getters: GetterTree<ModalState, RootState> = {
   export(state: ModalState): boolean {
     return state.export;
   },
+  userInitials(state: ModalState): boolean {
+    return state.user_initials;
+  },
   colorPicker(state: ModalState): string {
     return state.color_picker;
   },

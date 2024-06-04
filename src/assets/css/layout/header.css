@@ -125,7 +125,7 @@ header.header{
 }
 
 .header__right__initials{
-    @apply text-white flex items-center justify-center;
+    @apply text-white flex items-center justify-center cursor-pointer relative;
     width: 32px;
     height: 32px;
     font-weight: 500;

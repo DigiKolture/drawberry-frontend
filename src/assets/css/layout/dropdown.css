@@ -10,6 +10,7 @@
     left: 88%;
     top: calc(var(--header-height) - 10px);
     width: 196px;
+    z-index: 300;
 }
 .canvas__layout  .user-initials.action__dropdown{
     @apply fixed;

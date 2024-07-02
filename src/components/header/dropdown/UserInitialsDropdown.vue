@@ -3,7 +3,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, onMounted, ref } from "vue";
+import { defineComponent, onMounted, ref } from "vue";
 import store from "@/store";
 import DropdownLayout from "@/components/layout/dropdown/DropdownLayout.vue";
 import { useRoute, useRouter } from "vue-router";
@@ -12,7 +12,7 @@ export default defineComponent({
   name: "UserInitialsDropdown",
   components: { DropdownLayout },
 
-  setup(props, { emit }) {
+  setup() {
     const data = ref([
       {
         icon: "header/user/logout",
@@ -42,8 +42,8 @@ export default defineComponent({
           break;
         }
         case "integrations": {
-          store.commit("auth/LOGOUT");
-          router.push("/login");
+          store.commit("modals/CLOSE_MODAL", "user_initials");
+          store.commit("modals/OPEN_MODAL", "manage_esp");
           break;
         }
       }

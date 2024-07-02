@@ -7,6 +7,7 @@ export function auth() {
   });
 
   const getInitials = computed(() => {
+    if (!authUser.value) return null;
     return `${authUser.value.firstName.charAt(
       0
     )}${authUser.value.lastName.charAt(0)}`;

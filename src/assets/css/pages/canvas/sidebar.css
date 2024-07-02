@@ -34,7 +34,7 @@ nav.canvas__sidebar__nav{
 }
 
 .sidebar__nav__bottom__initials{
-    @apply text-white uppercase rounded-full flex items-center justify-center;
+    @apply text-white uppercase rounded-full flex items-center justify-center cursor-pointer;
     background: #519E47;
     width: 32px;
     height: 32px;
@@ -77,10 +77,11 @@ nav.canvas__sidebar__nav{
 }
 
 .sidebar__nav__contents__body{
-    @apply fixed overflow-y-auto;
+    /*@apply fixed overflow-y-auto;*/
+    @apply  overflow-y-auto;
     padding-top: var(--sidebar-nav-content-header-height);
     width: var(--canvas-sidebar-nav-content-width);
-    z-index: 100;
+    /*z-index: 100;*/
     background: #2D3039;
     height: calc(100% - var(--header-height))
 }

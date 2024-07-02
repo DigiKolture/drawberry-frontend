@@ -15,7 +15,14 @@
         v-for="(button, key) in sidebarNavBottomIcons"
         :icon="button.icon"
       />
-      <div class="sidebar__nav__bottom__initials">KN</div>
+
+      <div
+        @click="toggleUserInitials"
+        id="modals-trigger"
+        class="sidebar__nav__bottom__initials"
+      >
+        {{ getInitials }}
+      </div>
     </div>
   </nav>
 </template>
@@ -23,12 +30,15 @@
 import { computed, defineComponent } from "vue";
 import BaseButtonIcon from "@/components/icon/BaseButtonIcon.vue";
 import store from "@/store";
+import { auth } from "@/composables/auth/auth";
 
 export default defineComponent({
   name: "CanvasSidebarNav",
   components: { BaseButtonIcon },
 
   setup() {
+    const { getInitials } = auth();
+
     const sidebarNavTopIcons = [
       { icon: "canvas/sidebar/nav/add", name: "add_component" },
       { icon: "canvas/sidebar/nav/style", name: "style" },
@@ -52,12 +62,18 @@ export default defineComponent({
       store.commit("canvas/SET_SIDEBAR_NAVBAR_CONTENT", name);
     };
 
+    const toggleUserInitials = () => {
+      store.commit("modals/TOGGLE_MODAL", "user_initials");
+    };
+
     return {
+      getInitials,
       sidebarNavTopIcons,
       sidebarNavBottomIcons,
       sidebarNavContent,
       activeContent,
       changeSidebarNavContent,
+      toggleUserInitials,
     };
   },
 });

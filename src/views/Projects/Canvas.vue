@@ -12,6 +12,7 @@
     </template>
     <template v-slot:modals>
       <ShareProjectPreviewModal />
+      <UserInitialsDropdown :class="{ open: openUserInitials }" />
     </template>
   </CanvasLayout>
 </template>
@@ -24,10 +25,12 @@ import CanvasSidebarNav from "@/components/canvas/sidebar/CanvasSidebarNav";
 import CanvasSidebarNavContent from "@/components/canvas/sidebar/CanvasSidebarNavContent";
 import CanvasPanel from "@/components/canvas/panel/CanvasPanel";
 import ShareProjectPreviewModal from "@/components/canvas/modals/ShareProjectPreviewModal";
+import UserInitialsDropdown from "@/components/header/dropdown/UserInitialsDropdown.vue";
 
 export default defineComponent({
   name: "CanvasPage",
   components: {
+    UserInitialsDropdown,
     ShareProjectPreviewModal,
     CanvasPanel,
     CanvasSidebarNav,
@@ -49,8 +52,13 @@ export default defineComponent({
       return store.getters["projects/project"];
     });
 
+    const openUserInitials = computed(() => {
+      return store.getters["modals/userInitials"];
+    });
+
     return {
       project,
+      openUserInitials,
       selectedComponent,
     };
   },

@@ -6,7 +6,6 @@
       :class="{
         active: selectedComponent && selectedComponent.id === component.id,
       }"
-      href="#"
     >
       {{ component.name }}
     </a>

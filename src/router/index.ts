@@ -8,6 +8,7 @@ import store from "@/store";
 import ESPOAuthCallback from "@/views/ESP/ESPOAuthCallback.vue";
 import Preview from "@/views/Projects/Preview.vue";
 import ForgotPassword from "@/views/Auth/ForgotPassword.vue";
+import ResetPassword from "@/views/Auth/ResetPassword.vue";
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -38,6 +39,15 @@ const routes: Array<RouteRecordRaw> = [
     path: "/forgot-password",
     name: "ForgotPassword",
     component: ForgotPassword,
+    meta: {
+      authRequired: false,
+    },
+  },
+  {
+    path: "/reset-password/:token",
+    name: "ResetPassword",
+    component: ResetPassword,
+    props: true,
     meta: {
       authRequired: false,
     },

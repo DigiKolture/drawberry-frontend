@@ -6,3 +6,6 @@
     color: var(--color-brand-orange);
     margin-top: 20px;
 }
+
+.auth__error span:first-letter{
+}

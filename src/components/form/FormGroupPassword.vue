@@ -1,6 +1,6 @@
 <template>
   <FormGroup>
-    <BaseLabel title="Password" />
+    <BaseLabel :title="title" />
     <div class="input__group">
       <BaseInput
         :value="modelValue"
@@ -35,6 +35,11 @@ export default defineComponent({
     modelValue: {
       type: [String, Number],
       default: "",
+      required: false,
+    },
+    title: {
+      type: String,
+      default: "Password",
       required: false,
     },
   },

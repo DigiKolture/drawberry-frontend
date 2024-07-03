@@ -26,6 +26,16 @@ export const actions: ActionTree<AuthState, RootState> = {
       });
   },
 
+  forgotPassword({ commit }, data): Promise<void> {
+    return AxiosClient.post(`${baseUrl}/forgot-password`, data)
+      .then((res: any) => {
+        return res.data;
+      })
+      .catch((err) => {
+        return rejectError(err);
+      });
+  },
+
   oAuthLogin({ commit }, data): Promise<void> {
     return AxiosClient.post(`${baseUrl}/google/login`, data)
       .then((res: any) => {

@@ -1,5 +1,6 @@
 section.auth-layout{
-    @apply flex flex-col w-full h-full items-center justify-center;
+    @apply flex flex-col w-full h-full items-center;
+    padding-top: 108px;
     background-color: #1E1F26;
 }
 
@@ -16,8 +17,12 @@ section.auth-layout{
 }
 
 .auth__main{
-    @apply flex flex-col;
+    @apply flex flex-col ;
     width: 312px;
+}
+
+.auth__main.submitted{
+    width: 422px;
 }
 
 .auth__main__close{
@@ -33,6 +38,10 @@ section.auth-layout{
     @apply flex flex-col;
     row-gap: 14px;
 
+}
+
+.auth__form-content.submitted{
+    @apply items-center;
 }
 
 .auth__form-content {
@@ -75,6 +84,7 @@ section.auth-layout{
     column-gap: 16px;
     font-weight: 400;
     font-size: 10px;
+    width: 312px;
 }
 
 .auth__form__divider span:first-child, .auth__form__divider span:last-child{
@@ -141,9 +151,29 @@ section.auth-layout{
 }
 
 .form__footer p a{
-    @apply underline;
+    @apply underline cursor-pointer;
 }
 
 /* LOGIN */
 
+.auth__forgot-password-submitted{
+    @apply flex flex-col w-full items-center;
+}
 
+
+.auth__forgot-password-submitted > p{
+    font-weight: 400;
+    font-size: 16px;
+    text-align: center;
+    color: var(--color-grey-10);
+    /*padding-bottom: 16px;*/
+}
+
+.auth__forgot-password-submitted .form__footer{
+    padding-bottom: 40px;
+    padding-top: 40px;
+}
+
+.auth__forgot-password-submitted .auth__form__divider{
+    padding-bottom: 16px;
+}

@@ -7,6 +7,7 @@ import Canvas from "@/views/Projects/Canvas.vue";
 import store from "@/store";
 import ESPOAuthCallback from "@/views/ESP/ESPOAuthCallback.vue";
 import Preview from "@/views/Projects/Preview.vue";
+import ForgotPassword from "@/views/Auth/ForgotPassword.vue";
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -17,7 +18,6 @@ const routes: Array<RouteRecordRaw> = [
       authRequired: false,
     },
   },
-
   {
     path: "/login",
     name: "Login",
@@ -30,6 +30,14 @@ const routes: Array<RouteRecordRaw> = [
     path: "/register",
     name: "Register",
     component: Register,
+    meta: {
+      authRequired: false,
+    },
+  },
+  {
+    path: "/forgot-password",
+    name: "ForgotPassword",
+    component: ForgotPassword,
     meta: {
       authRequired: false,
     },

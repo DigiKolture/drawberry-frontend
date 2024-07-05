@@ -3,6 +3,7 @@ import { AuthState } from "@/store/modules/auth/types";
 import { RootState } from "@/store/types";
 import AxiosClient from "@/services/api";
 import { helpers } from "@/composables/helpers";
+import { Axios } from "axios";
 
 const baseUrl = "/auth";
 
@@ -27,7 +28,7 @@ export const actions: ActionTree<AuthState, RootState> = {
   },
 
   forgotPassword({ commit }, data): Promise<void> {
-    return AxiosClient.post(`${baseUrl}/forgot-password`, data)
+    return AxiosClient.post(`${baseUrl}/forgot/password`, data)
       .then((res: any) => {
         return res.data;
       })
@@ -37,7 +38,7 @@ export const actions: ActionTree<AuthState, RootState> = {
   },
 
   resetPassword({ commit }, data): Promise<void> {
-    return AxiosClient.post(`${baseUrl}/reset-password`, data)
+    return AxiosClient.post(`${baseUrl}/reset/password`, data)
       .then((res: any) => {
         const data = res.data;
         if (!data.error) {
@@ -46,6 +47,19 @@ export const actions: ActionTree<AuthState, RootState> = {
           commit("SET_AUTH_USER", user);
           localStorage.setItem("refresh-token", tokens.refresh.token);
         }
+        return res.data;
+      })
+      .catch((err) => {
+        return rejectError(err);
+      });
+  },
+
+  emailVerification({ commit }, token): Promise<void> {
+    return AxiosClient.post(`${baseUrl}/email/verification`, { token })
+      .then((res: any) => {
+        const data = res.data;
+        console.log({ data });
+
         return res.data;
       })
       .catch((err) => {

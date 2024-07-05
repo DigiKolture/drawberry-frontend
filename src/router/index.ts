@@ -9,6 +9,7 @@ import ESPOAuthCallback from "@/views/ESP/ESPOAuthCallback.vue";
 import Preview from "@/views/Projects/Preview.vue";
 import ForgotPassword from "@/views/Auth/ForgotPassword.vue";
 import ResetPassword from "@/views/Auth/ResetPassword.vue";
+import EmailVerification from "@/views/Auth/EmailVerification.vue";
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -36,7 +37,7 @@ const routes: Array<RouteRecordRaw> = [
     },
   },
   {
-    path: "/forgot-password",
+    path: "/forgot/password",
     name: "ForgotPassword",
     component: ForgotPassword,
     meta: {
@@ -44,9 +45,18 @@ const routes: Array<RouteRecordRaw> = [
     },
   },
   {
-    path: "/reset-password/:token",
+    path: "/reset/password/:token",
     name: "ResetPassword",
     component: ResetPassword,
+    props: true,
+    meta: {
+      authRequired: false,
+    },
+  },
+  {
+    path: "/email/verification/:token",
+    name: "EmailVerification",
+    component: EmailVerification,
     props: true,
     meta: {
       authRequired: false,

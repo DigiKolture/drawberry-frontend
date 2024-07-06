@@ -30,7 +30,7 @@
           <FormGroupPassword v-model="user.password" />
         </div>
         <div class="auth__submit">
-          <router-link to="/forgot-password">Forgot password?</router-link>
+          <router-link to="/forgot/password">Forgot password?</router-link>
           <BaseButton :disabled="disabled" type="submit" title="Continue" />
         </div>
       </form>

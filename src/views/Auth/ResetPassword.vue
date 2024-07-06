@@ -58,7 +58,7 @@ export default defineComponent({
 
     const validatePassword = () => {
       if (user.password !== user.confirmPassword) {
-        errMessage.value = "Password doesnt match";
+        errMessage.value = "Both passwords must match";
         disabled.value = false;
         return true;
       }

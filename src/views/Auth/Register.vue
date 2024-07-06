@@ -60,7 +60,7 @@
           <FormGroupPassword v-model="user.password" />
         </div>
         <div class="auth__submit">
-          <a href="">Forgot password?</a>
+          <router-link to="/forgot/password">Forgot password?</router-link>
           <BaseButton
             type="submit"
             :disabled="disabled"

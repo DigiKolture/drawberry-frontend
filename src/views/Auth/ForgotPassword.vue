@@ -10,8 +10,8 @@
 
         <div class="auth__forgot-password-submitted" v-if="submitted">
           <p>
-            A password reset link has been sent to [{{ user.email }}]. Follow
-            the instructions to reset your password.
+            A password reset link has been sent to <span>{{ user.email }}</span
+            >. Follow the instructions to reset your password.
           </p>
           <div class="form__footer">
             <p>

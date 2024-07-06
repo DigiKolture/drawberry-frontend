@@ -23,11 +23,11 @@ export default defineComponent({
         name: "Duplicate",
         event: "duplicate",
       },
-      {
-        icon: "projects/dropdown/open",
-        name: "Move to folder",
-        event: "move",
-      },
+      // {
+      //   icon: "projects/dropdown/open",
+      //   name: "Move to folder",
+      //   event: "move",
+      // },
       {
         icon: "projects/dropdown/edit",
         name: "Rename project",

@@ -116,8 +116,11 @@ const router = createRouter({
 router.beforeEach((routeTo, routeFrom, next) => {
   const authRequired = routeTo.matched.some((route) => route.meta.authRequired);
   const authUser = store.getters["auth/authUser"];
-  // const jwt = store.getters["auth/jwt"];
   const jwt = localStorage.getItem("access-token");
+
+  if (authUser && !authRequired) {
+    return next({ name: "ProjectIndex" });
+  }
 
   if (!authRequired) {
     return next();

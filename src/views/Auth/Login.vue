@@ -1,6 +1,6 @@
 <template>
   <AuthLayout>
-    <div class="auth__main login">
+    <div v-if="!submitted" class="auth__main login">
       <form class="auth__form" @submit.prevent="login">
         <div class="auth__form-content">
           <h3>Welcome</h3>
@@ -41,6 +41,8 @@
         </p>
       </div>
     </div>
+
+    <VerifyAccount :email="user.email" v-else />
   </AuthLayout>
 </template>
 <script>
@@ -55,9 +57,11 @@ import router from "@/router";
 import FormGroupPassword from "@/components/form/FormGroupPassword.vue";
 import AuthError from "@/components/auth/error/AuthError.vue";
 import GoogleAuthSocial from "@/views/Auth/GoogleAuthSocial.vue";
+import VerifyAccount from "@/components/auth/VerifyAccount.vue";
 export default defineComponent({
   name: "LoginPage",
   components: {
+    VerifyAccount,
     GoogleAuthSocial,
     AuthError,
     FormGroupPassword,
@@ -76,15 +80,22 @@ export default defineComponent({
 
     const errMessage = ref("");
     const disabled = ref(false);
+    const submitted = ref(false);
 
     const login = async () => {
       errMessage.value = "";
       disabled.value = true;
       store
         .dispatch("auth/login", user)
-        .then(() => {
-          disabled.value = false;
-          router.push("/projects");
+        .then((res) => {
+          const { user } = res.data;
+          console.log({ user });
+          if (user.verified) {
+            disabled.value = false;
+            router.push("/projects");
+          } else {
+            submitted.value = true;
+          }
         })
         .catch((message) => {
           disabled.value = false;
@@ -94,6 +105,7 @@ export default defineComponent({
 
     return {
       errMessage,
+      submitted,
       disabled,
       user,
       login,

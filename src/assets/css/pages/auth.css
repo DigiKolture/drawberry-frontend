@@ -48,7 +48,23 @@ section.auth-layout{
     margin-bottom: 40px;
 }
 
+.auth__form-content-title{
+    @apply text-white;
+    font-weight: 700;
+    font-size: 24px;
+    line-height: 16px;
+}
 
+.auth__form-content-desc{
+    font-weight: 400;
+    font-size: 16px;
+    text-align: center;
+    color: var(--color-grey-10);
+}
+
+.auth__form-content-desc span{
+    font-weight: bold;
+}
 
 .auth__form-content h3{
     @apply text-white;
@@ -176,4 +192,28 @@ section.auth-layout{
 
 .auth__forgot-password-submitted .auth__form__divider{
     padding-bottom: 16px;
+}
+
+
+.auth__verify{
+    @apply flex flex-col items-center justify-center;
+    width: 442px;
+    row-gap: 40px;
+}
+
+.auth__verify .auth__verify__icon svg{
+    width: 123px;
+    height: 72px;
+}
+
+.auth__verify__content{
+    @apply flex flex-col items-center justify-center;
+    padding-left: 32px;
+    padding-right: 32px;
+    row-gap: 16px;
+}
+
+
+.auth__verify .form__footer{
+    padding: 0;
 }

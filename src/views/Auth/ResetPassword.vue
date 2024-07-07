@@ -80,7 +80,7 @@ export default defineComponent({
           store
             .dispatch("toast/showToast", {
               message: `Password reset successful.`,
-              timeout: 1000,
+              timeout: 5000,
             })
             .then(() => {
               router.push("/projects");

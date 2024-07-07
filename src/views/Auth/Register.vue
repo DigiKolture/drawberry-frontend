@@ -1,6 +1,6 @@
 <template>
   <AuthLayout>
-    <div class="auth__main">
+    <div v-if="!submitted" class="auth__main">
       <form class="auth__form" @submit.prevent="register">
         <div class="auth__form-content">
           <h3>Create an account</h3>
@@ -75,6 +75,7 @@
         </p>
       </div>
     </div>
+    <VerifyAccount :email="user.email" v-else />
   </AuthLayout>
 </template>
 <script>
@@ -90,10 +91,12 @@ import router from "@/router";
 import FormGroupPassword from "@/components/form/FormGroupPassword.vue";
 import AuthError from "@/components/auth/error/AuthError.vue";
 import GoogleAuthSocial from "@/views/Auth/GoogleAuthSocial.vue";
+import VerifyAccount from "@/components/auth/VerifyAccount.vue";
 
 export default defineComponent({
   name: "RegisterPage",
   components: {
+    VerifyAccount,
     GoogleAuthSocial,
     AuthError,
     FormGroupPassword,
@@ -128,6 +131,7 @@ export default defineComponent({
     });
     const errMessage = ref("");
     const disabled = ref(false);
+    const submitted = ref(false);
 
     const register = async () => {
       errMessage.value = "";
@@ -135,24 +139,20 @@ export default defineComponent({
       store
         .dispatch("auth/register", user)
         .then(() => {
-          router.push("/projects");
-        })
-        .then(() => {
-          disabled.value = false;
-          router.push("/projects");
+          submitted.value = true;
         })
         .catch((message) => {
           disabled.value = false;
           errMessage.value = message;
         });
     };
-
     return {
       disabled,
       errMessage,
       user,
       countries,
       register,
+      submitted,
     };
   },
 });

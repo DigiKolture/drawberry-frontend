@@ -28,10 +28,6 @@ export default defineComponent({
       emailVerification(token);
     });
 
-    const authUser = computed(() => {
-      return store.getters["auth/authUser"];
-    });
-
     const emailVerification = async (token) => {
       store
         .dispatch("auth/emailVerification", token)
@@ -40,14 +36,10 @@ export default defineComponent({
           store
             .dispatch("toast/showToast", {
               message: `Account has been verified successfully.`,
-              timeout: 3000,
+              timeout: 5000,
             })
             .then(() => {
-              if (authUser.value) {
-                router.push("/projects");
-              } else {
-                router.push("/login");
-              }
+              router.push("/projects");
             });
         })
         .catch((message) => {

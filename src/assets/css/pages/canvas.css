@@ -200,9 +200,42 @@ input.canvas__input__text:focus{
     /*pointer-events: none*/
 }
 
+.screen-size-constraint{
+    @apply w-full h-full fixed;
+    top:0;
+    left: 0;
+    background: rgba(30, 31, 38, 0.7);
+    z-index: 10000000000000;
+}
 
+.screen-size-constraint__modal{
+    @apply fixed flex flex-col justify-center items-center;
+    top: 50%;
+    left: calc(50% - 100px);
+    transform: translate(-50%, -50%);
+    width: 400px;
+    row-gap: 20px;
+    z-index: 10000;
+}
 
+.screen-size-constraint svg{
+    height: 91px;
+    width: 78px;
+}
 
+.screen-size-constraint__content{
+    @apply flex flex-col text-white ;
+    row-gap: 16px;
+}
 
+.screen-size-constraint__content h5{
+    /*font-weight: 500;*/
+    font-size: 20px;
+    text-align: center;
+}
 
-
+.screen-size-constraint__content p{
+    font-weight: 400;
+    font-size: 16px;
+    text-align: center;
+}

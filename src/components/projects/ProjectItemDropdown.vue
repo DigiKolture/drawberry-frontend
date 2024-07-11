@@ -23,11 +23,6 @@ export default defineComponent({
         name: "Duplicate",
         event: "duplicate",
       },
-      // {
-      //   icon: "projects/dropdown/open",
-      //   name: "Move to folder",
-      //   event: "move",
-      // },
       {
         icon: "projects/dropdown/edit",
         name: "Rename project",
@@ -47,12 +42,12 @@ export default defineComponent({
           store.commit("modals/CLOSE_MODAL", "project_item");
           break;
         }
-        case data[2].event: {
+        case data[1].event: {
           store.commit("modals/OPEN_MODAL", "project_update");
           store.commit("modals/CLOSE_MODAL", "project_item");
           break;
         }
-        case data[3].event: {
+        case data[2].event: {
           store.commit("modals/OPEN_MODAL", "project_delete");
           store.commit("modals/CLOSE_MODAL", "project_item");
           break;

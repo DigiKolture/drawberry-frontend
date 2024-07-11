@@ -9,6 +9,7 @@
     border-radius: 8px;
     box-shadow: 0px 4px 6px -2px rgba(0, 0, 0, 0.05), 0px 10px 15px -3px rgba(0, 0, 0, 0.10);
     border-top: 2px solid #519E47;
+    z-index: 1000000;
 }
 
 .toast__message .loader path{
@@ -18,7 +19,6 @@
 .toast__message.error{
     border-top: 2px solid #ED1C24;
 }
-
 
 .toast__message div{
     @apply flex items-center;
@@ -31,6 +31,10 @@
     font-weight: 400;
 }
 
+.toast__message.error h6{
+    color: #353843;
+}
+
 .toast__message button{
     @apply underline;
     color: #163C29;
@@ -38,3 +42,4 @@
     font-weight: 400;
     line-height: 18px;
 }
+

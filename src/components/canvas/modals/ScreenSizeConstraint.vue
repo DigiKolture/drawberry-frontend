@@ -1,5 +1,5 @@
 <template>
-  <div class="screen-size-constraint" v-if="isSmallScreen">
+  <div class="screen-size-constraint" v-if="isSmallScreen && isCanvasRoute">
     <div class="screen-size-constraint__modal">
       <BaseIcon icon="canvas/size-constraint" />
       <div class="screen-size-constraint__content">
@@ -13,9 +13,10 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
+import { computed, defineComponent } from "vue";
 import BaseIcon from "@/components/icon/BaseIcon.vue";
 import { screenConstraint } from "@/composables/canvas/screen-constraint";
+import { useRoute } from "vue-router";
 
 export default defineComponent({
   name: "ScreenSizeConstraint",
@@ -23,9 +24,12 @@ export default defineComponent({
 
   setup() {
     const { isSmallScreen } = screenConstraint();
+    const route = useRoute();
+    const isCanvasRoute = computed(() => route.name === "Canvas");
 
     return {
       isSmallScreen,
+      isCanvasRoute,
     };
   },
 });

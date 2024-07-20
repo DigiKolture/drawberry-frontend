@@ -37,7 +37,7 @@ export default defineComponent({
     const fetchComponentItems = (component) => {
       ui.changeComponentItemsStatus();
       store.commit("components/SET_SELECTED_COMPONENT", component);
-      store.dispatch("components/getComponentItems", component.id);
+      store.commit("components/SET_COMPONENT_ITEMS", component.items);
     };
 
     return {

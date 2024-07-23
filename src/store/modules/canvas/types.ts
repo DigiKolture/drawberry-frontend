@@ -12,6 +12,11 @@ export interface ProjectStyle {
   previewText: string;
 }
 
+export interface UpdatedComponent {
+  projectComponentItemId: string;
+  elements: any[];
+}
+
 export interface CanvasState {
   focusedElement: object | null;
   focusedParentElement: object | null;
@@ -21,8 +26,10 @@ export interface CanvasState {
   sidebarDock: boolean;
   workspaceComponents: any[];
   hasWorkspaceComponent: boolean;
+  updatedComponents: UpdatedComponent[];
   googleFonts: any[];
   fontWeights: number[];
+  generalStyle: ProjectStyle;
   style: ProjectStyle;
   dropLoading: boolean;
 }

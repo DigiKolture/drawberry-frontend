@@ -3,6 +3,7 @@ import {
   CanvasState,
   CurrentHoverElementType,
   ProjectStyle,
+  UpdatedComponent,
 } from "@/store/modules/canvas/types";
 import { updateDom } from "@/composables/canvas/update_dom";
 const { updateElementDom } = updateDom();
@@ -23,6 +24,10 @@ export const mutations: MutationTree<CanvasState> = {
   SET_HAS_WORKSPACE_COMPONENTS(state: CanvasState, data: boolean) {
     state.hasWorkspaceComponent = data;
     return state.hasWorkspaceComponent;
+  },
+  SET_GENERAL_STYLE(state: CanvasState, data: ProjectStyle) {
+    state.generalStyle = data;
+    return state.style;
   },
   SET_STYLE(state: CanvasState, data: ProjectStyle) {
     state.style = data;
@@ -50,6 +55,10 @@ export const mutations: MutationTree<CanvasState> = {
   SET_CURRENT_HOVER_ELEMENT(state: CanvasState, data: CurrentHoverElementType) {
     state.currentHoverElement = data;
     return state.currentHoverElement;
+  },
+  SET_UPDATED_COMPONENTS(state: CanvasState, data: UpdatedComponent[]) {
+    state.updatedComponents = data;
+    return state.updatedComponents;
   },
   UPDATE_FOCUSED_JSON_AND_DOM(state: CanvasState, data: object): any {
     state.focusedElement = data;

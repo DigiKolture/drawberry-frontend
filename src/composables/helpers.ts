@@ -17,6 +17,16 @@ export function helpers() {
     return str.slice(0, num) + "...";
   };
 
+  const find = (array: any[], key: string, value: any) => {
+    return array.find((obj) => obj[key] === value) || null;
+  };
+
+  const findIndex = (array: any[], key: string, value: any) => {
+    const index = array.findIndex((obj) => obj[key] === value);
+    if (index < 0) return null;
+    return index;
+  };
+
   const isValidImageUrl = async (url: string): Promise<boolean> => {
     return new Promise((resolve) => {
       const img = new Image();
@@ -77,7 +87,25 @@ export function helpers() {
     return Promise.reject(message);
   };
 
+  const isObjectsMatched = (obj1: any, obj2: any) => {
+    const keys1 = Object.keys(obj1);
+    const keys2 = Object.keys(obj2);
+
+    if (keys1.length !== keys2.length) {
+      return false;
+    }
+
+    for (const key of keys1) {
+      if (!(key in obj2) || obj1[key] !== obj2[key]) {
+        return false;
+      }
+    }
+    return true;
+  };
+
   return {
+    find,
+    findIndex,
     formatDate,
     isValidImageUrl,
     capitalizeFirstLetter,
@@ -85,5 +113,6 @@ export function helpers() {
     sliceString,
     diffForHumans,
     rejectError,
+    isObjectsMatched,
   };
 }

@@ -3,6 +3,7 @@ import {
   CanvasState,
   CurrentHoverElementType,
   ProjectStyle,
+  UpdatedComponent,
 } from "@/store/modules/canvas/types";
 import { RootState } from "@/store/types";
 
@@ -25,8 +26,14 @@ export const getters: GetterTree<CanvasState, RootState> = {
   hasWorkspaceComponent(state: CanvasState): boolean {
     return state.hasWorkspaceComponent;
   },
+  generalStyle(state: CanvasState): ProjectStyle {
+    return state.generalStyle;
+  },
   style(state: CanvasState): ProjectStyle {
     return state.style;
+  },
+  updatedComponents(state: CanvasState): UpdatedComponent[] {
+    return state.updatedComponents;
   },
   googleFonts(state: CanvasState): any[] {
     return state.googleFonts;

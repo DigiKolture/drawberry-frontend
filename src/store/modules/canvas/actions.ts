@@ -1,30 +1,30 @@
 import { ActionTree } from "vuex";
-import { CanvasState } from "@/store/modules/canvas/types";
+import { CanvasState, ProjectStyle } from "@/store/modules/canvas/types";
 import { RootState } from "@/store/types";
 import AxiosClient from "@/services/api";
 import { updateDom } from "@/composables/canvas/update_dom";
-import store from "@/store";
 import router from "@/router";
+import { canvas } from "@/composables/canvas/canvas";
 
 const { updateComponentItemDom } = updateDom();
 const { updateElementDom } = updateDom();
+const { hasProjectChanged, pushComponentsElementsUpdates } = canvas();
 
 export const actions: ActionTree<CanvasState, RootState> = {
   getProjectComponentItems(
-    { commit, getters },
+    { commit, getters, dispatch },
     projectId: string
   ): Promise<void> {
-    commit("SET_HAS_WORKSPACE_COMPONENTS", false);
+    dispatch("prepareCanvas");
     const sidebarNavContentVal = getters.sidebarNavContent;
-    commit("SET_SIDEBAR_NAVBAR_CONTENT", null);
-    commit("SET_DEFAULT_STYLE");
-    commit("projects/SET_PROJECT", null, { root: true });
     return AxiosClient.get(`/projects/${projectId}`)
       .then((res: any) => {
         const data = res.data;
         commit("projects/SET_PROJECT", data.data.project, { root: true });
         commit("SET_WORKSPACE_COMPONENTS", data.data.project.components);
-        commit("SET_STYLE", data.data.project.style);
+        const style = data.data.project.style;
+        commit("SET_STYLE", { ...style });
+        commit("SET_GENERAL_STYLE", { ...style });
 
         const hasWorkspaceComponent =
           data.data.project.components &&
@@ -64,7 +64,6 @@ export const actions: ActionTree<CanvasState, RootState> = {
 
     return AxiosClient.post(`/projects/${projectId}/components`, data)
       .then((res: any) => {
-        // dispatch("getProjectComponentItems", projectId);
         commit("SET_HAS_WORKSPACE_COMPONENTS", true);
 
         const component = res.data.data.component;
@@ -90,9 +89,30 @@ export const actions: ActionTree<CanvasState, RootState> = {
       data
     )
       .then((res: any) => {
-        // if (set) {
-        //   dispatch("getProjectComponentItems", projectId);
-        // }
+        return res.data.data;
+      })
+      .catch((err: any): any => {
+        if (err instanceof Error) {
+          const message = err.message;
+          return Promise.reject(new Error(message));
+        }
+      });
+  },
+  async updateProjectComponentsAndStyles({ state, commit }): Promise<void> {
+    if (!hasProjectChanged()) {
+      return;
+    }
+    const currentRoute: any = router.currentRoute;
+    const projectId = currentRoute._value.params.id;
+
+    const projectComponents = state.updatedComponents;
+    const style: ProjectStyle = state.style;
+    return AxiosClient.put(`/projects/${projectId}/components/styles`, {
+      projectComponents,
+      style,
+    })
+      .then((res: any) => {
+        // commit("SET_UPDATED_COMPONENTS", []);
         return res.data.data;
       })
       .catch((err: any): any => {
@@ -146,33 +166,32 @@ export const actions: ActionTree<CanvasState, RootState> = {
         }
       });
   },
-  updateFocusedElement({ state, dispatch, commit, rootState }, element) {
+  updateFocusedElement({ state, commit }, element) {
     if (state.focusedIndex === null || state.focusedElement === null) return;
 
     //Update DOM before the API (Just to prevent waiting for changes)
     commit("UPDATE_FOCUSED_JSON_AND_DOM", element);
     const projectComponentItem = state.workspaceComponents[state.focusedIndex];
-    const focusedElement: any = state.focusedElement;
-    const root: any = rootState;
-    const projectId: string = root.projects.projectId;
 
-    dispatch("updateProjectComponent", {
-      projectId,
-      projectComponentItemId: projectComponentItem.id,
-      set: false,
-      data: {
-        elements: [
-          {
-            id: focusedElement.id,
-            attributes: focusedElement.attributes,
-            innerHtml: focusedElement.innerHtml,
-          },
-        ],
-      },
-    });
+    pushComponentsElementsUpdates(state.focusedElement, projectComponentItem);
+
+    // dispatch("updateProjectComponent", {
+    //   projectId,
+    //   projectComponentItemId: projectComponentItem.id,
+    //   set: false,
+    //   data: {
+    //     elements: [
+    //       {
+    //         id: focusedElement.id,
+    //         attributes: focusedElement.attributes,
+    //         innerHtml: focusedElement.innerHtml,
+    //       },
+    //     ],
+    //   },
+    // });
   },
 
-  updateFocusedParentElement({ state, dispatch, commit, rootState }, element) {
+  updateFocusedParentElement({ state, commit }, element) {
     if (
       state.focusedIndex === null ||
       state.focusedElement === null ||
@@ -183,36 +202,23 @@ export const actions: ActionTree<CanvasState, RootState> = {
     //Update DOM before the API (Just to prevent waiting for changes)
     commit("UPDATE_FOCUSED_PARENT_JSON_AND_DOM", element);
     const projectComponentItem = state.workspaceComponents[state.focusedIndex];
-    const focusedParentElement: any = state.focusedParentElement;
-    const root: any = rootState;
-    const projectId: string = root.projects.projectId;
 
-    dispatch("updateProjectComponent", {
-      projectId,
-      projectComponentItemId: projectComponentItem.id,
-      set: false,
-      data: {
-        elements: [
-          {
-            id: focusedParentElement.id,
-            attributes: focusedParentElement.attributes,
-            innerHtml: focusedParentElement.innerHtml,
-          },
-        ],
-      },
-    });
+    pushComponentsElementsUpdates(
+      state.focusedParentElement,
+      projectComponentItem
+    );
   },
-  async updateProjectStyle({ commit, rootState }, style): Promise<void> {
+  async updateProjectStyle({ commit }, style): Promise<void> {
     commit("SET_STYLE", style);
-    const root: any = rootState;
-    const projectId: string = root.projects.projectId;
-
-    await store.dispatch("projects/updateProject", {
-      id: projectId,
-      data: { style },
-    });
+    // const root: any = rootState;
+    // const projectId: string = root.projects.projectId;
+    //
+    // await store.dispatch("projects/updateProject", {
+    //   id: projectId,
+    //   data: { style },
+    // });
   },
-  updateFirstProjectComponentsStyles(
+  async updateFirstProjectComponentsStyles(
     { commit },
     { projectId, style }
   ): Promise<void> {
@@ -267,5 +273,13 @@ export const actions: ActionTree<CanvasState, RootState> = {
         resolve();
       });
     });
+  },
+
+  prepareCanvas({ commit }): void {
+    commit("SET_HAS_WORKSPACE_COMPONENTS", false);
+    commit("SET_SIDEBAR_NAVBAR_CONTENT", null);
+    commit("SET_DEFAULT_STYLE");
+    commit("SET_UPDATED_COMPONENTS", []);
+    commit("projects/SET_PROJECT", null, { root: true });
   },
 };

@@ -18,7 +18,7 @@
   </CanvasLayout>
 </template>
 <script>
-import { computed, defineComponent, onMounted, ref } from "vue";
+import { computed, defineComponent, onMounted, onUnmounted, ref } from "vue";
 import store from "@/store";
 import CanvasLayout from "@/components/layout/CanvasLayout";
 import WorkspaceComponentItemsContainer from "@/components/canvas/workspace/component-items/WorkspaceComponentItemsContainer";
@@ -45,7 +45,11 @@ export default defineComponent({
   setup() {
     onMounted(() => {
       store.dispatch("components/getComponents");
-      // store.commit("canvas/SET_WORKSPACE_COMPONENTS", []);
+      window.addEventListener("keydown", handleKeyPress);
+    });
+
+    onUnmounted(() => {
+      window.removeEventListener("keydown", handleKeyPress);
     });
 
     const selectedComponent = ref({});
@@ -57,6 +61,13 @@ export default defineComponent({
     const openUserInitials = computed(() => {
       return store.getters["modals/userInitials"];
     });
+
+    const handleKeyPress = (event) => {
+      if ((event.ctrlKey || event.metaKey) && event.key === "s") {
+        store.dispatch("canvas/updateProjectComponentsAndStyles");
+        event.preventDefault();
+      }
+    };
 
     return {
       project,

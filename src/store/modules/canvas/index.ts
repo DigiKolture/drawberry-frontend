@@ -14,7 +14,17 @@ const state: CanvasState = {
   },
   focusedIndex: null,
   workspaceComponents: [],
+  updatedComponents: [],
   hasWorkspaceComponent: false,
+  //Difference between generalStyle and style is that generalStyle won't be mutated
+  generalStyle: {
+    layout: "",
+    backgroundColor: "",
+    fontFamily: "",
+    buttonColor: "",
+    backgroundImage: "",
+    previewText: "",
+  },
   style: {
     layout: "",
     backgroundColor: "",

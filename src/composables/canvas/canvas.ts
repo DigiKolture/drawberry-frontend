@@ -22,7 +22,11 @@ export function canvas() {
   });
 
   const hasProjectChanged = () => {
-    if (updatedComponents.value.length > 0) return true;
+    console.log(updatedComponents.value.length);
+    if (updatedComponents.value.length > 0) {
+      console.log("Basddddd");
+      return true;
+    }
     const matched = isObjectsMatched(style.value, generalStyle.value);
     return !matched;
   };

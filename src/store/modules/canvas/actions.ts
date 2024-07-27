@@ -100,6 +100,7 @@ export const actions: ActionTree<CanvasState, RootState> = {
   },
   async updateProjectComponentsAndStyles({ state, commit }): Promise<void> {
     if (!hasProjectChanged()) {
+      console.log("<<<<<<< hasnt changed");
       return;
     }
     const currentRoute: any = router.currentRoute;
@@ -279,7 +280,7 @@ export const actions: ActionTree<CanvasState, RootState> = {
     commit("SET_HAS_WORKSPACE_COMPONENTS", false);
     commit("SET_SIDEBAR_NAVBAR_CONTENT", null);
     commit("SET_DEFAULT_STYLE");
-    commit("SET_UPDATED_COMPONENTS", []);
+    // commit("SET_UPDATED_COMPONENTS", []);
     commit("projects/SET_PROJECT", null, { root: true });
   },
 };

@@ -58,10 +58,10 @@ export default defineComponent({
         "border-radius": borderRadius[lay],
         "box-shadow": boxShadow[lay],
       };
-      // await store.dispatch("canvas/updateFirstProjectComponentsStyles", {
-      //   projectId: project.value.id,
-      //   style: componentsStyle,
-      // });
+      store.commit(
+        "canvas/UPDATE_FIRST_PROJECT_COMPONENTS_STYLE",
+        componentsStyle
+      );
     };
 
     return {

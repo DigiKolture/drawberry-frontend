@@ -2,7 +2,6 @@ import store from "@/store";
 import { computed } from "vue";
 import { ui } from "@/assets/js/canvas";
 import { focus } from "@/composables/canvas/focus";
-import router from "@/router";
 
 export function drag_and_drop() {
   const { removeCurrentFocus, removeFocus, removeAllFocus } = focus();
@@ -53,14 +52,14 @@ export function drag_and_drop() {
     // workspaceComponents.value.push(componentItem);
     // store.commit("canvas/SET_WORKSPACE_COMPONENTS", workspaceComponents.value);
 
-    // // TODO: We will need a loader here
-    await store.dispatch("canvas/storeProjectComponent", {
-      projectId,
-      data: {
-        componentItemId: componentItem.id,
-        positionIndex: toIndex,
-      },
-    });
+    store
+      .dispatch("canvas/addComponentToProject", {
+        data: {
+          componentItem,
+          positionIndex: toIndex,
+        },
+      })
+      .then();
   };
 
   const moveComponentItemPosition = (e: any, itemIndex: any) => {
@@ -109,8 +108,6 @@ export function drag_and_drop() {
   ) => {
     if (fromIndex === toIndex) return;
 
-    const projectId = router.currentRoute.value.params.id;
-
     if (dragAndDrop) {
       if (toIndex > 0 && toIndex > fromIndex) toIndex = toIndex - 1;
     }
@@ -127,13 +124,8 @@ export function drag_and_drop() {
 
     store.commit("canvas/SET_WORKSPACE_COMPONENTS", workspaceComponents.value);
 
-    await store.dispatch("canvas/updateProjectComponent", {
-      projectId,
-      projectComponentItemId: projectComponentItem.id,
-      data: {
-        positionIndex: toIndex,
-      },
-    });
+    // TODO: Might remove this
+    store.dispatch("canvas/updateProjectComponentsAndStyles").then();
   };
 
   return {

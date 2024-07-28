@@ -6,7 +6,9 @@ import {
   UpdatedComponent,
 } from "@/store/modules/canvas/types";
 import { updateDom } from "@/composables/canvas/update_dom";
+import { canvas } from "@/composables/canvas/canvas";
 const { updateElementDom } = updateDom();
+const { updateComponentBorder } = canvas();
 
 export const mutations: MutationTree<CanvasState> = {
   SET_FOCUSED_ELEMENT(state: CanvasState, data: object) {
@@ -104,19 +106,17 @@ export const mutations: MutationTree<CanvasState> = {
   },
   UPDATE_FIRST_PROJECT_COMPONENTS_STYLE(
     state: CanvasState,
-    style: object
+    layout: string
   ): any {
     for (const workspaceComponent of state.workspaceComponents) {
-      const element = workspaceComponent.json[0];
-      element.attributes.style.value = {
-        ...element.attributes.style.value,
-        ...style,
-      };
-
-      workspaceComponent.html = updateElementDom(
-        workspaceComponent.html,
-        element
+      const { html, json } = updateComponentBorder(
+        layout,
+        workspaceComponent.json,
+        workspaceComponent.html
       );
+
+      workspaceComponent.html = html;
+      workspaceComponent.json = json;
     }
     return state.workspaceComponents;
   },

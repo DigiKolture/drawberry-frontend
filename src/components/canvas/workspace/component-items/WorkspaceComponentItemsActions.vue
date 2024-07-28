@@ -93,11 +93,12 @@ export default defineComponent({
       disabledButton.value = true;
       const projectComponentItem = workspaceComponents.value[props.itemIndex];
 
-      await store.dispatch("canvas/duplicateProjectComponent", {
-        projectId: props.projectId,
-        projectComponentItemId: projectComponentItem.id,
-        positionIndex: props.itemIndex + 1,
-      });
+      store
+        .dispatch("canvas/duplicateProjectComponent", {
+          projectComponentItem,
+          positionIndex: props.itemIndex + 1,
+        })
+        .then();
 
       disabledButton.value = false;
     };
@@ -110,11 +111,13 @@ export default defineComponent({
         id: null,
         componentIndex: null,
       });
-      await store.dispatch("canvas/deleteProjectComponent", {
-        projectId: props.projectId,
-        projectComponentItemId: projectComponentItem.id,
-        positionIndex: props.itemIndex,
-      });
+      store
+        .dispatch("canvas/deleteProjectComponent", {
+          projectId: props.projectId,
+          projectComponentItemId: projectComponentItem.id,
+          positionIndex: props.itemIndex,
+        })
+        .then();
       removeFocus();
       disabledButton.value = false;
     };

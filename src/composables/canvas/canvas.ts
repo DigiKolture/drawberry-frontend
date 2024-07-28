@@ -1,10 +1,21 @@
 import store from "@/store";
 import { computed } from "vue";
 import { helpers } from "@/composables/helpers";
+import { updateDom } from "@/composables/canvas/update_dom";
 
 const { isObjectsMatched, find, findIndex } = helpers();
+const { updateElementDom } = updateDom();
 
 export function canvas() {
+  const boxShadow: any = {
+    cards: "0 2px 4px 0 rgba(0, 0, 0, 0.1)",
+    collapsed: "0 0 0 0 rgba(0, 0, 0, 0.0)",
+  };
+  const borderRadius: any = {
+    cards: "8px",
+    collapsed: "0px",
+  };
+
   const hasWorkspaceComponent = computed(() => {
     return store.getters["canvas/hasWorkspaceComponent"];
   });
@@ -22,14 +33,38 @@ export function canvas() {
   });
 
   const hasProjectChanged = () => {
-    console.log(updatedComponents.value.length);
     if (updatedComponents.value.length > 0) {
-      console.log("Basddddd");
       return true;
     }
     const matched = isObjectsMatched(style.value, generalStyle.value);
     return !matched;
   };
+
+  const removeClasses = (data: any[]) => {
+    return data.map((item) => {
+      const { classes, ...rest } = item; // Destructure and remove 'classes'
+      return rest;
+    });
+  };
+
+  const updateComponentBorder = (layout: string, json: any[], html: string) => {
+    const componentsStyle = {
+      "border-radius": borderRadius[layout],
+      "box-shadow": boxShadow[layout],
+    };
+
+    const element = json[0];
+    element.attributes.style.value = {
+      ...element.attributes.style.value,
+      ...componentsStyle,
+    };
+
+    return {
+      html: updateElementDom(html, element),
+      json,
+    };
+  };
+
   const pushComponentsElementsUpdates = (
     focusedElement: any,
     projectComponentItem: any
@@ -67,5 +102,7 @@ export function canvas() {
     hasWorkspaceComponent,
     hasProjectChanged,
     pushComponentsElementsUpdates,
+    updateComponentBorder,
+    removeClasses,
   };
 }

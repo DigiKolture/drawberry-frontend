@@ -30,20 +30,8 @@ export default defineComponent({
   components: { PanelStyle },
 
   setup() {
-    const boxShadow: any = {
-      cards: "0 2px 4px 0 rgba(0, 0, 0, 0.1)",
-      collapsed: "0 0 0 0 rgba(0, 0, 0, 0.0)",
-    };
-    const borderRadius: any = {
-      cards: "8px",
-      collapsed: "0px",
-    };
     const style = computed(() => {
       return store.getters["canvas/style"];
-    });
-
-    const project = computed(() => {
-      return store.getters["projects/project"];
     });
 
     const isActive = (lay: string) => {
@@ -54,14 +42,7 @@ export default defineComponent({
       if (lay === style.value.layout) return;
       style.value.layout = lay;
       store.dispatch("canvas/updateProjectStyle", style.value).then();
-      const componentsStyle = {
-        "border-radius": borderRadius[lay],
-        "box-shadow": boxShadow[lay],
-      };
-      store.commit(
-        "canvas/UPDATE_FIRST_PROJECT_COMPONENTS_STYLE",
-        componentsStyle
-      );
+      store.commit("canvas/UPDATE_FIRST_PROJECT_COMPONENTS_STYLE", lay);
     };
 
     return {

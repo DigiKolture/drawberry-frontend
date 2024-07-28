@@ -32,7 +32,7 @@ export default defineComponent({
 
   setup(props, { emit }) {
     const route = useRoute();
-    const { removeCurrentFocus, removeFocus, scrollTo } = focus();
+    const { removeCurrentFocus, removeFocus } = focus();
 
     onMounted(() => {
       store.commit("canvas/SET_DROP_LOADING", false);
@@ -72,13 +72,14 @@ export default defineComponent({
       removeCurrentFocus();
       removeFocus();
 
-      await store.dispatch("canvas/storeProjectComponent", {
-        projectId,
-        data: {
-          componentItemId: componentItem.id,
-          positionIndex: workspaceComponents.value.length,
-        },
-      });
+      store
+        .dispatch("canvas/addComponentToProject", {
+          data: {
+            componentItem,
+            positionIndex: workspaceComponents.value.length,
+          },
+        })
+        .then();
 
       emit("enable");
       store.commit("canvas/SET_DROP_LOADING", false);

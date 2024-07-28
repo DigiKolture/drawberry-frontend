@@ -4,6 +4,7 @@
     <WorkspaceComponentDropSkeleton v-if="dropLoadingIndex === itemIndex" />
     <div
       class="workspace__component__items__list__item"
+      :class="{ focused: focusedIndex === itemIndex }"
       v-html="componentItem.html"
       :id="`workspace-component-item-${itemIndex}`"
       :draggable="true"
@@ -198,6 +199,7 @@ export default defineComponent({
       dropLoadingIndex,
       disabledButton,
       classes,
+      focusedIndex,
       showActions,
       clickEvent,
       handleKeyUp,

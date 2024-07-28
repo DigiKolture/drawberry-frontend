@@ -14,7 +14,7 @@ export interface ProjectStyle {
 
 export interface UpdatedComponent {
   projectComponentItemId: string;
-  elements: any[];
+  json: any[];
 }
 
 export interface CanvasState {

@@ -51,15 +51,10 @@ export default defineComponent({
       const weights = getFontWeights(font.variants);
       style.value.fontFamily = fullFamily.value;
       store.dispatch("canvas/updateProjectStyle", style.value).then();
-      store
-        .dispatch("canvas/updateAllProjectComponentsStyles", {
-          projectId: project.value.id,
-          style: {
-            "font-family": fullFamily.value,
-            "font-weight": 400,
-          },
-        })
-        .then();
+      store.commit("canvas/UPDATE_ALL_PROJECT_COMPONENTS_STYLE", {
+        "font-family": fullFamily.value,
+        "font-weight": 400,
+      });
       store.commit("canvas/SET_FONT_WEIGHTS", weights);
     });
 

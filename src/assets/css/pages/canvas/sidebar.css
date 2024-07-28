@@ -122,7 +122,7 @@ div.components__container{
 }
 
 .component__list-item{
-
+    @apply cursor-pointer;
 }
 
 .component__list-link{

@@ -7,11 +7,11 @@ import router from "@/router";
 import { canvas } from "@/composables/canvas/canvas";
 import ObjectId from "bson-objectid";
 
+const { updateComponentItemDom } = updateDom();
 const {
   hasProjectChanged,
   pushComponentsElementsUpdates,
   updateComponentBorder,
-  removeClasses,
 } = canvas();
 
 export const actions: ActionTree<CanvasState, RootState> = {
@@ -83,10 +83,9 @@ export const actions: ActionTree<CanvasState, RootState> = {
       id: projectComponentId,
       project: projectId,
       componentItem: componentItem.id,
-      json,
-      html,
-      defaultJson: componentItem.json,
-      defaultHtml: componentItem.html,
+      json: json,
+      html: html,
+      defaultJson: componentItem.defaultJson,
     };
 
     commit("SET_HAS_WORKSPACE_COMPONENTS", true);
@@ -94,9 +93,35 @@ export const actions: ActionTree<CanvasState, RootState> = {
     state.workspaceComponents.splice(data.positionIndex, 0, projectComponent);
     commit("SET_WORKSPACE_COMPONENTS", state.workspaceComponents);
 
-    dispatch("updateProjectComponentsAndStyles").then();
+    // dispatch("addOrDuplicateComponentToProject", {
+    //   projectId,
+    //   data: {
+    //     componentItemId: componentItem.id,
+    //     projectComponentId: projectComponentId,
+    //     json: componentItem.json,
+    //     positionIndex: data.positionIndex,
+    //   },
+    // });
   },
 
+  async addOrDuplicateComponentToProject(
+    { dispatch },
+    { projectId, data }
+  ): Promise<void> {
+    try {
+      const res = await AxiosClient.post(
+        `/projects/${projectId}/components`,
+        data
+      );
+      dispatch("updateProjectComponentsAndStyles");
+      return res.data.data;
+    } catch (err) {
+      if (err instanceof Error) {
+        const message_1 = err.message;
+        return Promise.reject(new Error(message_1));
+      }
+    }
+  },
   updateProjectComponent(
     _,
     { projectId, projectComponentItemId, data }
@@ -116,9 +141,9 @@ export const actions: ActionTree<CanvasState, RootState> = {
       });
   },
   async updateProjectComponentsAndStyles({ state, commit }): Promise<void> {
-    // if (!hasProjectChanged()) {
-    //   return;
-    // }
+    if (!hasProjectChanged()) {
+      return;
+    }
     const currentRoute: any = router.currentRoute;
     const projectId = currentRoute._value.params.id;
 
@@ -126,11 +151,10 @@ export const actions: ActionTree<CanvasState, RootState> = {
       (workspaceComponent) => {
         return {
           projectComponentItemId: workspaceComponent.id,
-          json: removeClasses(workspaceComponent.json),
-          componentItemId: workspaceComponent.componentItem,
+          json: workspaceComponent.json,
+          componentItem: workspaceComponent.componentItem,
           defaultJson: workspaceComponent.defaultJson,
           html: workspaceComponent.defaultHtml,
-          defaultHtml: workspaceComponent.defaultHtml,
         };
       }
     );
@@ -158,25 +182,45 @@ export const actions: ActionTree<CanvasState, RootState> = {
     const projectId = currentRoute._value.params.id;
     const newProjectComponentId = new ObjectId().toHexString();
 
-    const projectComponentCleaned = JSON.parse(
-      JSON.stringify(projectComponentItem)
-    );
-
     const projectComponent = {
       _id: newProjectComponentId,
       id: newProjectComponentId,
       project: projectId,
-      componentItem: projectComponentCleaned.componentItem,
-      json: removeClasses(projectComponentCleaned.json),
-      html: projectComponentCleaned.html,
-      defaultHtml: projectComponentCleaned.defaultHtml,
-      defaultJson: projectComponentCleaned.defaultJson,
+      json: projectComponentItem.json,
+      html: projectComponentItem.html,
+      componentItem: projectComponentItem.componentItem,
+      defaultJson: projectComponentItem.defaultJson,
     };
 
     state.workspaceComponents.splice(positionIndex, 0, projectComponent);
     commit("SET_WORKSPACE_COMPONENTS", state.workspaceComponents);
 
-    dispatch("updateProjectComponentsAndStyles");
+    dispatch("addOrDuplicateComponentToProject", {
+      projectId,
+      data: {
+        componentItemId: projectComponentItem.componentItem,
+        projectComponentId: newProjectComponentId,
+        json: projectComponentItem.json,
+        positionIndex,
+      },
+    });
+
+    // return AxiosClient.post(
+    //   `/projects/${projectId}/duplicate/components/${projectComponentItemId}`
+    // )
+    //   .then((res: any) => {
+    //     const data = res.data;
+    //     const component = updateComponentItemDom(data.data.component);
+    //     state.workspaceComponents.splice(positionIndex, 0, component);
+    //     commit("SET_WORKSPACE_COMPONENTS", state.workspaceComponents);
+    //     return res.data.data;
+    //   })
+    //   .catch((err: any): any => {
+    //     if (err instanceof Error) {
+    //       const message = err.message;
+    //       return Promise.reject(new Error(message));
+    //     }
+    //   });
   },
   deleteProjectComponent(
     { state, commit, dispatch },
@@ -210,6 +254,21 @@ export const actions: ActionTree<CanvasState, RootState> = {
     const projectComponentItem = state.workspaceComponents[state.focusedIndex];
 
     pushComponentsElementsUpdates(state.focusedElement, projectComponentItem);
+
+    // dispatch("updateProjectComponent", {
+    //   projectId,
+    //   projectComponentItemId: projectComponentItem.id,
+    //   set: false,
+    //   data: {
+    //     elements: [
+    //       {
+    //         id: focusedElement.id,
+    //         attributes: focusedElement.attributes,
+    //         innerHtml: focusedElement.innerHtml,
+    //       },
+    //     ],
+    //   },
+    // });
   },
 
   updateFocusedParentElement({ state, commit }, element) {
@@ -231,6 +290,13 @@ export const actions: ActionTree<CanvasState, RootState> = {
   },
   async updateProjectStyle({ commit }, style): Promise<void> {
     commit("SET_STYLE", style);
+    // const root: any = rootState;
+    // const projectId: string = root.projects.projectId;
+    //
+    // await store.dispatch("projects/updateProject", {
+    //   id: projectId,
+    //   data: { style },
+    // });
   },
   async updateFirstProjectComponentsStyles(
     { commit },
@@ -238,6 +304,24 @@ export const actions: ActionTree<CanvasState, RootState> = {
   ): Promise<void> {
     commit("UPDATE_FIRST_PROJECT_COMPONENTS_STYLE", style);
     return AxiosClient.put(`/projects/${projectId}/components/first/styles`, {
+      style,
+    })
+      .then((res: any) => {
+        return res.data;
+      })
+      .catch((err: any): any => {
+        if (err instanceof Error) {
+          const message = err.message;
+          return Promise.reject(new Error(message));
+        }
+      });
+  },
+  updateAllProjectComponentsStyles(
+    { commit },
+    { projectId, style }
+  ): Promise<void> {
+    commit("UPDATE_ALL_PROJECT_COMPONENTS_STYLE", style);
+    return AxiosClient.put(`/projects/${projectId}/components/all/styles`, {
       style,
     })
       .then((res: any) => {

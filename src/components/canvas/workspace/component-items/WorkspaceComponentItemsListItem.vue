@@ -4,7 +4,10 @@
     <WorkspaceComponentDropSkeleton v-if="dropLoadingIndex === itemIndex" />
     <div
       class="workspace__component__items__list__item"
-      :class="{ focused: focusedIndex === itemIndex }"
+      :class="{
+        focused: focusedIndex === itemIndex,
+        hovered: currentHoverElement.componentIndex === itemIndex,
+      }"
       v-html="componentItem.html"
       :id="`workspace-component-item-${itemIndex}`"
       :draggable="true"
@@ -117,6 +120,10 @@ export default defineComponent({
       return store.getters["canvas/focusedIndex"];
     });
 
+    const currentHoverElement = computed(() => {
+      return store.getters["canvas/currentHoverElement"];
+    });
+
     const showActions = computed(() => {
       if (focusedIndex.value == null || focusedIndex.value != props.itemIndex)
         return false;
@@ -200,6 +207,7 @@ export default defineComponent({
       disabledButton,
       classes,
       focusedIndex,
+      currentHoverElement,
       showActions,
       clickEvent,
       handleKeyUp,

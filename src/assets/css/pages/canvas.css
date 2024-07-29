@@ -163,7 +163,7 @@ input.canvas__input__text:focus{
     scroll-margin-bottom: 40px;
 }
 
-.workspace__component__items__list__item .hover {
+.workspace__component__items__list__item.hovered .hover {
     @apply relative;
     z-index: 4;
     padding: 1px 2px;

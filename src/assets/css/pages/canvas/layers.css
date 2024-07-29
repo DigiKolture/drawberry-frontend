@@ -32,11 +32,13 @@
     height: 15px;
 }
 
-.layers__component__item__header.hover, .layers__component__item__element.hover{
+.layers__component__item.hovered .layers__component__item__header.hover,
+.layers__component__item.hovered .layers__component__item__element.hover{
   background-color: #353843;
 }
 
-.layers__component__item__header.focus, .layers__component__item__element.focus{
+.layers__component__item.focused .layers__component__item__header.focus,
+.layers__component__item.focused .layers__component__item__element.focus{
     background-color: #494B57;
 }
 

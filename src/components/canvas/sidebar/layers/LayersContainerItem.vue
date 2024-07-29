@@ -1,6 +1,10 @@
 <template>
   <div
     class="layers__component__item"
+    :class="{
+      focused: focusedIndex === itemIndex,
+      hovered: currentHoverElement.componentIndex === itemIndex,
+    }"
     :id="`layer-component-item-${itemIndex}`"
   >
     <LayerElementDropIndicator v-if="dropIndex === itemIndex" />
@@ -103,6 +107,10 @@ export default defineComponent({
       store.commit("layers/TOGGLE_TAB_STATE", props.itemIndex.toString());
     };
 
+    const focusedIndex = computed(() => {
+      return store.getters["canvas/focusedIndex"];
+    });
+
     const currentHoverElement = computed(() => {
       return store.getters["canvas/currentHoverElement"];
     });
@@ -184,6 +192,8 @@ export default defineComponent({
     return {
       dropIndex,
       isChild,
+      focusedIndex,
+      currentHoverElement,
       handleMouseOver,
       handleClick,
       toggleShowElements,

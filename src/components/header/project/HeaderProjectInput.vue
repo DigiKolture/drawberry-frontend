@@ -7,6 +7,7 @@
       @keyup.enter="updateProjectName"
       :disabled="isDisabled"
     />
+    <BaseIcon :icon="`canvas/save/${saveStatus}`" />
   </div>
 </template>
 
@@ -14,8 +15,10 @@
 import { computed, defineComponent, onMounted, ref } from "vue";
 
 import store from "@/store";
+import BaseIcon from "@/components/icon/BaseIcon.vue";
 export default defineComponent({
   name: "HeaderProjectInput",
+  components: { BaseIcon },
   props: {
     isDisabled: {
       type: Boolean,
@@ -41,6 +44,10 @@ export default defineComponent({
       return store.getters["projects/project"];
     });
 
+    const saveStatus = computed(() => {
+      return store.getters["canvas/saveStatus"];
+    });
+
     const updateProjectName = () => {
       if (props.isDisabled) {
         return;
@@ -58,6 +65,7 @@ export default defineComponent({
       project,
       inputField,
       updateProjectName,
+      saveStatus,
       scrollInputToStart,
     };
   },

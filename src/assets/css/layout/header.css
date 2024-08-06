@@ -47,8 +47,9 @@ header.header{
 
 .header__middle__input__container{
     @apply flex items-center justify-center h-full header-border;
-    width: 129px;
+    width: 169px;
     padding: 12px;
+    column-gap: 16px;
 }
 
 .header__middle__input__container input{

@@ -40,5 +40,5 @@ jobs:
         run: |
           rm -rf dist
           node --version
-          yarn install
-          yarn run build
+#          yarn install
+          npm run build

@@ -77,6 +77,10 @@ export function helpers() {
     data?: ResponseData;
   }
 
+  const isObject = (value: any) => {
+    return value !== null && typeof value === "object" && !Array.isArray(value);
+  };
+
   const rejectError = ({ response = null }: { response?: Response | null }) => {
     let message = "Ooops!! something went wrong.";
 
@@ -110,6 +114,7 @@ export function helpers() {
     isValidImageUrl,
     capitalizeFirstLetter,
     copy,
+    isObject,
     sliceString,
     diffForHumans,
     rejectError,

@@ -1,18 +1,17 @@
 import { ActionTree } from "vuex";
-import { CanvasState, ProjectStyle } from "@/store/modules/canvas/types";
+import {
+  CanvasSaveStatus,
+  CanvasState,
+  ProjectStyle,
+} from "@/store/modules/canvas/types";
 import { RootState } from "@/store/types";
 import AxiosClient from "@/services/api";
-import { updateDom } from "@/composables/canvas/update_dom";
 import router from "@/router";
 import { canvas } from "@/composables/canvas/canvas";
 import ObjectId from "bson-objectid";
 
-const {
-  hasProjectChanged,
-  pushComponentsElementsUpdates,
-  updateComponentBorder,
-  removeClasses,
-} = canvas();
+const { pushComponentsElementsUpdates, updateComponentBorder, removeClasses } =
+  canvas();
 
 export const actions: ActionTree<CanvasState, RootState> = {
   getProjectComponentItems(
@@ -25,7 +24,10 @@ export const actions: ActionTree<CanvasState, RootState> = {
       .then((res: any) => {
         const data = res.data;
         commit("projects/SET_PROJECT", data.data.project, { root: true });
-        commit("SET_WORKSPACE_COMPONENTS", data.data.project.components);
+        commit("SET_WORKSPACE_COMPONENTS", {
+          components: data.data.project.components,
+          saveStatus: CanvasSaveStatus.SAVED,
+        });
         const style = data.data.project.style;
         commit("SET_STYLE", { ...style });
         commit("SET_GENERAL_STYLE", { ...style });
@@ -140,6 +142,7 @@ export const actions: ActionTree<CanvasState, RootState> = {
       style,
     })
       .then((res: any) => {
+        commit("SET_SAVE_STATUS", CanvasSaveStatus.SAVED);
         commit("SET_UPDATED_COMPONENTS", []);
         return res.data.data;
       })
@@ -161,6 +164,8 @@ export const actions: ActionTree<CanvasState, RootState> = {
     const projectComponentCleaned = JSON.parse(
       JSON.stringify(projectComponentItem)
     );
+
+    // TODO: Might remove removeClasses since I am now checking if the current index is selected or hovered on before showing the border
 
     const projectComponent = {
       _id: newProjectComponentId,

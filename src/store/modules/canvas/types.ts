@@ -26,10 +26,18 @@ export interface CanvasState {
   sidebarDock: boolean;
   workspaceComponents: any[];
   hasWorkspaceComponent: boolean;
+  saveStatus: CanvasSaveStatus;
   updatedComponents: UpdatedComponent[];
   googleFonts: any[];
   fontWeights: number[];
   generalStyle: ProjectStyle;
   style: ProjectStyle;
   dropLoading: boolean;
+}
+
+export enum CanvasSaveStatus {
+  SAVED = "saved",
+  UPDATED = "updated",
+  OFFLINE = "offline",
+  PAUSED = "paused",
 }

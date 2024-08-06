@@ -1,5 +1,6 @@
 import { MutationTree } from "vuex";
 import {
+  CanvasSaveStatus,
   CanvasState,
   CurrentHoverElementType,
   ProjectStyle,
@@ -7,8 +8,11 @@ import {
 } from "@/store/modules/canvas/types";
 import { updateDom } from "@/composables/canvas/update_dom";
 import { canvas } from "@/composables/canvas/canvas";
+import { helpers } from "@/composables/helpers";
+
 const { updateElementDom } = updateDom();
 const { updateComponentBorder } = canvas();
+const { isObject } = helpers();
 
 export const mutations: MutationTree<CanvasState> = {
   SET_FOCUSED_ELEMENT(state: CanvasState, data: object) {
@@ -19,8 +23,14 @@ export const mutations: MutationTree<CanvasState> = {
     state.focusedParentElement = data;
     return state.focusedParentElement;
   },
-  SET_WORKSPACE_COMPONENTS(state: CanvasState, data: any[]) {
-    state.workspaceComponents = data;
+  SET_WORKSPACE_COMPONENTS(state: CanvasState, payload) {
+    if (isObject(payload)) {
+      state.workspaceComponents = payload.components;
+      state.saveStatus = payload.saveStatus;
+    } else {
+      state.workspaceComponents = payload;
+      state.saveStatus = CanvasSaveStatus.UPDATED;
+    }
     return state.workspaceComponents;
   },
   SET_HAS_WORKSPACE_COMPONENTS(state: CanvasState, data: boolean) {
@@ -54,6 +64,10 @@ export const mutations: MutationTree<CanvasState> = {
     state.fontWeights = data;
     return state.fontWeights;
   },
+  SET_SAVE_STATUS(state: CanvasState, data: CanvasSaveStatus) {
+    state.saveStatus = data;
+    return state.saveStatus;
+  },
   SET_CURRENT_HOVER_ELEMENT(state: CanvasState, data: CurrentHoverElementType) {
     state.currentHoverElement = data;
     return state.currentHoverElement;
@@ -81,6 +95,7 @@ export const mutations: MutationTree<CanvasState> = {
 
     projectComponentItem.html = updateElementDom(html, elementJson);
     state.workspaceComponents = workspaceComponents;
+    state.saveStatus = CanvasSaveStatus.UPDATED;
     return state.focusedElement;
   },
   UPDATE_FOCUSED_PARENT_JSON_AND_DOM(state: CanvasState, data: object): any {
@@ -102,6 +117,7 @@ export const mutations: MutationTree<CanvasState> = {
 
     projectComponentItem.html = updateElementDom(html, elementJson);
     state.workspaceComponents = workspaceComponents;
+    state.saveStatus = CanvasSaveStatus.UPDATED;
     return state.focusedElement;
   },
   UPDATE_FIRST_PROJECT_COMPONENTS_STYLE(

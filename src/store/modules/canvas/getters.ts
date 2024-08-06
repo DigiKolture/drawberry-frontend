@@ -23,6 +23,9 @@ export const getters: GetterTree<CanvasState, RootState> = {
   workspaceComponents(state: CanvasState): object[] | null {
     return state.workspaceComponents;
   },
+  saveStatus(state: CanvasState): string {
+    return state.saveStatus;
+  },
   hasWorkspaceComponent(state: CanvasState): boolean {
     return state.hasWorkspaceComponent;
   },

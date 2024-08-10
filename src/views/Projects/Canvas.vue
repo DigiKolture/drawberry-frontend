@@ -18,14 +18,7 @@
   </CanvasLayout>
 </template>
 <script>
-import {
-  computed,
-  defineComponent,
-  onMounted,
-  onUnmounted,
-  ref,
-  watch,
-} from "vue";
+import { computed, defineComponent, onMounted, onUnmounted, ref } from "vue";
 import store from "@/store";
 import CanvasLayout from "@/components/layout/CanvasLayout";
 import WorkspaceComponentItemsContainer from "@/components/canvas/workspace/component-items/WorkspaceComponentItemsContainer";
@@ -64,7 +57,7 @@ export default defineComponent({
         try {
           await store.dispatch("canvas/updateProjectComponentsAndStyles");
         } catch (error) {
-          store.commit("canvas/SET_SAVE_STATUS", CanvasSaveStatus.OFFLINE);
+          store.commit("canvas/SET_SAVE_STATUS", CanvasSaveStatus.PAUSED);
         } finally {
           isCallingApi = false;
         }

@@ -7,7 +7,12 @@
       @keyup.enter="updateProjectName"
       :disabled="isDisabled"
     />
-    <BaseIcon :icon="`canvas/save/${saveStatus}`" />
+    <a href="#" class="tooltip-wrapper">
+      <BaseIcon :icon="`canvas/save/${saveStatus}`" />
+      <span class="tooltip-text">{{
+        CanvasSaveStatusDescriptions[saveStatus.toUpperCase()]
+      }}</span>
+    </a>
   </div>
 </template>
 
@@ -16,8 +21,14 @@ import { computed, defineComponent, onMounted, ref } from "vue";
 
 import store from "@/store";
 import BaseIcon from "@/components/icon/BaseIcon.vue";
+import { CanvasSaveStatusDescriptions } from "@/store/modules/canvas/types";
 export default defineComponent({
   name: "HeaderProjectInput",
+  computed: {
+    CanvasSaveStatusDescriptions() {
+      return CanvasSaveStatusDescriptions;
+    },
+  },
   components: { BaseIcon },
   props: {
     isDisabled: {
@@ -71,5 +82,3 @@ export default defineComponent({
   },
 });
 </script>
-
-<style></style>

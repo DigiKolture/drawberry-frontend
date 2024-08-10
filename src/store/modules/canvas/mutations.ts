@@ -24,6 +24,7 @@ export const mutations: MutationTree<CanvasState> = {
     return state.focusedParentElement;
   },
   SET_WORKSPACE_COMPONENTS(state: CanvasState, payload) {
+    // Whenever the SET_WORKSPACE_COMPONENTS is called with just components update the save status to UPDATED
     if (isObject(payload)) {
       state.workspaceComponents = payload.components;
       state.saveStatus = payload.saveStatus;
@@ -43,6 +44,7 @@ export const mutations: MutationTree<CanvasState> = {
   },
   SET_STYLE(state: CanvasState, data: ProjectStyle) {
     state.style = data;
+    state.saveStatus = CanvasSaveStatus.UPDATED;
     return state.style;
   },
   SET_DEFAULT_STYLE(state: CanvasState) {

@@ -41,3 +41,10 @@ export enum CanvasSaveStatus {
   OFFLINE = "offline",
   PAUSED = "paused",
 }
+
+export enum CanvasSaveStatusDescriptions {
+  SAVED = "Changes saved",
+  UPDATED = "Saving changes",
+  OFFLINE = "offline",
+  PAUSED = "Saving paused",
+}

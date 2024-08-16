@@ -45,9 +45,9 @@ export default defineComponent({
       { icon: "canvas/sidebar/nav/layer", name: "layers" },
     ];
 
-    const sidebarNavBottomIcons = [
-      { icon: "canvas/sidebar/nav/library" },
-      { icon: "canvas/sidebar/nav/notification" },
+    const sidebarNavBottomIcons: any = [
+      // { icon: "canvas/sidebar/nav/library" },
+      // { icon: "canvas/sidebar/nav/notification" },
     ];
 
     const sidebarNavContent = computed(() => {

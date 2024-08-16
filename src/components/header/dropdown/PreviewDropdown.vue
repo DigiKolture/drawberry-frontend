@@ -3,10 +3,11 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, onMounted } from "vue";
-import store from "@/store";
+import { defineComponent } from "vue";
 import DropdownLayout from "@/components/layout/dropdown/DropdownLayout.vue";
 import router from "@/router";
+import { useRoute } from "vue-router";
+import store from "@/store";
 
 export default defineComponent({
   name: "PreviewDropdown",
@@ -18,7 +19,7 @@ export default defineComponent({
   },
   components: { DropdownLayout },
 
-  setup(props, { emit }) {
+  setup(props) {
     const data = [
       {
         icon: "header/preview/desktop",
@@ -37,15 +38,13 @@ export default defineComponent({
       },
     ];
 
-    const project = computed(() => {
-      return store.getters["projects/project"];
-    });
+    const route = useRoute();
 
     const handleClick = (dropdownName: string) => {
       if (dropdownName === "mobile" || dropdownName === "desktop") {
         store.commit("preview/SET_CURRENT_PREVIEW", dropdownName);
         if (!props.isPreview) {
-          router.push({ name: "Preview", params: { id: project.value.id } });
+          router.push({ name: "Preview", params: { id: route.params.id } });
         }
         //  TODO: Might refresh to remove unnecessary padding added by hover/focus
       }

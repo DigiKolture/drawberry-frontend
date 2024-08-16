@@ -4,7 +4,6 @@
       <div
         class="preview__component__items__container"
         style="margin-bottom: 100px"
-        xd
         :class="[style.layout, currentPreview]"
       >
         <div
@@ -17,7 +16,7 @@
     </div>
   </BaseLayout>
 </template>
-<script lang="ts">
+<script>
 import { computed, defineComponent, onMounted, ref, watch } from "vue";
 import store from "@/store";
 import BaseLayout from "@/components/layout/BaseLayout.vue";
@@ -31,8 +30,8 @@ export default defineComponent({
   components: { BaseLayout },
   setup() {
     const route = useRoute();
-    const projectId = route.params.id as string;
-    let style: any = ref({});
+    const projectId = route.params.id;
+    let style = ref({});
     let workspaceComponents = ref([]);
     const { updateComponentItemDom } = updateDom();
     const { extractUniqueFontFamilies } = fonts();
@@ -53,7 +52,7 @@ export default defineComponent({
       workspaceComponents.value = project.components;
     });
 
-    const getHTML = (componentItem: any) => {
+    const getHTML = (componentItem) => {
       return updateComponentItemDom(componentItem).html;
     };
 
@@ -75,11 +74,16 @@ export default defineComponent({
     });
 
     const styles = computed(() => {
-      return {
+      let styleObj = {
         backgroundColor: style.value.backgroundColor,
-        backgroundImage: `url('${style.value.backgroundImage}')`,
         backgroundSize: "cover",
       };
+
+      if (style.value.backgroundImage) {
+        styleObj.backgroundImage = `url('${style.value.backgroundImage}')`;
+      }
+
+      return styleObj;
     });
 
     const project = computed(() => {

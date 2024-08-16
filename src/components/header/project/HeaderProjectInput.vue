@@ -7,7 +7,7 @@
       @keyup.enter="updateProjectName"
       :disabled="isDisabled"
     />
-    <a href="#" class="tooltip-wrapper">
+    <a v-if="isCanvas" href="#" class="tooltip-wrapper">
       <BaseIcon :icon="`canvas/save/${saveStatus}`" />
       <span class="tooltip-text">{{
         CanvasSaveStatusDescriptions[saveStatus.toUpperCase()]
@@ -35,6 +35,11 @@ export default defineComponent({
       type: Boolean,
       required: false,
       default: false,
+    },
+    isCanvas: {
+      type: Boolean,
+      required: false,
+      default: true,
     },
   },
 

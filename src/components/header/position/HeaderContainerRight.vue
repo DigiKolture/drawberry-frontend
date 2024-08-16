@@ -58,7 +58,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, ref } from "vue";
+import { computed, defineComponent } from "vue";
 
 import store from "@/store";
 import ExportDropdown from "@/components/header/dropdown/export/ExportDropdown.vue";

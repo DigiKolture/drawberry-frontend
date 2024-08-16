@@ -1,7 +1,7 @@
 <template>
   <div class="header__container__middle">
     <template v-if="isAuth">
-      <HeaderProjectInput v-if="isCanvas && project" />
+      <HeaderProjectInput v-if="isCanvas && project" :is-canvas="isCanvas" />
       <div class="header__middle__preview" v-else-if="isPreview">
         <BaseButtonTextIcon
           :key="key"

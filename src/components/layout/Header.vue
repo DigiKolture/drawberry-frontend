@@ -14,7 +14,11 @@
           <button><BaseIcon icon="header/home" /></button>
         </router-link>
 
-        <HeaderProjectInput :is-disabled="true" v-if="isPreview && project" />
+        <HeaderProjectInput
+          :is-canvas="isCanvas"
+          :is-disabled="true"
+          v-if="isPreview && project"
+        />
       </div>
       <HeaderContainerMiddle
         v-if="project"

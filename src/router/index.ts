@@ -118,12 +118,12 @@ router.beforeEach((routeTo, routeFrom, next) => {
   const authUser = store.getters["auth/authUser"];
   const jwt = localStorage.getItem("access-token");
 
-  if (authUser && !authRequired) {
-    return next({ name: "ProjectIndex" });
-  }
-
   if (!authRequired) {
     return next();
+  }
+
+  if (authUser && !authRequired) {
+    return next({ name: "ProjectIndex" });
   }
 
   if (authUser && jwt) {

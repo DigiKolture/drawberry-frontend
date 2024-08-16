@@ -27,8 +27,9 @@ export function updateDom() {
   const updateElementDom = (html: string, elementJson: any, here = false) => {
     const $ = cheerio.load(html);
     const el = $(`#${elementJson.id}`);
-    let tagName = el.prop("tagName");
-    tagName = tagName.toLowerCase();
+    const tagName = el.prop("tagName");
+    if (!tagName) return $.html();
+
     const elementAttributes = el.attr();
     const attributesValues = attributesSettings[tagName];
     const tagTypes = elementJson.types;

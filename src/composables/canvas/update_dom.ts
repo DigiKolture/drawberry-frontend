@@ -2,7 +2,7 @@ import * as cheerio from "cheerio";
 
 export function updateDom() {
   const attributesSettings: any = {
-    td: ["bgcolor", "valign", "align", "background", "height"],
+    td: ["valign", "align", "background", "height"],
     img: ["src"],
     a: ["href"],
   };
@@ -27,9 +27,8 @@ export function updateDom() {
   const updateElementDom = (html: string, elementJson: any, here = false) => {
     const $ = cheerio.load(html);
     const el = $(`#${elementJson.id}`);
-    const tagName = el.prop("tagName");
-    if (!tagName) return $.html();
-
+    let tagName = el.prop("tagName");
+    tagName = tagName.toLowerCase();
     const elementAttributes = el.attr();
     const attributesValues = attributesSettings[tagName];
     const tagTypes = elementJson.types;
@@ -39,6 +38,11 @@ export function updateDom() {
         if (!Object.keys(elementAttributes).includes(attribute)) {
           continue;
         }
+
+        //TODO: This scenario works when you might have a background-color style but not bg-color even if it might be required for the element
+        // if (!elementJson.attributes[attribute]) {
+        //   continue;
+        // }
         el.attr(attribute, elementJson.attributes[attribute].value);
       }
     }

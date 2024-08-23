@@ -53,4 +53,7 @@ export const getters: GetterTree<CanvasState, RootState> = {
   dropLoading(state: CanvasState): boolean {
     return state.dropLoading;
   },
+  savedColors(state: CanvasState): string[] {
+    return state.savedColors;
+  },
 };

@@ -40,5 +40,5 @@ jobs:
         run: |
           rm -rf dist
           node --version
-          npm install
+          npm install=
           npm run build

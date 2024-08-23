@@ -198,7 +198,7 @@
 
 /*COLOR STYLE*/
 .color__style{
-    @apply relative;
+    /*@apply relative;*/
 }
 
 .color__style__container{

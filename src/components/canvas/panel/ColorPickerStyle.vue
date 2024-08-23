@@ -2,7 +2,7 @@
   <div class="color__style">
     <div class="color__style__container">
       <h5>{{ title }}</h5>
-      <h5>{{ colors.hex8 }}</h5>
+      <h5>{{ hex8ToHex(colors.hex8) }}</h5>
       <button
         id="modals-trigger"
         @click="toggle"
@@ -13,7 +13,12 @@
       ></button>
     </div>
 
-    <BaseColorPicker @cancel="close" v-model="colors" v-if="show" />
+    <BaseColorPicker
+      :style="positionStyles"
+      @cancel="close"
+      v-model="colors"
+      v-if="show"
+    />
   </div>
 </template>
 
@@ -25,6 +30,8 @@ import {
   watch,
   defineExpose,
   computed,
+  onMounted,
+  onBeforeUnmount,
 } from "vue";
 import BaseColorPicker from "@/components/canvas/panel/BaseColorPicker.vue";
 import store from "@/store";
@@ -58,8 +65,31 @@ watch(colors, (newVal) => {
   emits("update-color", newVal);
 });
 
+const screenHeight = ref(window.innerHeight);
+const positionStyles = computed(() => {
+  return {
+    top: `${screenHeight.value - 450}px`,
+  };
+});
+
+const updateScreenHeight = () => {
+  screenHeight.value = window.innerHeight;
+};
+
+onMounted(() => {
+  window.addEventListener("resize", updateScreenHeight);
+});
+
+onBeforeUnmount(() => {
+  window.removeEventListener("resize", updateScreenHeight);
+});
+
 const updateColor = (newVal) => {
   colors.value = newVal;
+};
+
+const hex8ToHex = (hex8) => {
+  return hex8.slice(0, 7).toUpperCase();
 };
 
 const toggle = () => {

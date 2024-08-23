@@ -173,4 +173,8 @@ export const mutations: MutationTree<CanvasState> = {
     state.dropLoading = data;
     return state.dropLoading;
   },
+  SET_SAVED_COLORS(state: CanvasState, data: string[]) {
+    state.savedColors = data;
+    return state.savedColors;
+  },
 };

@@ -67,16 +67,34 @@ export default defineComponent({
       if (!file) {
         return;
       }
+      const maxSizeMB = 10;
+      const maxSizeBytes = maxSizeMB * 1024 * 1024;
+      if (file.size > maxSizeBytes) {
+        store.dispatch("toast/showToast", {
+          message: `File size exceeds ${maxSizeMB} MB`,
+          type: "error",
+        });
+        event.target.value = "";
+        return;
+      }
       try {
         const reader = new FileReader();
         reader.onload = async (e: any) => {
           const base64Image = e.target.result;
           isLoading.value = true;
-          await uploadToServer(base64Image);
-          isLoading.value = false;
+          try {
+            await uploadToServer(base64Image);
+          } catch (error) {
+            store.dispatch("toast/showToast", {
+              message: `Image failed to upload.`,
+              type: "error",
+            });
+          } finally {
+            isLoading.value = false;
+          }
         };
         reader.readAsDataURL(file);
-      } catch (_) {
+      } catch (err) {
         isLoading.value = false;
       }
     };

@@ -128,6 +128,7 @@ export default defineComponent({
         return;
       }
       const elementId = target.id;
+      // console.log({ elementId });
 
       // If any of the component has an hover element, REMOVE it
       removeHoverElement();
@@ -171,7 +172,7 @@ export default defineComponent({
       const target = event.target;
       let elementId = event.target.id;
 
-      // If the focused element isnt an editable component or contains parent class
+      // If the focused element isnt an editable component or contains parent class (So basically if you clicking outside the editable elements components)
       if (
         !target.classList.contains("editable") ||
         target.classList.contains("parent")

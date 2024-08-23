@@ -256,7 +256,7 @@ export const actions: ActionTree<CanvasState, RootState> = {
       });
   },
   uploadImageToCloudinary(_, data): Promise<void> {
-    return AxiosClient.post(`/utils/upload/image`, data)
+    return AxiosClient.post(`/utils/upload/image`, data, { timeout: 30000 })
       .then((res: any) => {
         return res.data;
       })

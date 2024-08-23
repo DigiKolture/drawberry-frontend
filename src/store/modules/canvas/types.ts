@@ -33,6 +33,7 @@ export interface CanvasState {
   generalStyle: ProjectStyle;
   style: ProjectStyle;
   dropLoading: boolean;
+  savedColors: string[];
 }
 
 export enum CanvasSaveStatus {

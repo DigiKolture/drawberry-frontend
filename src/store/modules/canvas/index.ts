@@ -39,6 +39,7 @@ const state: CanvasState = {
   sidebarNavContent: null,
   sidebarDock: false,
   dropLoading: false,
+  savedColors: [],
 };
 
 export const data: Module<CanvasState, RootState> = {

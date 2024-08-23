@@ -61,7 +61,7 @@
         role="group"
         aria-label="A color preset, pick one to set as current color"
       >
-        <template v-for="c in presetColors">
+        <template v-for="c in savedColors">
           <div
             v-if="!isTransparent(c)"
             :key="`!${c}`"
@@ -80,31 +80,31 @@
             <Checkboard />
           </div>
         </template>
-        <button class="add__color">
+        <button @click="addColor" class="add__color">
           <BaseIcon icon="canvas/panel/styles/color-picker/add" />
         </button>
       </div>
     </div>
 
-    <div class="vc-add__color__picker">
-      <div class="vc-add__color__picker__content">
-        <h6>Add color</h6>
-        <p>
-          Create a new color swatch from current color. All instances of this
-          color will update automatically if you edit it in the future
-        </p>
-      </div>
-      <form class="vc-add__color__picker__form">
-        <input class="canvas__input__text" />
-        <button class="vc-add__color__picker__form__submit">Create</button>
-        <button
-          @click="$emit('cancel')"
-          class="vc-add__color__picker__form__cancel"
-        >
-          Cancel
-        </button>
-      </form>
-    </div>
+    <!--    <div class="vc-add__color__picker">-->
+    <!--      <div class="vc-add__color__picker__content">-->
+    <!--        <h6>Add color</h6>-->
+    <!--        <p>-->
+    <!--          Create a new color swatch from current color. All instances of this-->
+    <!--          color will update automatically if you edit it in the future-->
+    <!--        </p>-->
+    <!--      </div>-->
+    <!--      <form class="vc-add__color__picker__form">-->
+    <!--        <input class="canvas__input__text" />-->
+    <!--        <button class="vc-add__color__picker__form__submit">Create</button>-->
+    <!--        <button-->
+    <!--          @click="$emit('cancel')"-->
+    <!--          class="vc-add__color__picker__form__cancel"-->
+    <!--        >-->
+    <!--          Cancel-->
+    <!--        </button>-->
+    <!--      </form>-->
+    <!--    </div>-->
   </div>
 </template>
 
@@ -117,6 +117,7 @@ import hue from "@/packages/@ckpack/vue-color/src/components/hue";
 import alpha from "@/packages/@ckpack/vue-color/src/components/alpha";
 import checkboard from "@/packages/@ckpack/vue-color/src/components/checkboard";
 import BaseIcon from "@/components/icon/BaseIcon";
+import store from "@/store";
 
 const presetColors = [
   "#FFFFFF",
@@ -176,6 +177,10 @@ export default {
       const { rgba } = this.colors;
       return `rgba(${[rgba.r, rgba.g, rgba.b, rgba.a].join(",")})`;
     },
+    savedColors() {
+      const saved = store.getters["canvas/savedColors"];
+      return presetColors.concat(saved);
+    },
   },
   methods: {
     handlePreset(c) {
@@ -186,22 +191,27 @@ export default {
     },
     inputChange(data) {
       if (!data) return;
-
       if (data.hex) {
         this.isValidHex(data.hex) &&
           this.colorChange({
             hex: data.hex,
             source: "hex",
           });
-      } else if (data.r || data.g || data.b || data.a) {
+      } else if (data.r || data.g || data.b || data.a !== undefined) {
         this.colorChange({
           r: data.r || this.colors.rgba.r,
           g: data.g || this.colors.rgba.g,
           b: data.b || this.colors.rgba.b,
-          a: data.a || this.colors.rgba.a,
+          a: data.a !== undefined ? data.a : this.colors.rgba.a,
           source: "rgba",
         });
       }
+    },
+    addColor() {
+      const saved = store.getters["canvas/savedColors"];
+      if (saved.includes(this.colors.hex8)) return;
+      saved.push(this.colors.hex8);
+      store.commit("canvas/SET_SAVED_COLORS", saved);
     },
   },
 };

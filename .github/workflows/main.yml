@@ -40,5 +40,9 @@ jobs:
         run: |
           rm -rf dist
           node --version
-          npm install=
+          rm -rf node_modules
+          rm package-lock.json 
+          rm yarn.lock
+          npm cache clean --force
+          npm install
           npm run build

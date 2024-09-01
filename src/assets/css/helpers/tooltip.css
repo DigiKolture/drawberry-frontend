@@ -5,18 +5,18 @@
 }
 
 .tooltip-text {
+    @apply bg-black;
     font-weight: 400;
     font-size: 12px;
     line-height: 133%;
     text-align: center;
     color: var(--color-grey-10);
     visibility: hidden;
-    background-color: var(--color-grey-60);
     border-radius: 4px;
     padding: 4px 8px;
     position: absolute;
     z-index: 1;
-    top: 125%;
+    top: 100%;
     left: 50%;
     transform: translateX(-50%);
     white-space: nowrap;
@@ -32,7 +32,7 @@
     margin-left: -5px;
     border-width: 5px;
     border-style: solid;
-    border-color: transparent transparent var(--color-grey-60) transparent;
+    border-color: transparent transparent black transparent;
 }
 
 .tooltip-wrapper:hover .tooltip-text {

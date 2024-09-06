@@ -17,7 +17,8 @@
 }
 
 .export__empty__icon{
-    @apply rounded-full overflow-hidden;
+    @apply  overflow-hidden flex items-center;
+    border-radius: 40px;
     padding: 6px;
     border: 1.5px solid #454856;
     background: #353843;
@@ -27,6 +28,7 @@
 .export__empty__icon svg{
     width: 16px;
     height: 16px;
+    margin: 0;
 }
 
 .export__empty__content{

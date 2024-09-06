@@ -1,5 +1,5 @@
 section.auth-layout{
-    @apply flex flex-col w-full h-full items-center;
+    @apply flex flex-col w-full h-full items-center overflow-y-auto;
     padding-top: 108px;
     background-color: #1E1F26;
 }

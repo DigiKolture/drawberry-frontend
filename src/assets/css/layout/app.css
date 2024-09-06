@@ -38,6 +38,6 @@ section.app__layout.with__modal{
 }
 
 .app__body{
-    @apply flex h-full justify-center;
+    @apply flex h-full justify-center overflow-y-auto;
     background: #2D3039;
 }

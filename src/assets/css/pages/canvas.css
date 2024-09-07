@@ -206,6 +206,7 @@ input.canvas__input__text:focus{
     left: 0;
     background: rgba(30, 31, 38, 0.7);
     z-index: 10000000000000;
+    /*overflow-x: hidden;*/
 }
 
 .screen-size-constraint__modal{
@@ -213,6 +214,8 @@ input.canvas__input__text:focus{
     top: 25%;
     row-gap: 20px;
     z-index: 10000;
+    /*overflow-x: hidden;*/
+
 }
 
 .screen-size-constraint svg{

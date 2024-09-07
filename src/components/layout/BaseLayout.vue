@@ -2,7 +2,7 @@
   <div class="base" @click="handleGlobalClick">
     <Header />
 
-    <main class="main">
+    <main class="main" :class="{ 'small-screen': isSmallScreen }">
       <slot />
       <ManageESPs v-if="showESPMange" />
     </main>
@@ -15,6 +15,7 @@ import Header from "./Header.vue";
 import ManageESPs from "@/components/esp/ManageESPs.vue";
 import store from "@/store";
 import { useRoute } from "vue-router";
+import { screenConstraint } from "@/composables/canvas/screen-constraint";
 
 export default defineComponent({
   name: "BaseLayout",
@@ -22,6 +23,7 @@ export default defineComponent({
 
   setup() {
     const route = useRoute();
+    const { isSmallScreen } = screenConstraint();
 
     const authUser = computed(() => {
       return store.getters["auth/authUser"];
@@ -68,6 +70,7 @@ export default defineComponent({
 
     return {
       showESPMange,
+      isSmallScreen,
       handleGlobalClick,
     };
   },

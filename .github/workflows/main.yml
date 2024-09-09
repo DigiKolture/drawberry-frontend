@@ -43,6 +43,6 @@ jobs:
           rm -rf node_modules
           rm -rf package-lock.json 
           rm -rf yarn.lock
-          yarn cache clean
-          yarn install
-          yarn run build
+          npm cache clean
+          npm install
+          npm run build

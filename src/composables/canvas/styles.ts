@@ -100,7 +100,7 @@ export function styles() {
 
   const parseBoxShadow = (shadow: string) => {
     const regexp = /[^\s(]+(\(.+\))?/g;
-    let values = shadow.match(regexp);
+    let values: any = shadow.match(regexp);
     if (values === null) {
       return {
         y: 0,
@@ -110,7 +110,7 @@ export function styles() {
         color: "#fffff",
       };
     }
-    values = values.map((value) => value.replace("px", ""));
+    values = values.map((value: string) => value.replace("px", ""));
     return {
       y: values[0],
       x: values[1],

@@ -89,7 +89,6 @@ export default defineComponent({
         .dispatch("auth/login", user)
         .then((res) => {
           const { user } = res.data;
-          console.log({ user });
           if (user.verified) {
             disabled.value = false;
             router.push("/projects");

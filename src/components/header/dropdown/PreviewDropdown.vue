@@ -46,7 +46,9 @@ export default defineComponent({
         if (!props.isPreview) {
           router.push({ name: "Preview", params: { id: route.params.id } });
         }
-        //  TODO: Might refresh to remove unnecessary padding added by hover/focus
+      } else if (dropdownName === "email") {
+        store.commit("modals/CLOSE_MODAL", "preview");
+        store.commit("modals/OPEN_MODAL", "email_preview");
       }
     };
 

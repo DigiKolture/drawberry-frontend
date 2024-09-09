@@ -67,6 +67,14 @@ button.button, a.button{
     height: 42px;
     background: var(--color-grey-30);
 }
+.button.regular{
+    font-weight: 500;
+    font-size: 14px;
+    text-align: center;
+    color: var(--color-grey-00);
+    padding: 9px 20px;
+}
+
 
 button:disabled{
     @apply pointer-events-none;

@@ -3,6 +3,7 @@ import { ProjectState } from "@/store/modules/projects/types";
 import { RootState } from "@/store/types";
 import AxiosClient from "@/services/api";
 import { updateDom } from "@/composables/canvas/update_dom";
+import router from "@/router";
 
 const baseUrl = "/projects";
 const { updateElementDom } = updateDom();
@@ -45,6 +46,21 @@ export const actions: ActionTree<ProjectState, RootState> = {
 
         // console.log({ dang });
 
+        return res.data.data.project;
+      })
+      .catch((err: any): any => {
+        if (err instanceof Error) {
+          const message = err.message;
+          return Promise.reject(new Error(message));
+        }
+      });
+  },
+
+  async previewProjectByEmail(_, body: { email: string }): Promise<void> {
+    const currentRoute: any = router.currentRoute;
+    const projectId = currentRoute._value.params.id;
+    return AxiosClient.post(`${baseUrl}/${projectId}/preview/email`, body)
+      .then((res: any) => {
         return res.data.data.project;
       })
       .catch((err: any): any => {

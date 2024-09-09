@@ -12,6 +12,7 @@
     </template>
     <template v-slot:modals>
       <ShareProjectPreviewModal />
+      <EmailPreviewModal />
       <ScreenSizeConstraint />
       <UserInitialsDropdown :class="{ open: openUserInitials }" />
     </template>
@@ -29,10 +30,12 @@ import ShareProjectPreviewModal from "@/components/canvas/modals/ShareProjectPre
 import UserInitialsDropdown from "@/components/header/dropdown/UserInitialsDropdown.vue";
 import ScreenSizeConstraint from "@/components/canvas/modals/ScreenSizeConstraint.vue";
 import { CanvasSaveStatus } from "@/store/modules/canvas/types";
+import EmailPreviewModal from "@/components/header/preview/EmailPreviewModal.vue";
 
 export default defineComponent({
   name: "CanvasPage",
   components: {
+    EmailPreviewModal,
     ScreenSizeConstraint,
     UserInitialsDropdown,
     ShareProjectPreviewModal,

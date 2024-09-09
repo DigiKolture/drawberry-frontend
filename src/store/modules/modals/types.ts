@@ -3,6 +3,7 @@ export interface ModalState {
   preview: boolean;
   manage_esp: boolean;
   share_preview: boolean;
+  email_preview: boolean;
   user_initials: boolean;
   color_picker: string;
   project_create: boolean;

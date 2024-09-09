@@ -5,6 +5,44 @@
     top: 55px;
 }
 
+.email__project__preview .modal__header{
+    margin-bottom: 24px;
+}
+
+.email__project__preview .modal__footer{
+    column-gap: 16px;
+}
+
+
+.email__project__preview .button.success{
+    padding: 9px 20px;
+    font-weight: 500;
+    font-size: 14px;
+}
+
+.email__project__preview__success{
+    @apply flex flex-col;
+    row-gap: 56px;
+
+}
+
+.email__preview__success__message{
+    @apply flex items-center ;
+    column-gap: 16px;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 114%;
+    color: var(--color-grey-00);
+}
+
+.email__preview__success__message__close{
+    @apply flex flex-row-reverse;
+}
+
+.email__preview__success__message p span{
+    font-weight: 500;
+}
+
 .user-initials.action__dropdown{
     @apply fixed;
     left: 88%;

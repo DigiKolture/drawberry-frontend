@@ -9,6 +9,9 @@ export const getters: GetterTree<ModalState, RootState> = {
   sharePreview(state: ModalState): boolean {
     return state.share_preview;
   },
+  emailPreview(state: ModalState): boolean {
+    return state.email_preview;
+  },
   preview(state: ModalState): boolean {
     return state.preview;
   },

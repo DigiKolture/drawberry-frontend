@@ -10,6 +10,7 @@ export const stated: ModalState = {
   export: false,
   manage_esp: false,
   share_preview: false,
+  email_preview: false,
   user_initials: false,
   color_picker: "",
   project_create: false,

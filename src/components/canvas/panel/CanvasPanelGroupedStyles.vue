@@ -8,14 +8,24 @@
         :properties="tabsStyles.layout"
         :show-body="tabStates[tabsStyles.layout.index]"
       >
-        <HorizontalAlignStyle
-          v-if="hasAttributes('align')"
-          :is-parent="isParentAttribute('align')"
-        />
-        <VerticalAlignStyle
-          v-if="hasAttributes('valign')"
-          :is-parent="isParentAttribute('valign')"
-        />
+        <HorizontalAlignStyle v-if="hasAttributes('align')" />
+        <template v-for="(child, idx) in focusedElement.children">
+          <HorizontalAlignStyle
+            v-if="childHasAttribute(idx as number, 'align')"
+            :key="child"
+            :child-id="child"
+            :child-index="idx"
+          />
+        </template>
+        <VerticalAlignStyle v-if="hasAttributes('valign')" />
+        <template v-for="(child, idx) in focusedElement.children">
+          <VerticalAlignStyle
+            v-if="childHasAttribute(idx as number, 'valign')"
+            :key="child"
+            :child-id="child"
+            :child-index="idx"
+          />
+        </template>
       </PanelTab>
       <PanelTab
         v-if="showTab(tabsStyles.spacing)"
@@ -24,10 +34,33 @@
         :properties="tabsStyles.spacing"
         :show-body="tabStates[tabsStyles.spacing.index]"
       >
-        <PaddingStyle
-          :is-parent="isParentStyle('padding')"
-          v-if="showStyle('padding')"
-        />
+        <PaddingStyle v-if="showStyle('padding')" />
+        <template v-for="(child, idx) in focusedElement.children">
+          <PaddingStyle
+            v-if="childHasStyle(idx as number, 'padding')"
+            :key="child"
+            :child-id="child"
+            :child-index="idx"
+          />
+        </template>
+        <MarginTopStyle v-if="showStyle('margin-top')" />
+        <template v-for="(child, idx) in focusedElement.children">
+          <MarginTopStyle
+            v-if="childHasStyle(idx as number, 'margin-top')"
+            :key="child"
+            :child-id="child"
+            :child-index="idx"
+          />
+        </template>
+        <MarginBottomStyle v-if="showStyle('margin-bottom')" />
+        <template v-for="(child, idx) in focusedElement.children">
+          <MarginBottomStyle
+            v-if="childHasStyle(idx as number, 'margin-bottom')"
+            :key="child"
+            :child-id="child"
+            :child-index="idx"
+          />
+        </template>
       </PanelTab>
 
       <PanelTab
@@ -45,10 +78,15 @@
           <LineHeightStyle v-if="showStyle('line-height')" />
           <LetterSpacingStyle v-if="showStyle('letter-spacing')" />
         </div>
-        <TextAlignStyle
-          v-if="showStyle('text-align')"
-          :is-parent="isParentStyle('padding')"
-        />
+        <TextAlignStyle v-if="showStyle('text-align')" />
+        <template v-for="(child, idx) in focusedElement.children">
+          <TextAlignStyle
+            v-if="childHasStyle(idx as number, 'text-align')"
+            :key="child"
+            :child-id="child"
+            :child-index="idx"
+          />
+        </template>
         <ContentStyle v-if="hasContent()" />
       </PanelTab>
       <PanelTab
@@ -58,10 +96,15 @@
         :properties="tabsStyles.background"
         :show-body="tabStates[tabsStyles.background.index]"
       >
-        <BackgroundColorStyle
-          v-if="showStyle('background-color')"
-          :is-parent="isParentStyle('background-color')"
-        />
+        <BackgroundColorStyle v-if="showStyle('background-color')" />
+        <template v-for="(child, idx) in focusedElement.children">
+          <BackgroundColorStyle
+            v-if="childHasStyle(idx as number, 'background-color')"
+            :key="child"
+            :child-id="child"
+            :child-index="idx"
+          />
+        </template>
       </PanelTab>
       <PanelTab
         v-if="showTab(tabsStyles.borders)"
@@ -88,10 +131,15 @@
         :properties="tabsStyles.link"
         :show-body="tabStates[tabsStyles.link.index]"
       >
-        <HrefAttribute
-          :is-parent="isParentAttribute('href')"
-          v-if="hasAttributes('href')"
-        />
+        <HrefAttribute v-if="hasAttributes('href')" />
+        <template v-for="(child, idx) in focusedElement.children">
+          <HrefAttribute
+            v-if="childHasAttribute(idx as number, 'href')"
+            :key="child"
+            :child-id="child"
+            :child-index="idx"
+          />
+        </template>
       </PanelTab>
       <PanelTab
         v-if="showTab(tabsStyles.media)"
@@ -126,10 +174,14 @@ import TextColorStyle from "@/components/canvas/panel/styles/TextColorStyle.vue"
 import BorderRadiusStyle from "@/components/canvas/panel/styles/BorderRadiusStyle.vue";
 import ImageAttribute from "@/components/canvas/panel/styles/ImageAttribute.vue";
 import { panel } from "@/composables/canvas/panel";
+import MarginTopStyle from "@/components/canvas/panel/styles/spacing/MarginTopStyle.vue";
+import MarginBottomStyle from "@/components/canvas/panel/styles/spacing/MarginBottomStyle.vue";
 
 export default defineComponent({
   name: "CanvasPanelGroupedStyles",
   components: {
+    MarginBottomStyle,
+    MarginTopStyle,
     ImageAttribute,
     BorderRadiusStyle,
     TextColorStyle,
@@ -155,8 +207,8 @@ export default defineComponent({
       hasContent,
       tabsStyles,
       showStyle,
-      isParentAttribute,
-      isParentStyle,
+      childHasStyle,
+      childHasAttribute,
     } = panel();
 
     const focusedElement = computed(() => {
@@ -191,8 +243,8 @@ export default defineComponent({
     return {
       styles,
       showStyle,
-      isParentAttribute,
-      isParentStyle,
+      childHasStyle,
+      childHasAttribute,
       hasContent,
       setActiveTab,
       showTab,

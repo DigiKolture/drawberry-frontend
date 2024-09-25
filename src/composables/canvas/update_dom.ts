@@ -20,8 +20,8 @@ export function updateDom() {
   };
 
   const isChild = (element: any) => {
-    // return !element.parent && element.parentId !== null;
-    return element.parent;
+    //If parent ID is null, then its a child
+    return element.parent !== null;
   };
 
   const updateElementDom = (html: string, elementJson: any, here = false) => {
@@ -33,7 +33,7 @@ export function updateDom() {
     const attributesValues = attributesSettings[tagName];
     const tagTypes = elementJson.types;
 
-    if (elementAttributes) {
+    if (elementAttributes && attributesValues) {
       for (const attribute of attributesValues) {
         if (!Object.keys(elementAttributes).includes(attribute)) {
           continue;
@@ -89,9 +89,9 @@ export function updateDom() {
     }
 
     // Add link URL to image anchor tag
-    if (tagName === "img" && tagTypes.includes("link")) {
-      el.parent().attr("href", elementJson.attributes["href"].value);
-    }
+    // if (tagName === "img" && tagTypes.includes("link")) {
+    //   el.parent().attr("href", elementJson.attributes["href"].value);
+    // }
 
     //UPDATE Content
     // TODO: Update Condition

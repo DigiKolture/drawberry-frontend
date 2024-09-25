@@ -16,27 +16,35 @@ import { computed, defineComponent, ref, watch } from "vue";
 import PanelStyle from "./PanelStyle.vue";
 import BaseButtonIcon from "@/components/icon/BaseButtonIcon.vue";
 import store from "@/store";
+import { modifiers } from "@/composables/canvas/panel/modifiers";
 
 export default defineComponent({
   name: "VerticalAlignStyle",
   components: { BaseButtonIcon, PanelStyle },
   props: {
-    isParent: {
-      type: Boolean,
-      default: false,
+    childId: {
+      type: String,
+      default: "",
+      required: false,
+    },
+    childIndex: {
+      type: Number,
+      default: -1,
       required: false,
     },
   },
   setup(props) {
     const name = "valign";
 
+    const { updateAttribute } = modifiers();
+
     const focusedElement = computed(() => {
       return store.getters["canvas/focusedElement"];
     });
 
-    const focusedParentElement = computed(() => {
-      return store.getters["canvas/focusedParentElement"];
-    });
+    const focusedChildrenElements = computed(
+      () => store.getters["canvas/focusedChildrenElements"]
+    );
 
     const alignOptions = [
       {
@@ -53,36 +61,28 @@ export default defineComponent({
       },
     ];
 
-    const align = ref(
-      !props.isParent
-        ? focusedElement.value.attributes[name].value
-        : focusedParentElement.value.attributes[name].value
-    );
+    const getTargetElement = () =>
+      props.childId
+        ? focusedChildrenElements.value[props.childIndex]
+        : focusedElement.value;
+
+    const align = ref(getTargetElement().attributes[name].value);
 
     watch(align, (newVal: string) => {
-      if (!props.isParent) {
-        focusedElement.value.attributes[name].value = newVal;
-        store.dispatch("canvas/updateFocusedElement", focusedElement.value);
-      } else {
-        focusedParentElement.value.attributes[name].value = newVal;
-        store.dispatch(
-          "canvas/updateFocusedParentElement",
-          focusedParentElement.value
-        );
-      }
+      updateAttribute(name, newVal, props.childIndex);
     });
 
-    watch(focusedElement, (newVal) => {
-      if (!props.isParent) {
-        align.value = newVal.attributes[name].value;
-      }
-    });
-
-    watch(focusedParentElement, (newVal) => {
-      if (props.isParent) {
-        align.value = newVal.attributes[name].value;
-      }
-    });
+    // watch(focusedElement, (newVal) => {
+    //   if (!props.isParent) {
+    //     align.value = newVal.attributes[name].value;
+    //   }
+    // });
+    //
+    // watch(focusedParentElement, (newVal) => {
+    //   if (props.isParent) {
+    //     align.value = newVal.attributes[name].value;
+    //   }
+    // });
 
     const changeAlignment = (option: string) => {
       align.value = option;

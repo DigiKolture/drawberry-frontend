@@ -8,6 +8,7 @@ import { actions } from "@/store/modules/canvas/actions";
 const state: CanvasState = {
   focusedElement: null,
   focusedParentElement: null,
+  focusedChildrenElements: [],
   currentHoverElement: {
     id: null,
     componentIndex: null,

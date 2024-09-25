@@ -20,7 +20,7 @@ export function panel() {
     spacing: {
       title: "Spacing",
       index: 1,
-      styles: ["padding"],
+      styles: ["padding", "margin-top", "margin-bottom"],
       attributes: [],
     },
     typography: {
@@ -82,14 +82,22 @@ export function panel() {
     return store.getters["canvas/focusedParentElement"];
   });
 
+  const focusedChildrenElements = computed(() => {
+    return store.getters["canvas/focusedChildrenElements"];
+  });
+
   const styles = computed(() => {
     return Object.keys(focusedElement.value?.attributes?.style?.value || []);
   });
 
   const parentStyles = computed(() => {
-    return Object.keys(
-      focusedParentElement.value?.attributes?.style?.value || []
-    );
+    let keys: string[] = [];
+    for (const focusedChild of focusedChildrenElements.value) {
+      keys = keys.concat(
+        Object.keys(focusedChild.attributes?.style?.value || [])
+      );
+    }
+    return keys;
   });
 
   const isParentStyle = (style: string) => {
@@ -100,8 +108,16 @@ export function panel() {
     return Object.keys(focusedElement.value?.attributes || {});
   });
 
+  // const parentAttributes = computed(() => {
+  //   return Object.keys(focusedParentElement.value?.attributes || {});
+  // });
+
   const parentAttributes = computed(() => {
-    return Object.keys(focusedParentElement.value?.attributes || {});
+    let keys: string[] = [];
+    for (const focusedChild of focusedChildrenElements.value) {
+      keys = keys.concat(Object.keys(focusedChild.attributes));
+    }
+    return keys;
   });
 
   const isParentAttribute = (attribute: string) => {
@@ -109,16 +125,40 @@ export function panel() {
   };
 
   const showStyle = (style: string) => {
+    return style ? styles.value.includes(style) : true;
+  };
+
+  const childHasStyle = (index: number, style: string) => {
+    const childStyles =
+      focusedChildrenElements.value?.[index]?.attributes?.style?.value || {};
+    return Object.keys(childStyles).includes(style);
+  };
+
+  const childHasAttribute = (index: number, attribute: string) => {
+    const childAttributes =
+      focusedChildrenElements.value?.[index]?.attributes || {};
+    return Object.keys(childAttributes).includes(attribute);
+  };
+
+  const hasCurrentOrChildrenStyles = (style: string) => {
     return style
       ? styles.value.includes(style) || parentStyles.value.includes(style)
       : true;
   };
 
-  const hasAttributes = (attribute: string) => {
+  // const showStyle = (style: string) => {
+  //   return style ? styles.value.includes(style) : true;
+  // };
+
+  const hasCurrentOrChildrenAttributes = (attribute: string) => {
     return attribute
       ? attributes.value.includes(attribute) ||
           parentAttributes.value.includes(attribute)
       : true;
+  };
+
+  const hasAttributes = (attribute: string) => {
+    return attributes.value.includes(attribute);
   };
 
   const hasContent = () => {
@@ -128,11 +168,11 @@ export function panel() {
 
   const showTab = (tab: TabStyles) => {
     for (const style of tab.styles) {
-      const hasStyle = showStyle(style);
+      const hasStyle = hasCurrentOrChildrenStyles(style);
       if (hasStyle) return true;
     }
     for (const attr of tab.attributes) {
-      const hasAttr = hasAttributes(attr);
+      const hasAttr = hasCurrentOrChildrenAttributes(attr);
       if (hasAttr) return true;
     }
     // return tab.isContent;
@@ -154,6 +194,8 @@ export function panel() {
     showTab,
     isParentAttribute,
     isParentStyle,
+    childHasStyle,
+    childHasAttribute,
     showStyle,
     hasAttributes,
     hasContent,

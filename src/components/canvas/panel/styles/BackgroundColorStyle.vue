@@ -23,9 +23,14 @@ export default defineComponent({
     },
   },
   props: {
-    isParent: {
-      type: Boolean,
-      default: false,
+    childId: {
+      type: String,
+      default: "",
+      required: false,
+    },
+    childIndex: {
+      type: Number,
+      default: -1,
       required: false,
     },
   },
@@ -41,42 +46,47 @@ export default defineComponent({
       () => store.getters["canvas/focusedElement"]
     );
 
-    const focusedParentElement = computed(() => {
-      return store.getters["canvas/focusedParentElement"];
-    });
+    const focusedChildrenElements = computed(
+      () => store.getters["canvas/focusedChildrenElements"]
+    );
+
+    const getTargetElement = () =>
+      props.childId
+        ? focusedChildrenElements.value[props.childIndex]
+        : focusedElement.value;
 
     const color = ref({
-      hex8: !props.isParent
-        ? focusedElement.value.attributes.style.value[name]
-        : focusedParentElement.value.attributes.style.value[name],
+      hex8: getTargetElement().attributes.style.value[name],
     });
 
     watch(color, (newVal: any) => {
-      if (!props.isParent) {
+      if (!props.childId) {
         focusedElement.value.attributes.style.value[name] = newVal.hex8;
         store.dispatch("canvas/updateFocusedElement", focusedElement.value);
       } else {
-        focusedParentElement.value.attributes.style.value[name] = newVal.hex8;
+        focusedChildrenElements.value[props.childIndex].attributes.style.value[
+          name
+        ] = newVal.hex8;
         store.dispatch(
-          "canvas/updateFocusedParentElement",
-          focusedParentElement.value
+          "canvas/updateFocusedElement",
+          focusedChildrenElements.value[props.childIndex]
         );
       }
     });
 
-    watch(focusedElement, (newVal) => {
-      if (!props.isParent) {
-        colorPickerStyleRef.value.updateColor(color.value);
-        color.value.hex8 = newVal.attributes.style.value[name];
-      }
-    });
-
-    watch(focusedParentElement, (newVal) => {
-      if (props.isParent) {
-        colorPickerStyleRef.value.updateColor(color.value);
-        color.value.hex8 = newVal.attributes.style.value[name];
-      }
-    });
+    // watch(focusedElement, (newVal) => {
+    //   if (!props.isParent) {
+    //     colorPickerStyleRef.value.updateColor(color.value);
+    //     color.value.hex8 = newVal.attributes.style.value[name];
+    //   }
+    // });
+    //
+    // watch(focusedParentElement, (newVal) => {
+    //   if (props.isParent) {
+    //     colorPickerStyleRef.value.updateColor(color.value);
+    //     color.value.hex8 = newVal.attributes.style.value[name];
+    //   }
+    // });
 
     const updateColor = (newVal: any) => {
       color.value = newVal;

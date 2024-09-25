@@ -20,6 +20,7 @@ export interface UpdatedComponent {
 export interface CanvasState {
   focusedElement: object | null;
   focusedParentElement: object | null;
+  focusedChildrenElements: any[];
   focusedIndex: number | null;
   currentHoverElement: CurrentHoverElementType;
   sidebarNavContent: string | null;

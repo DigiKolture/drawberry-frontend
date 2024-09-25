@@ -261,6 +261,42 @@
 
 /*CONTENT STYLE*/
 
+
+/*NUMBER ROW STYLE*/
+
+.number__row__style__container{
+    @apply flex justify-between items-center;
+}
+
+.number__row__style{
+    @apply flex justify-between items-center;
+    border-radius: 2px;
+    padding: 4px;
+    width: 40px;
+    height: 22px;
+    /*background: var(--color-grey-50);*/
+    background: var(--color-grey-40);
+}
+
+.number__row__style input{
+    @apply bg-transparent text-white;
+    width: 17px;
+    font-weight: 400;
+    font-size: 12px;
+}
+
+.number__row__style span{
+    @apply uppercase;
+    font-weight: 400;
+    font-size: 11px;
+    color: var(--color-grey-20);
+}
+
+
+/*NUMBER ROW STYLE*/
+
+
+
 /*FONT STYLE*/
 .font__size__style{
     @apply flex w-full;

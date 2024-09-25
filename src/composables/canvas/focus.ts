@@ -75,7 +75,6 @@ export function focus() {
     // Calculate the offset positions considering header, footer, and padding
     let offsetPosition = itemTopPosition - headerHeight - topPadding;
 
-    console.log("First offset: ", offsetPosition);
     if (itemBottomPosition + bottomPadding > window.pageYOffset + viewHeight) {
       offsetPosition = itemBottomPosition - viewHeight + bottomPadding;
     }
@@ -99,17 +98,20 @@ export function focus() {
   };
 
   const setParentFocusedElement = (focusedElement: any, componentItem: any) => {
-    if (focusedElement.parentId) {
-      const jsonIndex = getComponentElementIndexUsingId(
-        componentItem,
-        focusedElement.parentId
-      );
-      store.commit(
-        "canvas/SET_FOCUSED_PARENT_ELEMENT",
-        componentItem.json[jsonIndex]
-      );
+    const childIds = focusedElement.children;
+    const children = [];
+
+    if (childIds.length > 0) {
+      for (const childId of childIds) {
+        const jsonIndex = getComponentElementIndexUsingId(
+          componentItem,
+          childId
+        );
+        children.push(componentItem.json[jsonIndex]);
+        store.commit("canvas/SET_FOCUSED_CHILDREN_ELEMENTS", children);
+      }
     } else {
-      store.commit("canvas/SET_FOCUSED_PARENT_ELEMENT", null);
+      store.commit("canvas/SET_FOCUSED_CHILDREN_ELEMENTS", []);
     }
   };
 

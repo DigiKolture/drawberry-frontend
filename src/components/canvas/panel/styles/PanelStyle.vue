@@ -1,6 +1,6 @@
 <template>
   <section class="panel__style">
-    <div class="panel__style__head">
+    <div v-if="title" class="panel__style__head">
       <h5>{{ title }}</h5>
     </div>
     <div class="panel__style__body">
@@ -20,7 +20,8 @@ export default defineComponent({
     },
     title: {
       type: String,
-      required: true,
+      required: false,
+      default: "",
     },
   },
 });

@@ -17,6 +17,10 @@ export function helpers() {
     return str.slice(0, num) + "...";
   };
 
+  const isNumeric = (value: any) => {
+    return !isNaN(value) && value.trim() !== "";
+  };
+
   const find = (array: any[], key: string, value: any) => {
     return array.find((obj) => obj[key] === value) || null;
   };
@@ -111,6 +115,7 @@ export function helpers() {
     find,
     findIndex,
     formatDate,
+    isNumeric,
     isValidImageUrl,
     capitalizeFirstLetter,
     copy,

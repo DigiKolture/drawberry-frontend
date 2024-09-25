@@ -14,9 +14,14 @@ export default defineComponent({
   name: "HrefAttribute",
   components: { PanelStyle },
   props: {
-    isParent: {
-      type: Boolean,
-      default: false,
+    childId: {
+      type: String,
+      default: "",
+      required: false,
+    },
+    childIndex: {
+      type: Number,
+      default: -1,
       required: false,
     },
   },
@@ -28,40 +33,42 @@ export default defineComponent({
       return store.getters["canvas/focusedElement"];
     });
 
-    const focusedParentElement = computed(() => {
-      return store.getters["canvas/focusedParentElement"];
-    });
-
-    const href = ref(
-      !props.isParent
-        ? focusedElement.value.attributes[name].value
-        : focusedParentElement.value.attributes[name].value
+    const focusedChildrenElements = computed(
+      () => store.getters["canvas/focusedChildrenElements"]
     );
 
+    const getTargetElement = () =>
+      props.childId
+        ? focusedChildrenElements.value[props.childIndex]
+        : focusedElement.value;
+
+    const href = ref(getTargetElement().attributes[name].value);
+
     watch(href, (newVal: string) => {
-      if (!props.isParent) {
+      if (!props.childId) {
         focusedElement.value.attributes[name].value = newVal;
         store.dispatch("canvas/updateFocusedElement", focusedElement.value);
       } else {
-        focusedParentElement.value.attributes[name].value = newVal;
+        focusedChildrenElements.value[props.childIndex].attributes[name].value =
+          newVal;
         store.dispatch(
-          "canvas/updateFocusedParentElement",
-          focusedParentElement.value
+          "canvas/updateFocusedElement",
+          focusedChildrenElements.value[props.childIndex]
         );
       }
     });
 
-    watch(focusedElement, (newVal) => {
-      if (!props.isParent) {
-        href.value = newVal.attributes[name].value;
-      }
-    });
-
-    watch(focusedParentElement, (newVal) => {
-      if (props.isParent) {
-        href.value = newVal.attributes[name].value;
-      }
-    });
+    // watch(focusedElement, (newVal) => {
+    //   if (!props.isParent) {
+    //     href.value = newVal.attributes[name].value;
+    //   }
+    // });
+    //
+    // watch(focusedParentElement, (newVal) => {
+    //   if (props.isParent) {
+    //     href.value = newVal.attributes[name].value;
+    //   }
+    // });
 
     return {
       href,

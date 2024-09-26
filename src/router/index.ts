@@ -26,6 +26,7 @@ const routes: Array<RouteRecordRaw> = [
     component: Login,
     meta: {
       authRequired: false,
+      authPage: true,
     },
   },
   {
@@ -34,6 +35,7 @@ const routes: Array<RouteRecordRaw> = [
     component: Register,
     meta: {
       authRequired: false,
+      authPage: true,
     },
   },
   {
@@ -42,6 +44,7 @@ const routes: Array<RouteRecordRaw> = [
     component: ForgotPassword,
     meta: {
       authRequired: false,
+      authPage: true,
     },
   },
   {
@@ -51,6 +54,7 @@ const routes: Array<RouteRecordRaw> = [
     props: true,
     meta: {
       authRequired: false,
+      authPage: true,
     },
   },
   {
@@ -60,6 +64,7 @@ const routes: Array<RouteRecordRaw> = [
     props: true,
     meta: {
       authRequired: false,
+      authPage: true,
     },
   },
   {
@@ -68,6 +73,7 @@ const routes: Array<RouteRecordRaw> = [
     component: ProjectIndex,
     meta: {
       authRequired: true,
+      authPage: false,
     },
     children: [
       {
@@ -75,6 +81,10 @@ const routes: Array<RouteRecordRaw> = [
         name: "CreateFolder",
         component: CreateFolder,
         props: true,
+        meta: {
+          authRequired: true,
+          authPage: false,
+        },
       },
     ],
   },
@@ -86,6 +96,7 @@ const routes: Array<RouteRecordRaw> = [
     component: Canvas,
     meta: {
       authRequired: true,
+      authPage: false,
     },
   },
   {
@@ -95,6 +106,7 @@ const routes: Array<RouteRecordRaw> = [
     component: Preview,
     meta: {
       authRequired: false,
+      authPage: false,
     },
   },
   {
@@ -104,6 +116,7 @@ const routes: Array<RouteRecordRaw> = [
     component: ESPOAuthCallback,
     meta: {
       authRequired: true,
+      authPage: false,
     },
   },
 ];
@@ -115,21 +128,19 @@ const router = createRouter({
 
 router.beforeEach((routeTo, routeFrom, next) => {
   const authRequired = routeTo.matched.some((route) => route.meta.authRequired);
+  const authPage = routeTo.matched.some((route) => route.meta.authPage);
   const authUser = store.getters["auth/authUser"];
-  const jwt = localStorage.getItem("access-token");
+  // const jwt = localStorage.getItem("access-token");
 
-  if (!authRequired && !authUser) {
-    return next();
+  if (!authUser && authRequired) {
+    return next({ name: "Login" });
   }
 
-  if (authUser && !authRequired) {
+  if (authUser && authPage) {
     return next({ name: "ProjectIndex" });
   }
 
-  if (authUser && jwt) {
-    return next();
-  }
-  return next({ name: "Login" });
+  return next();
 });
 
 export default router;

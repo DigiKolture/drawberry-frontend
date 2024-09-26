@@ -279,6 +279,7 @@ export default defineComponent({
       hasContent,
       tabsStyles,
       showStyle,
+      hasCurrentOrChildrenStyles,
       childHasStyle,
       childHasAttribute,
     } = panel();
@@ -297,10 +298,10 @@ export default defineComponent({
 
     const showTypographyRow = computed(() => {
       return (
-        showStyle("font-size") ||
-        showStyle("font-weight") ||
-        showStyle("line-height") ||
-        showStyle("letter-spacing")
+        hasCurrentOrChildrenStyles("font-size") ||
+        hasCurrentOrChildrenStyles("font-weight") ||
+        hasCurrentOrChildrenStyles("line-height") ||
+        hasCurrentOrChildrenStyles("letter-spacing")
       );
     });
 

@@ -194,6 +194,7 @@ export function panel() {
     showTab,
     isParentAttribute,
     isParentStyle,
+    hasCurrentOrChildrenStyles,
     childHasStyle,
     childHasAttribute,
     showStyle,

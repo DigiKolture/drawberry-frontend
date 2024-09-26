@@ -18,6 +18,7 @@ const routes: Array<RouteRecordRaw> = [
     component: Login,
     meta: {
       authRequired: false,
+      authPage: true,
     },
   },
   {

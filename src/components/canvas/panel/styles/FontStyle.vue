@@ -18,29 +18,47 @@ import { computed, defineComponent, ref, watch } from "vue";
 import PanelStyle from "./PanelStyle.vue";
 import store from "@/store";
 import { fonts } from "@/composables/canvas/fonts";
+import { modifiers } from "@/composables/canvas/panel/modifiers";
 
 export default defineComponent({
   name: "FontStyle",
   components: { PanelStyle },
+  props: {
+    childId: {
+      type: String,
+      default: "",
+      required: false,
+    },
+    childIndex: {
+      type: Number,
+      default: -1,
+      required: false,
+    },
+  },
 
-  setup() {
+  setup(props) {
     const name = "font-family";
+
+    const { focusedElement, getTargetElement, updateStyle } = modifiers();
 
     const { extractFirstFontFamily, getFullFamily, getFont, getFontWeights } =
       fonts();
-
-    const focusedElement = computed(() => {
-      return store.getters["canvas/focusedElement"];
-    });
 
     const googleFonts = computed(() => {
       return store.getters["canvas/googleFonts"];
     });
 
     const family = ref(
-      extractFirstFontFamily(focusedElement.value.attributes.style.value[name])
+      extractFirstFontFamily(
+        getTargetElement(props.childId, props.childIndex).attributes.style
+          .value[name]
+      )
     );
-    const fullFamily = ref(focusedElement.value.attributes.style.value[name]);
+    const fullFamily = ref(
+      getTargetElement(props.childId, props.childIndex).attributes.style.value[
+        name
+      ]
+    );
 
     watch(family, (newVal) => {
       if (!newVal) return;
@@ -48,17 +66,19 @@ export default defineComponent({
       const font = getFont(newVal);
       const weights = getFontWeights(font.variants);
       store.commit("canvas/SET_FONT_WEIGHTS", weights);
-      focusedElement.value.attributes.style.value[name] = fullFamily.value;
-      focusedElement.value.attributes.style.value["font-weight"] = 400;
-      store.dispatch("canvas/updateFocusedElement", focusedElement.value);
+      updateStyle(name, fullFamily.value, props.childIndex);
+      //Reset font weight after changing font family
+      updateStyle("font-weight", 400, props.childIndex);
+      // focusedElement.value.attributes.style.value["font-weight"] = 400;
+      // store.dispatch("canvas/updateFocusedElement", focusedElement.value);
     });
 
-    watch(focusedElement, (newVal) => {
-      family.value = extractFirstFontFamily(
-        newVal.attributes.style.value[name]
-      );
-      fullFamily.value = newVal.attributes.style.value[name];
-    });
+    // watch(focusedElement, (newVal) => {
+    //   family.value = extractFirstFontFamily(
+    //     newVal.attributes.style.value[name]
+    //   );
+    //   fullFamily.value = newVal.attributes.style.value[name];
+    // });
 
     return { googleFonts, family, fullFamily };
   },

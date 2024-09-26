@@ -29,29 +29,42 @@
   </PanelStyle>
 </template>
 <script lang="ts">
-import { computed, defineComponent, reactive, ref, watch } from "vue";
+import { defineComponent, reactive, ref, watch } from "vue";
 import PanelStyle from "./PanelStyle.vue";
 import BaseSliderIcon from "../BaseSliderIcon.vue";
 import ColorPickerStyle from "@/components/canvas/panel/ColorPickerStyle.vue";
 import { styles } from "@/composables/canvas/styles";
-import store from "@/store";
 import { ColorPickerTypes } from "@/store/modules/modals/types";
+import { modifiers } from "@/composables/canvas/panel/modifiers";
 
 export default defineComponent({
   name: "ShadowStyle",
+  props: {
+    childId: {
+      type: String,
+      default: "",
+      required: false,
+    },
+    childIndex: {
+      type: Number,
+      default: -1,
+      required: false,
+    },
+  },
   components: { ColorPickerStyle, BaseSliderIcon, PanelStyle },
 
-  setup() {
+  setup(props) {
     const name = "box-shadow";
     const unit = "px";
 
-    const focusedElement = computed(() => {
-      return store.getters["canvas/focusedElement"];
-    });
     const { parseBoxShadow } = styles();
+    const { getTargetElement, updateStyle } = modifiers();
 
     const shadow: any = reactive(
-      parseBoxShadow(focusedElement.value.attributes.style.value[name])
+      parseBoxShadow(
+        getTargetElement(props.childId, props.childIndex).attributes.style
+          .value[name]
+      )
     );
 
     const color = ref({
@@ -63,10 +76,8 @@ export default defineComponent({
     };
 
     watch(shadow, (newVal) => {
-      focusedElement.value.attributes.style.value[
-        name
-      ] = `${newVal.y}${unit} ${newVal.x}${unit} ${newVal.blur}${unit} ${newVal.spread}${unit} ${newVal.color.hex8}`;
-      store.dispatch("canvas/updateFocusedElement", focusedElement.value);
+      const value = `${newVal.y}${unit} ${newVal.x}${unit} ${newVal.blur}${unit} ${newVal.spread}${unit} ${newVal.color.hex8}`;
+      updateStyle(name, value, props.childIndex);
     });
 
     return {

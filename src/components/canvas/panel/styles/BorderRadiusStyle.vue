@@ -9,28 +9,43 @@
   </PanelStyle>
 </template>
 <script lang="ts">
-import { computed, defineComponent, ref, watch } from "vue";
+import { defineComponent, ref, watch } from "vue";
 import PanelStyle from "./PanelStyle.vue";
 import BaseSliderIcon from "../BaseSliderIcon.vue";
-import store from "@/store";
+import { modifiers } from "@/composables/canvas/panel/modifiers";
 
 export default defineComponent({
   name: "BorderRadiusStyle",
   components: { BaseSliderIcon, PanelStyle },
 
-  setup() {
+  props: {
+    childId: {
+      type: String,
+      default: "",
+      required: false,
+    },
+    childIndex: {
+      type: Number,
+      default: -1,
+      required: false,
+    },
+  },
+
+  setup(props) {
     const name = "border-radius";
     const unit = "px";
 
-    const focusedElement = computed(() => {
-      return store.getters["canvas/focusedElement"];
-    });
+    const { getTargetElement, updateStyle } = modifiers();
 
     const radius = ref(
-      focusedElement.value.attributes.style.value[name].slice(0, -2)
+      getTargetElement(props.childId, props.childIndex).attributes.style.value[
+        name
+      ].slice(0, -2)
     );
     const radiusWithUnit = ref(
-      focusedElement.value.attributes.style.value[name]
+      getTargetElement(props.childId, props.childIndex).attributes.style.value[
+        name
+      ]
     );
 
     watch(radius, (newVal: string | number) => {
@@ -39,14 +54,13 @@ export default defineComponent({
       } else {
         radiusWithUnit.value = newVal + unit;
       }
-      focusedElement.value.attributes.style.value[name] = radiusWithUnit.value;
-      store.dispatch("canvas/updateFocusedElement", focusedElement.value);
+      updateStyle(name, radiusWithUnit.value, props.childIndex);
     });
 
-    watch(focusedElement, (newVal) => {
-      radius.value = newVal.attributes.style.value[name].slice(0, -2);
-      radiusWithUnit.value = newVal.attributes.style.value[name];
-    });
+    // watch(focusedElement, (newVal) => {
+    //   radius.value = newVal.attributes.style.value[name].slice(0, -2);
+    //   radiusWithUnit.value = newVal.attributes.style.value[name];
+    // });
 
     return {
       radius,

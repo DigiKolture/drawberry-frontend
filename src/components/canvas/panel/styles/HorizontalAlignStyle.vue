@@ -16,6 +16,7 @@ import { computed, defineComponent, ref, watch } from "vue";
 import PanelStyle from "./PanelStyle.vue";
 import BaseButtonIcon from "@/components/icon/BaseButtonIcon.vue";
 import store from "@/store";
+import { modifiers } from "@/composables/canvas/panel/modifiers";
 
 export default defineComponent({
   name: "HorizontalAlignStyle",
@@ -35,6 +36,7 @@ export default defineComponent({
 
   setup(props) {
     const name = "align";
+    const { updateAttribute } = modifiers();
 
     const focusedElement = computed(() => {
       return store.getters["canvas/focusedElement"];
@@ -67,17 +69,7 @@ export default defineComponent({
     const align = ref(getTargetElement().attributes[name].value);
 
     watch(align, (newVal: string) => {
-      if (!props.childId) {
-        focusedElement.value.attributes[name].value = newVal;
-        store.dispatch("canvas/updateFocusedElement", focusedElement.value);
-      } else {
-        focusedChildrenElements.value[props.childIndex].attributes[name].value =
-          newVal;
-        store.dispatch(
-          "canvas/updateFocusedElement",
-          focusedChildrenElements.value[props.childIndex]
-        );
-      }
+      updateAttribute(name, newVal, props.childIndex);
     });
 
     // watch(focusedElement, (newVal) => {

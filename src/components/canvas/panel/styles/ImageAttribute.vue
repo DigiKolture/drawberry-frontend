@@ -10,6 +10,7 @@ import { computed, defineComponent, ref, watch } from "vue";
 import PanelStyle from "./PanelStyle.vue";
 import store from "@/store";
 import BaseImageTextUpload from "@/components/canvas/panel/BaseImageTextUpload.vue";
+import { modifiers } from "@/composables/canvas/panel/modifiers";
 //TODO Split Image Components
 export default defineComponent({
   name: "ImageAttribute",
@@ -17,27 +18,39 @@ export default defineComponent({
     BaseImageTextUpload,
     PanelStyle,
   },
-
-  setup() {
+  props: {
+    childId: {
+      type: String,
+      default: "",
+      required: false,
+    },
+    childIndex: {
+      type: Number,
+      default: -1,
+      required: false,
+    },
+  },
+  setup(props) {
     const name = "src";
-    const focusedElement = computed(() => {
-      return store.getters["canvas/focusedElement"];
-    });
+
+    const { getTargetElement, updateAttribute } = modifiers();
+
     let activeIndex = ref(0);
     const isInputFocused = ref(false);
 
-    const src = ref(focusedElement.value.attributes[name].value);
+    const src = ref(
+      getTargetElement(props.childId, props.childIndex).attributes[name].value
+    );
 
     const updateImage = async () => {
       if (!src.value) return;
-      focusedElement.value.attributes[name].value = src.value;
-      await store.dispatch("canvas/updateFocusedElement", focusedElement.value);
+      await updateAttribute(name, src.value, props.childIndex);
       isInputFocused.value = false;
     };
 
-    watch(focusedElement, (newVal) => {
-      src.value = newVal.attributes[name].value;
-    });
+    // watch(focusedElement, (newVal) => {
+    //   src.value = newVal.attributes[name].value;
+    // });
 
     return {
       activeIndex,

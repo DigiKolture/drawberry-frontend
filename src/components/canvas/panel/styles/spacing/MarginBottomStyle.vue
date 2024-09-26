@@ -77,6 +77,7 @@ export default defineComponent({
 
     return {
       focusedElement,
+      focusedChildrenElements,
       marginBottom,
       name,
       unit,

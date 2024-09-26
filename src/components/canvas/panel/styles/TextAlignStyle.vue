@@ -12,10 +12,10 @@
   </PanelStyle>
 </template>
 <script lang="ts">
-import { computed, defineComponent, ref, watch } from "vue";
+import { defineComponent, ref, watch } from "vue";
 import PanelStyle from "./PanelStyle.vue";
 import BaseButtonIcon from "@/components/icon/BaseButtonIcon.vue";
-import store from "@/store";
+import { modifiers } from "@/composables/canvas/panel/modifiers";
 
 export default defineComponent({
   name: "TextAlignStyle",
@@ -36,13 +36,7 @@ export default defineComponent({
   setup(props) {
     const name = "text-align";
 
-    const focusedElement = computed(() => {
-      return store.getters["canvas/focusedElement"];
-    });
-
-    const focusedChildrenElements = computed(
-      () => store.getters["canvas/focusedChildrenElements"]
-    );
+    const { getTargetElement, updateStyle } = modifiers();
 
     const alignOptions = [
       {
@@ -59,26 +53,14 @@ export default defineComponent({
       },
     ];
 
-    const getTargetElement = () =>
-      props.childId
-        ? focusedChildrenElements.value[props.childIndex]
-        : focusedElement.value;
-
-    const align = ref(getTargetElement().attributes.style.value[name]);
+    const align = ref(
+      getTargetElement(props.childId, props.childIndex).attributes.style.value[
+        name
+      ]
+    );
 
     watch(align, (newVal: string) => {
-      if (!props.childId) {
-        focusedElement.value.attributes.style.value[name] = newVal;
-        store.dispatch("canvas/updateFocusedElement", focusedElement.value);
-      } else {
-        focusedChildrenElements.value[props.childIndex].attributes.style.value[
-          name
-        ] = newVal;
-        store.dispatch(
-          "canvas/updateFocusedElement",
-          focusedChildrenElements.value[props.childIndex]
-        );
-      }
+      updateStyle(name, newVal, props.childIndex);
     });
 
     // watch(focusedElement, (newVal) => {

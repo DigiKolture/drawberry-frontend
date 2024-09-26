@@ -14,29 +14,46 @@ import { computed, defineComponent, ref, watch } from "vue";
 import PanelStyle from "./PanelStyle.vue";
 import store from "@/store";
 import { fonts } from "@/composables/canvas/fonts";
+import { modifiers } from "@/composables/canvas/panel/modifiers";
 
 export default defineComponent({
   name: "FontWeightStyle",
   components: { PanelStyle },
-  setup() {
+  props: {
+    childId: {
+      type: String,
+      default: "",
+      required: false,
+    },
+    childIndex: {
+      type: Number,
+      default: -1,
+      required: false,
+    },
+  },
+  setup(props) {
     const name = "font-weight";
+
+    const { focusedElement, getTargetElement, updateStyle } = modifiers();
 
     const { getFontWeightsWithFamily } = fonts();
 
-    const focusedElement = computed(
-      () => store.getters["canvas/focusedElement"]
-    );
     const weightOptions = getFontWeightsWithFamily(
-      focusedElement.value.attributes.style.value["font-family"]
+      getTargetElement(props.childId, props.childIndex).attributes.style.value[
+        "font-family"
+      ]
     );
     store.commit("canvas/SET_FONT_WEIGHTS", weightOptions);
 
-    const weight = ref(focusedElement.value.attributes.style.value[name]);
+    const weight = ref(
+      getTargetElement(props.childId, props.childIndex).attributes.style.value[
+        name
+      ]
+    );
     const fontWeights = computed(() => store.getters["canvas/fontWeights"]);
 
     watch(weight, (newVal: string | number) => {
-      focusedElement.value.attributes.style.value[name] = newVal;
-      store.dispatch("canvas/updateFocusedElement", focusedElement.value);
+      updateStyle(name, newVal, props.childIndex);
     });
 
     watch(focusedElement.value, (newVal) => {

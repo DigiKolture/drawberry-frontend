@@ -71,12 +71,60 @@
         :show-body="tabStates[tabsStyles.typography.index]"
       >
         <FontStyle v-if="showStyle('font-family')" />
+        <template v-for="(child, idx) in focusedElement.children">
+          <FontStyle
+            v-if="childHasStyle(idx as number, 'font-family')"
+            :key="child"
+            :child-id="child"
+            :child-index="idx"
+          />
+        </template>
         <TextColorStyle v-if="showStyle('color')" />
+        <template v-for="(child, idx) in focusedElement.children">
+          <TextColorStyle
+            v-if="childHasStyle(idx as number, 'color')"
+            :key="child"
+            :child-id="child"
+            :child-index="idx"
+          />
+        </template>
         <div class="canvas__panel__styles__row" v-if="showTypographyRow">
           <FontSizeStyle v-if="showStyle('font-size')" />
+          <template v-for="(child, idx) in focusedElement.children">
+            <FontSizeStyle
+              v-if="childHasStyle(idx as number, 'font-size')"
+              :key="child"
+              :child-id="child"
+              :child-index="idx"
+            />
+          </template>
           <FontWeightStyle v-if="showStyle('font-weight')" />
+          <template v-for="(child, idx) in focusedElement.children">
+            <FontWeightStyle
+              v-if="childHasStyle(idx as number, 'font-weight')"
+              :key="child"
+              :child-id="child"
+              :child-index="idx"
+            />
+          </template>
           <LineHeightStyle v-if="showStyle('line-height')" />
+          <template v-for="(child, idx) in focusedElement.children">
+            <LineHeightStyle
+              v-if="childHasStyle(idx as number, 'line-height')"
+              :key="child"
+              :child-id="child"
+              :child-index="idx"
+            />
+          </template>
           <LetterSpacingStyle v-if="showStyle('letter-spacing')" />
+          <template v-for="(child, idx) in focusedElement.children">
+            <LetterSpacingStyle
+              v-if="childHasStyle(idx as number, 'letter-spacing')"
+              :key="child"
+              :child-id="child"
+              :child-index="idx"
+            />
+          </template>
         </div>
         <TextAlignStyle v-if="showStyle('text-align')" />
         <template v-for="(child, idx) in focusedElement.children">
@@ -114,6 +162,14 @@
         :show-body="tabStates[tabsStyles.borders.index]"
       >
         <BorderRadiusStyle v-if="showStyle('border-radius')" />
+        <template v-for="(child, idx) in focusedElement.children">
+          <BorderRadiusStyle
+            v-if="childHasStyle(idx as number, 'border-radius')"
+            :key="child"
+            :child-id="child"
+            :child-index="idx"
+          />
+        </template>
       </PanelTab>
       <PanelTab
         v-if="showTab(tabsStyles.effects)"
@@ -123,6 +179,14 @@
         :show-body="tabStates[tabsStyles.effects.index]"
       >
         <ShadowStyle v-if="showStyle('box-shadow')" />
+        <template v-for="(child, idx) in focusedElement.children">
+          <ShadowStyle
+            v-if="childHasStyle(idx as number, 'box-shadow')"
+            :key="child"
+            :child-id="child"
+            :child-index="idx"
+          />
+        </template>
       </PanelTab>
       <PanelTab
         v-if="showTab(tabsStyles.link)"
@@ -149,6 +213,14 @@
         :show-body="tabStates[tabsStyles.media.index]"
       >
         <ImageAttribute v-if="hasAttributes('src')" />
+        <template v-for="(child, idx) in focusedElement.children">
+          <ImageAttribute
+            v-if="childHasAttribute(idx as number, 'src')"
+            :key="child"
+            :child-id="child"
+            :child-index="idx"
+          />
+        </template>
       </PanelTab>
     </div>
   </section>

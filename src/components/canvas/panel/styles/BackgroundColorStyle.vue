@@ -9,11 +9,11 @@
   </PanelStyle>
 </template>
 <script lang="ts">
-import { computed, defineComponent, ref, watch } from "vue";
+import { defineComponent, ref, watch } from "vue";
 import PanelStyle from "./PanelStyle.vue";
 import ColorPickerStyle from "@/components/canvas/panel/ColorPickerStyle.vue";
-import store from "@/store";
 import { ColorPickerTypes } from "@/store/modules/modals/types";
+import { modifiers } from "@/composables/canvas/panel/modifiers";
 
 export default defineComponent({
   name: "BackgroundColorStyle",
@@ -36,42 +36,19 @@ export default defineComponent({
   },
   components: { ColorPickerStyle, PanelStyle },
   setup(props) {
-    const show = ref(true);
+    const { getTargetElement, updateStyle } = modifiers();
 
     const name = "background-color";
-
+    const show = ref(true);
     const colorPickerStyleRef = ref();
 
-    const focusedElement = computed(
-      () => store.getters["canvas/focusedElement"]
-    );
-
-    const focusedChildrenElements = computed(
-      () => store.getters["canvas/focusedChildrenElements"]
-    );
-
-    const getTargetElement = () =>
-      props.childId
-        ? focusedChildrenElements.value[props.childIndex]
-        : focusedElement.value;
-
     const color = ref({
-      hex8: getTargetElement().attributes.style.value[name],
+      hex8: getTargetElement(props.childId, props.childIndex).attributes.style
+        .value[name],
     });
 
     watch(color, (newVal: any) => {
-      if (!props.childId) {
-        focusedElement.value.attributes.style.value[name] = newVal.hex8;
-        store.dispatch("canvas/updateFocusedElement", focusedElement.value);
-      } else {
-        focusedChildrenElements.value[props.childIndex].attributes.style.value[
-          name
-        ] = newVal.hex8;
-        store.dispatch(
-          "canvas/updateFocusedElement",
-          focusedChildrenElements.value[props.childIndex]
-        );
-      }
+      updateStyle(name, newVal.hex8, props.childIndex);
     });
 
     // watch(focusedElement, (newVal) => {

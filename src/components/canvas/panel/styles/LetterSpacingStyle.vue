@@ -9,22 +9,39 @@
 import { computed, defineComponent, ref, watch } from "vue";
 import PanelStyle from "./PanelStyle.vue";
 import store from "@/store";
+import { modifiers } from "@/composables/canvas/panel/modifiers";
 
 export default defineComponent({
   name: "LetterSpacingStyle",
   components: { PanelStyle },
-  setup() {
-    const name = "font-model";
+  props: {
+    childId: {
+      type: String,
+      default: "",
+      required: false,
+    },
+    childIndex: {
+      type: Number,
+      default: -1,
+      required: false,
+    },
+  },
+  setup(props) {
+    const name = "letter-spacing";
     const unit = "px";
 
-    const focusedElement = computed(() => {
-      return store.getters["canvas/focusedElement"];
-    });
+    const { getTargetElement, updateStyle } = modifiers();
 
     const model = ref(
-      focusedElement.value.attributes.style.value[name]?.slice(0, -2)
+      getTargetElement(props.childId, props.childIndex).attributes.style.value[
+        name
+      ]?.slice(0, -2)
     );
-    let modelWithUnit = ref(focusedElement.value.attributes.style.value[name]);
+    let modelWithUnit = ref(
+      getTargetElement(props.childId, props.childIndex).attributes.style.value[
+        name
+      ]
+    );
 
     watch(model, (newVal: string | number) => {
       if (typeof newVal === "string" && newVal.endsWith(unit)) {
@@ -32,17 +49,15 @@ export default defineComponent({
       } else {
         modelWithUnit.value = newVal + unit;
       }
-      focusedElement.value.attributes.style.value[name] = modelWithUnit.value;
-      store.dispatch("canvas/updateFocusedElement", focusedElement.value);
+      updateStyle(name, modelWithUnit.value, props.childIndex);
     });
 
-    watch(focusedElement, (newVal) => {
-      model.value = newVal.attributes.style.value[name].slice(0, -2);
-      modelWithUnit.value = newVal.attributes.style.value[name];
-    });
+    // watch(focusedElement, (newVal) => {
+    //   model.value = newVal.attributes.style.value[name].slice(0, -2);
+    //   modelWithUnit.value = newVal.attributes.style.value[name];
+    // });
 
     return {
-      focusedElement,
       model,
       name,
     };

@@ -10,7 +10,14 @@ export function modifiers() {
     () => store.getters["canvas/focusedChildrenElements"]
   );
 
-  const updateStyle = (style: string, value: string, childIndex = -1) => {
+  const getTargetElement = (childId: string, childIndex: number) =>
+    childId ? focusedChildrenElements.value[childIndex] : focusedElement.value;
+
+  const updateStyle = (
+    style: string,
+    value: string | number,
+    childIndex = -1
+  ) => {
     if (childIndex === -1) {
       focusedElement.value.attributes.style.value[style] = value;
       store.dispatch("canvas/updateFocusedElement", focusedElement.value);
@@ -24,23 +31,23 @@ export function modifiers() {
     }
   };
 
-  const updateAttribute = (
+  const updateAttribute = async (
     modifier: string,
     value: string,
     childIndex = -1
   ) => {
     if (childIndex === -1) {
       focusedElement.value.attributes[modifier].value = value;
-      store.dispatch("canvas/updateFocusedElement", focusedElement.value);
+      await store.dispatch("canvas/updateFocusedElement", focusedElement.value);
     } else {
       focusedChildrenElements.value[childIndex].attributes[modifier].value =
         value;
-      store.dispatch(
+      await store.dispatch(
         "canvas/updateFocusedElement",
         focusedChildrenElements.value[childIndex]
       );
     }
   };
 
-  return { updateStyle, updateAttribute };
+  return { focusedElement, getTargetElement, updateStyle, updateAttribute };
 }

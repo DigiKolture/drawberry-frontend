@@ -40,8 +40,4 @@ jobs:
         run: |
           rm -rf dist
           node --version
-#         rm -rf node_modules
-#         rm -rf package-lock.json
-#         rm -rf yarn.lock
-#         npm install
           npm run build

@@ -131,52 +131,6 @@ export const mutations: MutationTree<CanvasState> = {
     return element;
   },
 
-  UPDATE_FOCUSED_PARENT_JSON_AND_DOM(state: CanvasState, data: object): any {
-    state.focusedParentElement = data;
-    const workspaceComponents = state.workspaceComponents;
-
-    if (state.focusedIndex === null) {
-      return state.focusedParentElement;
-    }
-    const projectComponentItem = workspaceComponents[state.focusedIndex];
-    const elementJson: any = state.focusedParentElement;
-
-    const jsonIndex = projectComponentItem.json.findIndex(
-      (el: any) => el.id == elementJson.id
-    );
-    projectComponentItem.json[jsonIndex] = state.focusedParentElement;
-
-    const html = projectComponentItem.html;
-
-    projectComponentItem.html = updateElementDom(html, elementJson);
-    state.workspaceComponents = workspaceComponents;
-    state.saveStatus = CanvasSaveStatus.UPDATED;
-    return state.focusedElement;
-  },
-  UPDATE_FOCUSED_CHILD_JSON_AND_DOM(state: CanvasState, data: any): any {
-    const { index, element } = data;
-    state.focusedChildrenElements[index] = element;
-
-    const workspaceComponents = state.workspaceComponents;
-
-    if (state.focusedIndex === null) {
-      return state.focusedChildrenElements;
-    }
-    const projectComponentItem = workspaceComponents[state.focusedIndex];
-    const elementJson: any = state.focusedChildrenElements[index];
-
-    const jsonIndex = projectComponentItem.json.findIndex(
-      (el: any) => el.id == elementJson.id
-    );
-    projectComponentItem.json[jsonIndex] = state.focusedChildrenElements[index];
-
-    const html = projectComponentItem.html;
-
-    projectComponentItem.html = updateElementDom(html, elementJson);
-    state.workspaceComponents = workspaceComponents;
-    state.saveStatus = CanvasSaveStatus.UPDATED;
-    return state.focusedElement;
-  },
   UPDATE_FIRST_PROJECT_COMPONENTS_STYLE(
     state: CanvasState,
     layout: string

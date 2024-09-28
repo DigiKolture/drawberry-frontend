@@ -144,6 +144,15 @@
         :properties="tabsStyles.background"
         :show-body="tabStates[tabsStyles.background.index]"
       >
+        <BackgroundImageAttribute v-if="hasAttributes('background')" />
+        <template v-for="(child, idx) in focusedElement.children">
+          <BackgroundImageAttribute
+            v-if="childHasAttribute(idx as number, 'background')"
+            :key="child"
+            :child-id="child"
+            :child-index="idx"
+          />
+        </template>
         <BackgroundColorStyle v-if="showStyle('background-color')" />
         <template v-for="(child, idx) in focusedElement.children">
           <BackgroundColorStyle
@@ -248,10 +257,12 @@ import ImageAttribute from "@/components/canvas/panel/styles/ImageAttribute.vue"
 import { panel } from "@/composables/canvas/panel";
 import MarginTopStyle from "@/components/canvas/panel/styles/spacing/MarginTopStyle.vue";
 import MarginBottomStyle from "@/components/canvas/panel/styles/spacing/MarginBottomStyle.vue";
+import BackgroundImageAttribute from "@/components/canvas/panel/styles/attributes/BackgroundImageAttribute.vue";
 
 export default defineComponent({
   name: "CanvasPanelGroupedStyles",
   components: {
+    BackgroundImageAttribute,
     MarginBottomStyle,
     MarginTopStyle,
     ImageAttribute,

@@ -31,7 +31,7 @@ export function updateDom() {
     tagName = tagName.toLowerCase();
     const elementAttributes = el.attr();
     const attributesValues = attributesSettings[tagName];
-    const tagTypes = elementJson.types;
+    const attributes = elementJson.attributes;
 
     if (elementAttributes && attributesValues) {
       for (const attribute of attributesValues) {
@@ -63,6 +63,13 @@ export function updateDom() {
 
     if (style && style["background-color"]) {
       el.attr("bgcolor", style["background-color"]);
+    }
+    if (
+      attributes &&
+      attributes["background"] &&
+      attributes["background"].value
+    ) {
+      style["background-image"] = `url(${attributes["background"].value})`;
     }
 
     el.css(style);

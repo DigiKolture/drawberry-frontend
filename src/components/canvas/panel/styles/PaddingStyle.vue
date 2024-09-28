@@ -1,5 +1,5 @@
 <template>
-  <PanelStyle :title="`${childId} Padding`">
+  <PanelStyle :title="`Padding`">
     <div class="spacing__style">
       <div class="spacing__style__tab__item">
         <div class="spacing__style__outer__rect">

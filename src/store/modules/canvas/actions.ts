@@ -217,38 +217,6 @@ export const actions: ActionTree<CanvasState, RootState> = {
     pushComponentsElementsUpdates(element, projectComponentItem);
   },
 
-  // TODO: Remove this method and other child methods
-  updateFocusedParentElement({ state, commit }, element) {
-    if (
-      state.focusedIndex === null ||
-      state.focusedElement === null ||
-      state.focusedParentElement === null
-    )
-      return;
-
-    //Update DOM before the API (Just to prevent waiting for changes)
-    commit("UPDATE_FOCUSED_PARENT_JSON_AND_DOM", element);
-    const projectComponentItem = state.workspaceComponents[state.focusedIndex];
-
-    pushComponentsElementsUpdates(
-      state.focusedParentElement,
-      projectComponentItem
-    );
-  },
-  updateFocusedChildElement({ state, commit }, data) {
-    const { element } = data;
-    if (
-      state.focusedIndex === null ||
-      state.focusedElement === null ||
-      state.focusedChildrenElements.length === 0
-    )
-      return;
-    //Update DOM before the API (Just to prevent waiting for changes)
-    commit("UPDATE_FOCUSED_CHILD_JSON_AND_DOM", data);
-
-    const projectComponentItem = state.workspaceComponents[state.focusedIndex];
-    pushComponentsElementsUpdates(element, projectComponentItem);
-  },
   async updateProjectStyle({ commit }, style): Promise<void> {
     commit("SET_STYLE", style);
   },

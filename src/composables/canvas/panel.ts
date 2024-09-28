@@ -42,7 +42,7 @@ export function panel() {
       title: "Background",
       index: 3,
       styles: ["background-color"],
-      attributes: [],
+      attributes: ["background"],
     },
     borders: {
       title: "Borders",

@@ -13,7 +13,7 @@
   </div>
 </template>
 <script lang="ts">
-import { computed, defineComponent, onMounted, watch } from "vue";
+import { computed, defineComponent } from "vue";
 import LayersContainerItem from "@/components/canvas/sidebar/layers/LayersContainerItem.vue";
 import store from "@/store";
 import LayerLastContainerElementDecoy from "@/components/canvas/sidebar/layers/LayerLastContainerElementDecoy.vue";

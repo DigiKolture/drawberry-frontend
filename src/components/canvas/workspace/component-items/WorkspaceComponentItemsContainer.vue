@@ -171,19 +171,28 @@ export default defineComponent({
       event.preventDefault();
       const target = event.target;
       let elementId = event.target.id;
+      const parentId = event.target.getAttribute("parent");
 
-      // If the focused element isnt an editable component or contains parent class (So basically if you clicking outside the editable elements components)
-      if (
-        !target.classList.contains("editable") ||
-        target.classList.contains("parent")
-      ) {
+      // If the target doesn't have the "editable" class, select the first item (whole component)
+      if (!target.classList.contains("editable")) {
         elementId = componentItem.json[0].id;
+      } else if (parentId) {
+        // Check if the target has a parent with the specified parentId (its possible that the parentId is a child in the DOM (HTMl element)
+        const isParentPresent = event.target.closest(`#${parentId}`);
+
+        if (isParentPresent) {
+          // If the parent exists in the DOM, set elementId to parentId
+          elementId = parentId;
+        } else {
+          // If the parent doesn't exist, select the first item (whole component)
+          elementId = componentItem.json[0].id;
+        }
       }
 
       removeCurrentFocus();
 
       const currentFocusedIndex = focusedIndex.value;
-      let jsonIndex = 0;
+      let jsonIndex = 0; //Ensures the first element (whole component) is selected if the current component is not active
 
       // When clicked Only select/focus on child elements if the current component is active, if not select the whole component
       // If Command and click are pressed, you can select child elements on an inactive component

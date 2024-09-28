@@ -161,9 +161,28 @@ export function panel() {
     return attributes.value.includes(attribute);
   };
 
+  const hasParentContents = () => {
+    for (const focusedChild of focusedChildrenElements.value) {
+      if (focusedChild.innerHtml !== null) {
+        return true;
+      }
+    }
+    return false;
+  };
+
   const hasContent = () => {
     if (!focusedElement.value) return false;
     return focusedElement.value.innerHtml !== null;
+  };
+
+  const hasChildOrParentContent = () => {
+    return hasContent() || hasParentContents();
+  };
+
+  const childHasContent = (index: number) => {
+    const childContent = focusedChildrenElements.value?.[index];
+    if (!childContent) return false;
+    return childContent.innerHtml !== null;
   };
 
   const showTab = (tab: TabStyles) => {
@@ -176,7 +195,7 @@ export function panel() {
       if (hasAttr) return true;
     }
     // return tab.isContent;
-    return tab.isContent && hasContent();
+    return tab.isContent && hasChildOrParentContent();
   };
 
   const resetTabStates = () => {
@@ -200,6 +219,7 @@ export function panel() {
     showStyle,
     hasAttributes,
     hasContent,
+    childHasContent,
     tabsStyles,
     resetTabStates,
   };

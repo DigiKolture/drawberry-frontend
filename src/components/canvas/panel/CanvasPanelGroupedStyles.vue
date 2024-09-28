@@ -136,6 +136,14 @@
           />
         </template>
         <ContentStyle v-if="hasContent()" />
+        <template v-for="(child, idx) in focusedElement.children">
+          <ContentStyle
+            v-if="childHasContent(idx as number)"
+            :key="child"
+            :child-id="child"
+            :child-index="idx"
+          />
+        </template>
       </PanelTab>
       <PanelTab
         v-if="showTab(tabsStyles.background)"
@@ -292,6 +300,7 @@ export default defineComponent({
       showStyle,
       hasCurrentOrChildrenStyles,
       childHasStyle,
+      childHasContent,
       childHasAttribute,
     } = panel();
 
@@ -335,6 +344,7 @@ export default defineComponent({
       focusedElement,
       hasAttributes,
       tabsStyles,
+      childHasContent,
       tabStates,
       closeAllTabs,
       showTypographyRow,

@@ -49,5 +49,28 @@ export function modifiers() {
     }
   };
 
-  return { focusedElement, getTargetElement, updateStyle, updateAttribute };
+  const updateContent = async (
+    modifier: string,
+    value: string,
+    childIndex = -1
+  ) => {
+    if (childIndex === -1) {
+      focusedElement.value[modifier] = value;
+      await store.dispatch("canvas/updateFocusedElement", focusedElement.value);
+    } else {
+      focusedChildrenElements.value[childIndex][modifier] = value;
+      await store.dispatch(
+        "canvas/updateFocusedElement",
+        focusedChildrenElements.value[childIndex]
+      );
+    }
+  };
+
+  return {
+    focusedElement,
+    getTargetElement,
+    updateStyle,
+    updateAttribute,
+    updateContent,
+  };
 }

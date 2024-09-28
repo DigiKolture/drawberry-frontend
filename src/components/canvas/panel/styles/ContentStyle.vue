@@ -6,32 +6,43 @@
   </PanelStyle>
 </template>
 <script lang="ts">
-import { computed, defineComponent, ref, watch } from "vue";
+import { defineComponent, ref, watch } from "vue";
 import PanelStyle from "./PanelStyle.vue";
-import store from "@/store";
+import { modifiers } from "@/composables/canvas/panel/modifiers";
 
 export default defineComponent({
   name: "ContentStyle",
   components: { PanelStyle },
-
-  setup() {
+  props: {
+    childId: {
+      type: String,
+      default: "",
+      required: false,
+    },
+    childIndex: {
+      type: Number,
+      default: -1,
+      required: false,
+    },
+  },
+  setup(props) {
     const name = "innerHtml";
-    const focusedElement = computed(() => {
-      return store.getters["canvas/focusedElement"];
-    });
 
-    const content = ref(focusedElement.value[name]);
+    const { getTargetElement, updateContent } = modifiers();
+
+    const content = ref(
+      getTargetElement(props.childId, props.childIndex)[name]
+    );
 
     watch(content, (newVal: string) => {
       if (newVal) {
-        focusedElement.value[name] = newVal;
-        store.dispatch("canvas/updateFocusedElement", focusedElement.value);
+        updateContent(name, newVal, props.childIndex);
       }
     });
 
-    watch(focusedElement, (newVal) => {
-      content.value = newVal[name];
-    });
+    // watch(focusedElement, (newVal) => {
+    //   content.value = newVal[name];
+    // });
 
     return {
       content,

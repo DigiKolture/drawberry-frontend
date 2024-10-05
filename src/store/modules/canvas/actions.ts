@@ -9,9 +9,11 @@ import AxiosClient from "@/services/api";
 import router from "@/router";
 import { canvas } from "@/composables/canvas/canvas";
 import ObjectId from "bson-objectid";
+import { helpers } from "@/composables/helpers";
 
 const { pushComponentsElementsUpdates, updateComponentBorder, removeClasses } =
   canvas();
+const { copyObject } = helpers();
 
 export const actions: ActionTree<CanvasState, RootState> = {
   getProjectComponentItems(
@@ -72,7 +74,8 @@ export const actions: ActionTree<CanvasState, RootState> = {
     const projectId = currentRoute._value.params.id;
 
     const projectComponentId = new ObjectId().toHexString();
-    const componentItem = data.componentItem;
+    // const componentItem = data.componentItem;
+    const componentItem = copyObject(data.componentItem);
 
     const { html, json } = updateComponentBorder(
       state.style.layout,

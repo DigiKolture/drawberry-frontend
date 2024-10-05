@@ -8,6 +8,10 @@ export function helpers() {
     return moment(date).fromNow();
   };
 
+  const copyObject = (data: string) => {
+    return Object.assign({}, JSON.parse(JSON.stringify(data)));
+  };
+
   const capitalizeFirstLetter = (inputString: string) => {
     return inputString.charAt(0).toUpperCase() + inputString.slice(1);
   };
@@ -118,6 +122,7 @@ export function helpers() {
     isNumeric,
     isValidImageUrl,
     capitalizeFirstLetter,
+    copyObject,
     copy,
     isObject,
     sliceString,

@@ -131,6 +131,34 @@ export const mutations: MutationTree<CanvasState> = {
     return element;
   },
 
+  UPDATE_ELEMENT_IN_COMPONENTS(
+    state: CanvasState,
+    { elementId, componentIndex }
+  ): any {
+    const workspaceComponents = state.workspaceComponents;
+
+    const projectComponentItem = workspaceComponents[componentIndex];
+
+    const jsonIndex = projectComponentItem.json.findIndex(
+      (el: any) => el.id === elementId
+    );
+
+    if (jsonIndex < 0) {
+      return;
+    }
+
+    const html = projectComponentItem.html;
+    projectComponentItem.html = updateElementDom(
+      html,
+      projectComponentItem.json[jsonIndex]
+    );
+
+    state.workspaceComponents = workspaceComponents;
+    state.saveStatus = CanvasSaveStatus.UPDATED;
+
+    return projectComponentItem.json[jsonIndex];
+  },
+
   UPDATE_FIRST_PROJECT_COMPONENTS_STYLE(
     state: CanvasState,
     layout: string

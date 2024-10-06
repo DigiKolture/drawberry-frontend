@@ -2,10 +2,7 @@
   <div class="header__container__right">
     <template v-if="isAuth">
       <div class="header__right__canvas__actions" v-if="isCanvas && project">
-        <div class="header__redo">
-          <button><BaseIcon icon="header/redo/backward" /></button>
-          <button><BaseIcon icon="header/redo/forward" /></button>
-        </div>
+        <HeaderProjectHistory />
         <BaseButtonTextIcon
           :id="modalsTrigger"
           @click="togglePreview"
@@ -66,10 +63,10 @@ import PreviewDropdown from "@/components/header/dropdown/PreviewDropdown.vue";
 import BaseButtonTextIcon from "@/components/button/BaseButtonTextIcon.vue";
 import BaseButtonIcon from "@/components/icon/BaseButtonIcon.vue";
 import BaseButton from "@/components/layout/BaseButton.vue";
-import BaseIcon from "@/components/icon/BaseIcon.vue";
 import router from "@/router";
 import { auth } from "@/composables/auth/auth";
 import UserInitialsDropdown from "@/components/header/dropdown/UserInitialsDropdown.vue";
+import HeaderProjectHistory from "@/components/header/right/HeaderProjectHistory.vue";
 export default defineComponent({
   name: "HeaderContainerRight",
   props: {
@@ -87,8 +84,8 @@ export default defineComponent({
     },
   },
   components: {
+    HeaderProjectHistory,
     UserInitialsDropdown,
-    BaseIcon,
     BaseButton,
     BaseButtonIcon,
     BaseButtonTextIcon,

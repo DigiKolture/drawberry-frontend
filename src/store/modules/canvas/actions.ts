@@ -26,6 +26,7 @@ export const actions: ActionTree<CanvasState, RootState> = {
       .then((res: any) => {
         const data = res.data;
         commit("projects/SET_PROJECT", data.data.project, { root: true });
+        commit("history/RESET_HISTORY_STACK", {}, { root: true });
         commit("SET_WORKSPACE_COMPONENTS", {
           components: data.data.project.components,
           saveStatus: CanvasSaveStatus.SAVED,
@@ -215,9 +216,8 @@ export const actions: ActionTree<CanvasState, RootState> = {
 
     //Update DOM before the API (Just to prevent waiting for changes)
     commit("UPDATE_FOCUSED_JSON_AND_DOM", element);
-    const projectComponentItem = state.workspaceComponents[state.focusedIndex];
-
-    pushComponentsElementsUpdates(element, projectComponentItem);
+    // const projectComponentItem = state.workspaceComponents[state.focusedIndex];
+    // pushComponentsElementsUpdates(element, projectComponentItem);
   },
 
   async updateProjectStyle({ commit }, style): Promise<void> {

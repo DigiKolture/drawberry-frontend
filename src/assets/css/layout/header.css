@@ -117,6 +117,18 @@ header.header{
     padding: 11px;
 }
 
+.header__redo button svg path{
+    fill: white;
+}
+
+.header__redo button:disabled{
+    cursor: not-allowed;
+}
+
+.header__redo button:disabled svg path{
+    fill: #848F9F;
+}
+
 .header__right__preview{
 }
 

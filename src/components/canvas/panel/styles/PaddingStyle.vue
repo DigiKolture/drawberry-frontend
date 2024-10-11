@@ -32,13 +32,11 @@
   </PanelStyle>
 </template>
 <script lang="ts">
-import { computed, defineComponent, reactive, ref, watch } from "vue";
+import { defineComponent, reactive, ref, watch } from "vue";
 import PanelStyle from "./PanelStyle.vue";
 import BaseSliderIcon from "../BaseSliderIcon.vue";
-import store from "@/store";
 import { styles } from "@/composables/canvas/styles";
-import { prop } from "cheerio/lib/api/attributes";
-import { modifiers } from "@/composables/canvas/panel/modifiers";
+import { modifiersUpdater } from "@/composables/canvas/modifiers/modifiers-updater";
 
 export default defineComponent({
   name: "PaddingStyle",
@@ -62,26 +60,11 @@ export default defineComponent({
     const { parsePadding, getDefaultPaddingValue, getDefaultPaddingPosition } =
       styles();
 
-    const { updateStyle } = modifiers();
+    const { modifier } = modifiersUpdater(props, name);
 
     const paddingOptions = ["top", "left", "right", "bottom"];
 
-    const focusedElement = computed(() => {
-      return store.getters["canvas/focusedElement"];
-    });
-
-    const focusedChildrenElements = computed(
-      () => store.getters["canvas/focusedChildrenElements"]
-    );
-
-    const getTargetElement = () =>
-      props.childId
-        ? focusedChildrenElements.value[props.childIndex]
-        : focusedElement.value;
-
-    let padding: any = reactive(
-      parsePadding(getTargetElement().attributes.style.value.padding)
-    );
+    let padding: any = reactive(parsePadding(modifier.value));
 
     const activePadding = ref(getDefaultPaddingPosition(padding));
     const singlePadding = ref(padding[activePadding.value] ?? padding.top);
@@ -93,6 +76,10 @@ export default defineComponent({
       } else {
         singlePadding.value = centerValue.value;
       }
+    });
+
+    watch(centerValue, (newVal) => {
+      singlePadding.value = newVal;
     });
 
     watch(singlePadding, (newVal) => {
@@ -110,9 +97,17 @@ export default defineComponent({
       }
     });
 
-    watch(padding, (newVal) => {
-      const newPadding = `${newVal.top}${unit} ${newVal.right}${unit} ${newVal.bottom}${unit} ${newVal.left}${unit}`;
-      updateStyle(name, newPadding, props.childIndex);
+    watch(
+      () => ({ ...padding }),
+      (newVal) => {
+        modifier.value = `${newVal.top}${unit} ${newVal.right}${unit} ${newVal.bottom}${unit} ${newVal.left}${unit}`;
+      }
+    );
+
+    watch(modifier, (newVal) => {
+      const parsedPadding = parsePadding(newVal);
+      Object.assign(padding, parsedPadding);
+      centerValue.value = getDefaultPaddingValue(padding);
     });
 
     const changePaddingOption = (option: string) => {

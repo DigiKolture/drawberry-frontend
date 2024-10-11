@@ -1,14 +1,14 @@
 <template>
   <PanelStyle title="Line height">
     <div class="font__size__style">
-      <input v-model="model" class="canvas__input__number" type="number" />
+      <input v-model="localValue" class="canvas__input__number" type="number" />
     </div>
   </PanelStyle>
 </template>
 <script lang="ts">
 import { defineComponent, ref, watch } from "vue";
 import PanelStyle from "./PanelStyle.vue";
-import { modifiers } from "@/composables/canvas/panel/modifiers";
+import { modifiersUpdater } from "@/composables/canvas/modifiers/modifiers-updater";
 
 export default defineComponent({
   name: "LineHeightStyle",
@@ -29,35 +29,20 @@ export default defineComponent({
   setup(props) {
     const name = "line-height";
     const unit = "px";
-    const { getTargetElement, updateStyle } = modifiers();
+    const { modifier } = modifiersUpdater(props, name);
 
-    const model = ref(
-      getTargetElement(props.childId, props.childIndex).attributes.style.value[
-        name
-      ]?.slice(0, -2)
-    );
-    let modelWithUnit = ref(
-      getTargetElement(props.childId, props.childIndex).attributes.style.value[
-        name
-      ]
-    );
+    const localValue = ref(modifier.value?.slice(0, -2));
 
-    watch(model, (newVal: string | number) => {
-      if (typeof newVal === "string" && newVal.endsWith(unit)) {
-        modelWithUnit.value = newVal;
-      } else {
-        modelWithUnit.value = newVal + unit;
-      }
-      updateStyle(name, modelWithUnit.value, props.childIndex);
+    watch(localValue, (newVal) => {
+      modifier.value = `${newVal}${unit}`;
     });
 
-    // watch(focusedElement, (newVal) => {
-    //   model.value = newVal.attributes.style.value[name].slice(0, -2);
-    //   modelWithUnit.value = newVal.attributes.style.value[name];
-    // });
+    watch(modifier, (newVal) => {
+      localValue.value = newVal?.slice(0, -2);
+    });
 
     return {
-      model,
+      localValue,
       name,
     };
   },

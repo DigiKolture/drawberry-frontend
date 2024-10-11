@@ -1,14 +1,15 @@
 <template>
   <PanelStyle title="Content">
     <div class="content__style">
-      <textarea v-model="content" class="canvas__textarea"> </textarea>
+      <textarea v-model="localValue" class="canvas__textarea"> </textarea>
     </div>
   </PanelStyle>
 </template>
 <script lang="ts">
 import { defineComponent, ref, watch } from "vue";
 import PanelStyle from "./PanelStyle.vue";
-import { modifiers } from "@/composables/canvas/panel/modifiers";
+import { modifiersUpdater } from "@/composables/canvas/modifiers/modifiers-updater";
+import { HistoryActionTypes } from "@/store/modules/history/types";
 
 export default defineComponent({
   name: "ContentStyle",
@@ -28,24 +29,25 @@ export default defineComponent({
   setup(props) {
     const name = "innerHtml";
 
-    const { getTargetElement, updateContent } = modifiers();
-
-    const content = ref(
-      getTargetElement(props.childId, props.childIndex)[name]
+    const { modifier } = modifiersUpdater(
+      props,
+      name,
+      HistoryActionTypes.COMPONENT_CONTENT
     );
 
-    watch(content, (newVal: string) => {
-      if (newVal) {
-        updateContent(name, newVal, props.childIndex);
-      }
+    const localValue = ref(modifier.value);
+
+    watch(localValue, (newVal: string) => {
+      if (!newVal) return;
+      modifier.value = newVal;
     });
 
-    // watch(focusedElement, (newVal) => {
-    //   content.value = newVal[name];
-    // });
+    watch(modifier, (newVal) => {
+      localValue.value = newVal;
+    });
 
     return {
-      content,
+      localValue,
     };
   },
 });

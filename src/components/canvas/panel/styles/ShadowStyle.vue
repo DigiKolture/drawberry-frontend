@@ -36,6 +36,7 @@ import ColorPickerStyle from "@/components/canvas/panel/ColorPickerStyle.vue";
 import { styles } from "@/composables/canvas/styles";
 import { ColorPickerTypes } from "@/store/modules/modals/types";
 import { modifiers } from "@/composables/canvas/panel/modifiers";
+import { modifiersUpdater } from "@/composables/canvas/modifiers/modifiers-updater";
 
 export default defineComponent({
   name: "ShadowStyle",
@@ -59,13 +60,9 @@ export default defineComponent({
 
     const { parseBoxShadow } = styles();
     const { getTargetElement, updateStyle } = modifiers();
+    const { modifier } = modifiersUpdater(props, name);
 
-    const shadow: any = reactive(
-      parseBoxShadow(
-        getTargetElement(props.childId, props.childIndex).attributes.style
-          .value[name]
-      )
-    );
+    let shadow: any = reactive(parseBoxShadow(modifier.value));
 
     const color = ref({
       hex8: shadow.color,
@@ -76,8 +73,12 @@ export default defineComponent({
     };
 
     watch(shadow, (newVal) => {
-      const value = `${newVal.y}${unit} ${newVal.x}${unit} ${newVal.blur}${unit} ${newVal.spread}${unit} ${newVal.color.hex8}`;
-      updateStyle(name, value, props.childIndex);
+      modifier.value = `${newVal.y}${unit} ${newVal.x}${unit} ${newVal.blur}${unit} ${newVal.spread}${unit} ${newVal.color.hex8}`;
+    });
+
+    watch(modifier, (newVal) => {
+      const parsedShadow = parseBoxShadow(newVal);
+      Object.assign(shadow, parsedShadow);
     });
 
     return {

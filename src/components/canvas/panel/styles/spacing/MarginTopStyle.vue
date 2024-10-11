@@ -5,18 +5,17 @@
         <h5>Margin top</h5>
       </div>
       <div class="number__row__style">
-        <input v-model="marginTop" />
+        <input v-model="localStyleValue" />
         <span>PX</span>
       </div>
     </div>
   </PanelStyle>
 </template>
 <script lang="ts">
-import { computed, defineComponent, ref, watch } from "vue";
-import store from "@/store";
+import { defineComponent, ref, watch } from "vue";
 import PanelStyle from "@/components/canvas/panel/styles/PanelStyle.vue";
-import { modifiers } from "@/composables/canvas/panel/modifiers";
 import { helpers } from "@/composables/helpers";
+import { modifiersUpdater } from "@/composables/canvas/modifiers/modifiers-updater";
 
 export default defineComponent({
   name: "MarginTopStyle",
@@ -36,48 +35,23 @@ export default defineComponent({
   setup(props) {
     const name = "margin-top";
     const unit = "px";
-
-    const { updateStyle } = modifiers();
+    const { modifier } = modifiersUpdater(props, name);
     const { isNumeric } = helpers();
 
-    const focusedElement = computed(() => {
-      return store.getters["canvas/focusedElement"];
+    const localStyleValue = ref(modifier.value?.slice(0, -2));
+
+    watch(localStyleValue, (newVal) => {
+      if (isNumeric(newVal)) {
+        modifier.value = `${newVal}${unit}`;
+      }
     });
 
-    const focusedChildrenElements = computed(
-      () => store.getters["canvas/focusedChildrenElements"]
-    );
-
-    const getTargetElement = () =>
-      props.childId
-        ? focusedChildrenElements.value[props.childIndex]
-        : focusedElement.value;
-
-    const marginTop = ref(
-      getTargetElement().attributes.style.value[name]?.slice(0, -2)
-    );
-    const marginWithUnit = ref(getTargetElement().attributes.style.value[name]);
-
-    watch(marginTop, (newVal: string | number) => {
-      if (!isNumeric(newVal)) {
-        return;
-      }
-      if (typeof newVal === "string" && newVal.endsWith(unit)) {
-        marginWithUnit.value = newVal;
-      } else {
-        marginWithUnit.value = newVal + unit;
-      }
-      updateStyle(name, marginWithUnit.value, props.childIndex);
-    });
-
-    watch(focusedElement, (newVal) => {
-      marginTop.value = newVal.attributes.style.value[name].slice(0, -2);
-      marginWithUnit.value = newVal.attributes.style.value[name];
+    watch(modifier, (newVal) => {
+      localStyleValue.value = newVal?.slice(0, -2);
     });
 
     return {
-      focusedElement,
-      marginTop,
+      localStyleValue,
       name,
       unit,
     };

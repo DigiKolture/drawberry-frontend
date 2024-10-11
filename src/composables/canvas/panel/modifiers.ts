@@ -17,10 +17,6 @@ export function modifiers() {
   const focusedChildrenElements = computed(
     () => store.getters["canvas/focusedChildrenElements"]
   );
-  const workspaceComponents = computed(
-    () => store.getters["canvas/workspaceComponents"]
-  );
-
   const getTargetElement = (childId: string, childIndex: number) =>
     childId ? focusedChildrenElements.value[childIndex] : focusedElement.value;
 
@@ -30,10 +26,6 @@ export function modifiers() {
     childIndex = -1
   ) => {
     if (childIndex === -1) {
-      console.log({
-        style,
-        value,
-      });
       updateHistory({
         type: HistoryActionTypes.COMPONENT_STYLE,
         componentIndex: focusedIndex.value,
@@ -45,10 +37,6 @@ export function modifiers() {
       focusedElement.value.attributes.style.value[style] = value;
       store.dispatch("canvas/updateFocusedElement", focusedElement.value);
     } else {
-      console.log({
-        style,
-        value,
-      });
       updateHistory({
         type: HistoryActionTypes.COMPONENT_STYLE,
         componentIndex: focusedIndex.value,
@@ -110,19 +98,40 @@ export function modifiers() {
     childIndex = -1
   ) => {
     if (childIndex === -1) {
+      updateHistory({
+        type: HistoryActionTypes.COMPONENT_CONTENT,
+        componentIndex: focusedIndex.value,
+        elementId: focusedElement.value.id,
+        modifier,
+        previousValue: focusedElement.value[modifier],
+        value,
+      });
       focusedElement.value[modifier] = value;
-      await store.dispatch("canvas/updateFocusedElement", focusedElement.value);
+      store
+        .dispatch("canvas/updateFocusedElement", focusedElement.value)
+        .then();
     } else {
+      updateHistory({
+        type: HistoryActionTypes.COMPONENT_CONTENT,
+        componentIndex: focusedIndex.value,
+        elementId: focusedElement.value.id,
+        modifier,
+        previousValue: focusedChildrenElements.value[childIndex][modifier],
+        value,
+      });
       focusedChildrenElements.value[childIndex][modifier] = value;
-      await store.dispatch(
-        "canvas/updateFocusedElement",
-        focusedChildrenElements.value[childIndex]
-      );
+      store
+        .dispatch(
+          "canvas/updateFocusedElement",
+          focusedChildrenElements.value[childIndex]
+        )
+        .then();
     }
   };
 
   return {
     focusedElement,
+    focusedChildrenElements,
     getTargetElement,
     updateStyle,
     updateAttribute,

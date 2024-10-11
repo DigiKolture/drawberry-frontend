@@ -13,7 +13,7 @@ import { defineComponent, ref, watch } from "vue";
 import PanelStyle from "./PanelStyle.vue";
 import ColorPickerStyle from "@/components/canvas/panel/ColorPickerStyle.vue";
 import { ColorPickerTypes } from "@/store/modules/modals/types";
-import { modifiers } from "@/composables/canvas/panel/modifiers";
+import { modifiersUpdater } from "@/composables/canvas/modifiers/modifiers-updater";
 
 export default defineComponent({
   name: "TextColorStyle",
@@ -36,25 +36,23 @@ export default defineComponent({
   },
   components: { ColorPickerStyle, PanelStyle },
   setup(props) {
-    const { getTargetElement, updateStyle } = modifiers();
-
     const name = "color";
+    const { modifier } = modifiersUpdater(props, name);
+
     const show = ref(true);
     const colorPickerStyleRef = ref();
 
     const color = ref({
-      hex8: getTargetElement(props.childId, props.childIndex).attributes.style
-        .value[name],
+      hex8: modifier.value,
     });
 
     watch(color, (newVal: any) => {
-      updateStyle(name, newVal.hex8, props.childIndex);
+      modifier.value = newVal.hex8;
     });
 
-    // watch(focusedElement, (newVal) => {
-    //   colorPickerStyleRef.value.updateColor(color.value);
-    //   color.value.hex8 = newVal.attributes.style.value[name];
-    // });
+    watch(modifier, (newVal: any) => {
+      color.value.hex8 = newVal;
+    });
 
     const updateColor = (newVal: any) => {
       color.value = newVal;

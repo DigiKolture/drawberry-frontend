@@ -131,7 +131,7 @@ export const mutations: MutationTree<CanvasState> = {
     return element;
   },
 
-  UPDATE_ELEMENT_IN_COMPONENTS(
+  UPDATE_ELEMENT_IN_COMPONENTS_DOM(
     state: CanvasState,
     { elementId, componentIndex }
   ): any {

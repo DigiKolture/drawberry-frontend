@@ -189,6 +189,7 @@ export default defineComponent({
         }
       }
 
+      // TODO: Might remove
       removeCurrentFocus();
 
       const currentFocusedIndex = focusedIndex.value;

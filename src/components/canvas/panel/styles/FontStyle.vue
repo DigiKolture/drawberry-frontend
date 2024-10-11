@@ -1,7 +1,7 @@
 <template>
   <PanelStyle name="font" title="Font">
     <div class="font__style">
-      <select class="canvas__select" v-model="family" id="">
+      <select class="canvas__select" v-model="localValue" id="">
         <option
           :key="key"
           v-for="(font, key) in googleFonts"
@@ -19,6 +19,7 @@ import PanelStyle from "./PanelStyle.vue";
 import store from "@/store";
 import { fonts } from "@/composables/canvas/fonts";
 import { modifiers } from "@/composables/canvas/panel/modifiers";
+import { modifiersUpdater } from "@/composables/canvas/modifiers/modifiers-updater";
 
 export default defineComponent({
   name: "FontStyle",
@@ -39,8 +40,8 @@ export default defineComponent({
   setup(props) {
     const name = "font-family";
 
-    const { focusedElement, getTargetElement, updateStyle } = modifiers();
-
+    const { modifier } = modifiersUpdater(props, name);
+    const { updateStyle } = modifiers();
     const { extractFirstFontFamily, getFullFamily, getFont, getFontWeights } =
       fonts();
 
@@ -48,39 +49,23 @@ export default defineComponent({
       return store.getters["canvas/googleFonts"];
     });
 
-    const family = ref(
-      extractFirstFontFamily(
-        getTargetElement(props.childId, props.childIndex).attributes.style
-          .value[name]
-      )
-    );
-    const fullFamily = ref(
-      getTargetElement(props.childId, props.childIndex).attributes.style.value[
-        name
-      ]
-    );
+    const localValue = ref(extractFirstFontFamily(modifier.value));
 
-    watch(family, (newVal) => {
+    watch(localValue, (newVal) => {
       if (!newVal) return;
-      fullFamily.value = getFullFamily(newVal);
+      modifier.value = getFullFamily(newVal);
       const font = getFont(newVal);
       const weights = getFontWeights(font.variants);
       store.commit("canvas/SET_FONT_WEIGHTS", weights);
-      updateStyle(name, fullFamily.value, props.childIndex);
       //Reset font weight after changing font family
       updateStyle("font-weight", 400, props.childIndex);
-      // focusedElement.value.attributes.style.value["font-weight"] = 400;
-      // store.dispatch("canvas/updateFocusedElement", focusedElement.value);
     });
 
-    // watch(focusedElement, (newVal) => {
-    //   family.value = extractFirstFontFamily(
-    //     newVal.attributes.style.value[name]
-    //   );
-    //   fullFamily.value = newVal.attributes.style.value[name];
-    // });
+    watch(modifier, (newVal) => {
+      localValue.value = extractFirstFontFamily(newVal);
+    });
 
-    return { googleFonts, family, fullFamily };
+    return { googleFonts, localValue };
   },
 });
 </script>

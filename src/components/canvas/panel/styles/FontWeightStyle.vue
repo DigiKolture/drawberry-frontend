@@ -1,7 +1,7 @@
 <template>
   <PanelStyle name="font-weight" title="Weight">
     <div class="font__weight__style">
-      <select v-model="weight" class="canvas__select">
+      <select v-model="modifier" class="canvas__select">
         <option :key="key" v-for="(weight, key) in fontWeights" :value="weight">
           {{ weight }}
         </option>
@@ -10,11 +10,12 @@
   </PanelStyle>
 </template>
 <script lang="ts">
-import { computed, defineComponent, ref, watch } from "vue";
+import { computed, defineComponent } from "vue";
 import PanelStyle from "./PanelStyle.vue";
 import store from "@/store";
 import { fonts } from "@/composables/canvas/fonts";
 import { modifiers } from "@/composables/canvas/panel/modifiers";
+import { modifiersUpdater } from "@/composables/canvas/modifiers/modifiers-updater";
 
 export default defineComponent({
   name: "FontWeightStyle",
@@ -34,8 +35,8 @@ export default defineComponent({
   setup(props) {
     const name = "font-weight";
 
-    const { focusedElement, getTargetElement, updateStyle } = modifiers();
-
+    const { getTargetElement } = modifiers();
+    const { modifier } = modifiersUpdater(props, name);
     const { getFontWeightsWithFamily } = fonts();
 
     const weightOptions = getFontWeightsWithFamily(
@@ -45,23 +46,10 @@ export default defineComponent({
     );
     store.commit("canvas/SET_FONT_WEIGHTS", weightOptions);
 
-    const weight = ref(
-      getTargetElement(props.childId, props.childIndex).attributes.style.value[
-        name
-      ]
-    );
     const fontWeights = computed(() => store.getters["canvas/fontWeights"]);
 
-    watch(weight, (newVal: string | number) => {
-      updateStyle(name, newVal, props.childIndex);
-    });
-
-    watch(focusedElement.value, (newVal) => {
-      weight.value = newVal.attributes.style.value[name];
-    });
-
     return {
-      weight,
+      modifier,
       fontWeights,
       weightOptions,
     };

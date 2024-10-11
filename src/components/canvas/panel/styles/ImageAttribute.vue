@@ -1,17 +1,17 @@
 <template>
   <PanelStyle title="IMAGE LINK">
     <div class="content__style">
-      <BaseImageTextUpload v-model="src" @confirm="updateImage" />
+      <BaseImageTextUpload v-model="modifier" @confirm="updateImage" />
     </div>
   </PanelStyle>
 </template>
 <script lang="ts">
-import { computed, defineComponent, ref, watch } from "vue";
+import { defineComponent, ref } from "vue";
 import PanelStyle from "./PanelStyle.vue";
-import store from "@/store";
 import BaseImageTextUpload from "@/components/canvas/panel/BaseImageTextUpload.vue";
-import { modifiers } from "@/composables/canvas/panel/modifiers";
-//TODO Split Image Components
+import { modifiersUpdater } from "@/composables/canvas/modifiers/modifiers-updater";
+import { HistoryActionTypes } from "@/store/modules/history/types";
+
 export default defineComponent({
   name: "ImageAttribute",
   components: {
@@ -33,28 +33,23 @@ export default defineComponent({
   setup(props) {
     const name = "src";
 
-    const { getTargetElement, updateAttribute } = modifiers();
+    const { modifier } = modifiersUpdater(
+      props,
+      name,
+      HistoryActionTypes.COMPONENT_ATTRIBUTE
+    );
 
     let activeIndex = ref(0);
     const isInputFocused = ref(false);
 
-    const src = ref(
-      getTargetElement(props.childId, props.childIndex).attributes[name].value
-    );
-
     const updateImage = async () => {
-      if (!src.value) return;
-      await updateAttribute(name, src.value, props.childIndex);
+      // if (!modifier.value) return;
       isInputFocused.value = false;
     };
 
-    // watch(focusedElement, (newVal) => {
-    //   src.value = newVal.attributes[name].value;
-    // });
-
     return {
       activeIndex,
-      src,
+      modifier,
       updateImage,
       isInputFocused,
     };

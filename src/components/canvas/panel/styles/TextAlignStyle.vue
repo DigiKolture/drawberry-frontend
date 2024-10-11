@@ -2,20 +2,21 @@
   <PanelStyle title="Text Align">
     <div class="align__style">
       <BaseButtonIcon
-        :key="key"
-        v-for="(option, key) in alignOptions"
-        :class="{ active: option.align === align }"
+        v-for="option in alignOptions"
+        :key="option.align"
+        :class="{ active: option.align === modifier }"
         :icon="option.icon"
         @click="changeAlignment(option.align)"
       />
     </div>
   </PanelStyle>
 </template>
+
 <script lang="ts">
-import { defineComponent, ref, watch } from "vue";
+import { defineComponent } from "vue";
 import PanelStyle from "./PanelStyle.vue";
 import BaseButtonIcon from "@/components/icon/BaseButtonIcon.vue";
-import { modifiers } from "@/composables/canvas/panel/modifiers";
+import { modifiersUpdater } from "@/composables/canvas/modifiers/modifiers-updater";
 
 export default defineComponent({
   name: "TextAlignStyle",
@@ -35,53 +36,21 @@ export default defineComponent({
 
   setup(props) {
     const name = "text-align";
-
-    const { getTargetElement, updateStyle } = modifiers();
+    const { modifier } = modifiersUpdater(props, name);
 
     const alignOptions = [
-      {
-        icon: "canvas/panel/styles/text-align/left",
-        align: "left",
-      },
-      {
-        icon: "canvas/panel/styles/text-align/center",
-        align: "center",
-      },
-      {
-        icon: "canvas/panel/styles/text-align/right",
-        align: "right",
-      },
+      { icon: "canvas/panel/styles/text-align/left", align: "left" },
+      { icon: "canvas/panel/styles/text-align/center", align: "center" },
+      { icon: "canvas/panel/styles/text-align/right", align: "right" },
     ];
 
-    const align = ref(
-      getTargetElement(props.childId, props.childIndex).attributes.style.value[
-        name
-      ]
-    );
-
-    watch(align, (newVal: string) => {
-      updateStyle(name, newVal, props.childIndex);
-    });
-
-    // watch(focusedElement, (newVal) => {
-    //   if (!props.isParent) {
-    //     align.value = newVal.attributes.style.value[name];
-    //   }
-    // });
-    //
-    // watch(focusedParentElement, (newVal) => {
-    //   if (props.isParent) {
-    //     align.value = newVal.attributes.style.value[name];
-    //   }
-    // });
-
     const changeAlignment = (option: string) => {
-      align.value = option;
+      modifier.value = option;
     };
 
     return {
       alignOptions,
-      align,
+      modifier,
       changeAlignment,
     };
   },

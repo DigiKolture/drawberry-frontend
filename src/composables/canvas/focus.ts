@@ -115,6 +115,16 @@ export function focus() {
     }
   };
 
+  const isElementAlreadyFocused = (
+    componentIndex: number,
+    elementId: string
+  ) => {
+    return (
+      focusedIndex.value === componentIndex &&
+      focusedElement.value.id === elementId
+    );
+  };
+
   // This will focus the component on and index and the element index
   const focusComponentElement = async (
     itemIndex: number,
@@ -122,6 +132,8 @@ export function focus() {
     fromWorkspace = true
   ) => {
     if (jsonIndex < 0) return;
+
+    removeCurrentFocus();
 
     store.commit("modals/CLOSE_MODAL", "manage_esp");
 
@@ -170,6 +182,7 @@ export function focus() {
 
   return {
     removeFocus,
+    isElementAlreadyFocused,
     removeAllFocus,
     removeCurrentFocus,
     focusComponentElement,

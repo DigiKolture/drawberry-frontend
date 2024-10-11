@@ -2,7 +2,7 @@
   <PanelStyle title="Border radius">
     <div class="border__radius__style">
       <BaseSliderIcon
-        v-model="radius"
+        v-model="localValue"
         icon="canvas/panel/styles/border-radius"
       />
     </div>
@@ -12,7 +12,7 @@
 import { defineComponent, ref, watch } from "vue";
 import PanelStyle from "./PanelStyle.vue";
 import BaseSliderIcon from "../BaseSliderIcon.vue";
-import { modifiers } from "@/composables/canvas/panel/modifiers";
+import { modifiersUpdater } from "@/composables/canvas/modifiers/modifiers-updater";
 
 export default defineComponent({
   name: "BorderRadiusStyle",
@@ -35,36 +35,20 @@ export default defineComponent({
     const name = "border-radius";
     const unit = "px";
 
-    const { getTargetElement, updateStyle } = modifiers();
+    const { modifier } = modifiersUpdater(props, name);
 
-    const radius = ref(
-      getTargetElement(props.childId, props.childIndex).attributes.style.value[
-        name
-      ].slice(0, -2)
-    );
-    const radiusWithUnit = ref(
-      getTargetElement(props.childId, props.childIndex).attributes.style.value[
-        name
-      ]
-    );
+    const localValue = ref(modifier.value?.slice(0, -2));
 
-    watch(radius, (newVal: string | number) => {
-      if (typeof newVal === "string" && newVal.endsWith(unit)) {
-        radiusWithUnit.value = newVal;
-      } else {
-        radiusWithUnit.value = newVal + unit;
-      }
-      updateStyle(name, radiusWithUnit.value, props.childIndex);
+    watch(localValue, (newVal) => {
+      modifier.value = `${newVal}${unit}`;
     });
 
-    // watch(focusedElement, (newVal) => {
-    //   radius.value = newVal.attributes.style.value[name].slice(0, -2);
-    //   radiusWithUnit.value = newVal.attributes.style.value[name];
-    // });
+    watch(modifier, (newVal) => {
+      localValue.value = newVal?.slice(0, -2);
+    });
 
     return {
-      radius,
-      radiusWithUnit,
+      localValue,
     };
   },
 });

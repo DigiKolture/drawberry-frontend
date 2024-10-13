@@ -31,6 +31,7 @@ import UserInitialsDropdown from "@/components/header/dropdown/UserInitialsDropd
 import ScreenSizeConstraint from "@/components/canvas/modals/ScreenSizeConstraint.vue";
 import { CanvasSaveStatus } from "@/store/modules/canvas/types";
 import EmailPreviewModal from "@/components/header/preview/EmailPreviewModal.vue";
+import { history } from "@/composables/canvas/history";
 
 export default defineComponent({
   name: "CanvasPage",
@@ -49,6 +50,7 @@ export default defineComponent({
   setup() {
     let intervalId = null;
     let isCallingApi = false;
+    const { undo, canUndo } = history();
 
     const saveStatus = computed(() => {
       return store.getters["canvas/saveStatus"];
@@ -94,6 +96,10 @@ export default defineComponent({
         store.commit("canvas/SET_SAVE_STATUS", CanvasSaveStatus.UPDATED);
         store.dispatch("canvas/updateProjectComponentsAndStyles");
         event.preventDefault();
+      } else if ((event.ctrlKey || event.metaKey) && event.key === "z") {
+        if (canUndo.value) {
+          undo();
+        }
       }
     };
 

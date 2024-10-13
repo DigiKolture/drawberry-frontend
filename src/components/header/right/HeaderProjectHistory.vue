@@ -10,7 +10,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent } from "vue";
+import { defineComponent } from "vue";
 
 import BaseIcon from "@/components/icon/BaseIcon.vue";
 import { history } from "@/composables/canvas/history";

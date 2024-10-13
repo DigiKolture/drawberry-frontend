@@ -42,7 +42,7 @@
   </PanelStyleTabs>
 </template>
 <script>
-import { computed, defineComponent, onMounted, ref } from "vue";
+import { computed, defineComponent, onMounted, ref, watch } from "vue";
 import BaseMediaImageUpload from "@/components/canvas/panel/BaseMediaImageUpload.vue";
 import PanelStyleTabs from "@/components/canvas/panel/PanelStyleTabs.vue";
 import BaseButtonIcon from "@/components/icon/BaseButtonIcon.vue";
@@ -80,6 +80,13 @@ export default defineComponent({
     onMounted(() => {
       src.value = props.modelValue;
     });
+
+    watch(
+      () => props.modelValue,
+      (newVal) => {
+        src.value = newVal;
+      }
+    );
 
     const updateTab = (index) => {
       activeIndex.value = index;

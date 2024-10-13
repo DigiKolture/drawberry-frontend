@@ -10,11 +10,28 @@ export enum HistoryActionTypes {
   PROJECT_STYLE = "project_style",
 }
 
-export interface HistoryAction {
-  elementId: string;
+export interface BaseHistoryAction {
   type: HistoryActionTypes;
-  componentIndex: number;
   modifier: string;
   value: string | number;
   previousValue: string;
 }
+
+export interface ProjectComponentHistoryAction extends BaseHistoryAction {
+  type:
+    | HistoryActionTypes.COMPONENT_STYLE
+    | HistoryActionTypes.COMPONENT_ATTRIBUTE
+    | HistoryActionTypes.COMPONENT_CONTENT;
+  elementId: string;
+  componentIndex: number;
+}
+
+export interface ProjectGeneralStyleHistoryAction extends BaseHistoryAction {
+  type: HistoryActionTypes.PROJECT_STYLE;
+  elementId?: string;
+  componentIndex?: number;
+}
+
+export type HistoryAction =
+  | ProjectComponentHistoryAction
+  | ProjectGeneralStyleHistoryAction;

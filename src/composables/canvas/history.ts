@@ -4,10 +4,10 @@ import { helpers } from "@/composables/helpers";
 import {
   HistoryAction,
   HistoryActionTypes,
+  ProjectComponentHistoryAction,
+  ProjectGeneralStyleHistoryAction,
 } from "@/store/modules/history/types";
 import { focus } from "@/composables/canvas/focus";
-import * as buffer from "buffer";
-import { val } from "cheerio/lib/api/attributes";
 
 const { find, findIndex } = helpers();
 const { removeFocus, isElementAlreadyFocused, focusComponentElement } = focus();
@@ -75,13 +75,44 @@ export function history() {
     store.commit("history/RESET_REDO_STACK");
   };
 
-  const updateComponent = (
-    type: string,
-    componentIndex: number,
-    elementId: string,
-    modifier: string,
-    value: string | number
+  // Check if its component style/attribute update
+  const isComponentUpdate = (
+    action: HistoryAction
+  ): action is ProjectComponentHistoryAction => {
+    return (
+      action.componentIndex !== undefined &&
+      action.elementId !== undefined &&
+      (action.type === HistoryActionTypes.COMPONENT_STYLE ||
+        action.type === HistoryActionTypes.COMPONENT_ATTRIBUTE ||
+        action.type === HistoryActionTypes.COMPONENT_CONTENT)
+    );
+  };
+
+  const update = (action: HistoryAction, undo = true) => {
+    if (isComponentUpdate(action)) {
+      return updateComponent(action, undo);
+    } else if (action.type === HistoryActionTypes.PROJECT_STYLE) {
+      return updateGeneralStyle(action, undo);
+    }
+    return null;
+  };
+
+  const updateGeneralStyle = (
+    action: ProjectGeneralStyleHistoryAction,
+    undo: boolean
   ) => {
+    const { modifier } = action;
+    store.commit("canvas/SET_SIDEBAR_NAVBAR_CONTENT", "style");
+    style.value[modifier] = undo ? action.previousValue : action.value;
+    return style.value;
+  };
+
+  const updateComponent = (
+    action: ProjectComponentHistoryAction,
+    undo: boolean
+  ) => {
+    const { type, elementId, componentIndex, modifier } = action;
+    const value = undo ? action.previousValue : action.value;
     if (type === HistoryActionTypes.COMPONENT_STYLE) {
       const workspaceComponent = workspaceComponents.value[componentIndex];
       const elementIndex = findIndex(workspaceComponent.json, "id", elementId);
@@ -143,16 +174,7 @@ export function history() {
     }
 
     const lastAction = undoStack.value.pop();
-    const { type, elementId, componentIndex, modifier, previousValue } =
-      lastAction;
-
-    const result = updateComponent(
-      type,
-      componentIndex,
-      elementId,
-      modifier,
-      previousValue
-    );
+    const result = update(lastAction, true);
     if (result === null) return;
 
     // store.commit("canvas/UPDATE_ELEMENT_IN_COMPONENTS_DOM", {
@@ -169,17 +191,9 @@ export function history() {
     }
 
     const lastAction: HistoryAction = redoStack.value.pop();
-    const { type, elementId, componentIndex, modifier, value } = lastAction;
-
-    const result = updateComponent(
-      type,
-      componentIndex,
-      elementId,
-      modifier,
-      value
-    );
-
+    const result = update(lastAction, false);
     if (result === null) return;
+
     // store.commit("canvas/UPDATE_ELEMENT_IN_COMPONENTS_DOM", {
     //   elementId,
     //   componentIndex,

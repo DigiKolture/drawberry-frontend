@@ -21,34 +21,35 @@
   </PanelStyle>
 </template>
 <script lang="ts">
-import { computed, defineComponent } from "vue";
+import { defineComponent, watch } from "vue";
 import PanelStyle from "@/components/canvas/panel/styles/PanelStyle.vue";
 import store from "@/store";
+import { generalStyleUpdater } from "@/composables/canvas/modifiers/general-style-updater";
 
 export default defineComponent({
   name: "SidebarLayoutStyle",
   components: { PanelStyle },
 
   setup() {
-    const style = computed(() => {
-      return store.getters["canvas/style"];
-    });
+    const name = "layout";
+    const { modifier } = generalStyleUpdater(name);
 
     const isActive = (lay: string) => {
-      return style.value.layout === lay;
+      return modifier.value === lay;
     };
 
     const changeLayout = async (lay: string) => {
-      if (lay === style.value.layout) return;
-      style.value.layout = lay;
-      store.dispatch("canvas/updateProjectStyle", style.value).then();
-      store.commit("canvas/UPDATE_FIRST_PROJECT_COMPONENTS_STYLE", lay);
+      if (lay === modifier.value) return;
+      modifier.value = lay;
     };
+
+    watch(modifier, (newVal) => {
+      store.commit("canvas/UPDATE_FIRST_PROJECT_COMPONENTS_STYLE", newVal);
+    });
 
     return {
       isActive,
       changeLayout,
-      style,
     };
   },
 });

@@ -4,13 +4,15 @@ import { helpers } from "@/composables/helpers";
 import {
   HistoryAction,
   HistoryActionTypes,
+  ProjectComponentAddDeleteHistoryAction,
   ProjectComponentHistoryAction,
+  ProjectComponentModifyPositionHistoryAction,
   ProjectGeneralStyleHistoryAction,
 } from "@/store/modules/history/types";
 import { focus } from "@/composables/canvas/focus";
 
-const { find, findIndex } = helpers();
-const { removeFocus, isElementAlreadyFocused, focusComponentElement } = focus();
+const { findIndex } = helpers();
+const { isElementAlreadyFocused, focusComponentElement } = focus();
 
 export function history() {
   const workspaceComponents = computed(() => {
@@ -43,21 +45,29 @@ export function history() {
    * @param action
    */
   const isDuplicateAction = (action: HistoryAction): boolean => {
-    if (action.value === action.previousValue) return true;
-    const matchingActions = undoStack.value.filter(
-      (stack: HistoryAction) =>
-        stack.type === action.type &&
-        stack.componentIndex === action.componentIndex &&
-        stack.elementId === action.elementId
-    );
+    if (
+      (isComponentUpdate(action) ||
+        action.type === HistoryActionTypes.PROJECT_STYLE) &&
+      action.value === action.previousValue
+    )
+      return true;
 
-    if (matchingActions.length > 0) {
-      const lastAction = matchingActions[matchingActions.length - 1];
-      if (
-        lastAction.value === action.value &&
-        lastAction.previousValue === action.previousValue
-      ) {
-        return true;
+    if (isComponentUpdate(action)) {
+      const matchingActions = undoStack.value.filter(
+        (stack: HistoryAction) =>
+          stack.type === action.type &&
+          stack.workspaceComponentItemId === action.workspaceComponentItemId &&
+          stack.elementId === action.elementId
+      );
+
+      if (matchingActions.length > 0) {
+        const lastAction = matchingActions[matchingActions.length - 1];
+        if (
+          lastAction.value === action.value &&
+          lastAction.previousValue === action.previousValue
+        ) {
+          return true;
+        }
       }
     }
 
@@ -68,7 +78,6 @@ export function history() {
     if (isDuplicateAction(action)) {
       return;
     }
-
     undoStack.value.push(action);
 
     store.commit("history/SET_UNDO_STACK", undoStack.value);
@@ -80,19 +89,29 @@ export function history() {
     action: HistoryAction
   ): action is ProjectComponentHistoryAction => {
     return (
-      action.componentIndex !== undefined &&
-      action.elementId !== undefined &&
       (action.type === HistoryActionTypes.COMPONENT_STYLE ||
         action.type === HistoryActionTypes.COMPONENT_ATTRIBUTE ||
-        action.type === HistoryActionTypes.COMPONENT_CONTENT)
+        action.type === HistoryActionTypes.COMPONENT_CONTENT) &&
+      action.workspaceComponentItemId !== undefined &&
+      action.elementId !== undefined
     );
   };
-
   const update = (action: HistoryAction, undo = true) => {
     if (isComponentUpdate(action)) {
       return updateComponent(action, undo);
     } else if (action.type === HistoryActionTypes.PROJECT_STYLE) {
       return updateGeneralStyle(action, undo);
+    } else if (
+      action.type === HistoryActionTypes.PROJECT_COMPONENT_ADD ||
+      action.type === HistoryActionTypes.PROJECT_COMPONENT_DUPLICATE
+    ) {
+      return updateProjectComponentAdd(action, undo);
+    } else if (action.type === HistoryActionTypes.PROJECT_COMPONENT_DELETE) {
+      return updateProjectComponentDelete(action, undo);
+    } else if (
+      action.type === HistoryActionTypes.PROJECT_COMPONENT_MODIFY_POSITION
+    ) {
+      return updateProjectComponentModifiyPosition(action, undo);
     }
     return null;
   };
@@ -107,13 +126,94 @@ export function history() {
     return style.value;
   };
 
+  const updateProjectComponentAdd = (
+    action: ProjectComponentAddDeleteHistoryAction,
+    undo: boolean
+  ) => {
+    const { workspaceComponentItemId, positionIndex } = action;
+    if (undo) {
+      // Delete the component
+      const componentIndex = findIndex(
+        workspaceComponents.value,
+        "id",
+        workspaceComponentItemId
+      );
+      if (componentIndex === null) return null;
+      workspaceComponents.value.splice(componentIndex, 1);
+    } else {
+      // Add the component back
+      workspaceComponents.value.splice(
+        positionIndex,
+        0,
+        action.projectComponent
+      );
+    }
+    store.commit("canvas/SET_WORKSPACE_COMPONENTS", workspaceComponents.value);
+    return workspaceComponents.value;
+  };
+
+  const updateProjectComponentDelete = (
+    action: ProjectComponentAddDeleteHistoryAction,
+    undo: boolean
+  ) => {
+    const { workspaceComponentItemId, positionIndex } = action;
+    if (undo) {
+      // Add the component back
+      workspaceComponents.value.splice(
+        positionIndex,
+        0,
+        action.projectComponent
+      );
+    } else {
+      // Delete the component
+      const componentIndex = findIndex(
+        workspaceComponents.value,
+        "id",
+        workspaceComponentItemId
+      );
+      if (componentIndex === null) return null;
+      workspaceComponents.value.splice(componentIndex, 1);
+    }
+    store.commit("canvas/SET_WORKSPACE_COMPONENTS", workspaceComponents.value);
+    return workspaceComponents.value;
+  };
+
+  const updateProjectComponentModifiyPosition = (
+    action: ProjectComponentModifyPositionHistoryAction,
+    undo: boolean
+  ) => {
+    const { workspaceComponentItemId, toIndex, positionIndex } = action;
+    const componentIndex = findIndex(
+      workspaceComponents.value,
+      "id",
+      workspaceComponentItemId
+    );
+    if (componentIndex === null) return null;
+    const workspaceComponent = workspaceComponents.value[componentIndex];
+    if (undo) {
+      workspaceComponents.value.splice(toIndex, 1);
+      workspaceComponents.value.splice(positionIndex, 0, workspaceComponent);
+    } else {
+      workspaceComponents.value.splice(positionIndex, 1);
+      workspaceComponents.value.splice(toIndex, 0, workspaceComponent);
+    }
+    store.commit("canvas/SET_WORKSPACE_COMPONENTS", workspaceComponents.value);
+    return workspaceComponents.value;
+  };
+
   const updateComponent = (
     action: ProjectComponentHistoryAction,
     undo: boolean
   ) => {
-    const { type, elementId, componentIndex, modifier } = action;
+    const { type, elementId, workspaceComponentItemId, modifier } = action;
     const value = undo ? action.previousValue : action.value;
     if (type === HistoryActionTypes.COMPONENT_STYLE) {
+      const componentIndex = findIndex(
+        workspaceComponents.value,
+        "id",
+        workspaceComponentItemId
+      );
+      if (componentIndex === null) return null;
       const workspaceComponent = workspaceComponents.value[componentIndex];
       const elementIndex = findIndex(workspaceComponent.json, "id", elementId);
       if (elementIndex === null) return null;
@@ -128,9 +228,17 @@ export function history() {
       if (selElementIndex === null) return null;
       if (!isElementAlreadyFocused(componentIndex, selectedElementId)) {
         focusComponentElement(componentIndex, selElementIndex, true).then();
+      } else {
+        store.commit("canvas/UPDATE_FOCUSED_JSON_AND_DOM", element);
       }
       return element;
     } else if (type === HistoryActionTypes.COMPONENT_ATTRIBUTE) {
+      const componentIndex = findIndex(
+        workspaceComponents.value,
+        "id",
+        workspaceComponentItemId
+      );
+      if (componentIndex === null) return null;
       const workspaceComponent = workspaceComponents.value[componentIndex];
       const elementIndex = findIndex(workspaceComponent.json, "id", elementId);
       if (elementIndex === null) return null;
@@ -145,9 +253,17 @@ export function history() {
       if (selElementIndex === null) return null;
       if (!isElementAlreadyFocused(componentIndex, selectedElementId)) {
         focusComponentElement(componentIndex, selElementIndex, true).then();
+      } else {
+        store.commit("canvas/UPDATE_FOCUSED_JSON_AND_DOM", element);
       }
       return element;
     } else if (type === HistoryActionTypes.COMPONENT_CONTENT) {
+      const componentIndex = findIndex(
+        workspaceComponents.value,
+        "id",
+        workspaceComponentItemId
+      );
+      if (componentIndex === null) return null;
       const workspaceComponent = workspaceComponents.value[componentIndex];
       const elementIndex = findIndex(workspaceComponent.json, "id", elementId);
       if (elementIndex === null) return null;
@@ -162,6 +278,8 @@ export function history() {
       if (selElementIndex === null) return null;
       if (!isElementAlreadyFocused(componentIndex, selectedElementId)) {
         focusComponentElement(componentIndex, selElementIndex, true).then();
+      } else {
+        store.commit("canvas/UPDATE_FOCUSED_JSON_AND_DOM", element);
       }
       return element;
     }

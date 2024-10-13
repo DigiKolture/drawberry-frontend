@@ -2,6 +2,9 @@ import store from "@/store";
 import { computed } from "vue";
 import { ui } from "@/assets/js/canvas";
 import { focus } from "@/composables/canvas/focus";
+import { HistoryActionTypes } from "@/store/modules/history/types";
+import { history } from "@/composables/canvas/history";
+const { updateHistory } = history();
 
 export function drag_and_drop() {
   const { removeCurrentFocus, removeFocus, removeAllFocus } = focus();
@@ -119,12 +122,19 @@ export function drag_and_drop() {
     }
     const projectComponentItem = workspaceComponents.value[fromIndex];
 
+    updateHistory({
+      type: HistoryActionTypes.PROJECT_COMPONENT_MODIFY_POSITION,
+      positionIndex: fromIndex,
+      workspaceComponentItemId: projectComponentItem.id,
+      toIndex,
+    });
+
     workspaceComponents.value.splice(fromIndex, 1);
     workspaceComponents.value.splice(toIndex, 0, projectComponentItem);
 
     store.commit("canvas/SET_WORKSPACE_COMPONENTS", workspaceComponents.value);
 
-    // TODO: Might remove this
+    // TODO: Might remove this, cos API runs every 5 seconds
     store.dispatch("canvas/updateProjectComponentsAndStyles").then();
   };
 

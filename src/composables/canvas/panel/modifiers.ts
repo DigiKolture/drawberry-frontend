@@ -10,6 +10,10 @@ export function modifiers() {
     return store.getters["canvas/focusedElement"];
   });
 
+  const workspaceComponents = computed(() => {
+    return store.getters["canvas/workspaceComponents"];
+  });
+
   const focusedIndex = computed(() => {
     return store.getters["canvas/focusedIndex"];
   });
@@ -28,7 +32,8 @@ export function modifiers() {
     if (childIndex === -1) {
       updateHistory({
         type: HistoryActionTypes.COMPONENT_STYLE,
-        componentIndex: focusedIndex.value,
+        workspaceComponentItemId:
+          workspaceComponents.value[focusedIndex.value].id,
         elementId: focusedElement.value.id,
         modifier: style,
         previousValue: focusedElement.value.attributes.style.value[style],
@@ -39,7 +44,8 @@ export function modifiers() {
     } else {
       updateHistory({
         type: HistoryActionTypes.COMPONENT_STYLE,
-        componentIndex: focusedIndex.value,
+        workspaceComponentItemId:
+          workspaceComponents.value[focusedIndex.value].id,
         elementId: focusedChildrenElements.value[childIndex].id,
         modifier: style,
         previousValue:
@@ -65,7 +71,8 @@ export function modifiers() {
     if (childIndex === -1) {
       updateHistory({
         type: HistoryActionTypes.COMPONENT_ATTRIBUTE,
-        componentIndex: focusedIndex.value,
+        workspaceComponentItemId:
+          workspaceComponents.value[focusedIndex.value].id,
         elementId: focusedElement.value.id,
         modifier,
         previousValue: focusedElement.value.attributes[modifier].value,
@@ -76,7 +83,8 @@ export function modifiers() {
     } else {
       updateHistory({
         type: HistoryActionTypes.COMPONENT_ATTRIBUTE,
-        componentIndex: focusedIndex.value,
+        workspaceComponentItemId:
+          workspaceComponents.value[focusedIndex.value].id,
         elementId: focusedChildrenElements.value[childIndex].id,
         modifier,
         previousValue:
@@ -100,7 +108,8 @@ export function modifiers() {
     if (childIndex === -1) {
       updateHistory({
         type: HistoryActionTypes.COMPONENT_CONTENT,
-        componentIndex: focusedIndex.value,
+        workspaceComponentItemId:
+          workspaceComponents.value[focusedIndex.value].id,
         elementId: focusedElement.value.id,
         modifier,
         previousValue: focusedElement.value[modifier],
@@ -113,7 +122,8 @@ export function modifiers() {
     } else {
       updateHistory({
         type: HistoryActionTypes.COMPONENT_CONTENT,
-        componentIndex: focusedIndex.value,
+        workspaceComponentItemId:
+          workspaceComponents.value[focusedIndex.value].id,
         elementId: focusedElement.value.id,
         modifier,
         previousValue: focusedChildrenElements.value[childIndex][modifier],

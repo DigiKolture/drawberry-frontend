@@ -10,10 +10,12 @@ import router from "@/router";
 import { canvas } from "@/composables/canvas/canvas";
 import ObjectId from "bson-objectid";
 import { helpers } from "@/composables/helpers";
+import { HistoryActionTypes } from "@/store/modules/history/types";
+import { history } from "@/composables/canvas/history";
 
-const { pushComponentsElementsUpdates, updateComponentBorder, removeClasses } =
-  canvas();
+const { updateComponentBorder, removeClasses } = canvas();
 const { copyObject } = helpers();
+const { updateHistory } = history();
 
 export const actions: ActionTree<CanvasState, RootState> = {
   getProjectComponentItems(
@@ -96,6 +98,13 @@ export const actions: ActionTree<CanvasState, RootState> = {
     };
 
     commit("SET_HAS_WORKSPACE_COMPONENTS", true);
+
+    updateHistory({
+      type: HistoryActionTypes.PROJECT_COMPONENT_ADD,
+      projectComponent,
+      positionIndex: data.positionIndex,
+      workspaceComponentItemId: projectComponentId,
+    });
 
     state.workspaceComponents.splice(data.positionIndex, 0, projectComponent);
     commit("SET_WORKSPACE_COMPONENTS", state.workspaceComponents);
@@ -182,6 +191,13 @@ export const actions: ActionTree<CanvasState, RootState> = {
       defaultJson: projectComponentCleaned.defaultJson,
     };
 
+    updateHistory({
+      type: HistoryActionTypes.PROJECT_COMPONENT_DUPLICATE,
+      projectComponent,
+      positionIndex,
+      workspaceComponentItemId: newProjectComponentId,
+    });
+
     state.workspaceComponents.splice(positionIndex, 0, projectComponent);
     commit("SET_WORKSPACE_COMPONENTS", state.workspaceComponents);
 
@@ -191,6 +207,15 @@ export const actions: ActionTree<CanvasState, RootState> = {
     { state, commit, dispatch },
     { projectId, projectComponentItemId, positionIndex }
   ): Promise<void> {
+    const projectComponent = state.workspaceComponents[positionIndex];
+
+    updateHistory({
+      type: HistoryActionTypes.PROJECT_COMPONENT_DELETE,
+      projectComponent,
+      positionIndex,
+      workspaceComponentItemId: projectComponentItemId,
+    });
+
     state.workspaceComponents.splice(positionIndex, 1);
     commit("SET_WORKSPACE_COMPONENTS", state.workspaceComponents);
 

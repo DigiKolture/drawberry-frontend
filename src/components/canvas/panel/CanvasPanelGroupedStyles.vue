@@ -91,11 +91,7 @@
             :child-index="idx"
           />
         </template>
-        <div
-          class="canvas__panel__styles__row"
-          style="margin-bottom: 350px"
-          v-if="showTypographyRow"
-        >
+        <div class="canvas__panel__styles__row" v-if="showTypographyRow">
           <FontSizeStyle v-if="showStyle('font-size')" />
           <template v-for="(child, idx) in focusedElement.children">
             <FontSizeStyle

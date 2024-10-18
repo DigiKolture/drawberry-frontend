@@ -1,5 +1,6 @@
 import { ActionTree } from "vuex";
 import {
+  CanvasEditableTypes,
   CanvasSaveStatus,
   CanvasState,
   ProjectStyle,
@@ -242,8 +243,12 @@ export const actions: ActionTree<CanvasState, RootState> = {
     if (state.focusedIndex === null || state.focusedElement === null) return;
 
     //Update DOM before the API (Just to prevent waiting for changes)
-    scrollTo(state.focusedIndex, element.id);
     commit("UPDATE_FOCUSED_JSON_AND_DOM", element);
+    setTimeout(() => {
+      if (state.focusedIndex !== null) {
+        scrollTo(state.focusedIndex, element.id);
+      }
+    }, 0);
     // const projectComponentItem = state.workspaceComponents[state.focusedIndex];
     // pushComponentsElementsUpdates(element, projectComponentItem);
   },

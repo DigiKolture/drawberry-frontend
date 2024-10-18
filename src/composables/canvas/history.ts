@@ -214,6 +214,89 @@ export function history() {
   ) => {
     const { type, elementId, workspaceComponentItemId, modifier } = action;
     const value = undo ? action.previousValue : action.value;
+
+    const componentIndex = findIndex(
+      workspaceComponents.value,
+      "id",
+      workspaceComponentItemId
+    );
+    if (componentIndex === null) return null;
+
+    const workspaceComponent = workspaceComponents.value[componentIndex];
+    const elementIndex = findIndex(workspaceComponent.json, "id", elementId);
+    if (elementIndex === null) return null;
+
+    const element = workspaceComponent.json[elementIndex];
+
+    if (type === HistoryActionTypes.COMPONENT_STYLE) {
+      element.attributes.style.value[modifier] = value;
+      return await updateElementFocusAndScroll(
+        componentIndex,
+        element,
+        modifier,
+        CanvasEditableTypes.STYLE
+      );
+    } else if (type === HistoryActionTypes.COMPONENT_ATTRIBUTE) {
+      element.attributes[modifier].value = value;
+      return await updateElementFocusAndScroll(
+        componentIndex,
+        element,
+        modifier,
+        CanvasEditableTypes.ATTRIBUTE
+      );
+    } else if (type === HistoryActionTypes.COMPONENT_CONTENT) {
+      element[modifier] = value;
+      return await updateElementFocusAndScroll(
+        componentIndex,
+        element,
+        modifier,
+        CanvasEditableTypes.CONTENT
+      );
+    }
+
+    return null;
+  };
+
+  const updateElementFocusAndScroll = async (
+    componentIndex: number,
+    element: any,
+    modifier: string,
+    editableType: CanvasEditableTypes
+  ) => {
+    const selectedElementId = element.parent ? element.parent : element.id;
+    const selElementIndex = findIndex(
+      workspaceComponents.value[componentIndex].json,
+      "id",
+      selectedElementId
+    );
+    if (selElementIndex === null) return null;
+
+    if (!isElementAlreadyFocused(componentIndex, selectedElementId)) {
+      await focusComponentElement(
+        componentIndex,
+        selElementIndex,
+        FOCUS_SCROLL_TYPES.BOTH,
+        editableType,
+        modifier
+      ).then();
+    } else {
+      await updateFocusedElementDomAndScroll(
+        componentIndex,
+        element,
+        editableType,
+        modifier
+      );
+    }
+
+    return element;
+  };
+
+  const updateComponent2 = async (
+    action: ProjectComponentHistoryAction,
+    undo: boolean
+  ) => {
+    const { type, elementId, workspaceComponentItemId, modifier } = action;
+    const value = undo ? action.previousValue : action.value;
     if (type === HistoryActionTypes.COMPONENT_STYLE) {
       const componentIndex = findIndex(
         workspaceComponents.value,

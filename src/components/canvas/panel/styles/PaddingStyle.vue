@@ -1,5 +1,5 @@
 <template>
-  <PanelStyle :title="`Padding`">
+  <PanelStyle :modifier="name" :title="`Padding`">
     <div class="spacing__style">
       <div class="spacing__style__tab__item">
         <div class="spacing__style__outer__rect">
@@ -119,6 +119,7 @@ export default defineComponent({
     };
 
     return {
+      name,
       singlePadding,
       activePadding,
       paddingOptions,

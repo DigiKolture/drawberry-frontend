@@ -1,5 +1,5 @@
 <template>
-  <section class="panel__style">
+  <section :id="modifier" class="panel__style">
     <div v-if="title" class="panel__style__head">
       <h5>{{ title }}</h5>
     </div>
@@ -14,6 +14,10 @@ import { defineComponent } from "vue";
 export default defineComponent({
   name: "PanelStyle",
   props: {
+    modifier: {
+      type: String,
+      required: true,
+    },
     name: {
       type: String,
       required: false,

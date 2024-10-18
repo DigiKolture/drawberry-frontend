@@ -1,5 +1,5 @@
 <template>
-  <PanelStyle title="Content">
+  <PanelStyle :modifier="name" title="Content">
     <div class="content__style">
       <textarea v-model="localValue" class="canvas__textarea"> </textarea>
     </div>
@@ -27,7 +27,7 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const name = "innerHtml";
+    const name = "content"; //innerHTML
 
     const { modifier } = modifiersUpdater(
       props,
@@ -47,6 +47,7 @@ export default defineComponent({
     });
 
     return {
+      name,
       localValue,
     };
   },

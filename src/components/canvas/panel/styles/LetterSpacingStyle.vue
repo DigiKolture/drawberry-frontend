@@ -1,5 +1,5 @@
 <template>
-  <PanelStyle title="Letter spacing">
+  <PanelStyle :modifier="name" title="Letter spacing">
     <div class="font__size__style">
       <input v-model="localValue" class="canvas__input__number" type="number" />
     </div>

@@ -1,5 +1,5 @@
 <template>
-  <PanelStyle title="INSERT LINK">
+  <PanelStyle :modifier="name" title="INSERT LINK">
     <div class="content__style">
       <textarea v-model="modifier" class="canvas__textarea"> </textarea>
     </div>
@@ -36,6 +36,7 @@ export default defineComponent({
     );
 
     return {
+      name,
       modifier,
     };
   },

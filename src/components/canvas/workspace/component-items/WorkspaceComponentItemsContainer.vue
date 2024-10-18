@@ -207,7 +207,7 @@ export default defineComponent({
         }
       }
 
-      focusComponentElement(itemIndex, jsonIndex, true);
+      focusComponentElement(itemIndex, jsonIndex);
     };
 
     return {

@@ -1,5 +1,5 @@
 <template>
-  <PanelStyle title="Shadow">
+  <PanelStyle :modifier="name" title="Shadow">
     <div class="shadow__style">
       <div class="shadow__style__tab__item">
         <BaseSliderIcon
@@ -59,7 +59,6 @@ export default defineComponent({
     const unit = "px";
 
     const { parseBoxShadow } = styles();
-    const { getTargetElement, updateStyle } = modifiers();
     const { modifier } = modifiersUpdater(props, name);
 
     let shadow: any = reactive(parseBoxShadow(modifier.value));
@@ -82,6 +81,7 @@ export default defineComponent({
     });
 
     return {
+      name,
       shadow,
       ColorPickerTypes,
       color,

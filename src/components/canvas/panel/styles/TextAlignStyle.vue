@@ -1,5 +1,5 @@
 <template>
-  <PanelStyle title="Text Align">
+  <PanelStyle :modifier="name" title="Text Align">
     <div class="align__style">
       <BaseButtonIcon
         v-for="option in alignOptions"
@@ -49,6 +49,7 @@ export default defineComponent({
     };
 
     return {
+      name,
       alignOptions,
       modifier,
       changeAlignment,

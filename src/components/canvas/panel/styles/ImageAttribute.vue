@@ -1,5 +1,5 @@
 <template>
-  <PanelStyle title="IMAGE LINK">
+  <PanelStyle :modifier="name" title="IMAGE LINK">
     <div class="content__style">
       <BaseImageTextUpload v-model="modifier" @confirm="updateImage" />
     </div>
@@ -48,6 +48,7 @@ export default defineComponent({
     };
 
     return {
+      name,
       activeIndex,
       modifier,
       updateImage,

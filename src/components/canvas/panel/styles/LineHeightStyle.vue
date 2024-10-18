@@ -1,5 +1,5 @@
 <template>
-  <PanelStyle title="Line height">
+  <PanelStyle :modifier="name" title="Line height">
     <div class="font__size__style">
       <input v-model="localValue" class="canvas__input__number" type="number" />
     </div>

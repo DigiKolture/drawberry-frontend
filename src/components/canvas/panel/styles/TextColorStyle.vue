@@ -1,5 +1,5 @@
 <template>
-  <PanelStyle name="color" title="Text COLOR">
+  <PanelStyle :modifier="name" name="color" title="Text COLOR">
     <ColorPickerStyle
       :type="ColorPickerTypes.PANEL_STYLE_TEXT_COLOR"
       ref="colorPickerStyleRef"
@@ -59,6 +59,7 @@ export default defineComponent({
     };
 
     return {
+      name,
       show,
       color,
       colorPickerStyleRef,

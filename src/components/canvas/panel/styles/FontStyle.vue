@@ -1,5 +1,5 @@
 <template>
-  <PanelStyle name="font" title="Font">
+  <PanelStyle :modifier="name" name="font" title="Font">
     <div class="font__style">
       <select class="canvas__select" v-model="localValue" id="">
         <option
@@ -65,7 +65,7 @@ export default defineComponent({
       localValue.value = extractFirstFontFamily(newVal);
     });
 
-    return { googleFonts, localValue };
+    return { name, googleFonts, localValue };
   },
 });
 </script>

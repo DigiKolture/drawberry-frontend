@@ -1,5 +1,5 @@
 <template>
-  <PanelStyle title="Horizontal Align">
+  <PanelStyle :modifier="name" title="Horizontal Align">
     <div class="align__style">
       <BaseButtonIcon
         :key="key"
@@ -62,6 +62,7 @@ export default defineComponent({
     };
 
     return {
+      name,
       alignOptions,
       modifier,
       changeAlignment,

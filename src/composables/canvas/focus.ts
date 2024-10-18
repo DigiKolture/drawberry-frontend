@@ -2,14 +2,22 @@ import store from "@/store";
 import { computed } from "vue";
 import { layers } from "@/composables/canvas/layers";
 import { updateDom } from "@/composables/canvas/update_dom";
+import { scroll } from "@/composables/canvas/scroll";
 
 export function focus() {
   const { updateElementDom } = updateDom();
+  const { scrollTo: scrollToFtn } = scroll();
   const {
     addClassToElement,
     removeClassFromElement,
     getComponentElementIndexUsingId,
   } = layers();
+
+  enum FOCUS_SCROLL_TYPES {
+    FROM_LAYER = "from_layer",
+    FROM_WORKSPACE = "from_workspace",
+    BOTH = "both",
+  }
 
   const workspaceComponents = computed(() => {
     return store.getters["canvas/workspaceComponents"];
@@ -82,19 +90,19 @@ export function focus() {
     return offsetPosition;
   };
 
-  const scrollTo = (itemIndex: number, id: string, toLayer = true) => {
-    let item = null;
-    if (toLayer) {
-      item = document.querySelector(
-        `#layer-component-item-${itemIndex} #${id}`
-      );
+  const scrollTo = (
+    itemIndex: number,
+    id: string,
+    scrollType: FOCUS_SCROLL_TYPES = FOCUS_SCROLL_TYPES.FROM_WORKSPACE
+  ) => {
+    if (scrollType === FOCUS_SCROLL_TYPES.FROM_WORKSPACE) {
+      scrollToFtn(`#layer-component-item-${itemIndex} #${id}`);
+    } else if (scrollType === FOCUS_SCROLL_TYPES.FROM_LAYER) {
+      scrollToFtn(`#workspace-component-item-${itemIndex} #${id}`);
     } else {
-      item = document.querySelector(
-        `#workspace-component-item-${itemIndex} #${id}`
-      );
+      scrollToFtn(`#layer-component-item-${itemIndex} #${id}`);
+      scrollToFtn(`#workspace-component-item-${itemIndex} #${id}`);
     }
-    if (!item) return;
-    item.scrollIntoView({ behavior: "smooth", inline: "center" });
   };
 
   const setParentFocusedElement = (focusedElement: any, componentItem: any) => {
@@ -129,7 +137,7 @@ export function focus() {
   const focusComponentElement = async (
     itemIndex: number,
     jsonIndex = 0,
-    fromWorkspace = true
+    scrollType: FOCUS_SCROLL_TYPES = FOCUS_SCROLL_TYPES.FROM_WORKSPACE
   ) => {
     if (jsonIndex < 0) return;
 
@@ -168,11 +176,28 @@ export function focus() {
     store.commit("panel/RESET_TAB_STATES");
     store.commit("panel/ACTIVATE_FIRST_TAB_STATE");
 
-    if (fromWorkspace) {
+    //if the focus is happening from undo/redo then dont activate first layer tab
+    if (scrollType !== FOCUS_SCROLL_TYPES.BOTH) {
+      store.commit("panel/ACTIVATE_FIRST_TAB_STATE");
+    }
+
+    if (
+      scrollType === FOCUS_SCROLL_TYPES.BOTH ||
+      scrollType === FOCUS_SCROLL_TYPES.FROM_WORKSPACE
+    ) {
       await store.dispatch("canvas/setSidebarNavbarContent", "layers");
     }
 
-    scrollTo(itemIndex, focusedElement.id, fromWorkspace);
+    scrollTo(itemIndex, focusedElement.id, scrollType);
+  };
+
+  const updateFocusedElementDomAndScroll = async (
+    itemIndex: number,
+    element: any
+  ) => {
+    store.commit("canvas/UPDATE_FOCUSED_JSON_AND_DOM", element);
+    // TODO: Check if its in view before scrolling
+    scrollTo(itemIndex, element.id, FOCUS_SCROLL_TYPES.BOTH);
   };
 
   const removeAllFocus = () => {
@@ -181,11 +206,13 @@ export function focus() {
   };
 
   return {
+    FOCUS_SCROLL_TYPES,
     removeFocus,
     isElementAlreadyFocused,
     removeAllFocus,
     removeCurrentFocus,
     focusComponentElement,
     scrollTo,
+    updateFocusedElementDomAndScroll,
   };
 }

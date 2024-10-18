@@ -1,5 +1,5 @@
 <template>
-  <PanelStyle title="Border radius">
+  <PanelStyle :modifier="name" title="Border radius">
     <div class="border__radius__style">
       <BaseSliderIcon
         v-model="localValue"
@@ -48,6 +48,7 @@ export default defineComponent({
     });
 
     return {
+      name,
       localValue,
     };
   },

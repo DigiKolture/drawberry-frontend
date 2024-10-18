@@ -1,5 +1,5 @@
 <template>
-  <PanelStyle :name="name">
+  <PanelStyle :modifier="name" :name="name">
     <div class="number__row__style__container">
       <div class="panel__style__head">
         <h5>Margin bottom</h5>

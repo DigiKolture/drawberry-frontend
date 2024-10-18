@@ -2,8 +2,9 @@
   <section class="canvas__panel__grouped__styles">
     <div class="canvas__panel__tabs">
       <PanelTab
+        :index="tabsStyles.layout.index"
         v-if="showTab(tabsStyles.layout)"
-        @update="setActiveTab"
+        @update="toggleTabContents"
         @close_tabs="closeAllTabs"
         :properties="tabsStyles.layout"
         :show-body="tabStates[tabsStyles.layout.index]"
@@ -28,8 +29,9 @@
         </template>
       </PanelTab>
       <PanelTab
+        :index="tabsStyles.spacing.index"
         v-if="showTab(tabsStyles.spacing)"
-        @update="setActiveTab"
+        @update="toggleTabContents"
         @close_tabs="closeAllTabs"
         :properties="tabsStyles.spacing"
         :show-body="tabStates[tabsStyles.spacing.index]"
@@ -64,8 +66,9 @@
       </PanelTab>
 
       <PanelTab
+        :index="tabsStyles.typography.index"
         v-if="showTab(tabsStyles.typography)"
-        @update="setActiveTab"
+        @update="toggleTabContents"
         @close_tabs="closeAllTabs"
         :properties="tabsStyles.typography"
         :show-body="tabStates[tabsStyles.typography.index]"
@@ -88,7 +91,11 @@
             :child-index="idx"
           />
         </template>
-        <div class="canvas__panel__styles__row" v-if="showTypographyRow">
+        <div
+          class="canvas__panel__styles__row"
+          style="margin-bottom: 350px"
+          v-if="showTypographyRow"
+        >
           <FontSizeStyle v-if="showStyle('font-size')" />
           <template v-for="(child, idx) in focusedElement.children">
             <FontSizeStyle
@@ -146,8 +153,9 @@
         </template>
       </PanelTab>
       <PanelTab
+        :index="tabsStyles.background.index"
         v-if="showTab(tabsStyles.background)"
-        @update="setActiveTab"
+        @update="toggleTabContents"
         @close_tabs="closeAllTabs"
         :properties="tabsStyles.background"
         :show-body="tabStates[tabsStyles.background.index]"
@@ -172,8 +180,9 @@
         </template>
       </PanelTab>
       <PanelTab
+        :index="tabsStyles.borders.index"
         v-if="showTab(tabsStyles.borders)"
-        @update="setActiveTab"
+        @update="toggleTabContents"
         @close_tabs="closeAllTabs"
         :properties="tabsStyles.borders"
         :show-body="tabStates[tabsStyles.borders.index]"
@@ -189,8 +198,9 @@
         </template>
       </PanelTab>
       <PanelTab
+        :index="tabsStyles.effects.index"
         v-if="showTab(tabsStyles.effects)"
-        @update="setActiveTab"
+        @update="toggleTabContents"
         @close_tabs="closeAllTabs"
         :properties="tabsStyles.effects"
         :show-body="tabStates[tabsStyles.effects.index]"
@@ -206,8 +216,9 @@
         </template>
       </PanelTab>
       <PanelTab
+        :index="tabsStyles.link.index"
         v-if="showTab(tabsStyles.link)"
-        @update="setActiveTab"
+        @update="toggleTabContents"
         @close_tabs="closeAllTabs"
         :properties="tabsStyles.link"
         :show-body="tabStates[tabsStyles.link.index]"
@@ -223,8 +234,9 @@
         </template>
       </PanelTab>
       <PanelTab
+        :index="tabsStyles.media.index"
         v-if="showTab(tabsStyles.media)"
-        @update="setActiveTab"
+        @update="toggleTabContents"
         @close_tabs="closeAllTabs"
         :properties="tabsStyles.media"
         :show-body="tabStates[tabsStyles.media.index]"
@@ -325,7 +337,7 @@ export default defineComponent({
       );
     });
 
-    const setActiveTab = (index: number) => {
+    const toggleTabContents = (index: number) => {
       store.commit("panel/TOGGLE_TAB_STATE", index.toString());
     };
 
@@ -339,7 +351,7 @@ export default defineComponent({
       childHasStyle,
       childHasAttribute,
       hasContent,
-      setActiveTab,
+      toggleTabContents,
       showTab,
       focusedElement,
       hasAttributes,

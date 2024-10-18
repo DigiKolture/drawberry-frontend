@@ -10,9 +10,16 @@ import {
   ProjectGeneralStyleHistoryAction,
 } from "@/store/modules/history/types";
 import { focus } from "@/composables/canvas/focus";
+import { panel } from "@/composables/canvas/panel";
 
 const { findIndex } = helpers();
-const { isElementAlreadyFocused, focusComponentElement } = focus();
+const { openModifierTab } = panel();
+const {
+  isElementAlreadyFocused,
+  focusComponentElement,
+  updateFocusedElementDomAndScroll,
+  FOCUS_SCROLL_TYPES,
+} = focus();
 
 export function history() {
   const workspaceComponents = computed(() => {
@@ -201,7 +208,7 @@ export function history() {
     return workspaceComponents.value;
   };
 
-  const updateComponent = (
+  const updateComponent = async (
     action: ProjectComponentHistoryAction,
     undo: boolean
   ) => {
@@ -227,10 +234,15 @@ export function history() {
       );
       if (selElementIndex === null) return null;
       if (!isElementAlreadyFocused(componentIndex, selectedElementId)) {
-        focusComponentElement(componentIndex, selElementIndex, true).then();
+        await focusComponentElement(
+          componentIndex,
+          selElementIndex,
+          FOCUS_SCROLL_TYPES.BOTH
+        ).then();
       } else {
-        store.commit("canvas/UPDATE_FOCUSED_JSON_AND_DOM", element);
+        await updateFocusedElementDomAndScroll(componentIndex, element);
       }
+      openModifierTab("style", modifier);
       return element;
     } else if (type === HistoryActionTypes.COMPONENT_ATTRIBUTE) {
       const componentIndex = findIndex(
@@ -252,10 +264,15 @@ export function history() {
       );
       if (selElementIndex === null) return null;
       if (!isElementAlreadyFocused(componentIndex, selectedElementId)) {
-        focusComponentElement(componentIndex, selElementIndex, true).then();
+        await focusComponentElement(
+          componentIndex,
+          selElementIndex,
+          FOCUS_SCROLL_TYPES.BOTH
+        ).then();
       } else {
-        store.commit("canvas/UPDATE_FOCUSED_JSON_AND_DOM", element);
+        await updateFocusedElementDomAndScroll(componentIndex, element);
       }
+      openModifierTab("style", modifier);
       return element;
     } else if (type === HistoryActionTypes.COMPONENT_CONTENT) {
       const componentIndex = findIndex(
@@ -277,10 +294,15 @@ export function history() {
       );
       if (selElementIndex === null) return null;
       if (!isElementAlreadyFocused(componentIndex, selectedElementId)) {
-        focusComponentElement(componentIndex, selElementIndex, true).then();
+        await focusComponentElement(
+          componentIndex,
+          selElementIndex,
+          FOCUS_SCROLL_TYPES.BOTH
+        ).then();
       } else {
-        store.commit("canvas/UPDATE_FOCUSED_JSON_AND_DOM", element);
+        await updateFocusedElementDomAndScroll(componentIndex, element);
       }
+      openModifierTab("content");
       return element;
     }
     return null;

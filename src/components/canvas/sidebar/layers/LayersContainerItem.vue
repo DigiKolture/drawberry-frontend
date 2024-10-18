@@ -99,7 +99,8 @@ export default defineComponent({
     const { isChild } = updateDom();
     const { removeHoverElement, addHoverToElement } = hover();
     const { validateIndicator } = indicators();
-    const { focusComponentElement, removeCurrentFocus } = focus();
+    const { focusComponentElement, removeCurrentFocus, FOCUS_SCROLL_TYPES } =
+      focus();
 
     const dropIndex = ref(-1);
 
@@ -154,7 +155,11 @@ export default defineComponent({
         elementId
       );
 
-      focusComponentElement(itemIndex, jsonIndex, false);
+      focusComponentElement(
+        itemIndex,
+        jsonIndex,
+        FOCUS_SCROLL_TYPES.FROM_LAYER
+      );
     };
 
     const dragComponentItem = (e: any) => {

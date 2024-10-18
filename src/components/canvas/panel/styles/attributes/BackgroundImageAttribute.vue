@@ -1,5 +1,5 @@
 <template>
-  <PanelStyle title="Background Image">
+  <PanelStyle :modifier="name" title="Background Image">
     <div class="content__style">
       <BaseImageTextUpload v-model="localValue" @confirm="updateImage" />
     </div>
@@ -54,6 +54,7 @@ export default defineComponent({
     });
 
     return {
+      name,
       activeIndex,
       localValue,
       updateImage,

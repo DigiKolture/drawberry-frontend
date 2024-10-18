@@ -1,5 +1,5 @@
 <template>
-  <section class="panel__tab">
+  <section :id="`panel-tab-${index}`" class="panel__tab">
     <div
       @click="setActiveTab"
       @dblclick="closeAllTabs"
@@ -23,6 +23,10 @@ export default defineComponent({
   props: {
     properties: {
       type: Object,
+      required: true,
+    },
+    index: {
+      type: Number,
       required: true,
     },
     showBody: {

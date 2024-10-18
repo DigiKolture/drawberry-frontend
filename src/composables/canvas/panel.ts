@@ -1,7 +1,9 @@
 import store from "@/store";
 import { computed } from "vue";
+import { scroll } from "@/composables/canvas/scroll";
 
 export function panel() {
+  const { scrollTo } = scroll();
   interface TabStyles {
     title: string;
     index: number;
@@ -72,14 +74,6 @@ export function panel() {
 
   const focusedElement = computed(() => {
     return store.getters["canvas/focusedElement"];
-  });
-
-  const tabStates = computed(() => {
-    return store.getters["panel/tabStates"];
-  });
-
-  const focusedParentElement = computed(() => {
-    return store.getters["canvas/focusedParentElement"];
   });
 
   const focusedChildrenElements = computed(() => {
@@ -209,6 +203,37 @@ export function panel() {
     return indices;
   };
 
+  const getIndexOfTab = (type: string, name = ""): number | null => {
+    for (const key in tabsStyles) {
+      const tab = tabsStyles[key];
+
+      if (type === "style" && name && tab.styles.includes(name)) {
+        return tab.index;
+      }
+
+      if (type === "attribute" && name && tab.attributes.includes(name)) {
+        return tab.index;
+      }
+
+      if (type === "content" && tab.isContent) {
+        return tab.index;
+      }
+    }
+    return null; // Return null if not found
+  };
+
+  const openModifierTab = (
+    type: "style" | "attribute" | "content",
+    modifier = ""
+  ) => {
+    const index = getIndexOfTab(type, modifier);
+    if (index === null) return;
+    store.commit("panel/SET_ACTIVE_TAB_STATE", index.toString());
+    setTimeout(() => {
+      scrollTo(`#panel-tab-${index} #${modifier ? modifier : type}`); //If modifier is empty use type, this will work for content scenario
+    }, 0);
+  };
+
   return {
     showTab,
     isParentAttribute,
@@ -221,6 +246,8 @@ export function panel() {
     hasContent,
     childHasContent,
     tabsStyles,
+    getIndexOfTab,
     resetTabStates,
+    openModifierTab,
   };
 }

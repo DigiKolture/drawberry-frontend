@@ -1,5 +1,5 @@
 <template>
-  <PanelStyle name="font-weight" title="Weight">
+  <PanelStyle :modifier="name" name="font-weight" title="Weight">
     <div class="font__weight__style">
       <select v-model="modifier" class="canvas__select">
         <option :key="key" v-for="(weight, key) in fontWeights" :value="weight">
@@ -49,6 +49,7 @@ export default defineComponent({
     const fontWeights = computed(() => store.getters["canvas/fontWeights"]);
 
     return {
+      name,
       modifier,
       fontWeights,
       weightOptions,

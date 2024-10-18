@@ -11,9 +11,9 @@ import {
 } from "@/store/modules/history/types";
 import { focus } from "@/composables/canvas/focus";
 import { panel } from "@/composables/canvas/panel";
+import { CanvasEditableTypes } from "@/store/modules/canvas/types";
 
 const { findIndex } = helpers();
-const { openModifierTab } = panel();
 const {
   isElementAlreadyFocused,
   focusComponentElement,
@@ -237,12 +237,18 @@ export function history() {
         await focusComponentElement(
           componentIndex,
           selElementIndex,
-          FOCUS_SCROLL_TYPES.BOTH
+          FOCUS_SCROLL_TYPES.BOTH,
+          CanvasEditableTypes.STYLE,
+          modifier
         ).then();
       } else {
-        await updateFocusedElementDomAndScroll(componentIndex, element);
+        await updateFocusedElementDomAndScroll(
+          componentIndex,
+          element,
+          CanvasEditableTypes.STYLE,
+          modifier
+        );
       }
-      openModifierTab("style", modifier);
       return element;
     } else if (type === HistoryActionTypes.COMPONENT_ATTRIBUTE) {
       const componentIndex = findIndex(
@@ -267,12 +273,18 @@ export function history() {
         await focusComponentElement(
           componentIndex,
           selElementIndex,
-          FOCUS_SCROLL_TYPES.BOTH
+          FOCUS_SCROLL_TYPES.BOTH,
+          CanvasEditableTypes.ATTRIBUTE,
+          modifier
         ).then();
       } else {
-        await updateFocusedElementDomAndScroll(componentIndex, element);
+        await updateFocusedElementDomAndScroll(
+          componentIndex,
+          element,
+          CanvasEditableTypes.ATTRIBUTE,
+          modifier
+        );
       }
-      openModifierTab("style", modifier);
       return element;
     } else if (type === HistoryActionTypes.COMPONENT_CONTENT) {
       const componentIndex = findIndex(
@@ -297,12 +309,16 @@ export function history() {
         await focusComponentElement(
           componentIndex,
           selElementIndex,
-          FOCUS_SCROLL_TYPES.BOTH
+          FOCUS_SCROLL_TYPES.BOTH,
+          CanvasEditableTypes.CONTENT
         ).then();
       } else {
-        await updateFocusedElementDomAndScroll(componentIndex, element);
+        await updateFocusedElementDomAndScroll(
+          componentIndex,
+          element,
+          CanvasEditableTypes.CONTENT
+        );
       }
-      openModifierTab("content");
       return element;
     }
     return null;

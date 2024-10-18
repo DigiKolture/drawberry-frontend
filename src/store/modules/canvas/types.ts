@@ -37,6 +37,12 @@ export interface CanvasState {
   savedColors: string[];
 }
 
+export enum CanvasEditableTypes {
+  STYLE = "style",
+  ATTRIBUTE = "attribute",
+  CONTENT = "content",
+}
+
 export enum CanvasSaveStatus {
   SAVED = "saved",
   UPDATED = "updated",

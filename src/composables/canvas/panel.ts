@@ -1,9 +1,11 @@
 import store from "@/store";
 import { computed } from "vue";
 import { scroll } from "@/composables/canvas/scroll";
+import { CanvasEditableTypes } from "@/store/modules/canvas/types";
 
 export function panel() {
   const { scrollTo } = scroll();
+
   interface TabStyles {
     title: string;
     index: number;
@@ -203,29 +205,37 @@ export function panel() {
     return indices;
   };
 
-  const getIndexOfTab = (type: string, name = ""): number | null => {
+  const getIndexOfTab = (
+    type: CanvasEditableTypes,
+    name = ""
+  ): number | null => {
     for (const key in tabsStyles) {
       const tab = tabsStyles[key];
 
-      if (type === "style" && name && tab.styles.includes(name)) {
+      if (
+        type === CanvasEditableTypes.STYLE &&
+        name &&
+        tab.styles.includes(name)
+      ) {
         return tab.index;
       }
 
-      if (type === "attribute" && name && tab.attributes.includes(name)) {
+      if (
+        type === CanvasEditableTypes.ATTRIBUTE &&
+        name &&
+        tab.attributes.includes(name)
+      ) {
         return tab.index;
       }
 
-      if (type === "content" && tab.isContent) {
+      if (type === CanvasEditableTypes.CONTENT && tab.isContent) {
         return tab.index;
       }
     }
     return null; // Return null if not found
   };
 
-  const openModifierTab = (
-    type: "style" | "attribute" | "content",
-    modifier = ""
-  ) => {
+  const openModifierTab = (type: CanvasEditableTypes, modifier = "") => {
     const index = getIndexOfTab(type, modifier);
     if (index === null) return;
     store.commit("panel/SET_ACTIVE_TAB_STATE", index.toString());

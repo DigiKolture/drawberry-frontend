@@ -11,8 +11,12 @@ export function scroll() {
   };
   const scrollTo = (selector: string) => {
     const element = document.querySelector(selector);
+
     if (element) {
-      element.scrollIntoView({ behavior: "smooth", inline: "center" });
+      const inV = inView(element);
+      if (!inV) {
+        element.scrollIntoView({ behavior: "smooth", inline: "center" });
+      }
     }
   };
 

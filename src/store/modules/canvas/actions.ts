@@ -12,10 +12,12 @@ import ObjectId from "bson-objectid";
 import { helpers } from "@/composables/helpers";
 import { HistoryActionTypes } from "@/store/modules/history/types";
 import { history } from "@/composables/canvas/history";
+import { focus } from "@/composables/canvas/focus";
 
 const { updateComponentBorder, removeClasses } = canvas();
 const { copyObject } = helpers();
 const { updateHistory } = history();
+const { scrollTo } = focus();
 
 export const actions: ActionTree<CanvasState, RootState> = {
   getProjectComponentItems(
@@ -240,6 +242,7 @@ export const actions: ActionTree<CanvasState, RootState> = {
     if (state.focusedIndex === null || state.focusedElement === null) return;
 
     //Update DOM before the API (Just to prevent waiting for changes)
+    scrollTo(state.focusedIndex, element.id);
     commit("UPDATE_FOCUSED_JSON_AND_DOM", element);
     // const projectComponentItem = state.workspaceComponents[state.focusedIndex];
     // pushComponentsElementsUpdates(element, projectComponentItem);

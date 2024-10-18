@@ -240,8 +240,8 @@ export function panel() {
     if (index === null) return;
     store.commit("panel/SET_ACTIVE_TAB_STATE", index.toString());
     setTimeout(() => {
-      modifier =
-        modifier === "innerHTML" ? CanvasEditableTypes.CONTENT : modifier;
+      // modifier =
+      //   modifier === "innerHTML" ? CanvasEditableTypes.CONTENT : modifier;
       scrollTo(`#panel-tab-${index} #${modifier ? modifier : type}`); //If modifier is empty use type, this will work for content scenario
     }, 0);
   };

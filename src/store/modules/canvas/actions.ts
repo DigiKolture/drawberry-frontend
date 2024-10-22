@@ -98,6 +98,8 @@ export const actions: ActionTree<CanvasState, RootState> = {
       html,
       defaultJson: componentItem.json,
       defaultHtml: componentItem.html,
+      version: componentItem.version,
+      componentItemHistory: componentItem.componentItemHistory,
     };
 
     commit("SET_HAS_WORKSPACE_COMPONENTS", true);
@@ -149,6 +151,8 @@ export const actions: ActionTree<CanvasState, RootState> = {
           defaultJson: workspaceComponent.defaultJson,
           html: workspaceComponent.defaultHtml,
           defaultHtml: workspaceComponent.defaultHtml,
+          componentItemHistoryId: workspaceComponent.componentItemHistory,
+          version: workspaceComponent.version,
         };
       }
     );
@@ -192,6 +196,8 @@ export const actions: ActionTree<CanvasState, RootState> = {
       html: projectComponentCleaned.html,
       defaultHtml: projectComponentCleaned.defaultHtml,
       defaultJson: projectComponentCleaned.defaultJson,
+      version: projectComponentCleaned.version,
+      componentItemHistory: projectComponentCleaned.componentItemHistory,
     };
 
     updateHistory({

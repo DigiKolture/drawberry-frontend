@@ -72,7 +72,7 @@ export function canvas() {
     const elementToUpdate = {
       id: focusedElement.id,
       attributes: focusedElement.attributes,
-      innerHtml: focusedElement.innerHtml,
+      textContent: focusedElement.textContent,
     };
 
     const updatedComponent = find(

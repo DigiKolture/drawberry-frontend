@@ -103,11 +103,11 @@ export function updateDom() {
     //UPDATE Content
     // TODO: Update Condition
     if (
-      elementJson.innerHtml !== null &&
-      elementJson.innerHtml !== "" &&
-      elementJson.innerHtml.trim()
+      elementJson.textContent !== null &&
+      elementJson.textContent !== "" &&
+      elementJson.textContent.trim()
     ) {
-      el.text(elementJson.innerHtml);
+      el.text(elementJson.textContent);
     }
 
     return $.html();

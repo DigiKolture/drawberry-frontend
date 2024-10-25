@@ -264,7 +264,7 @@ export const actions: ActionTree<CanvasState, RootState> = {
     //       {
     //         id: focusedElement.id,
     //         attributes: focusedElement.attributes,
-    //         innerHtml: focusedElement.innerHtml,
+    //         textContent: focusedElement.textContent,
     //       },
     //     ],
     //   },

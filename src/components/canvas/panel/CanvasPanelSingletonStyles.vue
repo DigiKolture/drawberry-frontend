@@ -81,7 +81,7 @@ export default defineComponent({
     };
 
     const hasContent = () => {
-      return focusedElement.value.innerHtml !== null;
+      return focusedElement.value.textContent !== null;
     };
 
     return {

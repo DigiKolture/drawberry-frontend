@@ -27,7 +27,7 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const name = "innerHtml"; //innerHTML
+    const name = "textContent"; //textContent
 
     const { modifier } = modifiersUpdater(
       props,

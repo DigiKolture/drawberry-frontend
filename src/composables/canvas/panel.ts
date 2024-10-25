@@ -159,7 +159,7 @@ export function panel() {
 
   const hasParentContents = () => {
     for (const focusedChild of focusedChildrenElements.value) {
-      if (focusedChild.innerHtml !== null) {
+      if (focusedChild.textContent !== null) {
         return true;
       }
     }
@@ -168,7 +168,7 @@ export function panel() {
 
   const hasContent = () => {
     if (!focusedElement.value) return false;
-    return focusedElement.value.innerHtml !== null;
+    return focusedElement.value.textContent !== null;
   };
 
   const hasChildOrParentContent = () => {
@@ -178,7 +178,7 @@ export function panel() {
   const childHasContent = (index: number) => {
     const childContent = focusedChildrenElements.value?.[index];
     if (!childContent) return false;
-    return childContent.innerHtml !== null;
+    return childContent.textContent !== null;
   };
 
   const showTab = (tab: TabStyles) => {
@@ -241,7 +241,7 @@ export function panel() {
     store.commit("panel/SET_ACTIVE_TAB_STATE", index.toString());
     setTimeout(() => {
       // modifier =
-      //   modifier === "innerHTML" ? CanvasEditableTypes.CONTENT : modifier;
+      //   modifier === "textContent" ? CanvasEditableTypes.CONTENT : modifier;
       scrollTo(`#panel-tab-${index} #${modifier ? modifier : type}`); //If modifier is empty use type, this will work for content scenario
     }, 0);
   };

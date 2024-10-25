@@ -20,11 +20,9 @@ export function layers() {
   };
   const getLayerElementTitle = (element: any): string => {
     const id = element.id.toLowerCase();
-    const text = element.innerHtml
-      ? element.innerHtml.trim()
-      : element.innerHtml;
+    const text = element.textContent;
 
-    if (text) {
+    if (text !== null) {
       return sliceString(text, 16);
     } else if (id.includes("background")) {
       return "Background";
@@ -32,6 +30,8 @@ export function layers() {
       return "Logo";
     } else if (hasNumberBeforeImage(id)) {
       return extractImageNames(id);
+    } else if (id.includes("container")) {
+      return "Container";
     } else if (id.includes("image")) {
       return "Image";
     }
@@ -42,16 +42,18 @@ export function layers() {
 
   const getLayerElementIcon = (element: any): string => {
     const id = element.id.toLowerCase();
-    const text = element.innerHtml;
+    const text = element.textContent;
     let icon = "";
-    if (text) {
+    if (text !== null) {
       icon = "text";
     } else if (id.includes("background")) {
       icon = "background";
-    } else if (id.includes("logo")) {
+    } else if (id.includes("logo") || id.includes("banner")) {
       icon = "image";
     } else if (id.includes("image")) {
       icon = "image";
+    } else if (id.includes("container")) {
+      return "container";
     } else {
       icon = "text";
     }

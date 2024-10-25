@@ -1,5 +1,5 @@
 <template>
-  <PanelStyle title="Background Image">
+  <PanelStyle :modifier="`general-${name}`" title="Background Image">
     <div class="content__style">
       <BaseImageTextUpload
         v-model="modifier"
@@ -33,6 +33,7 @@ export default defineComponent({
     };
 
     return {
+      name,
       isInputFocused,
       titles,
       modifier,

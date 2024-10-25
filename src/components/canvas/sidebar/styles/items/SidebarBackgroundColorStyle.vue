@@ -1,5 +1,5 @@
 <template>
-  <PanelStyle title="BACKGROUND COLOR">
+  <PanelStyle :modifier="`general-${name}`" title="BACKGROUND COLOR">
     <ColorPickerStyle
       :type="ColorPickerTypes.GENERAL_STYLE_BG_COLOR"
       ref="colorPickerStyleRef"
@@ -40,6 +40,7 @@ export default defineComponent({
       color.value = newVal;
     };
     return {
+      name,
       show,
       ColorPickerTypes,
       color,

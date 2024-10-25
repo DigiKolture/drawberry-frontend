@@ -1,5 +1,5 @@
 <template>
-  <PanelStyle title="Layout">
+  <PanelStyle :modifier="`general-${name}`" title="Layout">
     <div class="layout__style">
       <div
         @click="changeLayout('collapsed')"
@@ -48,6 +48,7 @@ export default defineComponent({
     });
 
     return {
+      name,
       isActive,
       changeLayout,
     };

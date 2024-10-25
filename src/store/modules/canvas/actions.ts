@@ -14,8 +14,14 @@ import { helpers } from "@/composables/helpers";
 import { HistoryActionTypes } from "@/store/modules/history/types";
 import { history } from "@/composables/canvas/history";
 import { focus } from "@/composables/canvas/focus";
+import { project } from "@/composables/project/project";
 
 const { updateComponentBorder, removeClasses } = canvas();
+const {
+  createProjectComponentObj,
+  duplicateProjectComponentObj,
+  formatProjectComponents,
+} = project();
 const { copyObject } = helpers();
 const { updateHistory } = history();
 const { scrollTo } = focus();
@@ -33,7 +39,7 @@ export const actions: ActionTree<CanvasState, RootState> = {
         commit("projects/SET_PROJECT", data.data.project, { root: true });
         commit("history/RESET_HISTORY_STACK", {}, { root: true });
         commit("SET_WORKSPACE_COMPONENTS", {
-          components: data.data.project.components,
+          components: formatProjectComponents(data.data.project.components),
           saveStatus: CanvasSaveStatus.SAVED,
         });
         const style = data.data.project.style;
@@ -89,18 +95,13 @@ export const actions: ActionTree<CanvasState, RootState> = {
       componentItem.html
     );
 
-    const projectComponent = {
-      _id: projectComponentId,
-      id: projectComponentId,
-      project: projectId,
-      componentItem: componentItem.id,
+    const projectComponent = createProjectComponentObj(
+      projectComponentId,
+      projectId,
+      componentItem,
       json,
-      html,
-      defaultJson: componentItem.json,
-      defaultHtml: componentItem.html,
-      version: componentItem.version,
-      componentItemHistory: componentItem.componentItemHistory,
-    };
+      html
+    );
 
     commit("SET_HAS_WORKSPACE_COMPONENTS", true);
 
@@ -187,18 +188,11 @@ export const actions: ActionTree<CanvasState, RootState> = {
 
     // TODO: Might remove removeClasses since I am now checking if the current index is selected or hovered on before showing the border
 
-    const projectComponent = {
-      _id: newProjectComponentId,
-      id: newProjectComponentId,
-      project: projectId,
-      componentItem: projectComponentCleaned.componentItem,
-      json: removeClasses(projectComponentCleaned.json),
-      html: projectComponentCleaned.html,
-      defaultHtml: projectComponentCleaned.defaultHtml,
-      defaultJson: projectComponentCleaned.defaultJson,
-      version: projectComponentCleaned.version,
-      componentItemHistory: projectComponentCleaned.componentItemHistory,
-    };
+    const projectComponent = duplicateProjectComponentObj(
+      newProjectComponentId,
+      projectId,
+      projectComponentCleaned
+    );
 
     updateHistory({
       type: HistoryActionTypes.PROJECT_COMPONENT_DUPLICATE,

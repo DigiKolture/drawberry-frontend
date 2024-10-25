@@ -1,5 +1,5 @@
 <template>
-  <PanelStyle title="Preview text">
+  <PanelStyle :modifier="`general-${name}`" title="Preview text">
     <div class="preview__text__style">
       <textarea
         class="canvas__textarea"
@@ -37,6 +37,7 @@ export default defineComponent({
     });
 
     return {
+      name,
       localValue,
     };
   },

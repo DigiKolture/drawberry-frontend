@@ -39,7 +39,9 @@
         />
       </button>
       <BaseIcon icon="canvas/sidebar/layers/component" />
-      <h5 class="layers__component__item__title">Component</h5>
+      <h5 class="layers__component__item__title">
+        {{ componentItem.componentItemName }}
+      </h5>
     </LayersContainerElementItem>
 
     <div v-if="showElements" class="layers__component__item__elements">

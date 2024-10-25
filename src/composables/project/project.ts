@@ -30,6 +30,7 @@ export function project() {
     projectId: string,
     projectComponentCleaned: any
   ) => {
+    //TODO: removeClasses might not be needed here anymore
     return {
       _id: newProjectComponentId,
       id: newProjectComponentId,

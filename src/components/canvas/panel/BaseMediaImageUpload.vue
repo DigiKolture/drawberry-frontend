@@ -22,7 +22,7 @@
       class="hidden"
       ref="fileInputRef"
       @change="handleImageUpload"
-      accept="image/*"
+      accept=".png, .jpg, .jpeg"
     />
   </div>
 </template>

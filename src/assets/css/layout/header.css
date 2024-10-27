@@ -35,6 +35,13 @@ header.header{
     @apply flex items-center justify-start;
 }
 
+.header__home__skeleton{
+    border-radius: 4px;
+    width: 37px;
+    height: 36px;
+    background: var(--color-grey-30);
+}
+
 .header__home{
     @apply flex header-border h-full;
     column-gap: 12px;
@@ -43,6 +50,15 @@ header.header{
 
 .header__container__middle{
     @apply h-full w-full flex items-center justify-center;
+}
+
+.header__middle__input__skeleton{
+    @apply flex;
+    background: var(--color-grey-30);
+    border-radius: 4px;
+    width: 163px;
+    height: 12px;
+    margin-left: 100px;
 }
 
 .header__middle__input__container{
@@ -105,6 +121,18 @@ header.header{
 .header__right__canvas__actions{
     @apply flex items-center justify-center h-full;
     column-gap: 14px;
+}
+
+.header__container__right__skeleton{
+    @apply flex;
+    column-gap: 7px;
+}
+
+.header__container__right__skeleton div{
+    border-radius: 4px;
+    width: 79px;
+    height: 36px;
+    background: var(--color-grey-30);
 }
 
 .header__redo{

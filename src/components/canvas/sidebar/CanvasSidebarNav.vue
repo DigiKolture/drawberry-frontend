@@ -1,6 +1,7 @@
 <template>
   <nav class="canvas__sidebar__nav">
-    <div class="sidebar__nav__top">
+    <CanvasSidebarNavTopSkeleton v-if="canvasLoading" />
+    <div v-else class="sidebar__nav__top">
       <BaseButtonIcon
         :key="key"
         v-for="(button, key) in sidebarNavTopIcons"
@@ -31,13 +32,16 @@ import { computed, defineComponent } from "vue";
 import BaseButtonIcon from "@/components/icon/BaseButtonIcon.vue";
 import store from "@/store";
 import { auth } from "@/composables/auth/auth";
+import CanvasSidebarNavTopSkeleton from "@/components/canvas/sidebar/CanvasSidebarNavTopSkeleton.vue";
+import { canvas } from "@/composables/canvas/canvas";
 
 export default defineComponent({
   name: "CanvasSidebarNav",
-  components: { BaseButtonIcon },
+  components: { CanvasSidebarNavTopSkeleton, BaseButtonIcon },
 
   setup() {
     const { getInitials } = auth();
+    const { canvasLoading } = canvas();
 
     const sidebarNavTopIcons = [
       { icon: "canvas/sidebar/nav/add", name: "add_component" },
@@ -67,6 +71,7 @@ export default defineComponent({
     };
 
     return {
+      canvasLoading,
       getInitials,
       sidebarNavTopIcons,
       sidebarNavBottomIcons,

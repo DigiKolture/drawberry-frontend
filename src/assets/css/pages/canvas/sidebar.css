@@ -20,6 +20,19 @@ nav.canvas__sidebar__nav{
     row-gap: 4px;
 }
 
+.sidebar__nav__top__skeleton{
+    @apply flex flex-col;
+    row-gap: 4px;
+}
+
+.sidebar__nav__top__skeleton div{
+    border-radius: 4px;
+    padding: 8px;
+    width: 39px;
+    height: 40px;
+    background: var(--color-grey-30);
+}
+
 .sidebar__nav__bottom{
     row-gap: 10px;
 }

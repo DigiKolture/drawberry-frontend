@@ -6,7 +6,7 @@
         :class="[
           {
             nav__content__docked: docked,
-            has__right__panel: hasWorkspaceComponent,
+            has__right__panel: hasWorkspaceComponent && canvasLoaded,
           },
         ]"
       >
@@ -24,7 +24,7 @@
           <slot name="workspace" />
         </section>
         <section
-          v-if="hasWorkspaceComponent"
+          v-if="hasWorkspaceComponent && canvasLoaded"
           class="canvas__panel"
           :class="{
             has__modal: PANEL_STYLE_TYPE_COLORS.includes(colorPicker),
@@ -61,10 +61,13 @@ export default defineComponent({
 
     const id = "canvas-workspace";
 
-    const { hasWorkspaceComponent } = canvas();
+    const { hasWorkspaceComponent, canvasLoaded } = canvas();
     const { removeFocus, removeCurrentFocus } = focus();
 
     const styles = computed(() => {
+      if (!canvasLoaded.value) {
+        return {};
+      }
       return {
         backgroundColor: style.value.backgroundColor,
         backgroundImage: `url('${style.value.backgroundImage}')`,
@@ -112,6 +115,7 @@ export default defineComponent({
 
     return {
       sidebarDock,
+      canvasLoaded,
       docked,
       PANEL_STYLE_TYPE_COLORS,
       colorPicker,

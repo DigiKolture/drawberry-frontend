@@ -1,32 +1,35 @@
 <template>
   <div class="header__container__right">
     <template v-if="isAuth">
+      <HeaderContainerRightSkeleton v-if="canvasLoading" />
       <div class="header__right__canvas__actions" v-if="isCanvas && project">
         <HeaderProjectHistory />
-        <BaseButtonTextIcon
-          :id="modalsTrigger"
-          @click="togglePreview"
-          text="Preview"
-          icon="header/preview"
-        />
-        <BaseButton
-          :id="modalsTrigger"
-          class="header__right__share button__outline"
-          title="Share"
-          @click="toggleShare"
-        />
-        <BaseButtonTextIcon
-          :id="modalsTrigger"
-          @click="toggleExport"
-          class="success"
-          text="Export"
-          icon="header/export"
-        />
-        <ExportDropdown :class="{ open: openExport }" />
-        <PreviewDropdown
-          :is-preview="isPreview"
-          :class="{ open: openPreview }"
-        />
+        <slot>
+          <BaseButtonTextIcon
+            :id="modalsTrigger"
+            @click="togglePreview"
+            text="Preview"
+            icon="header/preview"
+          />
+          <BaseButton
+            :id="modalsTrigger"
+            class="header__right__share button__outline"
+            title="Share"
+            @click="toggleShare"
+          />
+          <BaseButtonTextIcon
+            :id="modalsTrigger"
+            @click="toggleExport"
+            class="success"
+            text="Export"
+            icon="header/export"
+          />
+          <ExportDropdown :class="{ open: openExport }" />
+          <PreviewDropdown
+            :is-preview="isPreview"
+            :class="{ open: openPreview }"
+          />
+        </slot>
       </div>
 
       <div
@@ -67,6 +70,8 @@ import router from "@/router";
 import { auth } from "@/composables/auth/auth";
 import UserInitialsDropdown from "@/components/header/dropdown/UserInitialsDropdown.vue";
 import HeaderProjectHistory from "@/components/header/right/HeaderProjectHistory.vue";
+import HeaderContainerRightSkeleton from "@/components/header/position/HeaderContainerRightSkeleton.vue";
+import { canvas } from "@/composables/canvas/canvas";
 export default defineComponent({
   name: "HeaderContainerRight",
   props: {
@@ -84,6 +89,7 @@ export default defineComponent({
     },
   },
   components: {
+    HeaderContainerRightSkeleton,
     HeaderProjectHistory,
     UserInitialsDropdown,
     BaseButton,
@@ -95,6 +101,8 @@ export default defineComponent({
 
   setup(props) {
     const { getInitials } = auth();
+    const { canvasLoading } = canvas();
+
     const modalsTrigger = "modals-trigger";
 
     const openExport = computed(() => {
@@ -155,6 +163,7 @@ export default defineComponent({
     return {
       project,
       modalsTrigger,
+      canvasLoading,
       openPreview,
       getInitials,
       openExport,

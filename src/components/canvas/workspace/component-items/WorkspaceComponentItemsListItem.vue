@@ -22,9 +22,8 @@
       @dragleave="handleDragLeave"
       @dragover.prevent
       @dragenter.prevent
-      v-if="isMounted"
+      v-if="canvasLoaded"
     ></div>
-
     <WorkspaceComponentItemsActions
       v-if="showActions"
       :component-item="componentItem"
@@ -43,6 +42,7 @@ import WorkspaceComponentDropSkeleton from "@/components/canvas/workspace/utilit
 import WorkspaceComponentDropIndicator from "@/components/canvas/workspace/utilities/WorkspaceComponentDropIndicator.vue";
 import { indicators } from "@/composables/canvas/indicators";
 import { ui } from "@/assets/js/canvas";
+import { canvas } from "@/composables/canvas/canvas";
 
 export default defineComponent({
   name: "WorkspaceComponentItemsListItem",
@@ -64,15 +64,12 @@ export default defineComponent({
       type: Number,
       required: true,
     },
-    isMounted: {
-      type: Boolean,
-      required: true,
-    },
   },
 
   setup(props, { emit }) {
     const { moveComponentItemPosition, upsertComponentItem } = drag_and_drop();
     const { validateWorkspaceIndicator } = indicators();
+    const { canvasLoaded } = canvas();
 
     const { updateElementDom } = updateDom();
     const disabledButton = ref(false);
@@ -88,21 +85,22 @@ export default defineComponent({
       return props.componentItem.json.map((el: any) => el.classes);
     });
 
-    watch(
-      () => props.isMounted,
-      (value) => {
-        if (value) {
-          loadStylesForComponent(props);
-        }
-      }
-    );
-
     const focusedElement = computed(() => {
       return store.getters["canvas/focusedElement"];
     });
 
+    const canvasLoadState = computed(() => {
+      return store.getters["canvas/loadState"];
+    });
+
     const workspaceComponents = computed(() => {
       return store.getters["canvas/workspaceComponents"];
+    });
+
+    watch(canvasLoaded, (value) => {
+      if (value) {
+        loadStylesForComponent(props);
+      }
     });
 
     const disabledTopModifyPosition = computed(() => {
@@ -203,6 +201,8 @@ export default defineComponent({
 
     return {
       dropIndex,
+      canvasLoadState,
+      canvasLoaded,
       dropLoadingIndex,
       disabledButton,
       classes,

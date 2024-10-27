@@ -1,5 +1,6 @@
 import { MutationTree } from "vuex";
 import {
+  CanvasLoadingState,
   CanvasSaveStatus,
   CanvasState,
   CurrentHoverElementType,
@@ -73,6 +74,10 @@ export const mutations: MutationTree<CanvasState> = {
   SET_SAVE_STATUS(state: CanvasState, data: CanvasSaveStatus) {
     state.saveStatus = data;
     return state.saveStatus;
+  },
+  SET_LOAD_STATE(state: CanvasState, data: CanvasLoadingState) {
+    state.loadState = data;
+    return state.loadState;
   },
   SET_CURRENT_HOVER_ELEMENT(state: CanvasState, data: CurrentHoverElementType) {
     state.currentHoverElement = data;

@@ -2,6 +2,7 @@ import store from "@/store";
 import { computed } from "vue";
 import { helpers } from "@/composables/helpers";
 import { updateDom } from "@/composables/canvas/update_dom";
+import { CanvasLoadingState } from "@/store/modules/canvas/types";
 
 const { isObjectsMatched, find, findIndex } = helpers();
 const { updateElementDom } = updateDom();
@@ -18,6 +19,18 @@ export function canvas() {
 
   const hasWorkspaceComponent = computed(() => {
     return store.getters["canvas/hasWorkspaceComponent"];
+  });
+
+  const canvasLoadState = computed(() => {
+    return store.getters["canvas/loadState"];
+  });
+
+  const canvasLoading = computed(() => {
+    return canvasLoadState.value === CanvasLoadingState.IN_PROGRESS;
+  });
+
+  const canvasLoaded = computed(() => {
+    return canvasLoadState.value === CanvasLoadingState.SUCCESS;
   });
 
   const style = computed(() => {
@@ -99,7 +112,9 @@ export function canvas() {
   };
 
   return {
+    canvasLoading,
     hasWorkspaceComponent,
+    canvasLoaded,
     hasProjectChanged,
     pushComponentsElementsUpdates,
     updateComponentBorder,

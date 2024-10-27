@@ -1,5 +1,6 @@
 <template>
-  <div class="header__middle__input__container">
+  <div class="header__middle__input__skeleton" v-if="canvasLoading"></div>
+  <div v-else class="header__middle__input__container">
     <input
       v-model="project.name"
       type="text"
@@ -22,6 +23,7 @@ import { computed, defineComponent, onMounted, ref } from "vue";
 import store from "@/store";
 import BaseIcon from "@/components/icon/BaseIcon.vue";
 import { CanvasSaveStatusDescriptions } from "@/store/modules/canvas/types";
+import { canvas } from "@/composables/canvas/canvas";
 export default defineComponent({
   name: "HeaderProjectInput",
   computed: {
@@ -45,6 +47,7 @@ export default defineComponent({
 
   setup(props) {
     const inputField = ref(null);
+    const { canvasLoading } = canvas();
 
     const scrollInputToStart = () => {
       if (inputField.value) {
@@ -78,6 +81,7 @@ export default defineComponent({
     };
 
     return {
+      canvasLoading,
       project,
       inputField,
       updateProjectName,

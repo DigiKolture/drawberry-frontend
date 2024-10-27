@@ -29,9 +29,13 @@ import CanvasPanel from "@/components/canvas/panel/CanvasPanel";
 import ShareProjectPreviewModal from "@/components/canvas/modals/ShareProjectPreviewModal";
 import UserInitialsDropdown from "@/components/header/dropdown/UserInitialsDropdown.vue";
 import ScreenSizeConstraint from "@/components/canvas/modals/ScreenSizeConstraint.vue";
-import { CanvasSaveStatus } from "@/store/modules/canvas/types";
+import {
+  CanvasLoadingState,
+  CanvasSaveStatus,
+} from "@/store/modules/canvas/types";
 import EmailPreviewModal from "@/components/header/preview/EmailPreviewModal.vue";
 import { history } from "@/composables/canvas/history";
+import { useRoute } from "vue-router";
 
 export default defineComponent({
   name: "CanvasPage",
@@ -50,6 +54,9 @@ export default defineComponent({
   setup() {
     let intervalId = null;
     let isCallingApi = false;
+    const route = useRoute();
+    const projectId = route.params.id;
+
     const { undo, canUndo } = history();
 
     const saveStatus = computed(() => {
@@ -69,8 +76,20 @@ export default defineComponent({
       }
     };
 
-    onMounted(() => {
-      store.dispatch("components/getComponents");
+    onMounted(async () => {
+      store.commit("canvas/SET_LOAD_STATE", CanvasLoadingState.IN_PROGRESS);
+
+      // Await asynchronous tasks and set project data
+      await Promise.all([
+        store.dispatch("components/getComponents"),
+        store.dispatch("canvas/getGoogleFonts"),
+        store.dispatch("canvas/getProjectComponentItems", projectId),
+        store.commit("projects/SET_PROJECT_ID", projectId),
+      ]);
+
+      // Close all right panels and mark as mounted
+      store.commit("modals/CLOSE_ALL_RIGHT_PANELS");
+      store.commit("canvas/SET_LOAD_STATE", CanvasLoadingState.SUCCESS);
       window.addEventListener("keydown", handleKeyPress);
 
       intervalId = setInterval(checkAndUpdate, 5000);

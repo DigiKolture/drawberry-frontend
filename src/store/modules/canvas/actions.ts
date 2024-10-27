@@ -1,6 +1,5 @@
 import { ActionTree } from "vuex";
 import {
-  CanvasEditableTypes,
   CanvasSaveStatus,
   CanvasState,
   ProjectStyle,

@@ -1,5 +1,6 @@
 import { GetterTree } from "vuex";
 import {
+  CanvasLoadingState,
   CanvasState,
   CurrentHoverElementType,
   ProjectStyle,
@@ -28,6 +29,9 @@ export const getters: GetterTree<CanvasState, RootState> = {
   },
   saveStatus(state: CanvasState): string {
     return state.saveStatus;
+  },
+  loadState(state: CanvasState): CanvasLoadingState {
+    return state.loadState;
   },
   hasWorkspaceComponent(state: CanvasState): boolean {
     return state.hasWorkspaceComponent;

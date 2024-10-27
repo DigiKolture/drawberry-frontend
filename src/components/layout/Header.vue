@@ -5,15 +5,7 @@
         <div class="header__logo">
           <BaseIcon icon="logo/white" />
         </div>
-        <router-link
-          to="/projects"
-          v-if="isCanvas && !isPreview"
-          class="header__home"
-        >
-          <button><BaseIcon icon="arrow/left" /></button>
-          <button><BaseIcon icon="header/home" /></button>
-        </router-link>
-
+        <HeaderContainerLeft v-if="isCanvas && !isPreview" />
         <HeaderProjectInput
           :is-canvas="isCanvas"
           :is-disabled="true"
@@ -21,7 +13,6 @@
         />
       </div>
       <HeaderContainerMiddle
-        v-if="project"
         :is-auth="isAuth"
         :is-canvas="isCanvas"
         :is-preview="isPreview"
@@ -45,9 +36,11 @@ import store from "@/store";
 import HeaderContainerRight from "@/components/header/position/HeaderContainerRight.vue";
 import HeaderContainerMiddle from "@/components/header/position/HeaderContainerMiddle.vue";
 import HeaderProjectInput from "@/components/header/project/HeaderProjectInput.vue";
+import HeaderContainerLeft from "@/components/header/position/HeaderContainerLeft.vue";
 export default defineComponent({
   name: "HeaderComponent",
   components: {
+    HeaderContainerLeft,
     HeaderProjectInput,
     HeaderContainerMiddle,
     HeaderContainerRight,

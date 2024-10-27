@@ -28,6 +28,7 @@ export interface CanvasState {
   workspaceComponents: any[];
   hasWorkspaceComponent: boolean;
   saveStatus: CanvasSaveStatus;
+  loadState: CanvasLoadingState;
   updatedComponents: UpdatedComponent[];
   googleFonts: any[];
   fontWeights: number[];
@@ -48,6 +49,13 @@ export enum CanvasSaveStatus {
   UPDATED = "updated",
   OFFLINE = "offline",
   PAUSED = "paused",
+}
+
+export enum CanvasLoadingState {
+  UNINITIALIZED = "uninitialized",
+  IN_PROGRESS = "in_progress",
+  SUCCESS = "success",
+  FAILED = "failed",
 }
 
 export enum CanvasSaveStatusDescriptions {

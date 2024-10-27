@@ -1,7 +1,7 @@
 <template>
   <div class="header__container__middle">
     <template v-if="isAuth">
-      <HeaderProjectInput v-if="isCanvas && project" :is-canvas="isCanvas" />
+      <HeaderProjectInput v-if="isCanvas" :is-canvas="isCanvas" />
       <div class="header__middle__preview" v-else-if="isPreview">
         <BaseButtonTextIcon
           :key="key"
@@ -35,6 +35,7 @@ import store from "@/store";
 import BaseButtonTextIcon from "@/components/button/BaseButtonTextIcon.vue";
 import router from "@/router";
 import HeaderProjectInput from "@/components/header/project/HeaderProjectInput.vue";
+import { canvas } from "@/composables/canvas/canvas";
 export default defineComponent({
   name: "HeaderContainerMiddle",
   props: {
@@ -78,6 +79,7 @@ export default defineComponent({
     const openPreview = ref(false);
 
     const inputField = ref(null);
+    const { canvasLoading } = canvas();
 
     const scrollInputToStart = () => {
       if (inputField.value) {
@@ -117,6 +119,7 @@ export default defineComponent({
 
     return {
       openPreview,
+      canvasLoading,
       openExport,
       project,
       inputField,

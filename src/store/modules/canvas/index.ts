@@ -1,5 +1,9 @@
 import { Module } from "vuex";
-import { CanvasState, CanvasSaveStatus } from "@/store/modules/canvas/types";
+import {
+  CanvasState,
+  CanvasSaveStatus,
+  CanvasLoadingState,
+} from "@/store/modules/canvas/types";
 import { RootState } from "@/store/types";
 import { getters } from "@/store/modules/canvas/getters";
 import { mutations } from "@/store/modules/canvas/mutations";
@@ -18,6 +22,7 @@ const state: CanvasState = {
   updatedComponents: [],
   hasWorkspaceComponent: false,
   saveStatus: CanvasSaveStatus.SAVED,
+  loadState: CanvasLoadingState.UNINITIALIZED,
   //Difference between generalStyle and style is that generalStyle won't be mutated
   generalStyle: {
     layout: "",

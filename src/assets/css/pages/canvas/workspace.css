@@ -1,5 +1,40 @@
 /*@import url('https://fonts.googleapis.com/css2?family=Agdasima:wght@400;700&display=swap');*/
 
+
+.canvas__workspace__skeleton__container{
+    @apply h-full w-full flex justify-center;
+}
+
+.canvas__workspace__skeleton{
+    @apply text-center flex flex-col items-center ;
+    margin-top: 72px;
+    width: 365px;
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 162%;
+    text-align: center;
+    color: var(--color-grey-40);
+    row-gap: 16px;
+}
+
+.canvas__workspace__skeleton__items{
+    @apply flex flex-col w-full;
+    row-gap: 18px;
+}
+
+.canvas__workspace__skeleton__items div:first-child{
+    background: var(--color-grey-10);
+    border-radius: 8px;
+    height: 94px;
+}
+
+.canvas__workspace__skeleton__items div:nth-child(2){
+    background: var(--color-grey-10);
+    border-radius: 8px;
+    height: 54px;
+}
+
+
 .canvas__workspace__empty__container{
     @apply h-full w-full flex justify-center;
     /*background-color: chartreuse;*/

@@ -1,34 +1,36 @@
 <template>
-  <div
-    class="canvas__workspace__container"
-    id="canvas-workspace-container"
-    @mouseover.self="handleMouseLeave"
-  >
+  <div>
+    <CanvasWorkspaceLoading v-if="canvasLoading" />
     <div
-      id="canvas-workspace-items-container"
-      class="workspace__component__items__container"
-      :class="style.layout"
+      class="canvas__workspace__container"
+      id="canvas-workspace-container"
+      @mouseover.self="handleMouseLeave"
     >
-      <CanvasWorkspaceEmpty
-        :project-id="projectId"
-        v-if="workspaceComponents.length === 0"
-      />
-      <WorkspaceComponentItemsListItem
-        style="font-family: 'Agdasima', sans-serif"
-        v-for="(componentItem, itemIndex) in workspaceComponents"
-        :key="componentItem.id"
-        @clicked="handleClick"
-        @hover="handleMouseOver"
-        :component-item="componentItem"
-        :item-index="itemIndex"
-        :project-id="projectId"
-        :is-mounted="isMounted"
-      />
+      <div
+        id="canvas-workspace-items-container"
+        class="workspace__component__items__container"
+        :class="style.layout"
+      >
+        <CanvasWorkspaceEmpty
+          :project-id="projectId"
+          v-if="workspaceComponents.length === 0"
+        />
+        <WorkspaceComponentItemsListItem
+          style="font-family: 'Agdasima', sans-serif"
+          v-for="(componentItem, itemIndex) in workspaceComponents"
+          :key="componentItem.id"
+          @clicked="handleClick"
+          @hover="handleMouseOver"
+          :component-item="componentItem"
+          :item-index="itemIndex"
+          :project-id="projectId"
+        />
 
-      <WorkspaceLastComponentDecoy
-        v-show="workspaceComponents.length > 0"
-        :project-id="projectId"
-      />
+        <WorkspaceLastComponentDecoy
+          v-show="workspaceComponents.length > 0"
+          :project-id="projectId"
+        />
+      </div>
     </div>
   </div>
 </template>
@@ -45,10 +47,14 @@ import WebFont from "webfontloader";
 import { focus } from "@/composables/canvas/focus";
 import WorkspaceLastComponentDecoy from "@/components/canvas/workspace/component-items/WorkspaceLastComponentDecoy.vue";
 import { fonts } from "@/composables/canvas/fonts";
+import { CanvasLoadingState } from "@/store/modules/canvas/types";
+import CanvasWorkspaceLoading from "@/components/canvas/workspace/CanvasWorkspaceSkeleton.vue";
+import { canvas } from "@/composables/canvas/canvas";
 
 export default defineComponent({
   name: "WorkspaceComponentItemsContainer",
   components: {
+    CanvasWorkspaceLoading,
     WorkspaceLastComponentDecoy,
     CanvasWorkspaceEmpty,
     WorkspaceComponentItemsListItem,
@@ -60,10 +66,10 @@ export default defineComponent({
     const { removeFocus, removeCurrentFocus, focusComponentElement } = focus();
     const { extractUniqueFontFamilies } = fonts();
     const { getComponentElementIndexUsingId } = layers();
+    const { canvasLoading } = canvas();
 
     const route = useRoute();
     const projectId = route.params.id as string;
-    const isMounted = ref(false);
 
     const focusedElement = computed(() => {
       return store.getters["canvas/focusedElement"];
@@ -71,6 +77,10 @@ export default defineComponent({
 
     const focusedIndex = computed(() => {
       return store.getters["canvas/focusedIndex"];
+    });
+
+    const canvasLoadState = computed(() => {
+      return store.getters["canvas/loadState"];
     });
 
     const workspaceComponents = computed(() => {
@@ -91,24 +101,50 @@ export default defineComponent({
     });
 
     onMounted(async () => {
-      store.dispatch("canvas/getGoogleFonts");
+      // Initialize hover element state
       store.commit("canvas/SET_CURRENT_HOVER_ELEMENT", {
         id: null,
         componentIndex: null,
       });
-    });
 
-    onMounted(async () => {
+      // store.commit("canvas/SET_LOAD_STATE", CanvasLoadingState.IN_PROGRESS);
+      //
+      // await Promise.all([
+      //   store.dispatch("components/getComponents"),
+      //   store.dispatch("canvas/getGoogleFonts"),
+      //   store.dispatch("canvas/getProjectComponentItems", projectId),
+      //   store.commit("projects/SET_PROJECT_ID", projectId),
+      // ]);
+      //
+      // // Close all right panels and mark as mounted
+      // store.commit("modals/CLOSE_ALL_RIGHT_PANELS");
+      // store.commit("canvas/SET_LOAD_STATE", CanvasLoadingState.SUCCESS);
+
+      // Remove focus
       removeFocus();
-
-      //TODO: Look into the glitches that occuress before the page the styles is completely loaded
-      await Promise.all([
-        store.dispatch("canvas/getProjectComponentItems", projectId),
-        store.commit("projects/SET_PROJECT_ID", projectId),
-      ]);
-      store.commit("modals/CLOSE_ALL_RIGHT_PANELS");
-      isMounted.value = true;
     });
+
+    // onMounted(async () => {
+    //   store.dispatch("canvas/getGoogleFonts");
+    //   store.commit("canvas/SET_CURRENT_HOVER_ELEMENT", {
+    //     id: null,
+    //     componentIndex: null,
+    //   });
+    // });
+    //
+    // onMounted(async () => {
+    //   removeFocus();
+    //
+    //   store.commit("canvas/SET_LOAD_STATE", CanvasLoadingState.IN_PROGRESS);
+    //
+    //   //TODO: Look into the glitches that occuress before the page the styles is completely loaded
+    //   await Promise.all([
+    //     store.dispatch("canvas/getProjectComponentItems", projectId),
+    //     store.commit("projects/SET_PROJECT_ID", projectId),
+    //   ]);
+    //   store.commit("modals/CLOSE_ALL_RIGHT_PANELS");
+    //   store.commit("canvas/SET_LOAD_STATE", CanvasLoadingState.SUCCESS);
+    // });
 
     const style = computed(() => {
       return store.getters["canvas/style"];
@@ -212,12 +248,12 @@ export default defineComponent({
 
     return {
       focusedElement,
+      canvasLoading,
       fontFamilies,
       focusedIndex,
       workspaceComponents,
       upsertComponentItem,
       projectId,
-      isMounted,
       handleClick,
       style,
       handleMouseOver,

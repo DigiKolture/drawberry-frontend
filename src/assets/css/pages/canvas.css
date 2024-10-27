@@ -2,6 +2,11 @@ section.canvas__layout{
     @apply flex w-full h-full relative;
 }
 
+ /*Applies to the text class in the components items*/
+ .text {
+     white-space: pre-wrap;
+ }
+
 .canvas__container{
     @apply grid w-full;
     grid-template-columns: var(--canvas-sidebar-nav-width) 1fr;

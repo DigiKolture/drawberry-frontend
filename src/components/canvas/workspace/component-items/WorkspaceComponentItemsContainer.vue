@@ -79,10 +79,6 @@ export default defineComponent({
       return store.getters["canvas/focusedIndex"];
     });
 
-    const canvasLoadState = computed(() => {
-      return store.getters["canvas/loadState"];
-    });
-
     const workspaceComponents = computed(() => {
       return store.getters["canvas/workspaceComponents"];
     });
@@ -107,44 +103,9 @@ export default defineComponent({
         componentIndex: null,
       });
 
-      // store.commit("canvas/SET_LOAD_STATE", CanvasLoadingState.IN_PROGRESS);
-      //
-      // await Promise.all([
-      //   store.dispatch("components/getComponents"),
-      //   store.dispatch("canvas/getGoogleFonts"),
-      //   store.dispatch("canvas/getProjectComponentItems", projectId),
-      //   store.commit("projects/SET_PROJECT_ID", projectId),
-      // ]);
-      //
-      // // Close all right panels and mark as mounted
-      // store.commit("modals/CLOSE_ALL_RIGHT_PANELS");
-      // store.commit("canvas/SET_LOAD_STATE", CanvasLoadingState.SUCCESS);
-
       // Remove focus
       removeFocus();
     });
-
-    // onMounted(async () => {
-    //   store.dispatch("canvas/getGoogleFonts");
-    //   store.commit("canvas/SET_CURRENT_HOVER_ELEMENT", {
-    //     id: null,
-    //     componentIndex: null,
-    //   });
-    // });
-    //
-    // onMounted(async () => {
-    //   removeFocus();
-    //
-    //   store.commit("canvas/SET_LOAD_STATE", CanvasLoadingState.IN_PROGRESS);
-    //
-    //   //TODO: Look into the glitches that occuress before the page the styles is completely loaded
-    //   await Promise.all([
-    //     store.dispatch("canvas/getProjectComponentItems", projectId),
-    //     store.commit("projects/SET_PROJECT_ID", projectId),
-    //   ]);
-    //   store.commit("modals/CLOSE_ALL_RIGHT_PANELS");
-    //   store.commit("canvas/SET_LOAD_STATE", CanvasLoadingState.SUCCESS);
-    // });
 
     const style = computed(() => {
       return store.getters["canvas/style"];

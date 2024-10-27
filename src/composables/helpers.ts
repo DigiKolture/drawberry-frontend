@@ -12,6 +12,14 @@ export function helpers() {
     return Object.assign({}, JSON.parse(JSON.stringify(data)));
   };
 
+  const nlToBr = (text: string) => {
+    return text.replace(/\n/g, "<br>");
+  };
+
+  const brToNl = (text: string) => {
+    return text.replace(/<br\s*\/?>/gi, "\n");
+  };
+
   const capitalizeFirstLetter = (inputString: string) => {
     return inputString.charAt(0).toUpperCase() + inputString.slice(1);
   };
@@ -117,6 +125,8 @@ export function helpers() {
 
   return {
     find,
+    nlToBr,
+    brToNl,
     findIndex,
     formatDate,
     isNumeric,

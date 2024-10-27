@@ -1,6 +1,9 @@
 import * as cheerio from "cheerio";
+import { helpers } from "@/composables/helpers";
 
 export function updateDom() {
+  const { brToNl } = helpers();
+
   const attributesSettings: any = {
     td: ["valign", "align", "background", "height"],
     img: ["src"],
@@ -107,7 +110,9 @@ export function updateDom() {
       elementJson.textContent !== "" &&
       elementJson.textContent.trim()
     ) {
-      el.text(elementJson.textContent);
+      const textContent = brToNl(elementJson.textContent);
+      console.log(textContent);
+      el.text(brToNl(elementJson.textContent));
     }
 
     return $.html();

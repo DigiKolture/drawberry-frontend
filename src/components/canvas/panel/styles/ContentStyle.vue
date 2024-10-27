@@ -10,6 +10,7 @@ import { defineComponent, ref, watch } from "vue";
 import PanelStyle from "./PanelStyle.vue";
 import { modifiersUpdater } from "@/composables/canvas/modifiers/modifiers-updater";
 import { HistoryActionTypes } from "@/store/modules/history/types";
+import { helpers } from "@/composables/helpers";
 
 export default defineComponent({
   name: "ContentStyle",
@@ -27,7 +28,9 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const name = "textContent"; //textContent
+    const name = "textContent";
+
+    const { nlToBr, brToNl } = helpers();
 
     const { modifier } = modifiersUpdater(
       props,
@@ -35,15 +38,19 @@ export default defineComponent({
       HistoryActionTypes.COMPONENT_CONTENT
     );
 
-    const localValue = ref(modifier.value);
+    console.log("<<<<<<<<<<<<< >>>>>>>>>>>");
+
+    const localValue = ref(brToNl(modifier.value));
+
+    console.log("localValue", localValue.value);
 
     watch(localValue, (newVal: string) => {
       if (!newVal) return;
-      modifier.value = newVal;
+      modifier.value = nlToBr(newVal);
     });
 
     watch(modifier, (newVal) => {
-      localValue.value = newVal;
+      localValue.value = brToNl(newVal);
     });
 
     return {

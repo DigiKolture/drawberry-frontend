@@ -38,11 +38,7 @@ export default defineComponent({
       HistoryActionTypes.COMPONENT_CONTENT
     );
 
-    console.log("<<<<<<<<<<<<< >>>>>>>>>>>");
-
     const localValue = ref(brToNl(modifier.value));
-
-    console.log("localValue", localValue.value);
 
     watch(localValue, (newVal: string) => {
       if (!newVal) return;

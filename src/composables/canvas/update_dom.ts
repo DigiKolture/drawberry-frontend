@@ -110,9 +110,7 @@ export function updateDom() {
       elementJson.textContent !== "" &&
       elementJson.textContent.trim()
     ) {
-      const textContent = brToNl(elementJson.textContent);
-      console.log(textContent);
-      el.text(brToNl(elementJson.textContent));
+      el.html(elementJson.textContent);
     }
 
     return $.html();

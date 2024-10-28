@@ -46,7 +46,10 @@ export default defineComponent({
     });
 
     watch(modifier, (newVal) => {
-      localValue.value = brToNl(newVal);
+      const formattedNewVal = brToNl(newVal);
+      // Check if the new formatted value is different from localValue
+      if (formattedNewVal === localValue.value) return;
+      localValue.value = formattedNewVal;
     });
 
     return {

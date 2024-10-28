@@ -19,6 +19,7 @@ export interface BaseHistoryAction {
   modifier: string;
   value: string | number;
   previousValue: string;
+  timestamp?: number; //in milliseconds
 }
 
 export interface ProjectComponentHistoryAction extends BaseHistoryAction {
@@ -42,6 +43,8 @@ export interface ProjectComponentAddDeleteHistoryAction {
   workspaceComponentItemId: string;
   projectComponent: any;
   positionIndex: number;
+  modifier?: string;
+  timestamp?: number;
 }
 
 export interface ProjectComponentModifyPositionHistoryAction {
@@ -49,6 +52,8 @@ export interface ProjectComponentModifyPositionHistoryAction {
   workspaceComponentItemId: string;
   positionIndex: number;
   toIndex: number;
+  modifier?: string;
+  timestamp?: number;
 }
 
 export type HistoryAction =

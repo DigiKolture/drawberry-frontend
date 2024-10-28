@@ -10,7 +10,6 @@ import {
   ProjectGeneralStyleHistoryAction,
 } from "@/store/modules/history/types";
 import { focus } from "@/composables/canvas/focus";
-import { panel } from "@/composables/canvas/panel";
 import { CanvasEditableTypes } from "@/store/modules/canvas/types";
 
 const { findIndex } = helpers();
@@ -22,6 +21,16 @@ const {
 } = focus();
 
 export function history() {
+  //Modifiers that need to be treated as special cases
+  const SPECIAL_MODIFIERS = [
+    "textContent",
+    "border-radius",
+    "padding",
+    "background-color",
+    "box-shadow",
+    "color",
+  ];
+
   const workspaceComponents = computed(() => {
     return store.getters["canvas/workspaceComponents"];
   });
@@ -85,7 +94,19 @@ export function history() {
     if (isDuplicateAction(action)) {
       return;
     }
-    undoStack.value.push(action);
+    const lastUndo = undoStack.value[undoStack.value.length - 1];
+    if (
+      lastUndo &&
+      isComponentActionsEqual(action, lastUndo) &&
+      SPECIAL_MODIFIERS.includes(action.modifier) &&
+      isRecentComponentAction(lastUndo)
+    ) {
+      lastUndo.value = action.value;
+      lastUndo.timestamp = Date.now();
+    } else {
+      action.timestamp = Date.now();
+      undoStack.value.push(action);
+    }
 
     store.commit("history/SET_UNDO_STACK", undoStack.value);
     store.commit("history/RESET_REDO_STACK");
@@ -102,6 +123,26 @@ export function history() {
       action.workspaceComponentItemId !== undefined &&
       action.elementId !== undefined
     );
+  };
+
+  const isComponentActionsEqual = (
+    action: HistoryAction,
+    action2: HistoryAction
+  ): action is ProjectComponentHistoryAction => {
+    // Check if both actions are same component element updates
+    return (
+      isComponentUpdate(action) &&
+      isComponentUpdate(action2) &&
+      action.type === action2.type &&
+      action.workspaceComponentItemId === action2.workspaceComponentItemId &&
+      action.elementId === action2.elementId
+    );
+  };
+
+  const isRecentComponentAction = (action: HistoryAction) => {
+    if (!action.timestamp) return false;
+    const differenceInSeconds = (Date.now() - action.timestamp) / 1000;
+    return differenceInSeconds < 3;
   };
   const update = (action: HistoryAction, undo = true) => {
     if (isComponentUpdate(action)) {

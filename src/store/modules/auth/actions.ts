@@ -90,6 +90,16 @@ export const actions: ActionTree<AuthState, RootState> = {
       });
   },
 
+  validateToken(_, data): Promise<void> {
+    return AxiosClient.post(`${baseUrl}/validate/token`, data)
+      .then((res: any) => {
+        return res.data;
+      })
+      .catch((err) => {
+        return rejectError(err);
+      });
+  },
+
   resetPassword({ commit }, data): Promise<void> {
     return AxiosClient.post(`${baseUrl}/reset/password`, data)
       .then((res: any) => {

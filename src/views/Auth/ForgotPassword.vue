@@ -54,7 +54,7 @@
   </AuthLayout>
 </template>
 <script>
-import { defineComponent, reactive, ref } from "vue";
+import { defineComponent, onMounted, reactive, ref } from "vue";
 import AuthLayout from "@/components/layout/AuthLayout";
 import FormGroup from "@/components/layout/FormGroup";
 import BaseLabel from "@/components/form/BaseLabel";
@@ -62,6 +62,7 @@ import BaseInput from "@/components/form/BaseInput";
 import store from "@/store";
 import AuthError from "@/components/auth/error/AuthError.vue";
 import BaseButton from "@/components/layout/BaseButton.vue";
+import { useRoute } from "vue-router";
 export default defineComponent({
   name: "ForgotPassword",
   components: {
@@ -78,9 +79,17 @@ export default defineComponent({
       email: "",
     });
 
+    const route = useRoute();
+
     const errMessage = ref("");
     const disabled = ref(false);
     const submitted = ref(false);
+
+    onMounted(() => {
+      if (route.query.error) {
+        errMessage.value = route.query.error;
+      }
+    });
 
     const cancel = () => {
       submitted.value = false;

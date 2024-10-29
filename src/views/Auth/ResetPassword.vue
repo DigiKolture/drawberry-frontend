@@ -56,6 +56,22 @@ export default defineComponent({
     const errMessage = ref("");
     const disabled = ref(false);
 
+    onMounted(() => {
+      store
+        .dispatch("auth/validateToken", {
+          token: route.params.token,
+        })
+        .catch(() => {
+          router.push({
+            path: "/forgot/password",
+            query: {
+              error:
+                "Your password reset link has expired. Enter your email address below to request a new one.",
+            },
+          });
+        });
+    });
+
     const validatePassword = () => {
       if (user.password !== user.confirmPassword) {
         errMessage.value = "Both passwords must match";

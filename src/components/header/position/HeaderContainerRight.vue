@@ -2,7 +2,10 @@
   <div class="header__container__right">
     <template v-if="isAuth">
       <HeaderContainerRightSkeleton v-if="canvasLoading" />
-      <div class="header__right__canvas__actions" v-if="isCanvas && project">
+      <div
+        class="header__right__canvas__actions"
+        v-else-if="isCanvas && project"
+      >
         <HeaderProjectHistory />
         <slot>
           <BaseButtonTextIcon

@@ -51,7 +51,7 @@ export function panel() {
     borders: {
       title: "Borders",
       index: 4,
-      styles: ["border-radius"],
+      styles: ["border-radius", "border-top"],
       attributes: [],
     },
     effects: {

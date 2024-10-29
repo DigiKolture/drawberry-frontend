@@ -20,8 +20,7 @@
         />
         <ColorPickerStyle
           :type="ColorPickerTypes.PANEL_BOX_SHADOW_COLOR"
-          @update-color="updateColor"
-          :color="shadow.color"
+          v-model="shadow.color"
           title="Color"
         />
       </div>
@@ -35,7 +34,6 @@ import BaseSliderIcon from "../BaseSliderIcon.vue";
 import ColorPickerStyle from "@/components/canvas/panel/ColorPickerStyle.vue";
 import { styles } from "@/composables/canvas/styles";
 import { ColorPickerTypes } from "@/store/modules/modals/types";
-import { modifiers } from "@/composables/canvas/panel/modifiers";
 import { modifiersUpdater } from "@/composables/canvas/modifiers/modifiers-updater";
 
 export default defineComponent({
@@ -63,10 +61,6 @@ export default defineComponent({
 
     let shadow: any = reactive(parseBoxShadow(modifier.value));
 
-    const color = ref({
-      hex8: shadow.color,
-    });
-
     const updateColor = (newVal: any) => {
       shadow.color = newVal;
     };
@@ -84,7 +78,6 @@ export default defineComponent({
       name,
       shadow,
       ColorPickerTypes,
-      color,
       updateColor,
     };
   },

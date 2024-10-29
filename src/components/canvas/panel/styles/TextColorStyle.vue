@@ -2,9 +2,7 @@
   <PanelStyle :modifier="name" name="color" title="Text COLOR">
     <ColorPickerStyle
       :type="ColorPickerTypes.PANEL_STYLE_TEXT_COLOR"
-      ref="colorPickerStyleRef"
-      :color="color"
-      @update-color="updateColor"
+      v-model="color"
     />
   </PanelStyle>
 </template>
@@ -40,7 +38,6 @@ export default defineComponent({
     const { modifier } = modifiersUpdater(props, name);
 
     const show = ref(true);
-    const colorPickerStyleRef = ref();
 
     const color = ref({
       hex8: modifier.value,
@@ -54,16 +51,10 @@ export default defineComponent({
       color.value.hex8 = newVal;
     });
 
-    const updateColor = (newVal: any) => {
-      color.value = newVal;
-    };
-
     return {
       name,
       show,
       color,
-      colorPickerStyleRef,
-      updateColor,
     };
   },
 });

@@ -2,21 +2,19 @@
   <div class="color__style">
     <div class="color__style__container">
       <h5>{{ title }}</h5>
-      <h5>{{ hex8ToHex(colors.hex8) }}</h5>
+      <h5>{{ hex8ToHex(localColor.hex8) }}</h5>
       <button
         id="modals-trigger"
         @click="toggle"
         class="selected__color"
-        :style="{
-          background: colors.hex8,
-        }"
+        :style="{ background: localColor.hex8 }"
       ></button>
     </div>
 
     <BaseColorPicker
       :style="positionStyles"
       @cancel="close"
-      v-model="colors"
+      v-model="localColor"
       v-if="show"
     />
   </div>
@@ -28,7 +26,6 @@ import {
   defineEmits,
   ref,
   watch,
-  defineExpose,
   computed,
   onMounted,
   onBeforeUnmount,
@@ -45,25 +42,42 @@ const props = defineProps({
     type: String,
     default: "HEX",
   },
-  color: {
+  modelValue: {
     type: Object,
-    default: null,
+    default: () => ({ hex8: "#FFFFFF" }),
   },
 });
 
-const emits = defineEmits(["update-color", "toggle"]);
+const emits = defineEmits(["update:modelValue", "toggle"]);
 
 const show = computed(() => {
   return store.getters["modals/colorPicker"] === props.type;
 });
 
-const colors = ref({
-  hex8: props.color?.hex8,
-});
+// Create a local copy of `modelValue`
+const localColor = ref({ ...props.modelValue });
 
-watch(colors, (newVal) => {
-  emits("update-color", newVal);
-});
+// Watch for changes in `modelValue` and sync `localColor`
+watch(
+  () => props.modelValue,
+  (newVal) => {
+    if (newVal.hex8 !== localColor.value.hex8) {
+      localColor.value = { ...newVal };
+    }
+  },
+  { deep: true }
+);
+
+// Emit changes to `modelValue` only when `localColor` changes and is different
+watch(
+  localColor,
+  (newVal) => {
+    if (newVal.hex8 !== props.modelValue.hex8) {
+      emits("update:modelValue", newVal);
+    }
+  },
+  { deep: true }
+);
 
 const screenHeight = ref(window.innerHeight);
 const positionStyles = computed(() => {
@@ -84,10 +98,6 @@ onBeforeUnmount(() => {
   window.removeEventListener("resize", updateScreenHeight);
 });
 
-const updateColor = (newVal) => {
-  colors.value = newVal;
-};
-
 const hex8ToHex = (hex8) => {
   return hex8.slice(0, 7).toUpperCase();
 };
@@ -103,6 +113,4 @@ const toggle = () => {
 const close = () => {
   store.commit("modals/CLOSE_MODAL", "color_picker");
 };
-
-defineExpose({ updateColor });
 </script>

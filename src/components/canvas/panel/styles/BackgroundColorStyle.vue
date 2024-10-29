@@ -2,9 +2,7 @@
   <PanelStyle :modifier="name" title="BACKGROUND COLOR">
     <ColorPickerStyle
       :type="ColorPickerTypes.PANEL_STYLE_BG_COLOR"
-      ref="colorPickerStyleRef"
-      :color="color"
-      @update-color="updateColor"
+      v-model="color"
     />
   </PanelStyle>
 </template>
@@ -54,16 +52,11 @@ export default defineComponent({
       color.value.hex8 = newVal;
     });
 
-    const updateColor = (newVal: any) => {
-      color.value = newVal;
-    };
-
     return {
       name,
       show,
       color,
       colorPickerStyleRef,
-      updateColor,
     };
   },
 });

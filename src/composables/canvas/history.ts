@@ -29,6 +29,7 @@ export function history() {
     "background-color",
     "box-shadow",
     "color",
+    "border-top",
   ];
 
   const workspaceComponents = computed(() => {

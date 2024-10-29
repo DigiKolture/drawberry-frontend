@@ -192,6 +192,15 @@
             :child-index="idx"
           />
         </template>
+        <BorderTopStyle v-if="showStyle('border-top')" />
+        <template v-for="(child, idx) in focusedElement.children">
+          <BorderTopStyle
+            v-if="childHasStyle(idx as number, 'border-top')"
+            :key="child"
+            :child-id="child"
+            :child-index="idx"
+          />
+        </template>
       </PanelTab>
       <PanelTab
         :index="tabsStyles.effects.index"
@@ -274,10 +283,12 @@ import { panel } from "@/composables/canvas/panel";
 import MarginTopStyle from "@/components/canvas/panel/styles/spacing/MarginTopStyle.vue";
 import MarginBottomStyle from "@/components/canvas/panel/styles/spacing/MarginBottomStyle.vue";
 import BackgroundImageAttribute from "@/components/canvas/panel/styles/attributes/BackgroundImageAttribute.vue";
+import BorderTopStyle from "@/components/canvas/panel/styles/BorderTopStyle.vue";
 
 export default defineComponent({
   name: "CanvasPanelGroupedStyles",
   components: {
+    BorderTopStyle,
     BackgroundImageAttribute,
     MarginBottomStyle,
     MarginTopStyle,

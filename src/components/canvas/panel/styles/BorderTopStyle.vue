@@ -56,8 +56,7 @@ export default defineComponent({
       (newVal) => {
         const parsedBorder = parseBorder(newVal);
         Object.assign(border, parsedBorder);
-      },
-      { immediate: true }
+      }
     );
 
     return {

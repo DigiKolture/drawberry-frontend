@@ -46,7 +46,7 @@ export default defineComponent({
           Object.assign(localBorder, newVal);
         }
       },
-      { deep: true, immediate: true }
+      { deep: true }
     );
 
     // Watch local changes

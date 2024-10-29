@@ -62,7 +62,7 @@ import BaseInput from "@/components/form/BaseInput";
 import store from "@/store";
 import AuthError from "@/components/auth/error/AuthError.vue";
 import BaseButton from "@/components/layout/BaseButton.vue";
-import { useRoute } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 export default defineComponent({
   name: "ForgotPassword",
   components: {
@@ -80,6 +80,7 @@ export default defineComponent({
     });
 
     const route = useRoute();
+    const router = useRouter();
 
     const errMessage = ref("");
     const disabled = ref(false);
@@ -88,6 +89,7 @@ export default defineComponent({
     onMounted(() => {
       if (route.query.error) {
         errMessage.value = route.query.error;
+        router.replace({ query: {} });
       }
     });
 

@@ -62,13 +62,15 @@ export default defineComponent({
           token: route.params.token,
         })
         .catch(() => {
-          router.push({
-            path: "/forgot/password",
-            query: {
-              error:
-                "Your password reset link has expired. Enter your email address below to request a new one.",
-            },
-          });
+          store
+            .dispatch("toast/showToast", {
+              type: "error",
+              message: `Your password reset link has expired. Enter your email address to request a new one..`,
+              timeout: 5000,
+            })
+            .then(() => {
+              router.push("/forgot/password");
+            });
         });
     });
 

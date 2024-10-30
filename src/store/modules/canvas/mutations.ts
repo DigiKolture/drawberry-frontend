@@ -47,9 +47,18 @@ export const mutations: MutationTree<CanvasState> = {
     state.generalStyle = data;
     return state.style;
   },
-  SET_STYLE(state: CanvasState, data: ProjectStyle) {
-    state.style = data;
-    state.saveStatus = CanvasSaveStatus.UPDATED;
+  /*
+    Whenever the SET_STYLE is called with just style update the save status to UPDATED
+    (Thats usually when the style is updated)
+  */
+  SET_STYLE(state: CanvasState, payload) {
+    if (isObject(payload)) {
+      state.style = payload.style;
+      state.saveStatus = payload.saveStatus;
+    } else {
+      state.workspaceComponents = payload;
+      state.saveStatus = CanvasSaveStatus.UPDATED;
+    }
     return state.style;
   },
   SET_DEFAULT_STYLE(state: CanvasState) {

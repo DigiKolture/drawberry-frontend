@@ -42,7 +42,10 @@ export const actions: ActionTree<CanvasState, RootState> = {
           saveStatus: CanvasSaveStatus.SAVED,
         });
         const style = data.data.project.style;
-        commit("SET_STYLE", { ...style });
+        commit("SET_STYLE", {
+          style: { ...style },
+          saveStatus: CanvasSaveStatus.SAVED,
+        });
         commit("SET_GENERAL_STYLE", { ...style });
 
         const hasWorkspaceComponent =

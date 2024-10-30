@@ -64,6 +64,7 @@ export default defineComponent({
     });
 
     const checkAndUpdate = async () => {
+      //Prevent multiple API calls when the previous one is still in progress
       if (saveStatus.value !== CanvasSaveStatus.SAVED && !isCallingApi) {
         isCallingApi = true;
         try {
@@ -92,7 +93,7 @@ export default defineComponent({
       store.commit("canvas/SET_LOAD_STATE", CanvasLoadingState.SUCCESS);
       window.addEventListener("keydown", handleKeyPress);
 
-      intervalId = setInterval(checkAndUpdate, 5000);
+      // intervalId = setInterval(checkAndUpdate, 5000);
     });
 
     onUnmounted(() => {

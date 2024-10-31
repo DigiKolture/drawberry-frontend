@@ -113,7 +113,13 @@ export function history() {
       undoStack.value.push(action);
     }
 
-    store.commit("history/SET_UNDO_STACK", undoStack.value);
+    // If undoStack is more than 50, slice the array and only select the first 50
+    const maxUndo = 40;
+    if (undoStack.value.length > maxUndo) {
+      store.commit("history/SET_UNDO_STACK", undoStack.value.slice(-maxUndo));
+    } else {
+      store.commit("history/SET_UNDO_STACK", undoStack.value);
+    }
     store.commit("history/RESET_REDO_STACK");
   };
 

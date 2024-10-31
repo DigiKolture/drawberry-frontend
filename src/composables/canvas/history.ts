@@ -105,8 +105,6 @@ export function history() {
     action.id = new ObjectId().toHexString();
     const lastUndo = undoStack.value[undoStack.value.length - 1];
     //Dont log the action if its a special modifier and the last undo action is the same component action
-    // console.log({ lastUndo: Object.assign({}, lastUndo.value) });
-    // console.log({ action });
     if (
       lastUndo &&
       isComponentActionsEqual(action, lastUndo) &&

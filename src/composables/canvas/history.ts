@@ -25,6 +25,7 @@ const {
 export function history() {
   //Modifiers that need to be treated as special cases
   const SPECIAL_MODIFIERS = [
+    //For component style
     "textContent",
     "border-radius",
     "padding",
@@ -32,6 +33,10 @@ export function history() {
     "box-shadow",
     "color",
     "border-top",
+
+    //For project style
+    "backgroundColor",
+    "previewText",
   ];
 
   const workspaceComponents = computed(() => {
@@ -100,6 +105,8 @@ export function history() {
     action.id = new ObjectId().toHexString();
     const lastUndo = undoStack.value[undoStack.value.length - 1];
     //Dont log the action if its a special modifier and the last undo action is the same component action
+    // console.log({ lastUndo: Object.assign({}, lastUndo.value) });
+    // console.log({ action });
     if (
       lastUndo &&
       isComponentActionsEqual(action, lastUndo) &&
@@ -136,7 +143,19 @@ export function history() {
     );
   };
 
-  const isComponentActionsEqual = (
+  const isProjectComponentStyleActionsEqual = (
+    action: HistoryAction,
+    action2: HistoryAction
+  ): action is ProjectGeneralStyleHistoryAction => {
+    // Check if both actions are same component element updates
+    return (
+      action.type === HistoryActionTypes.PROJECT_STYLE &&
+      action2.type === HistoryActionTypes.PROJECT_STYLE &&
+      action.type === action2.type &&
+      action.modifier === action2.modifier
+    );
+  };
+  const isComponentModifierActionsEqual = (
     action: HistoryAction,
     action2: HistoryAction
   ): action is ProjectComponentHistoryAction => {
@@ -146,7 +165,21 @@ export function history() {
       isComponentUpdate(action2) &&
       action.type === action2.type &&
       action.workspaceComponentItemId === action2.workspaceComponentItemId &&
-      action.elementId === action2.elementId
+      action.elementId === action2.elementId &&
+      action.modifier === action2.modifier
+    );
+  };
+
+  const isComponentActionsEqual = (
+    action: HistoryAction,
+    action2: HistoryAction
+  ): action is
+    | ProjectComponentHistoryAction
+    | ProjectGeneralStyleHistoryAction => {
+    // Check if both actions are same component element updates
+    return (
+      isComponentModifierActionsEqual(action, action2) ||
+      isProjectComponentStyleActionsEqual(action, action2)
     );
   };
 

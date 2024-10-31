@@ -1,6 +1,8 @@
 import store from "@/store";
 import { computed } from "vue";
 import { helpers } from "@/composables/helpers";
+import ObjectId from "bson-objectid";
+
 import {
   HistoryAction,
   HistoryActionTypes,
@@ -95,7 +97,9 @@ export function history() {
     if (isDuplicateAction(action)) {
       return;
     }
+    action.id = new ObjectId().toHexString();
     const lastUndo = undoStack.value[undoStack.value.length - 1];
+    //Dont log the action if its a special modifier and the last undo action is the same component action
     if (
       lastUndo &&
       isComponentActionsEqual(action, lastUndo) &&
@@ -484,6 +488,7 @@ export function history() {
   };
 
   return {
+    undoStack,
     updateHistory,
     undo,
     redo,

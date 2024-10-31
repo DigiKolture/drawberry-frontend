@@ -6,7 +6,6 @@ import { updateDom } from "@/composables/canvas/update_dom";
 import router from "@/router";
 
 const baseUrl = "/projects";
-const { updateElementDom } = updateDom();
 
 export const actions: ActionTree<ProjectState, RootState> = {
   getProjects({ commit }): Promise<void> {

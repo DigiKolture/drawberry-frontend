@@ -93,7 +93,7 @@ export default defineComponent({
       store.commit("canvas/SET_LOAD_STATE", CanvasLoadingState.SUCCESS);
       window.addEventListener("keydown", handleKeyPress);
 
-      // intervalId = setInterval(checkAndUpdate, 5000);
+      intervalId = setInterval(checkAndUpdate, 5000);
     });
 
     onUnmounted(() => {

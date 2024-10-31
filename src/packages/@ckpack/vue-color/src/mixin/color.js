@@ -111,6 +111,10 @@ export default {
   methods: {
     colorChange(data, oldHue) {
       this.oldHue = this.colors.hsl.h;
+      //Update appearance to 1, if its zero. So that color can be seen.
+      if (data.a === 0) {
+        data.a = 1;
+      }
       this.colors = _colorChange(data, oldHue || this.oldHue);
     },
     isValidHex(hex) {

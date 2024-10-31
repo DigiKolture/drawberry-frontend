@@ -52,11 +52,11 @@ export const mutations: MutationTree<CanvasState> = {
     (Thats usually when the style is updated)
   */
   SET_STYLE(state: CanvasState, payload) {
-    if (isObject(payload)) {
+    if (payload.style && payload.saveStatus) {
       state.style = payload.style;
       state.saveStatus = payload.saveStatus;
     } else {
-      state.workspaceComponents = payload;
+      state.style = payload;
       state.saveStatus = CanvasSaveStatus.UPDATED;
     }
     return state.style;

@@ -15,6 +15,7 @@ export enum HistoryActionTypes {
 }
 
 export interface BaseHistoryAction {
+  id?: string;
   type: HistoryActionTypes;
   modifier: string;
   value: string | number;
@@ -36,6 +37,7 @@ export interface ProjectGeneralStyleHistoryAction extends BaseHistoryAction {
 }
 
 export interface ProjectComponentAddDeleteHistoryAction {
+  id?: string;
   type:
     | HistoryActionTypes.PROJECT_COMPONENT_ADD
     | HistoryActionTypes.PROJECT_COMPONENT_DUPLICATE
@@ -48,6 +50,7 @@ export interface ProjectComponentAddDeleteHistoryAction {
 }
 
 export interface ProjectComponentModifyPositionHistoryAction {
+  id?: string;
   type: HistoryActionTypes.PROJECT_COMPONENT_MODIFY_POSITION;
   workspaceComponentItemId: string;
   positionIndex: number;

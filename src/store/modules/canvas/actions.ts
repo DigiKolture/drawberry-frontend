@@ -15,6 +15,7 @@ import { history } from "@/composables/canvas/history";
 import { focus } from "@/composables/canvas/focus";
 import { project } from "@/composables/project/project";
 
+const { undoStack } = history();
 const { updateComponentBorder, removeClasses } = canvas();
 const {
   createProjectComponentObj,
@@ -163,6 +164,7 @@ export const actions: ActionTree<CanvasState, RootState> = {
     return AxiosClient.put(`/projects/${projectId}/components/styles`, {
       projectComponents,
       style,
+      histories: undoStack.value,
     })
       .then((res: any) => {
         commit("SET_SAVE_STATUS", CanvasSaveStatus.SAVED);

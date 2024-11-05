@@ -91,7 +91,7 @@
 }
 
 .workspace__component__items__list__item {
-    @apply cursor-pointer w-full;
+    @apply cursor-pointer w-full relative;
 }
 
 .workspace__component__items__list__item.decoy{

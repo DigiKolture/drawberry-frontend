@@ -1,7 +1,7 @@
 <template>
   <div class="header__container__right">
     <template v-if="isAuth">
-      <HeaderContainerRightSkeleton v-if="canvasLoading" />
+      <HeaderContainerRightSkeleton v-if="canvasLoading && isCanvas" />
       <div
         class="header__right__canvas__actions"
         v-else-if="isCanvas && project"

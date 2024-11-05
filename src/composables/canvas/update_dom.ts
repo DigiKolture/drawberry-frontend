@@ -4,6 +4,12 @@ import { helpers } from "@/composables/helpers";
 export function updateDom() {
   const { brToNl } = helpers();
 
+  enum ProjectComponentElementsVisibilities {
+    SHOW = "show",
+    GHOST = "ghost", // visibility: hidden;
+    NONE = "none", // display: none
+  }
+
   const attributesSettings: any = {
     td: ["valign", "align", "background", "height"],
     img: ["src"],
@@ -111,6 +117,20 @@ export function updateDom() {
       elementJson.textContent.trim()
     ) {
       el.html(elementJson.textContent);
+    }
+
+    switch (elementJson.visibility) {
+      case ProjectComponentElementsVisibilities.SHOW:
+        el.css("display", "").css("visibility", ""); // Resets to default if visible
+        break;
+      case ProjectComponentElementsVisibilities.GHOST:
+        el.css("visibility", "hidden").css("display", "");
+        break;
+      case ProjectComponentElementsVisibilities.NONE:
+        el.css("display", "none").css("visibility", "");
+        break;
+      default:
+        break;
     }
 
     return $.html();

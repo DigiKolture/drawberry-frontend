@@ -38,6 +38,13 @@ export function focus() {
     return focusedElement.value !== null && focusedIndex.value !== null;
   });
 
+  const isFocusedTheFirstElement = computed(() => {
+    if (!hasFocused.value) return false;
+    const componentItem = workspaceComponents.value[focusedIndex.value];
+    const firstElement = componentItem.json[0];
+    return focusedElement.value.id === firstElement.id;
+  });
+
   const removeFocus = () => {
     store.commit("canvas/SET_FOCUSED_ELEMENT", null);
     store.commit("canvas/SET_FOCUSED_INDEX", null);
@@ -224,6 +231,7 @@ export function focus() {
     removeCurrentFocus,
     focusComponentElement,
     scrollTo,
+    isFocusedTheFirstElement,
     updateFocusedElementDomAndScroll,
   };
 }

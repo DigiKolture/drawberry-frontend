@@ -9,6 +9,17 @@
         :properties="tabsStyles.layout"
         :show-body="tabStates[tabsStyles.layout.index]"
       >
+        <VisibilityStyle
+          v-if="!isFocusedTheFirstElement && hasContent('visibility')"
+        />
+        <!--        <template v-for="(child, idx) in focusedElement.children">-->
+        <!--          <VisibilityStyle-->
+        <!--            v-if="childHasContent(idx as number, 'visibility')"-->
+        <!--            :key="child"-->
+        <!--            :child-id="child"-->
+        <!--            :child-index="idx"-->
+        <!--          />-->
+        <!--        </template>-->
         <HorizontalAlignStyle v-if="hasAttributes('align')" />
         <template v-for="(child, idx) in focusedElement.children">
           <HorizontalAlignStyle
@@ -138,10 +149,10 @@
             :child-index="idx"
           />
         </template>
-        <ContentStyle v-if="hasContent()" />
+        <ContentStyle v-if="hasContent('textContent')" />
         <template v-for="(child, idx) in focusedElement.children">
           <ContentStyle
-            v-if="childHasContent(idx as number)"
+            v-if="childHasContent(idx as number, 'textContent')"
             :key="child"
             :child-id="child"
             :child-index="idx"
@@ -280,14 +291,17 @@ import TextColorStyle from "@/components/canvas/panel/styles/TextColorStyle.vue"
 import BorderRadiusStyle from "@/components/canvas/panel/styles/BorderRadiusStyle.vue";
 import ImageAttribute from "@/components/canvas/panel/styles/ImageAttribute.vue";
 import { panel } from "@/composables/canvas/panel";
+import { focus } from "@/composables/canvas/focus";
 import MarginTopStyle from "@/components/canvas/panel/styles/spacing/MarginTopStyle.vue";
 import MarginBottomStyle from "@/components/canvas/panel/styles/spacing/MarginBottomStyle.vue";
 import BackgroundImageAttribute from "@/components/canvas/panel/styles/attributes/BackgroundImageAttribute.vue";
 import BorderTopStyle from "@/components/canvas/panel/styles/BorderTopStyle.vue";
+import VisibilityStyle from "@/components/canvas/panel/styles/layout/VisibilityStyle.vue";
 
 export default defineComponent({
   name: "CanvasPanelGroupedStyles",
   components: {
+    VisibilityStyle,
     BorderTopStyle,
     BackgroundImageAttribute,
     MarginBottomStyle,
@@ -323,6 +337,8 @@ export default defineComponent({
       childHasAttribute,
     } = panel();
 
+    const { isFocusedTheFirstElement } = focus();
+
     const focusedElement = computed(() => {
       return store.getters["canvas/focusedElement"];
     });
@@ -354,6 +370,7 @@ export default defineComponent({
 
     return {
       styles,
+      isFocusedTheFirstElement,
       showStyle,
       childHasStyle,
       childHasAttribute,

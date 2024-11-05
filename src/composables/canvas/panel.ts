@@ -12,6 +12,7 @@ export function panel() {
     styles: string[];
     attributes: string[];
     isContent?: boolean;
+    hasVisibility?: boolean;
   }
 
   const tabsStyles: Record<string, TabStyles> = {
@@ -20,6 +21,7 @@ export function panel() {
       index: 0,
       styles: [],
       attributes: ["align", "valign"],
+      hasVisibility: true,
     },
     spacing: {
       title: "Spacing",
@@ -157,28 +159,44 @@ export function panel() {
     return attributes.value.includes(attribute);
   };
 
-  const hasParentContents = () => {
+  const hasParentContents = (modifier: string) => {
     for (const focusedChild of focusedChildrenElements.value) {
-      if (focusedChild.textContent !== null) {
-        return true;
+      if (
+        focusedChild[modifier] == null ||
+        focusedChild[modifier] == undefined
+      ) {
+        return false;
       }
     }
-    return false;
+    return true;
   };
 
-  const hasContent = () => {
+  const hasContent = (modifier: string) => {
     if (!focusedElement.value) return false;
-    return focusedElement.value.textContent !== null;
+    if (
+      focusedElement.value[modifier] === null ||
+      focusedElement.value[modifier] === undefined
+    ) {
+      return false;
+    }
+    return true;
   };
 
-  const hasChildOrParentContent = () => {
-    return hasContent() || hasParentContents();
+  const hasChildOrParentContent = (modifier: string) => {
+    return hasContent(modifier) || hasParentContents(modifier);
   };
 
-  const childHasContent = (index: number) => {
+  const childHasContent = (index: number, modifier: string) => {
     const childContent = focusedChildrenElements.value?.[index];
     if (!childContent) return false;
-    return childContent.textContent !== null;
+    //Allow empty string because of text
+    if (
+      childContent[modifier] === null ||
+      childContent[modifier] === undefined
+    ) {
+      return false;
+    }
+    return true;
   };
 
   const showTab = (tab: TabStyles) => {
@@ -190,8 +208,10 @@ export function panel() {
       const hasAttr = hasCurrentOrChildrenAttributes(attr);
       if (hasAttr) return true;
     }
-    // return tab.isContent;
-    return tab.isContent && hasChildOrParentContent();
+    return (
+      (tab.isContent && hasChildOrParentContent("textContent")) ||
+      (tab.hasVisibility && hasChildOrParentContent("visibility")) //TODO: Might need isFocusedTheFirstElement check here
+    );
   };
 
   const resetTabStates = () => {
@@ -229,6 +249,10 @@ export function panel() {
       }
 
       if (type === CanvasEditableTypes.CONTENT && tab.isContent) {
+        return tab.index;
+      }
+
+      if (type === CanvasEditableTypes.CONTENT && tab.hasVisibility) {
         return tab.index;
       }
     }

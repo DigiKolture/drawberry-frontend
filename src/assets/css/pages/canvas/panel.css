@@ -306,14 +306,37 @@
 
 /*FONT STYLE*/
 
+.base__icons__style{
+    @apply flex;
+}
+
+.base__icons__style button{
+    background-color: transparent;
+}
+
+.base__icons__style button.active{
+    background-color: #454856;
+}
+
+.base__icons__style button.active.show{
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+}
+.base__icons__style button.active.none{
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+}
+
+
 /*TEXT ALIGN STYLE*/
+
 
 
 .align__style{
     @apply flex justify-between;
 }
 
-.align__style .active path{
+.align__style .active path, .base__icons__style .active path{
     fill: white;
 }
 

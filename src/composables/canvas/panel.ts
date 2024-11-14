@@ -84,8 +84,28 @@ export function panel() {
     return store.getters["canvas/focusedChildrenElements"];
   });
 
+  const focusedIndex = computed(() => {
+    return store.getters["canvas/focusedIndex"];
+  });
+
+  const hasFocused = computed(() => {
+    return focusedElement.value !== null && focusedIndex.value !== null;
+  });
+
+  const workspaceComponents = computed(() => {
+    return store.getters["canvas/workspaceComponents"];
+  });
+
   const styles = computed(() => {
     return Object.keys(focusedElement.value?.attributes?.style?.value || []);
+  });
+
+  //This is duplicated in focus.ts
+  const isFocusedTheFirstElement = computed(() => {
+    if (!hasFocused.value) return false;
+    const componentItem = workspaceComponents.value[focusedIndex.value];
+    const firstElement = componentItem.json[0];
+    return focusedElement.value.id === firstElement.id;
   });
 
   const parentStyles = computed(() => {
@@ -210,7 +230,9 @@ export function panel() {
     }
     return (
       (tab.isContent && hasChildOrParentContent("textContent")) ||
-      (tab.hasVisibility && hasChildOrParentContent("visibility")) //TODO: Might need isFocusedTheFirstElement check here
+      (tab.hasVisibility &&
+        hasChildOrParentContent("visibility") &&
+        !isFocusedTheFirstElement.value) //TODO: Might need isFocusedTheFirstElement check here
     );
   };
 

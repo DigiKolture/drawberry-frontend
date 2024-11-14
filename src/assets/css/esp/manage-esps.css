@@ -1,8 +1,8 @@
 
 
 .manage__esps{
-    @apply  flex flex-col absolute  h-full text-white;
-    top: 0;
+    @apply  flex flex-col fixed  h-full text-white;
+    top: var(--header-height);
     right: 0;
     width: 378px;
     background: #2D3039;

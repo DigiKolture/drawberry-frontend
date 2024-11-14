@@ -27,7 +27,7 @@ export default defineComponent({
     const localValue = computed({
       get: () => modifier.value,
       set: (newValue) => {
-        if (!newValue) return;
+        // if (!newValue) return;
         modifier.value = newValue;
       },
     });

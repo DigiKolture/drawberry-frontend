@@ -171,7 +171,9 @@ input.canvas__input__text:focus{
 .workspace__component__items__list__item.hovered .hover {
     @apply relative;
     z-index: 4;
-    padding: 1px 2px;
+    /*padding: 1px 2px;*/
+    /*box-sizing: border-box;*/
+    /*padding: 2px;*/
     outline: 1px solid #848F9F !important;
     /*display: inline-block;*/
 }
@@ -183,6 +185,7 @@ input.canvas__input__text:focus{
 
 .workspace__component__items__list__item.focused .focus {
     @apply relative;
+    box-sizing: border-box;
     padding: 1px 2px ;
     z-index: 5;
     outline: 2px solid #1873CD !important;

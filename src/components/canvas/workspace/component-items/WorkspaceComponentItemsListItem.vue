@@ -140,7 +140,7 @@ export default defineComponent({
       const json = props.componentItem.json;
 
       for (let elementJson of json) {
-        if (!elementJson.attributes.style.value) continue;
+        // if (!elementJson.attributes.style.value) continue;
         html = updateElementDom(html, elementJson);
       }
       //eslint-disable-next-line vue/no-mutating-props

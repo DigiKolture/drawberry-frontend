@@ -12,32 +12,24 @@
         <VisibilityStyle
           v-if="!isFocusedTheFirstElement && hasContent('visibility')"
         />
+        <!--        <HorizontalAlignStyle v-if="hasAttributes('align')" />-->
         <!--        <template v-for="(child, idx) in focusedElement.children">-->
-        <!--          <VisibilityStyle-->
-        <!--            v-if="childHasContent(idx as number, 'visibility')"-->
+        <!--          <HorizontalAlignStyle-->
+        <!--            v-if="childHasAttribute(idx as number, 'align')"-->
         <!--            :key="child"-->
         <!--            :child-id="child"-->
         <!--            :child-index="idx"-->
         <!--          />-->
         <!--        </template>-->
-        <HorizontalAlignStyle v-if="hasAttributes('align')" />
-        <template v-for="(child, idx) in focusedElement.children">
-          <HorizontalAlignStyle
-            v-if="childHasAttribute(idx as number, 'align')"
-            :key="child"
-            :child-id="child"
-            :child-index="idx"
-          />
-        </template>
-        <VerticalAlignStyle v-if="hasAttributes('valign')" />
-        <template v-for="(child, idx) in focusedElement.children">
-          <VerticalAlignStyle
-            v-if="childHasAttribute(idx as number, 'valign')"
-            :key="child"
-            :child-id="child"
-            :child-index="idx"
-          />
-        </template>
+        <!--        <VerticalAlignStyle v-if="hasAttributes('valign')" />-->
+        <!--        <template v-for="(child, idx) in focusedElement.children">-->
+        <!--          <VerticalAlignStyle-->
+        <!--            v-if="childHasAttribute(idx as number, 'valign')"-->
+        <!--            :key="child"-->
+        <!--            :child-id="child"-->
+        <!--            :child-index="idx"-->
+        <!--          />-->
+        <!--        </template>-->
       </PanelTab>
       <PanelTab
         :index="tabsStyles.spacing.index"
@@ -274,8 +266,6 @@
 import { computed, defineComponent } from "vue";
 import store from "@/store";
 import PanelTab from "@/components/canvas/panel/tabs/PanelTab.vue";
-import HorizontalAlignStyle from "@/components/canvas/panel/styles/HorizontalAlignStyle.vue";
-import VerticalAlignStyle from "@/components/canvas/panel/styles/VerticalAlignStyle.vue";
 import PaddingStyle from "@/components/canvas/panel/styles/PaddingStyle.vue";
 import FontSizeStyle from "@/components/canvas/panel/styles/FontSizeStyle.vue";
 import FontWeightStyle from "@/components/canvas/panel/styles/FontWeightStyle.vue";
@@ -320,8 +310,6 @@ export default defineComponent({
     FontWeightStyle,
     FontSizeStyle,
     PaddingStyle,
-    VerticalAlignStyle,
-    HorizontalAlignStyle,
     PanelTab,
   },
   setup() {

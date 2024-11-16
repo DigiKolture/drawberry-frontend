@@ -20,7 +20,8 @@ export function panel() {
       title: "Layout",
       index: 0,
       styles: [],
-      attributes: ["align", "valign"],
+      // attributes: ["align", "valign"],
+      attributes: [],
       hasVisibility: true,
     },
     spacing: {
@@ -180,6 +181,7 @@ export function panel() {
   };
 
   const hasParentContents = (modifier: string) => {
+    if (focusedChildrenElements.value.length === 0) return false;
     for (const focusedChild of focusedChildrenElements.value) {
       if (
         focusedChild[modifier] == null ||
@@ -228,11 +230,12 @@ export function panel() {
       const hasAttr = hasCurrentOrChildrenAttributes(attr);
       if (hasAttr) return true;
     }
+
     return (
       (tab.isContent && hasChildOrParentContent("textContent")) ||
       (tab.hasVisibility &&
         hasChildOrParentContent("visibility") &&
-        !isFocusedTheFirstElement.value) //TODO: Might need isFocusedTheFirstElement check here
+        !isFocusedTheFirstElement.value) //Show visibility only if not the first element
     );
   };
 

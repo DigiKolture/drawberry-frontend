@@ -20,6 +20,7 @@
       @dragover="handleDragOver($event)"
       @dragenter="handleDragEnter"
       @dragleave="handleDragLeave"
+      @dragend="onDragEnd"
       @dragover.prevent
       @dragenter.prevent
       v-if="canvasLoaded"
@@ -67,7 +68,13 @@ export default defineComponent({
   },
 
   setup(props, { emit }) {
-    const { moveComponentItemPosition, upsertComponentItem } = drag_and_drop();
+    const {
+      moveComponentItemPosition,
+      upsertComponentItem,
+      onDrag,
+      onDragStart,
+      onDragEnd,
+    } = drag_and_drop();
     const { validateWorkspaceIndicator } = indicators();
     const { canvasLoaded } = canvas();
 
@@ -154,6 +161,8 @@ export default defineComponent({
 
       ui.changeComponentItemsStatus(false);
 
+      // onDrag(e);
+
       const show = validateWorkspaceIndicator(type, fromIndex, toIndex);
       if (!show) return;
 
@@ -216,6 +225,9 @@ export default defineComponent({
       handleDragOver,
       handleDragEnter,
       handleDragLeave,
+      onDrag,
+      onDragStart,
+      onDragEnd,
       dropComponent,
       moveComponentItemPosition,
       upsertComponentItem,

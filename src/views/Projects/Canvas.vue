@@ -57,7 +57,7 @@ export default defineComponent({
     const route = useRoute();
     const projectId = route.params.id;
 
-    const { undo, canUndo } = history();
+    const { undo, redo } = history();
 
     const saveStatus = computed(() => {
       return store.getters["canvas/saveStatus"];
@@ -117,7 +117,11 @@ export default defineComponent({
         store.dispatch("canvas/updateProjectComponentsAndStyles");
         event.preventDefault();
       } else if ((event.ctrlKey || event.metaKey) && event.key === "z") {
-        if (canUndo.value) {
+        if (event.shiftKey) {
+          // CMD/CTRL + SHIFT + Z for redo
+          redo();
+        } else {
+          // CMD/CTRL + Z for undo
           undo();
         }
       }

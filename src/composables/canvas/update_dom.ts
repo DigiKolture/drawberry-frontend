@@ -21,7 +21,6 @@ export function updateDom() {
     const json = componentItem.json;
 
     for (const elementJson of json) {
-      // if (!elementJson.attributes.style.value) continue;
       html = updateElementDom(html, elementJson);
     }
     componentItem.html = html;

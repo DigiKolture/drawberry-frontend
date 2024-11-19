@@ -53,12 +53,12 @@ export default defineComponent({
         align: "show",
       },
       {
-        icon: "canvas/panel/styles/visibility/ghost",
-        align: "ghost",
-      },
-      {
         icon: "canvas/panel/styles/visibility/none",
         align: "none",
+      },
+      {
+        icon: "canvas/panel/styles/visibility/ghost",
+        align: "ghost",
       },
     ];
 

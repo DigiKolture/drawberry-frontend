@@ -38,25 +38,19 @@ export default defineComponent({
       HistoryActionTypes.COMPONENT_CONTENT
     );
 
-    const localValue = ref(brToNl(JSON.parse(JSON.stringify(modifier.value))));
+    const localValue = ref(brToNl(modifier.value));
 
     watch(localValue, (newVal: string) => {
       if (!newVal) return;
       modifier.value = nlToBr(newVal);
-
-      console.log("<<<<<< localValue >>>>>>>>>>>>");
     });
 
     // watch(modifier, (newVal) => {
-    //   console.log("<<<<<< modifier start >>>>>>>>>>>>");
-    //
-    //   const formattedNewVal = brToNl(newVal);
+    //     const formattedNewVal = brToNl(newVal);
     //
     //   // Check if the new formatted value is different from localValue
     //   if (formattedNewVal === localValue.value) return;
     //   localValue.value = formattedNewVal;
-    //
-    //   console.log("<<<<<< modifier end >>>>>>>>>>>>");
     // });
 
     return {

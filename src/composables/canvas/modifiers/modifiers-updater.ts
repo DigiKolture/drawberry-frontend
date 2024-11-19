@@ -31,6 +31,10 @@ export function modifiersUpdater(
       } else if (type === HistoryActionTypes.COMPONENT_ATTRIBUTE) {
         updateAttribute(name, newVal, props.childIndex).then();
       } else if (type === HistoryActionTypes.COMPONENT_CONTENT) {
+        console.log("<<<< -------- Call SET CONTENT --------- >>>>");
+        if (newVal === modifier.value) return;
+        console.log({ name, newVal, childIndex: props.childIndex });
+
         updateContent(name, newVal, props.childIndex).then();
       }
     },

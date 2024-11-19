@@ -88,7 +88,6 @@ const positionStyles = computed(() => {
 });
 
 const updateScreenHeight = () => {
-  console.log({ height: window.innerHeight });
   const height = window.innerHeight;
   if (!colorDisplay.value) return;
   const pickerHeight = 380; //Approx height of color picker

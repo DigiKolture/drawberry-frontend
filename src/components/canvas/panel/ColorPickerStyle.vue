@@ -1,6 +1,6 @@
 <template>
   <div class="color__style">
-    <div class="color__style__container">
+    <div ref="colorDisplay" class="color__style__container">
       <h5>{{ title }}</h5>
       <h5>{{ hex8ToHex(localColor.hex8) }}</h5>
       <button
@@ -56,6 +56,7 @@ const show = computed(() => {
 
 // Create a local copy of `modelValue`
 const localColor = ref({ ...props.modelValue });
+const colorDisplay = ref(null);
 
 // Watch for changes in `modelValue` and sync `localColor`
 watch(
@@ -82,15 +83,30 @@ watch(
 const screenHeight = ref(window.innerHeight);
 const positionStyles = computed(() => {
   return {
-    top: `${screenHeight.value - 450}px`,
+    top: `${screenHeight.value}px`,
   };
 });
 
 const updateScreenHeight = () => {
-  screenHeight.value = window.innerHeight;
+  console.log({ height: window.innerHeight });
+  const height = window.innerHeight;
+  if (!colorDisplay.value) return;
+  const pickerHeight = 380; //Approx height of color picker
+  const offsetTop = colorDisplay.value.offsetTop;
+  const offsetFromBottom = height - offsetTop;
+
+  if (offsetFromBottom > pickerHeight) {
+    screenHeight.value = offsetTop + 40 + 10; //40 is the color picker display height
+  } else if (offsetTop < pickerHeight) {
+    screenHeight.value = 40;
+  } else {
+    // If we have enough space to show the picker above the color display
+    screenHeight.value = height - offsetFromBottom - pickerHeight;
+  }
 };
 
 onMounted(() => {
+  updateScreenHeight();
   window.addEventListener("resize", updateScreenHeight);
 });
 

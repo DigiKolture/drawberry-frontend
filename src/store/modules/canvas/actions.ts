@@ -248,6 +248,7 @@ export const actions: ActionTree<CanvasState, RootState> = {
 
     //Update DOM before the API (Just to prevent waiting for changes)
     commit("UPDATE_FOCUSED_JSON_AND_DOM", element);
+    // Not sure why this was added, removing for now because it is causing multiple scrolls
     setTimeout(() => {
       if (state.focusedIndex !== null) {
         // scrollTo(state.focusedIndex, element.id);

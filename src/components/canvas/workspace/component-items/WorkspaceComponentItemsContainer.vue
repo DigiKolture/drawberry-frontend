@@ -186,6 +186,8 @@ export default defineComponent({
         }
       }
 
+      console.log({ elementId });
+
       // TODO: Might remove
       removeCurrentFocus();
 

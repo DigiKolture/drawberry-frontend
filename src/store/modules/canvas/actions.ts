@@ -250,7 +250,7 @@ export const actions: ActionTree<CanvasState, RootState> = {
     commit("UPDATE_FOCUSED_JSON_AND_DOM", element);
     setTimeout(() => {
       if (state.focusedIndex !== null) {
-        scrollTo(state.focusedIndex, element.id);
+        // scrollTo(state.focusedIndex, element.id);
       }
     }, 0);
     // const projectComponentItem = state.workspaceComponents[state.focusedIndex];

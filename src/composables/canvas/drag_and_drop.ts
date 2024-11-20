@@ -233,7 +233,6 @@ export function drag_and_drop() {
 
   const startScrolling = (direction: any) => {
     if (!isScrolling.value) {
-      console.log("------------------------------------");
       isScrolling.value = true;
       scrollInterval.value = setInterval(() => {
         window.scrollBy({

@@ -26,9 +26,6 @@
         <section
           v-if="hasWorkspaceComponent && canvasLoaded"
           class="canvas__panel"
-          :class="{
-            has__modald: PANEL_STYLE_TYPE_COLORS.includes(colorPicker),
-          }"
           id="canvas-panel"
         >
           <div class="canvas__panel__container">

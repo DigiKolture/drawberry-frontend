@@ -11,12 +11,15 @@
       ></button>
     </div>
 
-    <BaseColorPicker
-      :style="positionStyles"
-      @cancel="close"
-      v-model="localColor"
-      v-if="show"
-    />
+    <div ref="colorPicker" class="flex">
+      <BaseColorPicker
+        :class="props.type"
+        :style="positionStyles"
+        @cancel="close"
+        v-model="localColor"
+        v-if="show"
+      />
+    </div>
   </div>
 </template>
 
@@ -57,6 +60,7 @@ const show = computed(() => {
 // Create a local copy of `modelValue`
 const localColor = ref({ ...props.modelValue });
 const colorDisplay = ref(null);
+const colorPicker = ref(null);
 
 // Watch for changes in `modelValue` and sync `localColor`
 watch(
@@ -80,29 +84,46 @@ watch(
   { deep: true }
 );
 
+const updateScreenHeight = () => {
+  const height = window.innerHeight;
+  if (!colorDisplay.value) return;
+  const pickerHeight = 380; //Approx height of color picker
+
+  const rect = colorDisplay.value.getBoundingClientRect();
+  const topPositionFromViewport = rect.top;
+  // console.log({ topPositionFromViewport });
+  // const offsetTop = colorDisplay.value.offsetTop;
+  const offsetTop = topPositionFromViewport;
+  const offsetFromBottom = height - offsetTop;
+
+  // const offsetHeight = colorPicker.value.offsetHeight;
+  // console.log({ offsetHeight });
+
+  if (offsetFromBottom > pickerHeight) {
+    screenHeight.value = offsetTop + 40 + 10; //40 is the color picker display height
+  } else if (offsetTop > pickerHeight) {
+    screenHeight.value = height - offsetFromBottom - pickerHeight;
+  } else {
+    screenHeight.value = 40;
+  }
+};
+
+watch(
+  show,
+  (newVal) => {
+    if (newVal) {
+      updateScreenHeight();
+    }
+  },
+  { immediate: true }
+);
+
 const screenHeight = ref(window.innerHeight);
 const positionStyles = computed(() => {
   return {
     top: `${screenHeight.value}px`,
   };
 });
-
-const updateScreenHeight = () => {
-  const height = window.innerHeight;
-  if (!colorDisplay.value) return;
-  const pickerHeight = 380; //Approx height of color picker
-  const offsetTop = colorDisplay.value.offsetTop;
-  const offsetFromBottom = height - offsetTop;
-
-  if (offsetFromBottom > pickerHeight) {
-    screenHeight.value = offsetTop + 40 + 10; //40 is the color picker display height
-  } else if (offsetTop < pickerHeight) {
-    screenHeight.value = 40;
-  } else {
-    // If we have enough space to show the picker above the color display
-    screenHeight.value = height - offsetFromBottom - pickerHeight;
-  }
-};
 
 onMounted(() => {
   updateScreenHeight();

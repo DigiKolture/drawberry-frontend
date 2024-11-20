@@ -283,12 +283,14 @@ export function panel() {
     }
     return null; // Return null if not found
   };
-
   const openModifierTab = (type: CanvasEditableTypes, modifier = "") => {
     const index = getIndexOfTab(type, modifier);
     if (index === null) return;
     store.commit("panel/SET_ACTIVE_TAB_STATE", index.toString());
+    console.log("<<<<<<<<< openModifierTab >>>>>>>>>>");
+
     setTimeout(() => {
+      console.log("<<<<<<<<< >>>>>>>>>>");
       // modifier =
       //   modifier === "textContent" ? CanvasEditableTypes.CONTENT : modifier;
       scrollTo(`#panel-tab-${index} #${modifier ? modifier : type}`); //If modifier is empty use type, this will work for content scenario

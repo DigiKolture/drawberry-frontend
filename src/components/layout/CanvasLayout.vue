@@ -27,7 +27,7 @@
           v-if="hasWorkspaceComponent && canvasLoaded"
           class="canvas__panel"
           :class="{
-            has__modal: PANEL_STYLE_TYPE_COLORS.includes(colorPicker),
+            has__modald: PANEL_STYLE_TYPE_COLORS.includes(colorPicker),
           }"
           id="canvas-panel"
         >
@@ -58,8 +58,6 @@ export default defineComponent({
     onMounted(() => {
       ui.mainIndex();
     });
-
-    const id = "canvas-workspace";
 
     const { hasWorkspaceComponent, canvasLoaded } = canvas();
     const { removeFocus, removeCurrentFocus } = focus();

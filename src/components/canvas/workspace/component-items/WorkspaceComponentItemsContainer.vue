@@ -13,7 +13,7 @@
       >
         <CanvasWorkspaceEmpty
           :project-id="projectId"
-          v-if="workspaceComponents.length === 0"
+          v-if="workspaceComponents.length === 0 && !canvasLoading"
         />
         <WorkspaceComponentItemsListItem
           style="font-family: 'Agdasima', sans-serif"
@@ -185,8 +185,6 @@ export default defineComponent({
           elementId = componentItem.json[0].id;
         }
       }
-
-      console.log({ elementId });
 
       // TODO: Might remove
       removeCurrentFocus();

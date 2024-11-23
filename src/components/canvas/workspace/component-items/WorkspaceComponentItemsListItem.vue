@@ -18,9 +18,9 @@
       @keyup="handleKeyUp($event)"
       @mouseover.stop="hoverEvent($event)"
       @dragover="handleDragOver($event)"
+      @dragend="handleDragEnd($event)"
       @dragenter="handleDragEnter"
       @dragleave="handleDragLeave"
-      @dragend="onDragEnd"
       @dragover.prevent
       @dragenter.prevent
       v-if="canvasLoaded"
@@ -71,9 +71,8 @@ export default defineComponent({
     const {
       moveComponentItemPosition,
       upsertComponentItem,
-      onDrag,
-      onDragStart,
-      onDragEnd,
+      handleScroll,
+      stopScrolling,
     } = drag_and_drop();
     const { validateWorkspaceIndicator } = indicators();
     const { canvasLoaded } = canvas();
@@ -83,6 +82,7 @@ export default defineComponent({
 
     const dropIndex = ref(-1);
     const dropLoadingIndex = ref(-1);
+    const intervalId = ref<number | null>(null);
 
     onMounted(() => {
       // store.commit("canvas/SET_WORKSPACE_COMPONENTS", []);
@@ -161,12 +161,16 @@ export default defineComponent({
 
       ui.changeComponentItemsStatus(false);
 
-      // onDrag(e);
+      handleScroll(e);
 
       const show = validateWorkspaceIndicator(type, fromIndex, toIndex);
       if (!show) return;
 
       dropIndex.value = props.itemIndex;
+    };
+
+    const handleDragEnd = () => {
+      stopScrolling();
     };
     const handleDragEnter = () => {
       // console.log(`<<<<<< HANDLE DRAG ENTER >>>>> ${props.itemIndex}`);
@@ -202,6 +206,7 @@ export default defineComponent({
       itemIndex: number,
       projectId: string
     ) => {
+      // stopScrolling();
       dropLoadingIndex.value = dropIndex.value;
       dropIndex.value = -1;
       await upsertComponentItem(event, itemIndex, projectId);
@@ -224,10 +229,8 @@ export default defineComponent({
       hoverEvent,
       handleDragOver,
       handleDragEnter,
+      handleDragEnd,
       handleDragLeave,
-      onDrag,
-      onDragStart,
-      onDragEnd,
       dropComponent,
       moveComponentItemPosition,
       upsertComponentItem,

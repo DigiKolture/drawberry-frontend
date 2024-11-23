@@ -30,6 +30,7 @@ export interface CanvasState {
   saveStatus: CanvasSaveStatus;
   loadState: CanvasLoadingState;
   updatedComponents: UpdatedComponent[];
+  scrollIntervalsIds: number[];
   googleFonts: any[];
   fontWeights: number[];
   generalStyle: ProjectStyle;

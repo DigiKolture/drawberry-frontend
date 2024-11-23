@@ -42,6 +42,7 @@ const state: CanvasState = {
   },
   googleFonts: [],
   fontWeights: [],
+  scrollIntervalsIds: [],
   sidebarNavContent: null,
   sidebarDock: false,
   dropLoading: false,

@@ -96,6 +96,10 @@ export const mutations: MutationTree<CanvasState> = {
     state.updatedComponents = data;
     return state.updatedComponents;
   },
+  SET_SCROLL_INTERVAL_IDS(state: CanvasState, data: number[]) {
+    state.scrollIntervalsIds = data;
+    return state.scrollIntervalsIds;
+  },
   UPDATE_FOCUSED_JSON_AND_DOM2(state: CanvasState, data: object): any {
     state.focusedElement = data;
     const workspaceComponents = state.workspaceComponents;

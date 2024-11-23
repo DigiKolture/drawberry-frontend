@@ -7,7 +7,16 @@ import { history } from "@/composables/canvas/history";
 const { updateHistory } = history();
 
 export function drag_and_drop() {
+  const intervalId = ref<number | null>(null);
+
   const { removeCurrentFocus, removeFocus, removeAllFocus } = focus();
+  const SCROLL_INTERVAL = 50; // ms between scroll events
+  const BOTTOM_THRESHOLD = 200;
+  const TOP_THRESHOLD = 250; //Added 50 because of the header
+  const BOTTOM_EDGE_THRESHOLD = 80; // Distance from very edge to trigger extreme scroll
+  const TOP_EDGE_THRESHOLD = 140; // Distance from very edge to trigger extreme scroll
+  const NORMAL_SCROLL_SPEED = 20;
+  const EXTREME_SCROLL_SPEED = 100; // Faster scroll speed when near the very edge
 
   const workspaceComponents = computed(() => {
     return store.getters["canvas/workspaceComponents"];
@@ -68,8 +77,6 @@ export function drag_and_drop() {
   const moveComponentItemPosition = (e: any, itemIndex: any) => {
     const isParent = checkIfParentIsBeenDragged(e);
     if (!isParent) return;
-
-    onDragStart(e);
 
     e.dataTransfer.effectAllowed = "move";
     e.dataTransfer.dropEffect = "move";
@@ -140,117 +147,176 @@ export function drag_and_drop() {
     store.dispatch("canvas/updateProjectComponentsAndStyles").then();
   };
 
-  const previousY: any = ref(null); // Stores the previous `clientY` position
-  const scrollInterval: any = ref(null); // Manages the scrolling interval
-  const direction: any = ref(null); // Tracks the dragging direction
-  // const scrollInterval = ref(null);
-  const isScrolling = ref(false);
-  const onDragStart = (event: any) => {
-    previousY.value = event.clientY; // Initialize the starting Y position
-    console.log(`previousY`, previousY.value);
-    console.log({ previousY: previousY.value });
-  };
-
-  const onDrag = (event: any) => {
+  const handleScroll = (event: any) => {
     const currentY = event.clientY;
+    const height = window.innerHeight;
 
-    if (previousY.value !== null) {
-      direction.value = currentY > previousY.value ? "down" : "up"; // Determine direction
-    }
-    // console.log({
-    //   previousY: previousY.value,
-    //   currentY,
-    //   direction: direction.value,
-    // });
-
-    const container = event.currentTarget;
-    const containerRect = container.getBoundingClientRect();
-    const mouseY = event.clientY;
-
-    // Calculate distances from top and bottom edges
-    const distanceFromTop = mouseY - containerRect.top;
-    const distanceFromBottom = containerRect.bottom - mouseY;
+    const distanceFromTop = currentY;
+    const distanceFromBottom = height - distanceFromTop;
 
     console.log({ distanceFromTop, distanceFromBottom });
 
-    // Update previous position for the next drag event
-    previousY.value = currentY;
-
-    if (scrollInterval.value) {
-      clearInterval(scrollInterval.value);
-      scrollInterval.value = null;
-    }
-
-    const scrollThreshold = 60; // Pixels from the viewport edge
-    const scrollSpeed = 15; // Speed of scrolling
-
-    if (distanceFromTop < scrollThreshold && window.scrollY > 0) {
-      // Scroll up only if we're not at the top
-      startScrolling(-1);
-    } else if (
-      distanceFromBottom < scrollThreshold &&
-      window.scrollY <
-        document.documentElement.scrollHeight - window.innerHeight
-    ) {
-      // Scroll down only if we're not at the bottom
-      startScrolling(1);
+    // Check for extreme edge cases first
+    if (distanceFromBottom < BOTTOM_EDGE_THRESHOLD) {
+      startScrolling(event, 1, true); // Scroll down fast
+    } else if (distanceFromTop < TOP_EDGE_THRESHOLD) {
+      startScrolling(event, -1, true); // Scroll up fast
+    } else if (distanceFromBottom < BOTTOM_THRESHOLD) {
+      startScrolling(event, 1, false); // Normal scroll down
+    } else if (distanceFromTop < TOP_THRESHOLD) {
+      startScrolling(event, -1, false); // Normal scroll up
     } else {
       stopScrolling();
     }
-
-    // if (distanceFromTop < scrollThreshold) {
-    //   console.log("+++++++++++++ GOING UP +++++++++++++");
-    //
-    //   // Scroll up
-    //   startScrolling(-1);
-    // } else if (distanceFromBottom < scrollThreshold) {
-    //   // Scroll down
-    //   console.log("<<<<<<<< GOING DOWN >>>>>>>>>>>>>");
-    //   startScrolling(1);
-    // }
-
-    // if (currentY < scrollThreshold && direction.value === "up") {
-    //   // Scroll up when dragging upward near the top of the viewport
-    //   startScrolling(-scrollSpeed);
-    // } else if (
-    //   window.innerHeight - currentY < scrollThreshold &&
-    //   direction.value === "down"
-    // ) {
-    //   // Scroll down when dragging downward near the bottom of the viewport
-    //   startScrolling(scrollSpeed);
-    // } else {
-    //   // Stop scrolling if not near the edges
-    //   stopScrolling();
-    // }
   };
 
-  const onDragEnd = () => {
-    // Stop scrolling and reset the previous position on drag end
-    stopScrolling();
-    previousY.value = null;
-    direction.value = null;
+  const clearAllIntervals = () => {
+    // Get the highest timeout ID
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
+    const highestTimeoutId = window.setTimeout(() => {}, 0);
+
+    // Clear all possible interval IDs
+    for (let i = 0; i <= highestTimeoutId; i++) {
+      window.clearInterval(i);
+    }
   };
 
-  const startScrolling = (direction: any) => {
-    if (!isScrolling.value) {
-      isScrolling.value = true;
-      scrollInterval.value = setInterval(() => {
-        window.scrollBy({
-          top: 15 * direction,
-          behavior: "auto",
-        });
-      }, 16); // ~60fps
-    } else {
-      stopScrolling();
+  const startScrolling2 = (
+    event: any,
+    direction: number,
+    isExtreme: boolean
+  ) => {
+    if (intervalId.value === null) {
+      intervalId.value = window.setInterval(() => {
+        const distanceFromTop = event.clientY;
+        const height = window.innerHeight;
+        const distanceFromBottom = height - distanceFromTop;
+
+        if (!isExtreme) {
+          if (direction === 1 && distanceFromBottom > BOTTOM_THRESHOLD) {
+            clearAllIntervals();
+            intervalId.value = null;
+            return;
+          }
+          if (direction === -1 && distanceFromTop > TOP_THRESHOLD) {
+            clearAllIntervals();
+            intervalId.value = null;
+            return;
+          }
+        }
+
+        if (isExtreme) {
+          if (direction === 1) {
+            const remainingScroll =
+              document.documentElement.scrollHeight -
+              (window.scrollY + window.innerHeight);
+            if (remainingScroll <= 0) {
+              clearAllIntervals();
+              intervalId.value = null;
+              return;
+            }
+          } else {
+            if (window.scrollY <= 0) {
+              clearAllIntervals();
+              intervalId.value = null;
+              return;
+            }
+          }
+          console.log("<<<<<<< Extreme speed >>>>>>>>");
+
+          window.scrollBy(0, EXTREME_SCROLL_SPEED * direction);
+        } else {
+          console.log("<<<<<<< Normal speed >>>>>>>>");
+
+          window.scrollBy(0, NORMAL_SCROLL_SPEED * direction);
+        }
+      }, SCROLL_INTERVAL);
+    }
+  };
+
+  const startScrolling = (
+    event: any,
+    direction: number,
+    isExtreme: boolean
+  ) => {
+    if (intervalId.value === null) {
+      intervalId.value = window.setInterval(() => {
+        const distanceFromTop = event.clientY;
+        const height = window.innerHeight;
+        const distanceFromBottom = height - distanceFromTop;
+
+        if (isExtreme) {
+          if (direction === 1 && distanceFromBottom > BOTTOM_EDGE_THRESHOLD) {
+            // stopScrolling();
+            isExtreme = false;
+
+            // return;
+          }
+          if (direction === -1 && distanceFromTop > TOP_EDGE_THRESHOLD) {
+            // stopScrolling();
+            isExtreme = false;
+
+            // return;
+          }
+        }
+
+        if (!isExtreme) {
+          if (direction === 1 && distanceFromBottom > BOTTOM_THRESHOLD) {
+            stopScrolling();
+            return;
+          }
+          if (direction === -1 && distanceFromTop > TOP_THRESHOLD) {
+            stopScrolling();
+            return;
+          }
+        }
+
+        // if (direction === 1) {
+        //   // Scroll to bottom
+        //   const remainingScroll =
+        //     document.documentElement.scrollHeight -
+        //     (window.scrollY + window.innerHeight);
+        //   if (remainingScroll <= 0) {
+        //     stopScrolling();
+        //     return;
+        //   }
+        // } else {
+        //   // Scroll to top
+        //   if (window.scrollY <= 0) {
+        //     stopScrolling();
+        //     return;
+        //   }
+        // }
+
+        if (isExtreme) {
+          console.log("<<<<<<< Extreme speed >>>>>>>>");
+          window.scrollBy(0, EXTREME_SCROLL_SPEED * direction);
+        } else {
+          console.log("<<<<<<< Normal speed >>>>>>>>");
+          window.scrollBy(0, NORMAL_SCROLL_SPEED * direction);
+        }
+        // window.scrollBy(0, 20 * direction);
+      }, SCROLL_INTERVAL);
     }
   };
 
   const stopScrolling = () => {
-    if (scrollInterval.value) {
-      clearInterval(scrollInterval.value);
-      scrollInterval.value = null;
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
+    const highestId = window.setTimeout(() => {}, 0);
+    /**
+     * Clear all intervals in the window, this might be an issue in the future if we have other intervals running
+     * Went with this for now because of the multiple interval ID
+     */
+    for (let i = 0; i < highestId; i++) {
+      window.clearInterval(i);
     }
-    isScrolling.value = false;
+    intervalId.value = null;
+
+    // if (intervalId.value !== null) {
+    //   console.log("Stopping interval with ID:", intervalId.value);
+    //   clearInterval(intervalId.value);
+    //   intervalId.value = null;
+    // }
   };
 
   return {
@@ -259,8 +325,7 @@ export function drag_and_drop() {
     upsertComponentItem,
     moveComponentItemPosition,
     changeComponentItemPosition,
-    onDrag,
-    onDragStart,
-    onDragEnd,
+    handleScroll,
+    stopScrolling,
   };
 }

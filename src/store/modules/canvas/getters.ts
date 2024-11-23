@@ -45,6 +45,9 @@ export const getters: GetterTree<CanvasState, RootState> = {
   updatedComponents(state: CanvasState): UpdatedComponent[] {
     return state.updatedComponents;
   },
+  scrollIntervalsIds(state: CanvasState): number[] {
+    return state.scrollIntervalsIds;
+  },
   googleFonts(state: CanvasState): any[] {
     return state.googleFonts;
   },

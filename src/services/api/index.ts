@@ -45,6 +45,7 @@ httpClient.interceptors.response.use(
   }
 );
 
-httpClient.defaults.timeout = 20000;
+// httpClient.defaults.timeout = 20000;
+httpClient.defaults.timeout = 40000;
 
 export default httpClient;

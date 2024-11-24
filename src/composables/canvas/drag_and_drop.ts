@@ -26,6 +26,10 @@ export function drag_and_drop() {
     return store.getters["components/componentItems"];
   });
 
+  const scrollIntervalsIds = computed(() => {
+    return store.getters["canvas/scrollIntervalsIds"];
+  });
+
   const checkIfParentIsBeenDragged = (e: any) => {
     const isDraggableElement =
       e.target.classList.contains("component__items__list__item") ||
@@ -154,8 +158,6 @@ export function drag_and_drop() {
     const distanceFromTop = currentY;
     const distanceFromBottom = height - distanceFromTop;
 
-    console.log({ distanceFromTop, distanceFromBottom });
-
     // Check for extreme edge cases first
     if (distanceFromBottom < BOTTOM_EDGE_THRESHOLD) {
       startScrolling(event, 1, true); // Scroll down fast
@@ -170,77 +172,13 @@ export function drag_and_drop() {
     }
   };
 
-  const clearAllIntervals = () => {
-    // Get the highest timeout ID
-    // eslint-disable-next-line @typescript-eslint/no-empty-function
-    const highestTimeoutId = window.setTimeout(() => {}, 0);
-
-    // Clear all possible interval IDs
-    for (let i = 0; i <= highestTimeoutId; i++) {
-      window.clearInterval(i);
-    }
-  };
-
-  const startScrolling2 = (
-    event: any,
-    direction: number,
-    isExtreme: boolean
-  ) => {
-    if (intervalId.value === null) {
-      intervalId.value = window.setInterval(() => {
-        const distanceFromTop = event.clientY;
-        const height = window.innerHeight;
-        const distanceFromBottom = height - distanceFromTop;
-
-        if (!isExtreme) {
-          if (direction === 1 && distanceFromBottom > BOTTOM_THRESHOLD) {
-            clearAllIntervals();
-            intervalId.value = null;
-            return;
-          }
-          if (direction === -1 && distanceFromTop > TOP_THRESHOLD) {
-            clearAllIntervals();
-            intervalId.value = null;
-            return;
-          }
-        }
-
-        if (isExtreme) {
-          if (direction === 1) {
-            const remainingScroll =
-              document.documentElement.scrollHeight -
-              (window.scrollY + window.innerHeight);
-            if (remainingScroll <= 0) {
-              clearAllIntervals();
-              intervalId.value = null;
-              return;
-            }
-          } else {
-            if (window.scrollY <= 0) {
-              clearAllIntervals();
-              intervalId.value = null;
-              return;
-            }
-          }
-          console.log("<<<<<<< Extreme speed >>>>>>>>");
-
-          window.scrollBy(0, EXTREME_SCROLL_SPEED * direction);
-        } else {
-          console.log("<<<<<<< Normal speed >>>>>>>>");
-
-          window.scrollBy(0, NORMAL_SCROLL_SPEED * direction);
-        }
-      }, SCROLL_INTERVAL);
-    }
-  };
-
   const startScrolling = (
     event: any,
     direction: number,
     isExtreme: boolean
   ) => {
     if (intervalId.value === null) {
-      intervalId.value = window.setInterval(() => {
+      const intId = window.setInterval(() => {
         const distanceFromTop = event.clientY;
         const height = window.innerHeight;
         const distanceFromBottom = height - distanceFromTop;
@@ -289,34 +227,23 @@ export function drag_and_drop() {
         // }
 
         if (isExtreme) {
-          console.log("<<<<<<< Extreme speed >>>>>>>>");
           window.scrollBy(0, EXTREME_SCROLL_SPEED * direction);
         } else {
-          console.log("<<<<<<< Normal speed >>>>>>>>");
           window.scrollBy(0, NORMAL_SCROLL_SPEED * direction);
         }
         // window.scrollBy(0, 20 * direction);
       }, SCROLL_INTERVAL);
+      intervalId.value = intId;
+
+      scrollIntervalsIds.value.push(intId);
     }
   };
 
   const stopScrolling = () => {
-    // eslint-disable-next-line @typescript-eslint/no-empty-function
-    const highestId = window.setTimeout(() => {}, 0);
-    /**
-     * Clear all intervals in the window, this might be an issue in the future if we have other intervals running
-     * Went with this for now because of the multiple interval ID
-     */
-    for (let i = 0; i < highestId; i++) {
-      window.clearInterval(i);
+    for (const scrollIntervalsId of scrollIntervalsIds.value) {
+      window.clearInterval(scrollIntervalsId);
     }
     intervalId.value = null;
-
-    // if (intervalId.value !== null) {
-    //   console.log("Stopping interval with ID:", intervalId.value);
-    //   clearInterval(intervalId.value);
-    //   intervalId.value = null;
-    // }
   };
 
   return {

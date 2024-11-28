@@ -15,7 +15,7 @@ export function drag_and_drop() {
   const TOP_THRESHOLD = 250; //Added 50 because of the header
   const BOTTOM_EDGE_THRESHOLD = 80; // Distance from very edge to trigger extreme scroll
   const TOP_EDGE_THRESHOLD = 140; // Distance from very edge to trigger extreme scroll
-  const NORMAL_SCROLL_SPEED = 20;
+  const NORMAL_SCROLL_SPEED = 40;
   const EXTREME_SCROLL_SPEED = 100; // Faster scroll speed when near the very edge
 
   const workspaceComponents = computed(() => {

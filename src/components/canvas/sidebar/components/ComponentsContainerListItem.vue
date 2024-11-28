@@ -35,7 +35,15 @@ export default defineComponent({
     });
 
     const fetchComponentItems = (component) => {
+      // if (component.id === selectedComponent.value?.id) {
+      //   return;
+      // }
       ui.changeComponentItemsStatus();
+      const modalContent = document.getElementById("component-items");
+      if (modalContent) {
+        // Scroll to the top of the component items modal if the selected component changes
+        modalContent.scrollTo({ top: 0, behavior: "smooth" });
+      }
       store.commit("components/SET_SELECTED_COMPONENT", component);
       store.commit("components/SET_COMPONENT_ITEMS", component.items);
     };

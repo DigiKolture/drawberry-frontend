@@ -153,6 +153,7 @@ div.components__container{
 
 .component__items__container{
     @apply grid fixed  overflow-y-auto;
+    overscroll-behavior: contain;
     row-gap: 20px;
     padding: 30px 30px 100px 30px;
     top: var(--header-height);

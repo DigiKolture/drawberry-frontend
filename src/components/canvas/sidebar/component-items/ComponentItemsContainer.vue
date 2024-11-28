@@ -28,10 +28,23 @@ export default defineComponent({
     });
     const disabled = ref(false);
 
+    // watch(
+    //   () => selectedComponent.value,
+    //   (newComponent, oldComponent) => {
+    //     if (newComponent?.id !== oldComponent?.id) {
+    //       const modalContent = document.getElementById("component-items");
+    //       if (modalContent) {
+    //         // Scroll to the top of the component item modal if the selected component changes
+    //         modalContent.scrollTo({ top: 0, behavior: "smooth" });
+    //       }
+    //     }
+    //   },
+    //   { immediate: true, deep: true }
+    // );
+
     const enable = () => {
       disabled.value = false;
     };
-
     const disable = () => {
       disabled.value = true;
     };

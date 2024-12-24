@@ -37,6 +37,11 @@ jobs:
           username: ${{ secrets.SSH_USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
+            # Exit on any error
+            set -e
+            
+            ls -l /home/apps/drawberry/drawberry-frontend/${{ steps.vars.outputs.env_name }} 
+            
             # Navigate to appropriate directory
             cd /home/apps/drawberry/drawberry-frontend/${{ steps.vars.outputs.env_name }}
             

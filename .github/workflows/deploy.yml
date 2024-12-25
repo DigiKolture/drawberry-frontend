@@ -14,6 +14,9 @@ jobs:
       - name: Set environment variables
         id: vars
         run: |
+          echo "Current branch: ${{ github.ref }}"
+          echo "Environment name: ${{ steps.vars.outputs.env_name }}"
+          
           if [[ ${{ github.ref }} == 'refs/heads/main' ]]; then
             echo "::set-output name=env_name::prod"
             echo "::set-output name=compose_file::docker-compose.prod.yml"
@@ -29,6 +32,8 @@ jobs:
             echo "::set-output name=base_url::https://dev.drawberry.io"
             echo "::set-output name=api_url::https://dev.api.drawberry.io"
           fi
+          
+          echo "Environment name: ${{ steps.vars.outputs.env_name }}"
 
       - name: Deploy to DigitalOcean
         uses: appleboy/ssh-action@master
@@ -62,3 +67,5 @@ jobs:
             
             # Clean up old images
             docker image prune -f
+            
+            echo "Deployment completed successfully!"

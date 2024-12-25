@@ -45,10 +45,14 @@ jobs:
             # Exit on any error
             set -e
             
+            echo "Environment name: ${{ steps.vars.outputs.env_name }}"
+            
             ls -l /home/apps/drawberry/drawberry-frontend/${{ steps.vars.outputs.env_name }} 
             
             # Navigate to appropriate directory
             cd /home/apps/drawberry/drawberry-frontend/${{ steps.vars.outputs.env_name }}
+            
+            pwd
             
             # Pull latest changes
             git pull origin ${{ github.ref_name }}

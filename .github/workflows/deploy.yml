@@ -20,7 +20,7 @@ jobs:
           if [[ ${{ github.ref }} == 'refs/heads/main' ]]; then
             echo "::set-output name=env_name::prod"
             echo "::set-output name=compose_file::docker-compose.prod.yml"
-            echo "::set-output name=port::80"
+            echo "::set-output name=port::8082"
             echo "::set-output name=environment::production"
             echo "::set-output name=base_url::https://drawberry.io"
             echo "::set-output name=api_url::https://api.drawberry.io"

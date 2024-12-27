@@ -1,9 +1,9 @@
 <template>
-  <PanelStyle title="Preview text">
+  <PanelStyle :modifier="`general-${name}`" title="Preview text">
     <div class="preview__text__style">
       <textarea
         class="canvas__textarea"
-        v-model="content"
+        v-model="localValue"
         placeholder="Add email preview text..."
       >
       </textarea>
@@ -12,31 +12,33 @@
   </PanelStyle>
 </template>
 <script lang="ts">
-import { computed, defineComponent, ref, watch } from "vue";
-import store from "@/store";
+import { computed, defineComponent, watch } from "vue";
 import PanelStyle from "@/components/canvas/panel/styles/PanelStyle.vue";
+import { generalStyleUpdater } from "@/composables/canvas/modifiers/general-style-updater";
 
 export default defineComponent({
   name: "SidebarPreviewTextStyle",
   components: { PanelStyle },
 
   setup() {
-    const style = computed(() => {
-      return store.getters["canvas/style"];
+    const name = "previewText";
+    const { modifier } = generalStyleUpdater(name);
+
+    const localValue = computed({
+      get: () => modifier.value,
+      set: (newValue) => {
+        // if (!newValue) return;
+        modifier.value = newValue;
+      },
     });
 
-    const content = ref(style.value.previewText);
-
-    watch(content, (newVal: string) => {
-      // TODO: Or update with ENTER
-      if (newVal) {
-        style.value.previewText = newVal;
-        store.dispatch("canvas/updateProjectStyle", style.value);
-      }
+    watch(modifier, (newVal: string) => {
+      localValue.value = newVal;
     });
 
     return {
-      content,
+      name,
+      localValue,
     };
   },
 });

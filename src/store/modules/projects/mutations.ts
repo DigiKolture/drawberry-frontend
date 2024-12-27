@@ -6,6 +6,10 @@ export const mutations: MutationTree<ProjectState> = {
     state.projects = data;
     return state.projects;
   },
+  SET_FILTERED_PROJECTS(state: ProjectState, data: object[]) {
+    state.filteredProjects = data;
+    return state.filteredProjects;
+  },
   SET_PROJECT(state: ProjectState, data: object) {
     state.project = data;
     return state.project;

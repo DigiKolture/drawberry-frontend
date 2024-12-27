@@ -14,7 +14,7 @@ export const mutations: MutationTree<ComponentState> = {
     state.myComponentItems = data;
     return state.myComponentItems;
   },
-  SET_SELECTED_COMPONENT(state: ComponentState, data: object) {
+  SET_SELECTED_COMPONENT(state: ComponentState, data: any) {
     state.selectedComponent = data;
     return state.selectedComponent;
   },

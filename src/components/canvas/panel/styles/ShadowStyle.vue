@@ -1,5 +1,5 @@
 <template>
-  <PanelStyle title="Shadow">
+  <PanelStyle :modifier="name" title="Shadow">
     <div class="shadow__style">
       <div class="shadow__style__tab__item">
         <BaseSliderIcon
@@ -19,8 +19,8 @@
           icon="canvas/panel/styles/shadow/spread"
         />
         <ColorPickerStyle
-          @update-color="updateColor"
-          :color="shadow.color"
+          :type="ColorPickerTypes.PANEL_BOX_SHADOW_COLOR"
+          v-model="shadow.color"
           title="Color"
         />
       </div>
@@ -28,48 +28,56 @@
   </PanelStyle>
 </template>
 <script lang="ts">
-import { computed, defineComponent, reactive, ref, watch } from "vue";
+import { defineComponent, reactive, ref, watch } from "vue";
 import PanelStyle from "./PanelStyle.vue";
 import BaseSliderIcon from "../BaseSliderIcon.vue";
 import ColorPickerStyle from "@/components/canvas/panel/ColorPickerStyle.vue";
 import { styles } from "@/composables/canvas/styles";
-import store from "@/store";
+import { ColorPickerTypes } from "@/store/modules/modals/types";
+import { modifiersUpdater } from "@/composables/canvas/modifiers/modifiers-updater";
 
 export default defineComponent({
   name: "ShadowStyle",
+  props: {
+    childId: {
+      type: String,
+      default: "",
+      required: false,
+    },
+    childIndex: {
+      type: Number,
+      default: -1,
+      required: false,
+    },
+  },
   components: { ColorPickerStyle, BaseSliderIcon, PanelStyle },
 
-  setup() {
+  setup(props) {
     const name = "box-shadow";
     const unit = "px";
 
-    const focusedElement = computed(() => {
-      return store.getters["canvas/focusedElement"];
-    });
     const { parseBoxShadow } = styles();
+    const { modifier } = modifiersUpdater(props, name);
 
-    const shadow: any = reactive(
-      parseBoxShadow(focusedElement.value.attributes.style.value[name])
-    );
-
-    const color = ref({
-      hex8: shadow.color,
-    });
+    let shadow: any = reactive(parseBoxShadow(modifier.value));
 
     const updateColor = (newVal: any) => {
       shadow.color = newVal;
     };
 
     watch(shadow, (newVal) => {
-      focusedElement.value.attributes.style.value[
-        name
-      ] = `${newVal.y}${unit} ${newVal.x}${unit} ${newVal.blur}${unit} ${newVal.spread}${unit} ${newVal.color.hex8}`;
-      store.dispatch("canvas/updateFocusedElement", focusedElement.value);
+      modifier.value = `${newVal.y}${unit} ${newVal.x}${unit} ${newVal.blur}${unit} ${newVal.spread}${unit} ${newVal.color.hex8}`;
+    });
+
+    watch(modifier, (newVal) => {
+      const parsedShadow = parseBoxShadow(newVal);
+      Object.assign(shadow, parsedShadow);
     });
 
     return {
+      name,
       shadow,
-      color,
+      ColorPickerTypes,
       updateColor,
     };
   },

@@ -4,6 +4,32 @@ function tinycolor(...args) {
   return new TinyColor(...args);
 }
 
+function hex8ToHex(hex8) {
+  return hex8.slice(0, 7).toUpperCase();
+}
+
+function convertHex8(hex8) {
+  const color = tinycolor(hex8);
+
+  const hsl = color.toHsl();
+  const hsv = color.toHsv();
+
+  if (hsl.s === 0) {
+    hsv.h = hsl.h = hsl.h || 0;
+  }
+
+  return {
+    hsl,
+    hex: color.toHexString().toUpperCase(),
+    hex8: color.toHex8String().toUpperCase(),
+    rgba: color.toRgb(),
+    hsv,
+    oldHue: hsl.h,
+    source: "hex8",
+    a: color.getAlpha(),
+  };
+}
+
 function _colorChange(data, oldHue) {
   const alpha = data && data.a;
   let color;
@@ -63,6 +89,9 @@ export default {
       val: _colorChange(this.modelValue),
     };
   },
+  mounted() {
+    this.colors = convertHex8(this.modelValue.hex8);
+  },
   computed: {
     colors: {
       get() {
@@ -82,6 +111,10 @@ export default {
   methods: {
     colorChange(data, oldHue) {
       this.oldHue = this.colors.hsl.h;
+      //Update appearance to 1, if its zero. So that color can be seen.
+      if (data.a === 0) {
+        data.a = 1;
+      }
       this.colors = _colorChange(data, oldHue || this.oldHue);
     },
     isValidHex(hex) {

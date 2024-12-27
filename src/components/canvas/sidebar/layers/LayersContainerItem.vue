@@ -1,14 +1,27 @@
 <template>
-  <div class="layers__component__item">
+  <div
+    class="layers__component__item"
+    :class="{
+      focused: focusedIndex === itemIndex,
+      hovered: currentHoverElement.componentIndex === itemIndex,
+    }"
+    :id="`layer-component-item-${itemIndex}`"
+  >
+    <LayerElementDropIndicator v-if="dropIndex === itemIndex" />
     <LayersContainerElementItem
       @mouseover.stop="handleMouseOver(componentItem.json[0])"
       @click="handleClick(componentItem.json[0])"
+      :id="componentItem.json[0].id"
+      @dblclick="closeAllTabs"
       :element="componentItem.json[0]"
       :componentItem="componentItem"
+      :item-index="itemIndex"
       :header="true"
       :draggable="true"
-      @dragstart.self="dragComponentItemLayer($event)"
+      @dragstart.self="dragComponentItem($event)"
       @drop="dropComponentItemLayer($event)"
+      @dragover="handleDragOver($event)"
+      @dragleave="handleDragLeave($event)"
       @dragover.prevent
       @dragenter.prevent
     >
@@ -18,7 +31,7 @@
         </button>
       </div>
       <button
-        @click="toggleShowElements"
+        @click.stop="toggleShowElements"
         class="layers__component__item__header__switch"
       >
         <BaseIcon
@@ -26,12 +39,16 @@
         />
       </button>
       <BaseIcon icon="canvas/sidebar/layers/component" />
-      <h5 class="layers__component__item__title">Component</h5>
+      <h5 class="layers__component__item__title">
+        {{ componentItem.componentItemName }}
+      </h5>
     </LayersContainerElementItem>
 
     <div v-if="showElements" class="layers__component__item__elements">
       <LayersContainerElementItem
+        v-show="!isChild(element)"
         v-for="element in componentItem.json.slice(1)"
+        :id="element.id"
         :key="element.id"
         @mouseover.stop="handleMouseOver(element)"
         @click="handleClick(element)"
@@ -46,13 +63,21 @@ import { computed, defineComponent, ref, watch } from "vue";
 import BaseIcon from "@/components/icon/BaseIcon.vue";
 import LayersContainerElementItem from "@/components/canvas/sidebar/layers/LayersContainerElementItem.vue";
 import { layers } from "@/composables/canvas/layers";
-import { updateDom } from "@/composables/canvas/update_dom";
+import { hover } from "@/composables/canvas/hover";
 import store from "@/store";
 import { drag_and_drop } from "@/composables/canvas/drag_and_drop";
+import { focus } from "@/composables/canvas/focus";
+import LayerElementDropIndicator from "@/components/canvas/sidebar/layers/utilities/LayerElementDropIndicator.vue";
+import { indicators } from "@/composables/canvas/indicators";
+import { updateDom } from "@/composables/canvas/update_dom";
 
 export default defineComponent({
   name: "LayersContainerItem",
-  components: { LayersContainerElementItem, BaseIcon },
+  components: {
+    LayerElementDropIndicator,
+    LayersContainerElementItem,
+    BaseIcon,
+  },
   props: {
     componentItem: {
       type: Object,
@@ -62,148 +87,67 @@ export default defineComponent({
       type: Number,
       required: true,
     },
+    showElements: {
+      type: Boolean,
+      required: true,
+    },
   },
 
   setup(props) {
-    const {
-      getComponentElementIndexUsingId,
-      addClassToElement,
-      removeClassFromElement,
-    } = layers();
+    const { getComponentElementIndexUsingId, dragComponentItemLayer } =
+      layers();
 
     const { changeComponentItemPosition } = drag_and_drop();
+    const { isChild } = updateDom();
+    const { removeHoverElement, addHoverToElement } = hover();
+    const { validateIndicator } = indicators();
+    const { focusComponentElement, removeCurrentFocus, FOCUS_SCROLL_TYPES } =
+      focus();
 
-    const { updateElementDom } = updateDom();
-
-    const showElements = ref(true);
+    const dropIndex = ref(-1);
 
     const toggleShowElements = () => {
-      return (showElements.value = !showElements.value);
+      store.commit("layers/TOGGLE_TAB_STATE", props.itemIndex.toString());
     };
 
-    const workspaceComponents = computed(() => {
-      return store.getters["canvas/workspaceComponents"];
-    });
-
-    const project = computed(() => {
-      return store.getters["projects/project"];
+    const focusedIndex = computed(() => {
+      return store.getters["canvas/focusedIndex"];
     });
 
     const currentHoverElement = computed(() => {
       return store.getters["canvas/currentHoverElement"];
     });
 
-    const focusedElement = computed(() => {
-      return store.getters["canvas/focusedElement"];
-    });
-
-    const focusedIndex = computed(() => {
-      return store.getters["canvas/focusedIndex"];
-    });
-
-    const hasFocused = computed(() => {
-      return focusedElement.value !== null && focusedIndex.value !== null;
-    });
-
     watch(currentHoverElement, (val) => {
-      if (val && val.componentIndex == props.itemIndex) {
-        showElements.value = true;
-      }
+      // Allows layer component header to show elements when hovered
+      // if (val && val.componentIndex == props.itemIndex) {
+      // showElements.value = true;
+      // }
     });
 
     const handleMouseOver = async (element: any) => {
+      // Dont add hover effect if the element is a parent or already in a focus state
       if (
-        element.classes &&
-        typeof element.classes === "object" &&
-        element.classes.includes("focus")
+        (element.classes &&
+          typeof element.classes === "object" &&
+          element.classes.includes("focus")) ||
+        element.parent
       ) {
         return;
       }
 
-      if (
-        currentHoverElement.value.id &&
-        currentHoverElement.value.componentIndex > -1
-      ) {
-        let currentComponentItem =
-          workspaceComponents.value[currentHoverElement.value.componentIndex];
-
-        const jsonIndex = getComponentElementIndexUsingId(
-          currentComponentItem,
-          currentHoverElement.value.id
-        );
-
-        if (jsonIndex > -1) {
-          let currElement = currentComponentItem.json[jsonIndex];
-
-          if (
-            currElement.classes &&
-            typeof currElement.classes == "object" &&
-            currElement.classes.includes("hover")
-          ) {
-            currElement = removeClassFromElement(
-              currentComponentItem.json[jsonIndex]
-            );
-
-            workspaceComponents.value[
-              currentHoverElement.value.componentIndex
-            ].html = updateElementDom(
-              currentComponentItem.html,
-              currElement,
-              true
-            );
-          }
-        }
-      }
+      removeHoverElement();
 
       const elementId = element.id;
       const componentItem = props.componentItem;
       const itemIndex = props.itemIndex;
 
-      store.commit("canvas/SET_CURRENT_HOVER_ELEMENT", {
-        id: elementId,
-        componentIndex: itemIndex,
-      });
-      const jsonIndex = getComponentElementIndexUsingId(
-        componentItem,
-        elementId
-      );
-      componentItem.json[jsonIndex] = addClassToElement(
-        componentItem.json[jsonIndex]
-      );
-      workspaceComponents.value[itemIndex].html = updateElementDom(
-        componentItem.html,
-        componentItem.json[jsonIndex],
-        true
-      );
+      addHoverToElement(itemIndex, elementId, componentItem);
     };
 
     const handleClick = (element: any) => {
-      if (hasFocused.value) {
-        let focusedComponentItem =
-          workspaceComponents.value[focusedIndex.value];
+      removeCurrentFocus();
 
-        const jsonIndex = getComponentElementIndexUsingId(
-          focusedComponentItem,
-          focusedElement.value.id
-        );
-
-        if (jsonIndex > -1) {
-          let focusedElement = focusedComponentItem.json[jsonIndex];
-
-          if (
-            focusedElement.classes &&
-            typeof focusedElement.classes == "object" &&
-            focusedElement.classes.includes("focus")
-          ) {
-            focusedElement = removeClassFromElement(
-              focusedComponentItem.json[jsonIndex],
-              "focus"
-            );
-            workspaceComponents.value[focusedIndex.value].html =
-              updateElementDom(focusedComponentItem.html, focusedElement, true);
-          }
-        }
-      }
       const elementId = element.id;
       const componentItem = props.componentItem;
       const itemIndex = props.itemIndex;
@@ -213,47 +157,57 @@ export default defineComponent({
         elementId
       );
 
-      componentItem.json[jsonIndex] = addClassToElement(
-        componentItem.json[jsonIndex],
-        "focus"
+      focusComponentElement(
+        itemIndex,
+        jsonIndex,
+        FOCUS_SCROLL_TYPES.FROM_LAYER
       );
-
-      workspaceComponents.value[itemIndex].html = updateElementDom(
-        componentItem.html,
-        componentItem.json[jsonIndex],
-        true
-      );
-      store.commit("canvas/SET_FOCUSED_ELEMENT", componentItem.json[jsonIndex]);
-      store.commit("canvas/SET_FOCUSED_INDEX", itemIndex);
     };
 
-    const dragComponentItemLayer = (e: any) => {
-      const itemIndex = props.itemIndex;
-      console.log("Drag Index", itemIndex);
-      e.dataTransfer.effectAllowed = "move";
-      e.dataTransfer.dropEffect = "move";
-      e.dataTransfer.setData("fromLayerComponentItemIndex", itemIndex);
+    const dragComponentItem = (e: any) => {
+      dragComponentItemLayer(e, props.itemIndex);
     };
 
     const dropComponentItemLayer = async (e: any) => {
       const toIndex = props.itemIndex;
-      console.log("Drop Index", toIndex);
       const fromIndex = e.dataTransfer.getData("fromLayerComponentItemIndex");
       if (!fromIndex) return;
 
-      await changeComponentItemPosition(
-        project.value.id,
-        parseInt(fromIndex),
-        toIndex
-      );
+      dropIndex.value = -1;
+
+      await changeComponentItemPosition(parseInt(fromIndex), toIndex);
+    };
+
+    const handleDragOver = (e: any) => {
+      let fromIndex = e.dataTransfer.getData("fromLayerComponentItemIndex");
+      let toIndex = props.itemIndex;
+
+      const show = validateIndicator(fromIndex, toIndex);
+      if (!show) return;
+
+      dropIndex.value = props.itemIndex;
+    };
+
+    const handleDragLeave = () => {
+      dropIndex.value = -1;
+    };
+
+    const closeAllTabs = () => {
+      store.commit("layers/CLOSE_ALL_TAB_STATES");
     };
 
     return {
+      dropIndex,
+      isChild,
+      focusedIndex,
+      currentHoverElement,
       handleMouseOver,
       handleClick,
       toggleShowElements,
-      showElements,
-      dragComponentItemLayer,
+      closeAllTabs,
+      handleDragOver,
+      handleDragLeave,
+      dragComponentItem,
       dropComponentItemLayer,
     };
   },

@@ -1,55 +1,152 @@
 <template>
   <div class="color__style">
-    <div class="color__style__container">
+    <div ref="colorDisplay" class="color__style__container">
       <h5>{{ title }}</h5>
-      <h5>{{ colors.hex8 }}</h5>
+      <h5>{{ hex8ToHex(localColor.hex8) }}</h5>
       <button
+        id="modals-trigger"
         @click="toggle"
         class="selected__color"
-        :style="{
-          background: colors.hex8,
-        }"
+        :style="{ background: localColor.hex8 }"
       ></button>
     </div>
-    <BaseColorPicker @cancel="show = false" v-model="colors" v-if="show" />
+
+    <div ref="colorPicker" class="flex">
+      <BaseColorPicker
+        :class="props.type"
+        :style="positionStyles"
+        @cancel="close"
+        v-model="localColor"
+        v-if="show"
+      />
+    </div>
   </div>
 </template>
 
 <script setup>
-import { defineProps, defineEmits, ref, watch, defineExpose } from "vue";
+import {
+  defineProps,
+  defineEmits,
+  ref,
+  watch,
+  computed,
+  onMounted,
+  onBeforeUnmount,
+} from "vue";
 import BaseColorPicker from "@/components/canvas/panel/BaseColorPicker.vue";
+import store from "@/store";
 
 const props = defineProps({
+  type: {
+    type: String,
+    required: true,
+  },
   title: {
     type: String,
     default: "HEX",
   },
-  color: {
+  modelValue: {
     type: Object,
-    default: null,
+    default: () => ({ hex8: "#FFFFFF" }),
   },
 });
 
-const emits = defineEmits(["update-color", "toggle"]);
+const emits = defineEmits(["update:modelValue", "toggle"]);
 
-const show = ref(false);
-
-const colors = ref({
-  hex8: props.color?.hex8,
+const show = computed(() => {
+  return store.getters["modals/colorPicker"] === props.type;
 });
 
-watch(colors, (newVal) => {
-  emits("update-color", newVal);
+// Create a local copy of `modelValue`
+const localColor = ref({ ...props.modelValue });
+const colorDisplay = ref(null);
+const colorPicker = ref(null);
+
+// Watch for changes in `modelValue` and sync `localColor`
+watch(
+  () => props.modelValue,
+  (newVal) => {
+    if (newVal.hex8 !== localColor.value.hex8) {
+      localColor.value = { ...newVal };
+    }
+  },
+  { deep: true }
+);
+
+// Emit changes to `modelValue` only when `localColor` changes and is different
+watch(
+  localColor,
+  (newVal) => {
+    if (newVal.hex8 !== props.modelValue.hex8) {
+      emits("update:modelValue", newVal);
+    }
+  },
+  { deep: true }
+);
+
+const updateScreenHeight = () => {
+  const height = window.innerHeight;
+  if (!colorDisplay.value) return;
+  const pickerHeight = 380; //Approx height of color picker
+
+  const rect = colorDisplay.value.getBoundingClientRect();
+  const topPositionFromViewport = rect.top;
+  // console.log({ topPositionFromViewport });
+  // const offsetTop = colorDisplay.value.offsetTop;
+  const offsetTop = topPositionFromViewport;
+  const offsetFromBottom = height - offsetTop;
+
+  // const offsetHeight = colorPicker.value.offsetHeight;
+  // console.log({ offsetHeight });
+
+  if (offsetFromBottom > pickerHeight) {
+    screenHeight.value = offsetTop + 40 + 10; //40 is the color picker display height
+  } else if (offsetTop > pickerHeight) {
+    screenHeight.value = height - offsetFromBottom - pickerHeight;
+  } else {
+    screenHeight.value = 40;
+  }
+};
+
+watch(
+  show,
+  (newVal) => {
+    if (newVal) {
+      updateScreenHeight();
+    }
+  },
+  { immediate: true }
+);
+
+const screenHeight = ref(window.innerHeight);
+const positionStyles = computed(() => {
+  return {
+    top: `${screenHeight.value}px`,
+  };
 });
 
-const updateColor = (newVal) => {
-  colors.value = newVal;
+onMounted(() => {
+  updateScreenHeight();
+  window.addEventListener("resize", updateScreenHeight);
+});
+
+onBeforeUnmount(() => {
+  window.removeEventListener("resize", updateScreenHeight);
+});
+
+const hex8ToHex = (hex8) => {
+  return hex8.slice(0, 7).toUpperCase();
 };
 
 const toggle = () => {
-  show.value = !show.value;
+  store.commit("modals/TOGGLE_STRING_MODAL", {
+    modal: "color_picker",
+    value: props.type,
+  });
   emits("toggle");
 };
 
-defineExpose({ updateColor });
+const close = () => {
+  store.commit("modals/CLOSE_MODAL", "color_picker");
+};
 </script>

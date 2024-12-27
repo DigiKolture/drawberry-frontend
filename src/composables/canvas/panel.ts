@@ -1,0 +1,316 @@
+import store from "@/store";
+import { computed } from "vue";
+import { scroll } from "@/composables/canvas/scroll";
+import { CanvasEditableTypes } from "@/store/modules/canvas/types";
+
+export function panel() {
+  const { scrollTo } = scroll();
+
+  interface TabStyles {
+    title: string;
+    index: number;
+    styles: string[];
+    attributes: string[];
+    isContent?: boolean;
+    hasVisibility?: boolean;
+  }
+
+  const tabsStyles: Record<string, TabStyles> = {
+    layout: {
+      title: "Layout",
+      index: 0,
+      styles: [],
+      // attributes: ["align", "valign"],
+      attributes: [],
+      hasVisibility: true,
+    },
+    spacing: {
+      title: "Spacing",
+      index: 1,
+      styles: ["padding", "margin-top", "margin-bottom"],
+      attributes: [],
+    },
+    typography: {
+      title: "Typography",
+      index: 2,
+      styles: [
+        "color",
+        "font-size",
+        "font-weight",
+        "line-height",
+        "letter-spacing",
+        "text-align",
+        "font-family",
+      ],
+      attributes: [],
+      isContent: true,
+    },
+    background: {
+      title: "Background",
+      index: 3,
+      styles: ["background-color"],
+      attributes: ["background"],
+    },
+    borders: {
+      title: "Borders",
+      index: 4,
+      styles: ["border-radius", "border-top"],
+      attributes: [],
+    },
+    effects: {
+      title: "Effects",
+      index: 5,
+      styles: ["box-shadow"],
+      attributes: [],
+    },
+    link: {
+      title: "Link",
+      index: 6,
+      styles: [],
+      attributes: ["href"],
+    },
+    media: {
+      title: "Media",
+      index: 7,
+      styles: [],
+      attributes: ["src"],
+    },
+  };
+
+  const focusedElement = computed(() => {
+    return store.getters["canvas/focusedElement"];
+  });
+
+  const focusedChildrenElements = computed(() => {
+    return store.getters["canvas/focusedChildrenElements"];
+  });
+
+  const focusedIndex = computed(() => {
+    return store.getters["canvas/focusedIndex"];
+  });
+
+  const hasFocused = computed(() => {
+    return focusedElement.value !== null && focusedIndex.value !== null;
+  });
+
+  const workspaceComponents = computed(() => {
+    return store.getters["canvas/workspaceComponents"];
+  });
+
+  const styles = computed(() => {
+    return Object.keys(focusedElement.value?.attributes?.style?.value || []);
+  });
+
+  //This is duplicated in focus.ts
+  const isFocusedTheFirstElement = computed(() => {
+    if (!hasFocused.value) return false;
+    const componentItem = workspaceComponents.value[focusedIndex.value];
+    const firstElement = componentItem.json[0];
+    return focusedElement.value.id === firstElement.id;
+  });
+
+  const parentStyles = computed(() => {
+    let keys: string[] = [];
+    for (const focusedChild of focusedChildrenElements.value) {
+      keys = keys.concat(
+        Object.keys(focusedChild.attributes?.style?.value || [])
+      );
+    }
+    return keys;
+  });
+
+  const isParentStyle = (style: string) => {
+    return !!(style && parentStyles.value.includes(style));
+  };
+
+  const attributes = computed(() => {
+    return Object.keys(focusedElement.value?.attributes || {});
+  });
+
+  // const parentAttributes = computed(() => {
+  //   return Object.keys(focusedParentElement.value?.attributes || {});
+  // });
+
+  const parentAttributes = computed(() => {
+    let keys: string[] = [];
+    for (const focusedChild of focusedChildrenElements.value) {
+      keys = keys.concat(Object.keys(focusedChild.attributes));
+    }
+    return keys;
+  });
+
+  const isParentAttribute = (attribute: string) => {
+    return !!(attribute && parentAttributes.value.includes(attribute));
+  };
+
+  const showStyle = (style: string) => {
+    return style ? styles.value.includes(style) : true;
+  };
+
+  const childHasStyle = (index: number, style: string) => {
+    const childStyles =
+      focusedChildrenElements.value?.[index]?.attributes?.style?.value || {};
+    return Object.keys(childStyles).includes(style);
+  };
+
+  const childHasAttribute = (index: number, attribute: string) => {
+    const childAttributes =
+      focusedChildrenElements.value?.[index]?.attributes || {};
+    return Object.keys(childAttributes).includes(attribute);
+  };
+
+  const hasCurrentOrChildrenStyles = (style: string) => {
+    return style
+      ? styles.value.includes(style) || parentStyles.value.includes(style)
+      : true;
+  };
+
+  // const showStyle = (style: string) => {
+  //   return style ? styles.value.includes(style) : true;
+  // };
+
+  const hasCurrentOrChildrenAttributes = (attribute: string) => {
+    return attribute
+      ? attributes.value.includes(attribute) ||
+          parentAttributes.value.includes(attribute)
+      : true;
+  };
+
+  const hasAttributes = (attribute: string) => {
+    return attributes.value.includes(attribute);
+  };
+
+  const hasParentContents = (modifier: string) => {
+    if (focusedChildrenElements.value.length === 0) return false;
+    for (const focusedChild of focusedChildrenElements.value) {
+      if (
+        focusedChild[modifier] == null ||
+        focusedChild[modifier] == undefined
+      ) {
+        return false;
+      }
+    }
+    return true;
+  };
+
+  const hasContent = (modifier: string) => {
+    if (!focusedElement.value) return false;
+    if (
+      focusedElement.value[modifier] === null ||
+      focusedElement.value[modifier] === undefined
+    ) {
+      return false;
+    }
+    return true;
+  };
+
+  const hasChildOrParentContent = (modifier: string) => {
+    return hasContent(modifier) || hasParentContents(modifier);
+  };
+
+  const childHasContent = (index: number, modifier: string) => {
+    const childContent = focusedChildrenElements.value?.[index];
+    if (!childContent) return false;
+    //Allow empty string because of text
+    if (
+      childContent[modifier] === null ||
+      childContent[modifier] === undefined
+    ) {
+      return false;
+    }
+    return true;
+  };
+
+  const showTab = (tab: TabStyles) => {
+    for (const style of tab.styles) {
+      const hasStyle = hasCurrentOrChildrenStyles(style);
+      if (hasStyle) return true;
+    }
+    for (const attr of tab.attributes) {
+      const hasAttr = hasCurrentOrChildrenAttributes(attr);
+      if (hasAttr) return true;
+    }
+
+    return (
+      (tab.isContent && hasChildOrParentContent("textContent")) ||
+      (tab.hasVisibility &&
+        hasChildOrParentContent("visibility") &&
+        !isFocusedTheFirstElement.value) //Show visibility only if not the first element
+    );
+  };
+
+  const resetTabStates = () => {
+    const indices: Record<string, boolean> = {};
+    for (const key in tabsStyles) {
+      const tab = tabsStyles[key];
+      if (showTab(tab)) {
+        indices[tab.index.toString()] = false;
+      }
+    }
+    return indices;
+  };
+
+  const getIndexOfTab = (
+    type: CanvasEditableTypes,
+    name = ""
+  ): number | null => {
+    for (const key in tabsStyles) {
+      const tab = tabsStyles[key];
+
+      if (
+        type === CanvasEditableTypes.STYLE &&
+        name &&
+        tab.styles.includes(name)
+      ) {
+        return tab.index;
+      }
+
+      if (
+        type === CanvasEditableTypes.ATTRIBUTE &&
+        name &&
+        tab.attributes.includes(name)
+      ) {
+        return tab.index;
+      }
+
+      if (type === CanvasEditableTypes.CONTENT && tab.isContent) {
+        return tab.index;
+      }
+
+      if (type === CanvasEditableTypes.CONTENT && tab.hasVisibility) {
+        return tab.index;
+      }
+    }
+    return null; // Return null if not found
+  };
+  const openModifierTab = (type: CanvasEditableTypes, modifier = "") => {
+    const index = getIndexOfTab(type, modifier);
+    if (index === null) return;
+    store.commit("panel/SET_ACTIVE_TAB_STATE", index.toString());
+    console.log("<<<<<<<<< openModifierTab >>>>>>>>>>");
+
+    setTimeout(() => {
+      console.log("<<<<<<<<< >>>>>>>>>>");
+      // modifier =
+      //   modifier === "textContent" ? CanvasEditableTypes.CONTENT : modifier;
+      scrollTo(`#panel-tab-${index} #${modifier ? modifier : type}`); //If modifier is empty use type, this will work for content scenario
+    }, 0);
+  };
+
+  return {
+    showTab,
+    isParentAttribute,
+    isParentStyle,
+    hasCurrentOrChildrenStyles,
+    childHasStyle,
+    childHasAttribute,
+    showStyle,
+    hasAttributes,
+    hasContent,
+    childHasContent,
+    tabsStyles,
+    getIndexOfTab,
+    resetTabStates,
+    openModifierTab,
+  };
+}

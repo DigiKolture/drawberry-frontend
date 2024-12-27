@@ -1,82 +1,56 @@
 <template>
-  <PanelStyle title="IMAGE LINK">
+  <PanelStyle :modifier="name" title="IMAGE LINK">
     <div class="content__style">
-      <PanelStyleTabs @update="updateTab" :titles="titles">
-        <BaseMediaImageUpload
-          v-model="src"
-          @update="updateImage"
-          v-if="activeIndex === 0"
-        />
-        <div v-if="activeIndex === 1" class="content__style__media__text">
-          <input
-            v-model="src"
-            type="url"
-            @focus="isInputFocused = true"
-            required
-            class="input__style__text"
-          />
-          <BaseButtonIcon
-            v-if="isInputFocused"
-            @click="updateImage"
-            icon="canvas/panel/styles/media/update"
-          />
-        </div>
-      </PanelStyleTabs>
+      <BaseImageTextUpload v-model="modifier" @confirm="updateImage" />
     </div>
   </PanelStyle>
 </template>
 <script lang="ts">
-import { computed, defineComponent, ref, watch } from "vue";
+import { defineComponent, ref } from "vue";
 import PanelStyle from "./PanelStyle.vue";
-import store from "@/store";
-import PanelStyleTabs from "@/components/canvas/panel/PanelStyleTabs.vue";
-import BaseButtonIcon from "@/components/icon/BaseButtonIcon.vue";
-import { helpers } from "@/composables/helpers";
-import BaseMediaImageUpload from "@/components/canvas/panel/BaseMediaImageUpload.vue";
-//TODO Split Image Components
+import BaseImageTextUpload from "@/components/canvas/panel/BaseImageTextUpload.vue";
+import { modifiersUpdater } from "@/composables/canvas/modifiers/modifiers-updater";
+import { HistoryActionTypes } from "@/store/modules/history/types";
+
 export default defineComponent({
   name: "ImageAttribute",
   components: {
-    BaseMediaImageUpload,
-    BaseButtonIcon,
-    PanelStyleTabs,
+    BaseImageTextUpload,
     PanelStyle,
   },
-
-  setup() {
+  props: {
+    childId: {
+      type: String,
+      default: "",
+      required: false,
+    },
+    childIndex: {
+      type: Number,
+      default: -1,
+      required: false,
+    },
+  },
+  setup(props) {
     const name = "src";
-    const titles = ["Upload", "Url"];
-    const { isValidImageUrl } = helpers();
 
-    const focusedElement = computed(() => {
-      return store.getters["canvas/focusedElement"];
-    });
+    const { modifier } = modifiersUpdater(
+      props,
+      name,
+      HistoryActionTypes.COMPONENT_ATTRIBUTE
+    );
+
     let activeIndex = ref(0);
     const isInputFocused = ref(false);
 
-    const src = ref(focusedElement.value.attributes[name].value);
-
-    const updateTab = (index: number) => {
-      activeIndex.value = index;
-    };
-
     const updateImage = async () => {
-      const isValid = await isValidImageUrl(src.value);
-      if (!isValid) return;
-      focusedElement.value.attributes[name].value = src.value;
-      await store.dispatch("canvas/updateFocusedElement", focusedElement.value);
+      // if (!modifier.value) return;
       isInputFocused.value = false;
     };
 
-    watch(focusedElement, (newVal) => {
-      src.value = newVal.attributes[name].value;
-    });
-
     return {
+      name,
       activeIndex,
-      src,
-      titles,
-      updateTab,
+      modifier,
       updateImage,
       isInputFocused,
     };

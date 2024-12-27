@@ -39,7 +39,7 @@ export default {
       let a;
       if (left < 0) a = 0;
       else if (left > containerWidth) a = 1;
-      else a = Math.round((left * 100) / containerWidth) / 100;
+      else a = Math.round((left * 10) / containerWidth) / 10;
 
       if (this.colors.a !== a) {
         this.$emit("change", {

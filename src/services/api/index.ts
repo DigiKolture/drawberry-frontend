@@ -1,9 +1,13 @@
 import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from "axios";
 import store from "@/store";
 import router from "@/router";
-// const baseDomain = process.env.VUE_APP_BASE_API_URL;
-const baseDomain = "https://api.drawberry.io";
-// const baseDomain = "http://localhost:4000";
+const env = process.env.VUE_APP_ENVIRONMENT;
+let baseDomain = process.env.VUE_APP_BASE_API_URL;
+
+if (env === "local") {
+  baseDomain = "http://localhost:4000";
+}
+
 const baseURL = `${baseDomain}/api/v1`;
 
 const httpClient = axios.create({
@@ -41,6 +45,7 @@ httpClient.interceptors.response.use(
   }
 );
 
-httpClient.defaults.timeout = 20000;
+// httpClient.defaults.timeout = 20000;
+httpClient.defaults.timeout = 40000;
 
 export default httpClient;

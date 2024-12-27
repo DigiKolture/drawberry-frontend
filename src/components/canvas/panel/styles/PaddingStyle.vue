@@ -1,5 +1,5 @@
 <template>
-  <PanelStyle title="Padding">
+  <PanelStyle :modifier="name" :title="`Padding`">
     <div class="spacing__style">
       <div class="spacing__style__tab__item">
         <div class="spacing__style__outer__rect">
@@ -32,31 +32,39 @@
   </PanelStyle>
 </template>
 <script lang="ts">
-import { computed, defineComponent, reactive, ref, watch } from "vue";
+import { defineComponent, reactive, ref, watch } from "vue";
 import PanelStyle from "./PanelStyle.vue";
 import BaseSliderIcon from "../BaseSliderIcon.vue";
-import store from "@/store";
 import { styles } from "@/composables/canvas/styles";
+import { modifiersUpdater } from "@/composables/canvas/modifiers/modifiers-updater";
 
 export default defineComponent({
   name: "PaddingStyle",
   components: { BaseSliderIcon, PanelStyle },
+  props: {
+    childId: {
+      type: String,
+      default: "",
+      required: false,
+    },
+    childIndex: {
+      type: Number,
+      default: -1,
+      required: false,
+    },
+  },
 
-  setup() {
+  setup(props) {
     const name = "padding";
     const unit = "px";
     const { parsePadding, getDefaultPaddingValue, getDefaultPaddingPosition } =
       styles();
 
+    const { modifier } = modifiersUpdater(props, name);
+
     const paddingOptions = ["top", "left", "right", "bottom"];
 
-    const focusedElement = computed(() => {
-      return store.getters["canvas/focusedElement"];
-    });
-
-    let padding: any = reactive(
-      parsePadding(focusedElement.value.attributes.style.value[name])
-    );
+    let padding: any = reactive(parsePadding(modifier.value));
 
     const activePadding = ref(getDefaultPaddingPosition(padding));
     const singlePadding = ref(padding[activePadding.value] ?? padding.top);
@@ -68,6 +76,10 @@ export default defineComponent({
       } else {
         singlePadding.value = centerValue.value;
       }
+    });
+
+    watch(centerValue, (newVal) => {
+      singlePadding.value = newVal;
     });
 
     watch(singlePadding, (newVal) => {
@@ -85,11 +97,17 @@ export default defineComponent({
       }
     });
 
-    watch(padding, (newVal) => {
-      focusedElement.value.attributes.style.value[
-        name
-      ] = `${newVal.top}${unit} ${newVal.right}${unit} ${newVal.bottom}${unit} ${newVal.left}${unit}`;
-      store.dispatch("canvas/updateFocusedElement", focusedElement.value);
+    watch(
+      () => ({ ...padding }),
+      (newVal) => {
+        modifier.value = `${newVal.top}${unit} ${newVal.right}${unit} ${newVal.bottom}${unit} ${newVal.left}${unit}`;
+      }
+    );
+
+    watch(modifier, (newVal) => {
+      const parsedPadding = parsePadding(newVal);
+      Object.assign(padding, parsedPadding);
+      centerValue.value = getDefaultPaddingValue(padding);
     });
 
     const changePaddingOption = (option: string) => {
@@ -101,6 +119,7 @@ export default defineComponent({
     };
 
     return {
+      name,
       singlePadding,
       activePadding,
       paddingOptions,

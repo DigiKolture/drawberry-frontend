@@ -1,14 +1,22 @@
 import { GetterTree } from "vuex";
 import {
+  CanvasLoadingState,
   CanvasState,
   CurrentHoverElementType,
   ProjectStyle,
+  UpdatedComponent,
 } from "@/store/modules/canvas/types";
 import { RootState } from "@/store/types";
 
 export const getters: GetterTree<CanvasState, RootState> = {
   focusedElement(state: CanvasState): object | null {
     return state.focusedElement;
+  },
+  focusedParentElement(state: CanvasState): object | null {
+    return state.focusedParentElement;
+  },
+  focusedChildrenElements(state: CanvasState): object | null {
+    return state.focusedChildrenElements;
   },
   focusedIndex(state: CanvasState): number | null {
     return state.focusedIndex;
@@ -19,8 +27,26 @@ export const getters: GetterTree<CanvasState, RootState> = {
   workspaceComponents(state: CanvasState): object[] | null {
     return state.workspaceComponents;
   },
+  saveStatus(state: CanvasState): string {
+    return state.saveStatus;
+  },
+  loadState(state: CanvasState): CanvasLoadingState {
+    return state.loadState;
+  },
+  hasWorkspaceComponent(state: CanvasState): boolean {
+    return state.hasWorkspaceComponent;
+  },
+  generalStyle(state: CanvasState): ProjectStyle {
+    return state.generalStyle;
+  },
   style(state: CanvasState): ProjectStyle {
     return state.style;
+  },
+  updatedComponents(state: CanvasState): UpdatedComponent[] {
+    return state.updatedComponents;
+  },
+  scrollIntervalsIds(state: CanvasState): number[] {
+    return state.scrollIntervalsIds;
   },
   googleFonts(state: CanvasState): any[] {
     return state.googleFonts;
@@ -31,10 +57,13 @@ export const getters: GetterTree<CanvasState, RootState> = {
   sidebarNavContent(state: CanvasState): string | null {
     return state.sidebarNavContent;
   },
-  currentPreview(state: CanvasState): string | null {
-    return state.currentPreview;
-  },
   sidebarDock(state: CanvasState): boolean {
     return state.sidebarDock;
+  },
+  dropLoading(state: CanvasState): boolean {
+    return state.dropLoading;
+  },
+  savedColors(state: CanvasState): string[] {
+    return state.savedColors;
   },
 };

@@ -1,7 +1,7 @@
 <template>
-  <PanelStyle name="font" title="Font">
+  <PanelStyle :modifier="`general-${name}`" name="font" title="Font">
     <div class="font__style">
-      <select class="canvas__select" v-model="family" id="">
+      <select class="canvas__select" v-model="localValue" id="">
         <option
           :key="key"
           v-for="(font, key) in googleFonts"
@@ -18,13 +18,16 @@ import { computed, defineComponent, ref, watch } from "vue";
 import PanelStyle from "@/components/canvas/panel/styles/PanelStyle.vue";
 import store from "@/store";
 import { fonts } from "@/composables/canvas/fonts";
+import { generalStyleUpdater } from "@/composables/canvas/modifiers/general-style-updater";
 
 export default defineComponent({
   name: "SidebarFontStyle",
   components: { PanelStyle },
 
   setup() {
-    const name = "font-family";
+    const name = "fontFamily";
+    const { modifier } = generalStyleUpdater(name);
+
     const googleFonts = computed(() => {
       return store.getters["canvas/googleFonts"];
     });
@@ -32,38 +35,28 @@ export default defineComponent({
     const { extractFirstFontFamily, getFullFamily, getFont, getFontWeights } =
       fonts();
 
-    const style = computed(() => {
-      return store.getters["canvas/style"];
-    });
+    const localValue = ref(extractFirstFontFamily(modifier.value));
 
-    const family = ref(extractFirstFontFamily(style.value.fontFamily));
-    const fullFamily = ref(style.value.fontFamily);
-
-    const project = computed(() => {
-      return store.getters["projects/project"];
-    });
-
-    watch(family, (newVal) => {
+    watch(localValue, (newVal) => {
       if (!newVal) return;
-      fullFamily.value = getFullFamily(newVal);
-      if (!fullFamily.value) return;
+      const fullFamily = getFullFamily(newVal);
+      if (!fullFamily) return;
+      modifier.value = fullFamily;
       const font = getFont(newVal);
       const weights = getFontWeights(font.variants);
-      style.value.fontFamily = fullFamily.value;
-      store.dispatch("canvas/updateProjectStyle", style.value).then();
-      store
-        .dispatch("canvas/updateAllProjectComponentsStyles", {
-          projectId: project.value.id,
-          style: {
-            "font-family": fullFamily.value,
-            "font-weight": 400,
-          },
-        })
-        .then();
+      //Reset font weight after changing font family
+      store.commit("canvas/UPDATE_ALL_PROJECT_COMPONENTS_STYLE", {
+        "font-family": modifier.value,
+        "font-weight": 400,
+      });
       store.commit("canvas/SET_FONT_WEIGHTS", weights);
     });
 
-    return { family, fullFamily, googleFonts };
+    watch(modifier, (newVal) => {
+      localValue.value = extractFirstFontFamily(newVal);
+    });
+
+    return { localValue, googleFonts, name };
   },
 });
 </script>

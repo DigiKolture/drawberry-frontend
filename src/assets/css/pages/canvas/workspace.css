@@ -1,7 +1,49 @@
 /*@import url('https://fonts.googleapis.com/css2?family=Agdasima:wght@400;700&display=swap');*/
+
+
+.canvas__workspace__skeleton__container{
+    @apply h-full w-full flex justify-center;
+}
+
+.canvas__workspace__skeleton{
+    @apply text-center flex flex-col items-center ;
+    margin-top: 72px;
+    width: 365px;
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 162%;
+    text-align: center;
+    color: var(--color-grey-40);
+    row-gap: 16px;
+}
+
+.canvas__workspace__skeleton__items{
+    @apply flex flex-col w-full;
+    row-gap: 18px;
+}
+
+.canvas__workspace__skeleton__items div:first-child{
+    background: var(--color-grey-10);
+    border-radius: 8px;
+    height: 94px;
+}
+
+.canvas__workspace__skeleton__items div:nth-child(2){
+    background: var(--color-grey-10);
+    border-radius: 8px;
+    height: 54px;
+}
+
+
+.canvas__workspace__empty__container{
+    @apply h-full w-full flex justify-center;
+    /*background-color: chartreuse;*/
+}
+
 .canvas__workspace__empty{
-    @apply text-center flex flex-col items-center;
+    @apply text-center flex flex-col items-center justify-center;
     margin-top: 117px;
+    height: 127px;
     width: 362px;
     row-gap: 24px;
 }
@@ -31,9 +73,8 @@
 }
 
 .workspace__component__items__container{
-    @apply flex flex-col items-center;
+    @apply flex flex-col items-center h-full;
     width: 600px;
-    /* background-color: red; */
     /*height: 100vh;*/
 }
 
@@ -50,9 +91,61 @@
 }
 
 .workspace__component__items__list__item {
-    @apply cursor-pointer w-full;
+    @apply cursor-pointer w-full relative;
 }
 
+.workspace__component__items__list__item.decoy{
+    height: 40px;
+}
+
+.workspace__component__drop__indicator{
+    @apply relative  flex items-center justify-center w-full;
+    z-index: 20;
+    height: 2px;
+    background-color: #1873CD;
+    /*margin-top: -10px;*/
+}
+
+.workspace__component__drop__indicator.cards{
+    @apply absolute;
+    margin-top: -10px;
+}
+
+.workspace__component__drop__indicator svg{
+}
+
+.workspace__component__drop__skeleton{
+    @apply  flex items-center justify-center w-full;
+    height: 69px;
+    border: 1px dashed rgba(132, 143, 159, 0.50);
+    background: #F6F6F6;
+}
+
+.workspace__component__drop__skeleton.cards{
+    border-radius: 8px;
+    margin-bottom: 15px;
+}
+
+.workspace__component__drop__skeleton svg {
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.workspace__component__drop__indicator span{
+    @apply flex items-center justify-center;
+    height: 16px;
+    width: 16px;
+    border-radius: 40px;
+    background-color: #1873CD;
+}
 
 .workspace__component__item__actions{
     @apply flex flex-col absolute;

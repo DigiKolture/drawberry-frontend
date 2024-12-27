@@ -1,56 +1,55 @@
 <template>
-  <PanelStyle title="Border radius">
+  <PanelStyle :modifier="name" title="Border radius">
     <div class="border__radius__style">
       <BaseSliderIcon
-        v-model="radius"
+        v-model="localValue"
         icon="canvas/panel/styles/border-radius"
       />
     </div>
   </PanelStyle>
 </template>
 <script lang="ts">
-import { computed, defineComponent, ref, watch } from "vue";
+import { defineComponent, ref, watch } from "vue";
 import PanelStyle from "./PanelStyle.vue";
 import BaseSliderIcon from "../BaseSliderIcon.vue";
-import store from "@/store";
+import { modifiersUpdater } from "@/composables/canvas/modifiers/modifiers-updater";
 
 export default defineComponent({
   name: "BorderRadiusStyle",
   components: { BaseSliderIcon, PanelStyle },
 
-  setup() {
+  props: {
+    childId: {
+      type: String,
+      default: "",
+      required: false,
+    },
+    childIndex: {
+      type: Number,
+      default: -1,
+      required: false,
+    },
+  },
+
+  setup(props) {
     const name = "border-radius";
     const unit = "px";
 
-    const focusedElement = computed(() => {
-      return store.getters["canvas/focusedElement"];
+    const { modifier } = modifiersUpdater(props, name);
+
+    const localValue = ref(modifier.value?.slice(0, -2));
+
+    watch(localValue, (newVal) => {
+      modifier.value = `${newVal}${unit}`;
     });
 
-    const radius = ref(
-      focusedElement.value.attributes.style.value[name].slice(0, -2)
-    );
-    const radiusWithUnit = ref(
-      focusedElement.value.attributes.style.value[name]
-    );
-
-    watch(radius, (newVal: string | number) => {
-      if (typeof newVal === "string" && newVal.endsWith(unit)) {
-        radiusWithUnit.value = newVal;
-      } else {
-        radiusWithUnit.value = newVal + unit;
-      }
-      focusedElement.value.attributes.style.value[name] = radiusWithUnit.value;
-      store.dispatch("canvas/updateFocusedElement", focusedElement.value);
-    });
-
-    watch(focusedElement, (newVal) => {
-      radius.value = newVal.attributes.style.value[name].slice(0, -2);
-      radiusWithUnit.value = newVal.attributes.style.value[name];
+    watch(modifier, (newVal) => {
+      localValue.value = newVal?.slice(0, -2);
     });
 
     return {
-      radius,
-      radiusWithUnit,
+      name,
+      localValue,
     };
   },
 });

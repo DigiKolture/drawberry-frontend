@@ -16,6 +16,7 @@ input.base__input::placeholder {
 }
 
 input.base__input, select.base__select{
+    @apply w-full;
     background: #E1E6ED;
     border-radius: 4px;
     padding: 13px 16px;
@@ -43,18 +44,45 @@ textarea:focus-visible{
     outline: none;
 }
 
-button.button{
-    @apply text-white;
+button.button, a.button{
+    @apply text-white flex items-center justify-center cursor-pointer;
     border-radius: 4px;
     padding-top: 13px;
     padding-bottom: 13px;
-    font-size: 14px;
+    font-size: 12px;
     font-weight: 500;
     line-height: 18px;
 }
 
+.button.button__outline{
+    border: 1px solid #848F9F;
+    padding: 8px;
+}
+.button.grey{
+    font-weight: 500;
+    font-size: 14px;
+    border-radius: 4px;
+    padding: 12px 24px;
+    width: 83px;
+    height: 42px;
+    background: var(--color-grey-30);
+}
+.button.regular{
+    font-weight: 500;
+    font-size: 14px;
+    text-align: center;
+    color: var(--color-grey-00);
+    padding: 9px 20px;
+}
+
+
 button:disabled{
     @apply pointer-events-none;
+}
+
+svg.loader{
+    @apply static;
+    animation: rotateAnimation 2s linear infinite;
 }
 
 button.button.success{
@@ -63,8 +91,14 @@ button.button.success{
     padding: 9px 20px;
 }
 
+button.button.danger{
+    background: #DC4437;
+    border-radius: 4px;
+    padding: 9px 20px;
+}
+
 button.button__text__icon{
-    @apply flex items-center text-white bg-transparent text-white;
+    @apply flex items-center text-white bg-transparent;
     column-gap: 11px;
     font-weight: 500;
     font-size: 14px;
@@ -79,3 +113,23 @@ button.button__text__icon.success{
     border-radius: 4px;
     padding: 11px 13px 11px 16px;
 }
+
+button.button__text__icon.grey{
+    background: #494B57;
+    border-radius: 4px;
+    padding: 9px 8px 9px 8px;
+
+}
+
+.input__group{
+    @apply relative w-full;
+}
+
+.input__group__append{
+    @apply absolute flex items-center;
+    top: 0;
+    bottom: 0;
+    inset-inline-end: 0;
+    padding-right: 17px;
+}
+

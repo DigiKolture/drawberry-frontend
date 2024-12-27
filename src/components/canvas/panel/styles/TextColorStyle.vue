@@ -1,54 +1,60 @@
 <template>
-  <PanelStyle name="color" title="Text COLOR">
+  <PanelStyle :modifier="name" name="color" title="Text COLOR">
     <ColorPickerStyle
-      ref="colorPickerStyleRef"
-      :color="color"
-      @update-color="updateColor"
+      :type="ColorPickerTypes.PANEL_STYLE_TEXT_COLOR"
+      v-model="color"
     />
   </PanelStyle>
 </template>
 <script lang="ts">
-import { computed, defineComponent, ref, watch } from "vue";
+import { defineComponent, ref, watch } from "vue";
 import PanelStyle from "./PanelStyle.vue";
 import ColorPickerStyle from "@/components/canvas/panel/ColorPickerStyle.vue";
-import store from "@/store";
+import { ColorPickerTypes } from "@/store/modules/modals/types";
+import { modifiersUpdater } from "@/composables/canvas/modifiers/modifiers-updater";
 
 export default defineComponent({
   name: "TextColorStyle",
+  computed: {
+    ColorPickerTypes() {
+      return ColorPickerTypes;
+    },
+  },
+  props: {
+    childId: {
+      type: String,
+      default: "",
+      required: false,
+    },
+    childIndex: {
+      type: Number,
+      default: -1,
+      required: false,
+    },
+  },
   components: { ColorPickerStyle, PanelStyle },
-  setup() {
-    const show = ref(true);
+  setup(props) {
     const name = "color";
+    const { modifier } = modifiersUpdater(props, name);
 
-    const colorPickerStyleRef = ref();
-
-    const focusedElement = computed(
-      () => store.getters["canvas/focusedElement"]
-    );
+    const show = ref(true);
 
     const color = ref({
-      hex8: focusedElement.value.attributes.style.value[name],
+      hex8: modifier.value,
     });
 
     watch(color, (newVal: any) => {
-      focusedElement.value.attributes.style.value[name] = newVal.hex8;
-      store.dispatch("canvas/updateFocusedElement", focusedElement.value);
+      modifier.value = newVal.hex8;
     });
 
-    watch(focusedElement, (newVal) => {
-      colorPickerStyleRef.value.updateColor(color.value);
-      color.value.hex8 = newVal.attributes.style.value[name];
+    watch(modifier, (newVal: any) => {
+      color.value.hex8 = newVal;
     });
-
-    const updateColor = (newVal: any) => {
-      color.value = newVal;
-    };
 
     return {
+      name,
       show,
       color,
-      colorPickerStyleRef,
-      updateColor,
     };
   },
 });

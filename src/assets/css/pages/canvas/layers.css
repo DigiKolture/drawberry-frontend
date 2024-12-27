@@ -1,7 +1,6 @@
 .layers__component__items{
     margin-top: 4px;
-    @apply flex flex-col h-full overflow-x-auto;
-    row-gap: 5px;
+    @apply flex flex-col h-full overflow-y-auto;
 }
 
 .layers__component__item__header{
@@ -9,6 +8,10 @@
     /*column-gap: 5px;*/
     padding-top: 8px;
     padding-bottom: 8px;
+}
+
+.layers__component__item__header.decoy{
+    height: 40px;
 }
 
 .layers__component__item__header__move{
@@ -29,8 +32,21 @@
     height: 15px;
 }
 
-.layers__component__item__header:hover, .layers__component__item__header.active{
-    background: #494B57;
+.layers__component__item.hovered .layers__component__item__header.hover,
+.layers__component__item.hovered .layers__component__item__element.hover{
+  background-color: #353843;
+}
+
+.layers__component__item.focused .layers__component__item__header.focus,
+.layers__component__item.focused .layers__component__item__element.focus{
+    background-color: #494B57;
+}
+
+.layer__element__drop__indicator{
+    @apply w-full;
+    height: 2px;
+    background-color: #1873CD;
+
 }
 
 .layers__component__item__header:hover svg path{
@@ -58,10 +74,6 @@
     @apply flex items-center cursor-pointer;
     column-gap: 6px;
     padding: 8px 40px 8px 53px;
-}
-
-.layers__component__item__element.active{
-    background: #494B57;
 }
 
 .layers__component__item__element:hover svg path, .layers__component__item__element.active svg path{

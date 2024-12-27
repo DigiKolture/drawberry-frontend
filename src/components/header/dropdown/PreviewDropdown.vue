@@ -3,15 +3,23 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, onMounted } from "vue";
-import store from "@/store";
+import { defineComponent } from "vue";
 import DropdownLayout from "@/components/layout/dropdown/DropdownLayout.vue";
+import router from "@/router";
+import { useRoute } from "vue-router";
+import store from "@/store";
 
 export default defineComponent({
   name: "PreviewDropdown",
+  props: {
+    isPreview: {
+      type: Boolean,
+      required: true,
+    },
+  },
   components: { DropdownLayout },
 
-  setup(props, { emit }) {
+  setup(props) {
     const data = [
       {
         icon: "header/preview/desktop",
@@ -30,10 +38,17 @@ export default defineComponent({
       },
     ];
 
+    const route = useRoute();
+
     const handleClick = (dropdownName: string) => {
       if (dropdownName === "mobile" || dropdownName === "desktop") {
-        store.commit("canvas/SET_CURRENT_PREVIEW", dropdownName);
-        //  TODO: Might refresh to remove unnecessary padding added by hover/focus
+        store.commit("preview/SET_CURRENT_PREVIEW", dropdownName);
+        if (!props.isPreview) {
+          router.push({ name: "Preview", params: { id: route.params.id } });
+        }
+      } else if (dropdownName === "email") {
+        store.commit("modals/CLOSE_MODAL", "preview");
+        store.commit("modals/OPEN_MODAL", "email_preview");
       }
     };
 

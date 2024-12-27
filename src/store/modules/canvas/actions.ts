@@ -1,22 +1,63 @@
 import { ActionTree } from "vuex";
-import { CanvasState } from "@/store/modules/canvas/types";
+import {
+  CanvasSaveStatus,
+  CanvasState,
+  ProjectStyle,
+} from "@/store/modules/canvas/types";
 import { RootState } from "@/store/types";
 import AxiosClient from "@/services/api";
-import { updateDom } from "@/composables/canvas/update_dom";
-import store from "@/store";
+import router from "@/router";
+import { canvas } from "@/composables/canvas/canvas";
+import ObjectId from "bson-objectid";
+import { helpers } from "@/composables/helpers";
+import { HistoryActionTypes } from "@/store/modules/history/types";
+import { history } from "@/composables/canvas/history";
+import { focus } from "@/composables/canvas/focus";
+import { project } from "@/composables/project/project";
 
-// const baseUrl = "/components";
-
-const { updateComponentItemDom } = updateDom();
+const { undoStack } = history();
+const { updateComponentBorder, removeClasses } = canvas();
+const {
+  createProjectComponentObj,
+  duplicateProjectComponentObj,
+  formatProjectComponents,
+} = project();
+const { copyObject } = helpers();
+const { updateHistory } = history();
+const { scrollTo } = focus();
 
 export const actions: ActionTree<CanvasState, RootState> = {
-  getProjectComponentItems({ commit }, projectId: string): Promise<void> {
+  getProjectComponentItems(
+    { commit, getters, dispatch },
+    projectId: string
+  ): Promise<void> {
+    dispatch("prepareCanvas");
+    const sidebarNavContentVal = getters.sidebarNavContent;
     return AxiosClient.get(`/projects/${projectId}`)
       .then((res: any) => {
         const data = res.data;
         commit("projects/SET_PROJECT", data.data.project, { root: true });
-        commit("SET_WORKSPACE_COMPONENTS", data.data.project.components);
-        commit("SET_STYLE", data.data.project.style);
+        commit("history/RESET_HISTORY_STACK", {}, { root: true });
+        commit("SET_WORKSPACE_COMPONENTS", {
+          components: formatProjectComponents(data.data.project.components),
+          saveStatus: CanvasSaveStatus.SAVED,
+        });
+        const style = data.data.project.style;
+        commit("SET_STYLE", {
+          style: { ...style },
+          saveStatus: CanvasSaveStatus.SAVED,
+        });
+        commit("SET_GENERAL_STYLE", { ...style });
+
+        const hasWorkspaceComponent =
+          data.data.project.components &&
+          data.data.project.components.length > 0;
+
+        commit("SET_HAS_WORKSPACE_COMPONENTS", hasWorkspaceComponent);
+        if (hasWorkspaceComponent) {
+          commit("SET_SIDEBAR_NAVBAR_CONTENT", sidebarNavContentVal);
+        }
+
         return res.data;
       })
       .catch((err: any): any => {
@@ -40,25 +81,48 @@ export const actions: ActionTree<CanvasState, RootState> = {
         }
       });
   },
-  storeProjectComponent({ state, commit }, { projectId, data }): Promise<void> {
-    return AxiosClient.post(`/projects/${projectId}/components`, data)
-      .then((res: any) => {
-        // dispatch("getProjectComponentItems", projectId);
-        const data = res.data;
-        const component = data.data.component;
-        state.workspaceComponents.push(component);
-        commit("SET_WORKSPACE_COMPONENTS", state.workspaceComponents);
-        return res.data.data;
-      })
-      .catch((err: any): any => {
-        if (err instanceof Error) {
-          const message = err.message;
-          return Promise.reject(new Error(message));
-        }
-      });
+  async addComponentToProject(
+    { state, commit, dispatch },
+    { data }
+  ): Promise<void> {
+    const currentRoute: any = router.currentRoute;
+    const projectId = currentRoute._value.params.id;
+
+    const projectComponentId = new ObjectId().toHexString();
+    // const componentItem = data.componentItem;
+    const componentItem = copyObject(data.componentItem);
+
+    const { html, json } = updateComponentBorder(
+      state.style.layout,
+      componentItem.json,
+      componentItem.html
+    );
+
+    const projectComponent = createProjectComponentObj(
+      projectComponentId,
+      projectId,
+      componentItem,
+      json,
+      html
+    );
+
+    commit("SET_HAS_WORKSPACE_COMPONENTS", true);
+
+    updateHistory({
+      type: HistoryActionTypes.PROJECT_COMPONENT_ADD,
+      projectComponent,
+      positionIndex: data.positionIndex,
+      workspaceComponentItemId: projectComponentId,
+    });
+
+    state.workspaceComponents.splice(data.positionIndex, 0, projectComponent);
+    commit("SET_WORKSPACE_COMPONENTS", state.workspaceComponents);
+
+    dispatch("updateProjectComponentsAndStyles").then();
   },
+
   updateProjectComponent(
-    { dispatch },
+    _,
     { projectId, projectComponentItemId, data }
   ): Promise<void> {
     return AxiosClient.put(
@@ -66,9 +130,6 @@ export const actions: ActionTree<CanvasState, RootState> = {
       data
     )
       .then((res: any) => {
-        // if (set) {
-        //   dispatch("getProjectComponentItems", projectId);
-        // }
         return res.data.data;
       })
       .catch((err: any): any => {
@@ -78,18 +139,36 @@ export const actions: ActionTree<CanvasState, RootState> = {
         }
       });
   },
-  duplicateProjectComponent(
-    { state, commit },
-    { projectId, projectComponentItemId, positionIndex }
-  ): Promise<void> {
-    return AxiosClient.post(
-      `/projects/${projectId}/duplicate/components/${projectComponentItemId}`
-    )
+  async updateProjectComponentsAndStyles({ state, commit }): Promise<void> {
+    // if (!hasProjectChanged()) {
+    //   return;
+    // }
+    const currentRoute: any = router.currentRoute;
+    const projectId = currentRoute._value.params.id;
+
+    const projectComponents = state.workspaceComponents.map(
+      (workspaceComponent) => {
+        return {
+          projectComponentItemId: workspaceComponent.id,
+          json: removeClasses(workspaceComponent.json),
+          componentItemId: workspaceComponent.componentItem,
+          defaultJson: workspaceComponent.defaultJson,
+          html: workspaceComponent.defaultHtml,
+          defaultHtml: workspaceComponent.defaultHtml,
+          componentItemHistoryId: workspaceComponent.componentItemHistory,
+          version: workspaceComponent.version,
+        };
+      }
+    );
+    const style: ProjectStyle = state.style;
+    return AxiosClient.put(`/projects/${projectId}/components/styles`, {
+      projectComponents,
+      style,
+      histories: undoStack.value,
+    })
       .then((res: any) => {
-        const data = res.data;
-        const component = updateComponentItemDom(data.data.component);
-        state.workspaceComponents.splice(positionIndex, 0, component);
-        commit("SET_WORKSPACE_COMPONENTS", state.workspaceComponents);
+        commit("SET_SAVE_STATUS", CanvasSaveStatus.SAVED);
+        commit("SET_UPDATED_COMPONENTS", []);
         return res.data.data;
       })
       .catch((err: any): any => {
@@ -98,17 +177,63 @@ export const actions: ActionTree<CanvasState, RootState> = {
           return Promise.reject(new Error(message));
         }
       });
+  },
+  async duplicateProjectComponent(
+    { state, commit, dispatch },
+    { projectComponentItem, positionIndex }
+  ): Promise<void> {
+    const currentRoute: any = router.currentRoute;
+    const projectId = currentRoute._value.params.id;
+    const newProjectComponentId = new ObjectId().toHexString();
+
+    const projectComponentCleaned = JSON.parse(
+      JSON.stringify(projectComponentItem)
+    );
+
+    // TODO: Might remove removeClasses since I am now checking if the current index is selected or hovered on before showing the border
+
+    const projectComponent = duplicateProjectComponentObj(
+      newProjectComponentId,
+      projectId,
+      projectComponentCleaned
+    );
+
+    updateHistory({
+      type: HistoryActionTypes.PROJECT_COMPONENT_DUPLICATE,
+      projectComponent,
+      positionIndex,
+      workspaceComponentItemId: newProjectComponentId,
+    });
+
+    state.workspaceComponents.splice(positionIndex, 0, projectComponent);
+    commit("SET_WORKSPACE_COMPONENTS", state.workspaceComponents);
+
+    dispatch("updateProjectComponentsAndStyles");
   },
   deleteProjectComponent(
-    { state, commit },
+    { state, commit, dispatch },
     { projectId, projectComponentItemId, positionIndex }
   ): Promise<void> {
+    const projectComponent = state.workspaceComponents[positionIndex];
+
+    updateHistory({
+      type: HistoryActionTypes.PROJECT_COMPONENT_DELETE,
+      projectComponent,
+      positionIndex,
+      workspaceComponentItemId: projectComponentItemId,
+    });
+
+    state.workspaceComponents.splice(positionIndex, 1);
+    commit("SET_WORKSPACE_COMPONENTS", state.workspaceComponents);
+
+    if (state.workspaceComponents.length == 0) {
+      commit("SET_HAS_WORKSPACE_COMPONENTS", false);
+    }
     return AxiosClient.delete(
       `/projects/${projectId}/components/${projectComponentItemId}`
     )
       .then((res: any) => {
-        state.workspaceComponents.splice(positionIndex, 1);
-        commit("SET_WORKSPACE_COMPONENTS", state.workspaceComponents);
+        dispatch("updateProjectComponentsAndStyles");
         return res.data.data;
       })
       .catch((err: any): any => {
@@ -118,42 +243,25 @@ export const actions: ActionTree<CanvasState, RootState> = {
         }
       });
   },
-  updateFocusedElement({ state, dispatch, commit, rootState }, element) {
+  updateFocusedElement({ state, commit }, element) {
     if (state.focusedIndex === null || state.focusedElement === null) return;
 
     //Update DOM before the API (Just to prevent waiting for changes)
     commit("UPDATE_FOCUSED_JSON_AND_DOM", element);
-    const projectComponentItem = state.workspaceComponents[state.focusedIndex];
-    const focusedElement: any = state.focusedElement;
-    const root: any = rootState;
-    const projectId: string = root.projects.projectId;
-
-    dispatch("updateProjectComponent", {
-      projectId,
-      projectComponentItemId: projectComponentItem.id,
-      set: false,
-      data: {
-        elements: [
-          {
-            id: focusedElement.id,
-            attributes: focusedElement.attributes,
-            innerHtml: focusedElement.innerHtml,
-          },
-        ],
-      },
-    });
+    // Not sure why this was added, removing for now because it is causing multiple scrolls
+    setTimeout(() => {
+      if (state.focusedIndex !== null) {
+        // scrollTo(state.focusedIndex, element.id);
+      }
+    }, 0);
+    // const projectComponentItem = state.workspaceComponents[state.focusedIndex];
+    // pushComponentsElementsUpdates(element, projectComponentItem);
   },
-  async updateProjectStyle({ commit, rootState }, style): Promise<void> {
+
+  async updateProjectStyle({ commit }, style): Promise<void> {
     commit("SET_STYLE", style);
-    const root: any = rootState;
-    const projectId: string = root.projects.projectId;
-
-    await store.dispatch("projects/updateProject", {
-      id: projectId,
-      data: { style },
-    });
   },
-  updateFirstProjectComponentsStyles(
+  async updateFirstProjectComponentsStyles(
     { commit },
     { projectId, style }
   ): Promise<void> {
@@ -171,14 +279,8 @@ export const actions: ActionTree<CanvasState, RootState> = {
         }
       });
   },
-  updateAllProjectComponentsStyles(
-    { commit },
-    { projectId, style }
-  ): Promise<void> {
-    commit("UPDATE_ALL_PROJECT_COMPONENTS_STYLE", style);
-    return AxiosClient.put(`/projects/${projectId}/components/all/styles`, {
-      style,
-    })
+  uploadImageToCloudinary(_, data): Promise<void> {
+    return AxiosClient.post(`/utils/upload/image`, data, { timeout: 30000 })
       .then((res: any) => {
         return res.data;
       })
@@ -189,16 +291,20 @@ export const actions: ActionTree<CanvasState, RootState> = {
         }
       });
   },
-  uploadImageToCloudinary(_, data): Promise<void> {
-    return AxiosClient.post(`/utils/upload/image`, data)
-      .then((res: any) => {
-        return res.data;
-      })
-      .catch((err: any): any => {
-        if (err instanceof Error) {
-          const message = err.message;
-          return Promise.reject(new Error(message));
-        }
+  async setSidebarNavbarContent({ commit }, content): Promise<void> {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        commit("SET_SIDEBAR_NAVBAR_CONTENT", content);
+        resolve();
       });
+    });
+  },
+
+  prepareCanvas({ commit }): void {
+    commit("SET_HAS_WORKSPACE_COMPONENTS", false);
+    commit("SET_SIDEBAR_NAVBAR_CONTENT", null);
+    commit("SET_DEFAULT_STYLE");
+    commit("SET_UPDATED_COMPONENTS", []);
+    commit("projects/SET_PROJECT", null, { root: true });
   },
 };

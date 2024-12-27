@@ -1,10 +1,12 @@
 .vc-sketch{
-    @apply absolute;
-    z-index: 100;
-    top: 46px;
-    left: -47px;
+    @apply fixed;
+    z-index: 100000;
+    right: 20px;
 }
 
+.general_style_bg_color.vc-sketch{
+    left: 20px;
+}
 .vc-sketch-field .vc-input__label {
     display: block;
     padding-top: 3px;

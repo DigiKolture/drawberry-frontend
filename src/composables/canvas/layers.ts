@@ -1,19 +1,37 @@
 import { helpers } from "@/composables/helpers";
+import { computed } from "vue";
+import store from "@/store";
 
 export function layers() {
   const { sliceString } = helpers();
+
+  const workspaceComponents = computed(() => {
+    return store.getters["canvas/workspaceComponents"];
+  });
+
+  const hasNumberBeforeImage = (str: string) => {
+    const regex = /\d+image/;
+    return regex.test(str);
+  };
+
+  const extractImageNames = (elementId: string) => {
+    const arr = elementId.split("_");
+    return arr[1].replace("image", "");
+  };
   const getLayerElementTitle = (element: any): string => {
     const id = element.id.toLowerCase();
-    const text = element.innerHtml
-      ? element.innerHtml.trim()
-      : element.innerHtml;
+    const text = element.textContent;
 
-    if (text) {
+    if (text !== null) {
       return sliceString(text, 16);
     } else if (id.includes("background")) {
       return "Background";
     } else if (id.includes("logo")) {
       return "Logo";
+    } else if (hasNumberBeforeImage(id)) {
+      return extractImageNames(id);
+    } else if (id.includes("container")) {
+      return "Container";
     } else if (id.includes("image")) {
       return "Image";
     }
@@ -24,16 +42,18 @@ export function layers() {
 
   const getLayerElementIcon = (element: any): string => {
     const id = element.id.toLowerCase();
-    const text = element.innerHtml;
+    const text = element.textContent;
     let icon = "";
-    if (text) {
+    if (text !== null) {
       icon = "text";
     } else if (id.includes("background")) {
       icon = "background";
-    } else if (id.includes("logo")) {
+    } else if (id.includes("logo") || id.includes("banner")) {
       icon = "image";
     } else if (id.includes("image")) {
       icon = "image";
+    } else if (id.includes("container")) {
+      return "container";
     } else {
       icon = "text";
     }
@@ -48,6 +68,12 @@ export function layers() {
       (el: any) => el.id == elementId
     );
     return jsonIndex;
+  };
+
+  const dragComponentItemLayer = (e: any, itemIndex: number) => {
+    e.dataTransfer.effectAllowed = "move";
+    e.dataTransfer.dropEffect = "move";
+    e.dataTransfer.setData("fromLayerComponentItemIndex", itemIndex);
   };
 
   const addHoverClassToElement = (element: any) => {
@@ -92,13 +118,23 @@ export function layers() {
     return element;
   };
 
+  const resetTabStates = () => {
+    const indices: Record<string, boolean> = {};
+    for (let i = 0; i < workspaceComponents.value.length; i++) {
+      indices[i.toString()] = false;
+    }
+    return indices;
+  };
+
   return {
     getLayerElementTitle,
     getLayerElementIcon,
+    dragComponentItemLayer,
     getComponentElementIndexUsingId,
     addHoverClassToElement,
     removeClassFromElement,
     addClassToElement,
     removeHoverClassFromElement,
+    resetTabStates,
   };
 }

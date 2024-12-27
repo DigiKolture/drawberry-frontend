@@ -6,12 +6,11 @@
         :class="[
           {
             nav__content__docked: docked,
-            preview: currentPreview !== null,
+            has__right__panel: hasWorkspaceComponent && canvasLoaded,
           },
-          currentPreview,
         ]"
       >
-        <aside v-if="!currentPreview" class="canvas__sidebar">
+        <aside class="canvas__sidebar">
           <div class="canvas__sidebar__container">
             <slot name="sidebar" />
           </div>
@@ -20,18 +19,21 @@
           class="canvas__workspace"
           :style="styles"
           id="canvas-workspace"
+          @click="handleClickEmpty"
         >
-          <div class="canvas__workspace__container">
-            <slot name="workspace" />
-          </div>
+          <slot name="workspace" />
         </section>
-
-        <section v-if="!currentPreview" class="canvas__panel" id="canvas-panel">
+        <section
+          v-if="hasWorkspaceComponent && canvasLoaded"
+          class="canvas__panel"
+          id="canvas-panel"
+        >
           <div class="canvas__panel__container">
             <slot name="panel" />
           </div>
         </section>
       </div>
+      <slot name="modals" />
     </section>
   </BaseLayout>
 </template>
@@ -41,6 +43,9 @@ import { computed, defineComponent, onMounted } from "vue";
 import BaseLayout from "@/components/layout/BaseLayout.vue";
 import { ui } from "@/assets/js/canvas";
 import store from "@/store";
+import { canvas } from "@/composables/canvas/canvas";
+import { focus } from "@/composables/canvas/focus";
+import { PANEL_STYLE_TYPE_COLORS } from "@/store/modules/modals/types";
 
 export default defineComponent({
   name: "CanvasLayout",
@@ -51,14 +56,17 @@ export default defineComponent({
       ui.mainIndex();
     });
 
-    const currentPreview = computed(() => {
-      return store.getters["canvas/currentPreview"];
-    });
+    const { hasWorkspaceComponent, canvasLoaded } = canvas();
+    const { removeFocus, removeCurrentFocus } = focus();
 
     const styles = computed(() => {
+      if (!canvasLoaded.value) {
+        return {};
+      }
       return {
         backgroundColor: style.value.backgroundColor,
         backgroundImage: `url('${style.value.backgroundImage}')`,
+        backgroundSize: "cover",
       };
     });
 
@@ -70,6 +78,10 @@ export default defineComponent({
       return store.getters["canvas/sidebarDock"];
     });
 
+    const colorPicker = computed(() => {
+      return store.getters["modals/colorPicker"];
+    });
+
     const style = computed(() => {
       return store.getters["canvas/style"];
     });
@@ -78,11 +90,33 @@ export default defineComponent({
       return sidebarDock.value && sidebarNavContent.value !== null;
     });
 
+    const handleClickEmpty = (e: any) => {
+      // Check if the clicked element is within your component or if the clicked element doesnt have an ID
+      const workspaceId = [
+        "canvas-workspace",
+        "canvas-workspace-container",
+        "canvas-workspace-items-container",
+      ];
+
+      const workspaceClasses = ["workspace__component__items__list__item"];
+      if (
+        workspaceId.includes(e.target.id) ||
+        workspaceClasses.some((clas) => e.target.classList.contains(clas))
+      ) {
+        removeCurrentFocus();
+        removeFocus();
+      }
+    };
+
     return {
       sidebarDock,
+      canvasLoaded,
       docked,
+      PANEL_STYLE_TYPE_COLORS,
+      colorPicker,
       styles,
-      currentPreview,
+      hasWorkspaceComponent,
+      handleClickEmpty,
     };
   },
 });

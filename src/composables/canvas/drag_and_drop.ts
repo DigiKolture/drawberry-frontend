@@ -1,7 +1,23 @@
 import store from "@/store";
-import { computed } from "vue";
+import { computed, ref } from "vue";
+import { ui } from "@/assets/js/canvas";
+import { focus } from "@/composables/canvas/focus";
+import { HistoryActionTypes } from "@/store/modules/history/types";
+import { history } from "@/composables/canvas/history";
+const { updateHistory } = history();
 
 export function drag_and_drop() {
+  const intervalId = ref<number | null>(null);
+
+  const { removeCurrentFocus, removeFocus, removeAllFocus } = focus();
+  const SCROLL_INTERVAL = 50; // ms between scroll events
+  const BOTTOM_THRESHOLD = 200;
+  const TOP_THRESHOLD = 250; //Added 50 because of the header
+  const BOTTOM_EDGE_THRESHOLD = 80; // Distance from very edge to trigger extreme scroll
+  const TOP_EDGE_THRESHOLD = 140; // Distance from very edge to trigger extreme scroll
+  const NORMAL_SCROLL_SPEED = 40;
+  const EXTREME_SCROLL_SPEED = 100; // Faster scroll speed when near the very edge
+
   const workspaceComponents = computed(() => {
     return store.getters["canvas/workspaceComponents"];
   });
@@ -10,7 +26,27 @@ export function drag_and_drop() {
     return store.getters["components/componentItems"];
   });
 
+  const scrollIntervalsIds = computed(() => {
+    return store.getters["canvas/scrollIntervalsIds"];
+  });
+
+  const checkIfParentIsBeenDragged = (e: any) => {
+    const isDraggableElement =
+      e.target.classList.contains("component__items__list__item") ||
+      e.target.classList.contains("workspace__component__items__list__item");
+
+    if (!isDraggableElement) {
+      e.preventDefault();
+      return false;
+    }
+
+    return true;
+  };
+
   const dragComponentItemToCanvas = (e: any, itemIndex: any) => {
+    const isParent = checkIfParentIsBeenDragged(e);
+    if (!isParent) return;
+
     e.dataTransfer.effectAllowed = "move";
     e.dataTransfer.dropEffect = "move";
 
@@ -18,7 +54,11 @@ export function drag_and_drop() {
     e.dataTransfer.setData("type", "from-sidebar");
   };
 
-  const moveComponentItem = async (e: any, projectId: string) => {
+  const moveComponentItem = async (
+    e: any,
+    toIndex: number,
+    projectId: string
+  ) => {
     const componentItemIndex = e.dataTransfer.getData("componentItemIndex");
     if (!componentItemIndex) return;
 
@@ -28,17 +68,20 @@ export function drag_and_drop() {
     // workspaceComponents.value.push(componentItem);
     // store.commit("canvas/SET_WORKSPACE_COMPONENTS", workspaceComponents.value);
 
-    // TODO: We will need a loader here
-    await store.dispatch("canvas/storeProjectComponent", {
-      projectId,
-      data: {
-        componentItemId: componentItem.id,
-        positionIndex: workspaceComponents.value.length,
-      },
-    });
+    store
+      .dispatch("canvas/addComponentToProject", {
+        data: {
+          componentItem,
+          positionIndex: toIndex,
+        },
+      })
+      .then();
   };
 
   const moveComponentItemPosition = (e: any, itemIndex: any) => {
+    const isParent = checkIfParentIsBeenDragged(e);
+    if (!isParent) return;
+
     e.dataTransfer.effectAllowed = "move";
     e.dataTransfer.dropEffect = "move";
 
@@ -46,15 +89,23 @@ export function drag_and_drop() {
     e.dataTransfer.setData("type", "from-workspace");
   };
 
+  const focusedIndex = computed(() => {
+    return store.getters["canvas/focusedIndex"];
+  });
+
   const upsertComponentItem = async (
     e: any,
-    toIndex: any,
+    toIndex: number,
     projectId: string
   ) => {
     const type = e.dataTransfer.getData("type");
 
     if (type === "from-sidebar") {
-      await moveComponentItem(e, projectId);
+      ui.changeComponentItemsStatus(false);
+      removeCurrentFocus();
+      removeFocus();
+      await moveComponentItem(e, toIndex, projectId);
+      // focusComponentElement(toIndex, 0);
     } else {
       const fromComponentItemIndex = e.dataTransfer.getData(
         "fromComponentItemIndex"
@@ -62,34 +113,137 @@ export function drag_and_drop() {
 
       if (!fromComponentItemIndex || !projectId) return;
 
-      await changeComponentItemPosition(
-        projectId,
-        parseInt(fromComponentItemIndex),
-        parseInt(toIndex)
-      );
+      changeComponentItemPosition(parseInt(fromComponentItemIndex), toIndex);
     }
   };
 
   const changeComponentItemPosition = async (
-    projectId: string,
     fromIndex: number,
-    toIndex: number
+    toIndex: number,
+    dragAndDrop = true
   ) => {
-    console.log({ projectId });
+    if (fromIndex === toIndex) return;
+
+    if (dragAndDrop) {
+      if (toIndex > 0 && toIndex > fromIndex) toIndex = toIndex - 1;
+    }
+
+    if (focusedIndex.value === fromIndex) {
+      store.commit("canvas/SET_FOCUSED_INDEX", toIndex);
+    } else {
+      removeAllFocus();
+    }
     const projectComponentItem = workspaceComponents.value[fromIndex];
+
+    updateHistory({
+      type: HistoryActionTypes.PROJECT_COMPONENT_MODIFY_POSITION,
+      positionIndex: fromIndex,
+      workspaceComponentItemId: projectComponentItem.id,
+      toIndex,
+    });
 
     workspaceComponents.value.splice(fromIndex, 1);
     workspaceComponents.value.splice(toIndex, 0, projectComponentItem);
 
     store.commit("canvas/SET_WORKSPACE_COMPONENTS", workspaceComponents.value);
 
-    await store.dispatch("canvas/updateProjectComponent", {
-      projectId,
-      projectComponentItemId: projectComponentItem.id,
-      data: {
-        positionIndex: toIndex,
-      },
-    });
+    // TODO: Might remove this, cos API runs every 5 seconds
+    store.dispatch("canvas/updateProjectComponentsAndStyles").then();
+  };
+
+  const handleScroll = (event: any) => {
+    const currentY = event.clientY;
+    const height = window.innerHeight;
+
+    const distanceFromTop = currentY;
+    const distanceFromBottom = height - distanceFromTop;
+
+    // Check for extreme edge cases first
+    if (distanceFromBottom < BOTTOM_EDGE_THRESHOLD) {
+      startScrolling(event, 1, true); // Scroll down fast
+    } else if (distanceFromTop < TOP_EDGE_THRESHOLD) {
+      startScrolling(event, -1, true); // Scroll up fast
+    } else if (distanceFromBottom < BOTTOM_THRESHOLD) {
+      startScrolling(event, 1, false); // Normal scroll down
+    } else if (distanceFromTop < TOP_THRESHOLD) {
+      startScrolling(event, -1, false); // Normal scroll up
+    } else {
+      stopScrolling();
+    }
+  };
+
+  const startScrolling = (
+    event: any,
+    direction: number,
+    isExtreme: boolean
+  ) => {
+    if (intervalId.value === null) {
+      const intId = window.setInterval(() => {
+        const distanceFromTop = event.clientY;
+        const height = window.innerHeight;
+        const distanceFromBottom = height - distanceFromTop;
+
+        if (isExtreme) {
+          if (direction === 1 && distanceFromBottom > BOTTOM_EDGE_THRESHOLD) {
+            // stopScrolling();
+            isExtreme = false;
+
+            // return;
+          }
+          if (direction === -1 && distanceFromTop > TOP_EDGE_THRESHOLD) {
+            // stopScrolling();
+            isExtreme = false;
+
+            // return;
+          }
+        }
+
+        if (!isExtreme) {
+          if (direction === 1 && distanceFromBottom > BOTTOM_THRESHOLD) {
+            stopScrolling();
+            return;
+          }
+          if (direction === -1 && distanceFromTop > TOP_THRESHOLD) {
+            stopScrolling();
+            return;
+          }
+        }
+
+        // if (direction === 1) {
+        //   // Scroll to bottom
+        //   const remainingScroll =
+        //     document.documentElement.scrollHeight -
+        //     (window.scrollY + window.innerHeight);
+        //   if (remainingScroll <= 0) {
+        //     stopScrolling();
+        //     return;
+        //   }
+        // } else {
+        //   // Scroll to top
+        //   if (window.scrollY <= 0) {
+        //     stopScrolling();
+        //     return;
+        //   }
+        // }
+
+        if (isExtreme) {
+          window.scrollBy(0, EXTREME_SCROLL_SPEED * direction);
+        } else {
+          window.scrollBy(0, NORMAL_SCROLL_SPEED * direction);
+        }
+        // window.scrollBy(0, 20 * direction);
+      }, SCROLL_INTERVAL);
+      intervalId.value = intId;
+
+      scrollIntervalsIds.value.push(intId);
+    }
+  };
+
+  const stopScrolling = () => {
+    for (const scrollIntervalsId of scrollIntervalsIds.value) {
+      window.clearInterval(scrollIntervalsId);
+    }
+    intervalId.value = null;
   };
 
   return {
@@ -98,5 +252,7 @@ export function drag_and_drop() {
     upsertComponentItem,
     moveComponentItemPosition,
     changeComponentItemPosition,
+    handleScroll,
+    stopScrolling,
   };
 }

@@ -98,19 +98,27 @@ export function styles() {
     return `#${hex}${a}`.toUpperCase();
   };
 
+  const parseBorder = (border: string) => {
+    const [widthWithUnit, style, color] = border.split(" ");
+    const width = parseFloat(widthWithUnit); // Remove the unit and convert to number
+    return { width, style, color: { hex8: rgbaToHex8(color) } };
+  };
+
   const parseBoxShadow = (shadow: string) => {
     const regexp = /[^\s(]+(\(.+\))?/g;
-    let values = shadow.match(regexp);
+    let values: any = shadow.match(regexp);
     if (values === null) {
       return {
         y: 0,
         x: 0,
         blur: 0,
         spread: 0,
-        color: "#fffff",
+        color: {
+          hex8: "#fffff",
+        },
       };
     }
-    values = values.map((value) => value.replace("px", ""));
+    values = values.map((value: string) => value.replace("px", ""));
     return {
       y: values[0],
       x: values[1],
@@ -135,6 +143,7 @@ export function styles() {
   };
 
   return {
+    parseBorder,
     parsePadding,
     getDefaultPaddingValue,
     parseBoxShadow,

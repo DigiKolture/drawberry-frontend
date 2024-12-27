@@ -1,0 +1,22 @@
+.preview__container{
+    @apply flex justify-center w-full;
+    padding-top: 41px;
+    overflow: auto;
+}
+
+.preview__component__items__container{
+    @apply flex flex-col;
+    width: 600px;
+}
+
+.preview__component__items__container .preview__component__items__list__item:last-child{
+    padding-bottom: 41px;
+}
+
+.preview__component__items__container.cards{
+    row-gap: 20px;
+}
+
+.preview__component__items__container.mobile{
+    width: 375px;
+}

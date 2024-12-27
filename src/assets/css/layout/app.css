@@ -1,5 +1,11 @@
 section.app__layout{
     @apply flex w-full h-full;
+    /*filter: blur(1px);*/
+    /*opacity: 80%;*/
+}
+
+section.app__layout.with__modal{
+    filter: blur(2px);
 }
 
 .app__container{
@@ -32,6 +38,6 @@ section.app__layout{
 }
 
 .app__body{
-    @apply flex h-full justify-center;
+    @apply flex h-full justify-center overflow-y-auto;
     background: #2D3039;
 }

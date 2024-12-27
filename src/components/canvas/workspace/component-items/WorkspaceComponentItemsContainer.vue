@@ -1,91 +1,75 @@
 <template>
-  <div
-    class="workspace__component__items__container"
-    :class="style.layout"
-    @drop.self="upsertComponentItem($event, 0, projectId)"
-    @dragover.prevent
-    @dragenter.prevent
-  >
-    <CanvasWorkspaceEmpty v-if="workspaceComponents.length === 0" />
-    <WorkspaceComponentItemsListItem
-      style="font-family: 'Agdasima', sans-serif"
-      v-for="(componentItem, itemIndex) in workspaceComponents"
-      :key="componentItem.id"
-      @clicked="handleClick"
-      @hover="handleMouseOver"
-      :component-item="componentItem"
-      :item-index="itemIndex"
-      :project-id="projectId"
-      :is-mounted="isMounted"
-    />
+  <div>
+    <CanvasWorkspaceLoading v-if="canvasLoading" />
+    <div
+      class="canvas__workspace__container"
+      id="canvas-workspace-container"
+      @mouseover.self="handleMouseLeave"
+    >
+      <div
+        id="canvas-workspace-items-container"
+        class="workspace__component__items__container"
+        :class="style.layout"
+      >
+        <CanvasWorkspaceEmpty
+          :project-id="projectId"
+          v-if="workspaceComponents.length === 0 && !canvasLoading"
+        />
+        <WorkspaceComponentItemsListItem
+          style="font-family: 'Agdasima', sans-serif"
+          v-for="(componentItem, itemIndex) in workspaceComponents"
+          :key="componentItem.id"
+          @clicked="handleClick"
+          @hover="handleMouseOver"
+          :component-item="componentItem"
+          :item-index="itemIndex"
+          :project-id="projectId"
+        />
+
+        <WorkspaceLastComponentDecoy
+          v-show="workspaceComponents.length > 0"
+          :project-id="projectId"
+        />
+      </div>
+    </div>
   </div>
 </template>
 <script lang="ts">
-import { computed, defineComponent, onMounted, ref } from "vue";
+import { computed, defineComponent, onMounted, ref, watch } from "vue";
 import WorkspaceComponentItemsListItem from "./WorkspaceComponentItemsListItem.vue";
 import CanvasWorkspaceEmpty from "../CanvasWorkspaceEmpty.vue";
 import { drag_and_drop } from "@/composables/canvas/drag_and_drop";
 import store from "@/store";
 import { useRoute } from "vue-router";
-import { updateDom } from "@/composables/canvas/update_dom";
 import { layers } from "@/composables/canvas/layers";
+import { hover } from "@/composables/canvas/hover";
 import WebFont from "webfontloader";
+import { focus } from "@/composables/canvas/focus";
+import WorkspaceLastComponentDecoy from "@/components/canvas/workspace/component-items/WorkspaceLastComponentDecoy.vue";
+import { fonts } from "@/composables/canvas/fonts";
+import { CanvasLoadingState } from "@/store/modules/canvas/types";
+import CanvasWorkspaceLoading from "@/components/canvas/workspace/CanvasWorkspaceSkeleton.vue";
+import { canvas } from "@/composables/canvas/canvas";
 
 export default defineComponent({
   name: "WorkspaceComponentItemsContainer",
   components: {
+    CanvasWorkspaceLoading,
+    WorkspaceLastComponentDecoy,
     CanvasWorkspaceEmpty,
     WorkspaceComponentItemsListItem,
   },
 
   setup() {
     const { upsertComponentItem } = drag_and_drop();
-
-    const { updateElementDom } = updateDom();
-    const {
-      addClassToElement,
-      removeClassFromElement,
-      getComponentElementIndexUsingId,
-    } = layers();
+    const { removeHoverElement, addHoverToElement } = hover();
+    const { removeFocus, removeCurrentFocus, focusComponentElement } = focus();
+    const { extractUniqueFontFamilies } = fonts();
+    const { getComponentElementIndexUsingId } = layers();
+    const { canvasLoading } = canvas();
 
     const route = useRoute();
     const projectId = route.params.id as string;
-    const isMounted = ref(false);
-
-    const googleFonts = computed(() => {
-      return store.getters["canvas/googleFonts"];
-    });
-
-    onMounted(() => {
-      const families = googleFonts.value.map((font: any) => font.family);
-      WebFont.load({
-        google: {
-          families,
-        },
-      });
-      store.commit("canvas/SET_CURRENT_HOVER_ELEMENT", {
-        id: null,
-        componentIndex: null,
-      });
-      store.commit("canvas/SET_FOCUSED_ELEMENT", null);
-      store.commit("canvas/SET_FOCUSED_INDEX", null);
-    });
-
-    const style = computed(() => {
-      return store.getters["canvas/style"];
-    });
-
-    const currentPreview = computed(() => {
-      return store.getters["canvas/currentPreview"];
-    });
-
-    const workspaceComponents = computed(() => {
-      return store.getters["canvas/workspaceComponents"];
-    });
-
-    const currentHoverElement = computed(() => {
-      return store.getters["canvas/currentHoverElement"];
-    });
 
     const focusedElement = computed(() => {
       return store.getters["canvas/focusedElement"];
@@ -95,17 +79,36 @@ export default defineComponent({
       return store.getters["canvas/focusedIndex"];
     });
 
-    const hasFocused = computed(() => {
-      return focusedElement.value !== null && focusedIndex.value !== null;
+    const workspaceComponents = computed(() => {
+      return store.getters["canvas/workspaceComponents"];
+    });
+
+    const fontFamilies = computed(() => {
+      return extractUniqueFontFamilies(workspaceComponents.value);
+    });
+
+    watch(fontFamilies, () => {
+      if (fontFamilies.value.length === 0) return;
+      WebFont.load({
+        google: {
+          families: fontFamilies.value,
+        },
+      });
     });
 
     onMounted(async () => {
-      //TODO: Look into the glitches that occuress before the page the styles is completely loaded
-      await Promise.all([
-        store.dispatch("canvas/getProjectComponentItems", projectId),
-        store.commit("projects/SET_PROJECT_ID", projectId),
-      ]);
-      isMounted.value = true;
+      // Initialize hover element state
+      store.commit("canvas/SET_CURRENT_HOVER_ELEMENT", {
+        id: null,
+        componentIndex: null,
+      });
+
+      // Remove focus
+      removeFocus();
+    });
+
+    const style = computed(() => {
+      return store.getters["canvas/style"];
     });
 
     const handleMouseOver = async (
@@ -117,134 +120,106 @@ export default defineComponent({
       if (
         !target.classList.contains("editable") ||
         target.classList.contains("focus") ||
-        currentPreview.value !== null
+        target.classList.contains("parent")
       ) {
         return;
       }
-      if (
-        currentHoverElement.value.id &&
-        currentHoverElement.value.componentIndex !== null &&
-        currentHoverElement.value.componentIndex > -1
-      ) {
-        let currentComponentItem =
-          workspaceComponents.value[currentHoverElement.value.componentIndex];
-
-        const jsonIndex = getComponentElementIndexUsingId(
-          currentComponentItem,
-          currentHoverElement.value.id
-        );
-
-        if (jsonIndex > -1) {
-          let currElement = currentComponentItem.json[jsonIndex];
-
-          if (
-            currElement.classes &&
-            typeof currElement.classes == "object" &&
-            currElement.classes.includes("hover")
-          ) {
-            currElement = removeClassFromElement(
-              currentComponentItem.json[jsonIndex]
-            );
-
-            workspaceComponents.value[
-              currentHoverElement.value.componentIndex
-            ].html = updateElementDom(
-              currentComponentItem.html,
-              currElement,
-              true
-            );
-          }
-        }
-      }
-
       const elementId = target.id;
-      store.commit("canvas/SET_CURRENT_HOVER_ELEMENT", {
-        id: elementId,
-        componentIndex: itemIndex,
-      });
-      const jsonIndex = getComponentElementIndexUsingId(
-        componentItem,
-        elementId
-      );
-      componentItem.json[jsonIndex] = addClassToElement(
-        componentItem.json[jsonIndex]
-      );
-      workspaceComponents.value[itemIndex].html = updateElementDom(
-        componentItem.html,
-        componentItem.json[jsonIndex],
-        true
-      );
+      // console.log({ elementId });
+
+      // If any of the component has an hover element, REMOVE it
+      removeHoverElement();
+
+      // ADD hover to the hovered element
+      addHoverToElement(itemIndex, elementId, componentItem, event);
     };
 
-    const handleClick = (componentItem: any, itemIndex: any, event: any) => {
-      event.preventDefault();
+    const handleCommandHold = async (
+      componentItem: any,
+      itemIndex: any,
+      event: any
+    ) => {
       const target = event.target;
-      const elementId = event.target.id;
       if (
         !target.classList.contains("editable") ||
-        currentPreview.value !== null
+        target.classList.contains("focus") ||
+        target.classList.contains("parent")
       ) {
         return;
       }
-      if (hasFocused.value) {
-        let focusedComponentItem =
-          workspaceComponents.value[focusedIndex.value];
+      // const elementId = target.id;
+      // If any of the component has an hover element, REMOVE it
+      // removeHoverElement();
+      //
+      // // ADD hover to the hovered element
+      // addHoverToElement(itemIndex, elementId, componentItem, event);
+    };
 
-        const jsonIndex = getComponentElementIndexUsingId(
-          focusedComponentItem,
-          focusedElement.value.id
-        );
+    const handleMouseLeave = () => {
+      removeHoverElement();
+    };
 
-        if (jsonIndex > -1) {
-          let focusedElement = focusedComponentItem.json[jsonIndex];
+    const handleClick = (
+      componentItem: any,
+      itemIndex: any,
+      clicked: true, //click -> true, dbclick -> false
+      event: any
+    ) => {
+      event.preventDefault();
+      const target = event.target;
+      let elementId = event.target.id;
+      const parentId = event.target.getAttribute("parent");
 
-          if (
-            focusedElement.classes &&
-            typeof focusedElement.classes == "object" &&
-            focusedElement.classes.includes("focus")
-          ) {
-            focusedElement = removeClassFromElement(
-              focusedComponentItem.json[jsonIndex],
-              "focus"
-            );
-            workspaceComponents.value[focusedIndex.value].html =
-              updateElementDom(focusedComponentItem.html, focusedElement, true);
-          }
+      // If the target doesn't have the "editable" class, select the first item (whole component)
+      if (!target.classList.contains("editable")) {
+        elementId = componentItem.json[0].id;
+      } else if (parentId) {
+        // Check if the target has a parent with the specified parentId (its possible that the parentId is a child in the DOM (HTMl element)
+        const isParentPresent = event.target.closest(`#${parentId}`);
+
+        if (isParentPresent) {
+          // If the parent exists in the DOM, set elementId to parentId
+          elementId = parentId;
+        } else {
+          // If the parent doesn't exist, select the first item (whole component)
+          elementId = componentItem.json[0].id;
         }
       }
 
-      const jsonIndex = getComponentElementIndexUsingId(
-        componentItem,
-        elementId
-      );
+      // TODO: Might remove
+      removeCurrentFocus();
 
-      if (jsonIndex > -1) {
-        componentItem.json[jsonIndex] = addClassToElement(
-          componentItem.json[jsonIndex],
-          "focus"
-        );
+      const currentFocusedIndex = focusedIndex.value;
+      let jsonIndex = 0; //Ensures the first element (whole component) is selected if the current component is not active
 
-        workspaceComponents.value[itemIndex].html = updateElementDom(
-          componentItem.html,
-          componentItem.json[jsonIndex],
-          true
-        );
-        store.commit(
-          "canvas/SET_FOCUSED_ELEMENT",
-          componentItem.json[jsonIndex]
-        );
-        store.commit("canvas/SET_FOCUSED_INDEX", itemIndex);
+      // When clicked Only select/focus on child elements if the current component is active, if not select the whole component
+      // If Command and click are pressed, you can select child elements on an inactive component
+      if (clicked) {
+        if (
+          currentFocusedIndex === itemIndex ||
+          event.metaKey ||
+          event.ctrlKey
+        ) {
+          jsonIndex = getComponentElementIndexUsingId(componentItem, elementId);
+        }
       }
+
+      focusComponentElement(itemIndex, jsonIndex);
     };
 
     return {
+      focusedElement,
+      canvasLoading,
+      fontFamilies,
+      focusedIndex,
       workspaceComponents,
       upsertComponentItem,
       projectId,
-      isMounted,
       handleClick,
       style,
       handleMouseOver,
+      handleCommandHold,
+      handleMouseLeave,
     };
   },
 });

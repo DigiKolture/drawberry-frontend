@@ -1,76 +1,42 @@
 <template>
-  <PanelStyle title="Background Image">
+  <PanelStyle :modifier="`general-${name}`" title="Background Image">
     <div class="content__style">
-      <PanelStyleTabs @update="updateTab" :titles="titles">
-        <BaseMediaImageUpload
-          v-model="src"
-          @update="updateImage"
-          v-if="activeIndex === 0"
-        />
-        <div v-if="activeIndex === 1" class="content__style__media__text">
-          <input
-            v-model="src"
-            type="url"
-            @focus="isInputFocused = true"
-            class="input__style__text"
-          />
-          <BaseButtonIcon
-            v-if="isInputFocused"
-            @click="updateImage"
-            icon="canvas/panel/styles/media/update"
-          />
-        </div>
-      </PanelStyleTabs>
+      <BaseImageTextUpload
+        v-model="modifier"
+        :has-src="false"
+        @confirm="updateImage"
+      />
     </div>
   </PanelStyle>
 </template>
+
 <script lang="ts">
-import { computed, defineComponent, ref } from "vue";
-import store from "@/store";
-import PanelStyleTabs from "@/components/canvas/panel/PanelStyleTabs.vue";
-import BaseButtonIcon from "@/components/icon/BaseButtonIcon.vue";
-import { helpers } from "@/composables/helpers";
-import BaseMediaImageUpload from "@/components/canvas/panel/BaseMediaImageUpload.vue";
+import { defineComponent, ref } from "vue";
 import PanelStyle from "@/components/canvas/panel/styles/PanelStyle.vue";
+import BaseImageTextUpload from "@/components/canvas/panel/BaseImageTextUpload.vue";
+import { generalStyleUpdater } from "@/composables/canvas/modifiers/general-style-updater";
+
 export default defineComponent({
   name: "SidebarBackgroundImageStyle",
   components: {
+    BaseImageTextUpload,
     PanelStyle,
-    BaseMediaImageUpload,
-    BaseButtonIcon,
-    PanelStyleTabs,
   },
-
   setup() {
     const titles = ["Upload", "Url"];
-    const { isValidImageUrl } = helpers();
-
-    const style = computed(() => {
-      return store.getters["canvas/style"];
-    });
-    let activeIndex = ref(0);
+    const name = "backgroundImage";
+    const { modifier } = generalStyleUpdater(name);
     const isInputFocused = ref(false);
 
-    const src = ref(style.value.backgroundImage);
-
-    const updateTab = (index: number) => {
-      activeIndex.value = index;
-    };
-
     const updateImage = async () => {
-      const isValid = await isValidImageUrl(src.value);
-      if (!isValid && src.value) return;
-      style.value.backgroundImage = src.value;
-      await store.dispatch("canvas/updateProjectStyle", style.value);
       isInputFocused.value = false;
     };
 
     return {
-      activeIndex,
+      name,
       isInputFocused,
-      src,
       titles,
-      updateTab,
+      modifier,
       updateImage,
     };
   },

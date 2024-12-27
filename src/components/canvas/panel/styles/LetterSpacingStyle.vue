@@ -1,49 +1,47 @@
 <template>
-  <PanelStyle title="Letter spacing">
+  <PanelStyle :modifier="name" title="Letter spacing">
     <div class="font__size__style">
-      <input v-model="model" class="canvas__input__number" type="number" />
+      <input v-model="localValue" class="canvas__input__number" type="number" />
     </div>
   </PanelStyle>
 </template>
 <script lang="ts">
-import { computed, defineComponent, ref, watch } from "vue";
+import { defineComponent, ref, watch } from "vue";
 import PanelStyle from "./PanelStyle.vue";
-import store from "@/store";
+import { modifiersUpdater } from "@/composables/canvas/modifiers/modifiers-updater";
 
 export default defineComponent({
   name: "LetterSpacingStyle",
   components: { PanelStyle },
-  setup() {
-    const name = "font-model";
+  props: {
+    childId: {
+      type: String,
+      default: "",
+      required: false,
+    },
+    childIndex: {
+      type: Number,
+      default: -1,
+      required: false,
+    },
+  },
+  setup(props) {
+    const name = "letter-spacing";
     const unit = "px";
+    const { modifier } = modifiersUpdater(props, name);
 
-    const focusedElement = computed(() => {
-      return store.getters["canvas/focusedElement"];
+    const localValue = ref(modifier.value?.slice(0, -2));
+
+    watch(localValue, (newVal) => {
+      modifier.value = `${newVal}${unit}`;
     });
 
-    const model = ref(
-      focusedElement.value.attributes.style.value[name]?.slice(0, -2)
-    );
-    let modelWithUnit = ref(focusedElement.value.attributes.style.value[name]);
-
-    watch(model, (newVal: string | number) => {
-      if (typeof newVal === "string" && newVal.endsWith(unit)) {
-        modelWithUnit.value = newVal;
-      } else {
-        modelWithUnit.value = newVal + unit;
-      }
-      focusedElement.value.attributes.style.value[name] = modelWithUnit.value;
-      store.dispatch("canvas/updateFocusedElement", focusedElement.value);
-    });
-
-    watch(focusedElement, (newVal) => {
-      model.value = newVal.attributes.style.value[name].slice(0, -2);
-      modelWithUnit.value = newVal.attributes.style.value[name];
+    watch(modifier, (newVal) => {
+      localValue.value = newVal?.slice(0, -2);
     });
 
     return {
-      focusedElement,
-      model,
+      localValue,
       name,
     };
   },

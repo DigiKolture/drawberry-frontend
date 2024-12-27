@@ -1,66 +1,57 @@
 <template>
-  <PanelStyle title="Text Align">
+  <PanelStyle :modifier="name" title="Text Align">
     <div class="align__style">
       <BaseButtonIcon
-        :key="key"
-        v-for="(option, key) in alignOptions"
-        :class="{ active: option.align === align }"
+        v-for="option in alignOptions"
+        :key="option.align"
+        :class="{ active: option.align === modifier }"
         :icon="option.icon"
         @click="changeAlignment(option.align)"
       />
     </div>
   </PanelStyle>
 </template>
+
 <script lang="ts">
-import { computed, defineComponent, ref, watch } from "vue";
+import { defineComponent } from "vue";
 import PanelStyle from "./PanelStyle.vue";
 import BaseButtonIcon from "@/components/icon/BaseButtonIcon.vue";
-import store from "@/store";
+import { modifiersUpdater } from "@/composables/canvas/modifiers/modifiers-updater";
 
 export default defineComponent({
   name: "TextAlignStyle",
   components: { BaseButtonIcon, PanelStyle },
+  props: {
+    childId: {
+      type: String,
+      default: "",
+      required: false,
+    },
+    childIndex: {
+      type: Number,
+      default: -1,
+      required: false,
+    },
+  },
 
-  setup() {
+  setup(props) {
     const name = "text-align";
-
-    const focusedElement = computed(() => {
-      return store.getters["canvas/focusedElement"];
-    });
+    const { modifier } = modifiersUpdater(props, name);
 
     const alignOptions = [
-      {
-        icon: "canvas/panel/styles/text-align/left",
-        align: "left",
-      },
-      {
-        icon: "canvas/panel/styles/text-align/center",
-        align: "center",
-      },
-      {
-        icon: "canvas/panel/styles/text-align/right",
-        align: "right",
-      },
+      { icon: "canvas/panel/styles/text-align/left", align: "left" },
+      { icon: "canvas/panel/styles/text-align/center", align: "center" },
+      { icon: "canvas/panel/styles/text-align/right", align: "right" },
     ];
 
-    const align = ref(focusedElement.value.attributes.style.value[name]);
-
-    watch(align, (newVal: string) => {
-      focusedElement.value.attributes.style.value[name] = newVal;
-      store.dispatch("canvas/updateFocusedElement", focusedElement.value);
-    });
-
-    watch(focusedElement, (newVal) => {
-      align.value = newVal.attributes.style.value[name];
-    });
-
     const changeAlignment = (option: string) => {
-      align.value = option;
+      modifier.value = option;
     };
 
     return {
+      name,
       alignOptions,
-      align,
+      modifier,
       changeAlignment,
     };
   },

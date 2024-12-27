@@ -1,7 +1,8 @@
 .sidebar__styles__container{
     @apply flex flex-col;
     row-gap: 24px;
-    padding: 16px 24px 32px 16px;
+    padding: 16px 24px 32px 24px;
+    /*padding: 16px 24px 32px 16px;*/
 }
 
 /*LAYOUT*/
@@ -26,7 +27,7 @@
 
 .layout__style__item div{
     @apply w-full h-full;
-    background: #ADAFBB;
+    background: #848F9F;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
     border-radius: 2px;
 }

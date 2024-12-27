@@ -2,6 +2,15 @@
   <BaseLayout>
     <section class="auth-layout">
       <slot />
+      <div class="auth__terms__privacy">
+        <a target="_blank" href="https://drawberry.io/privacy-and-terms"
+          >Terms of use</a
+        >
+        <span>|</span>
+        <a target="_blank" href="https://drawberry.io/privacy-and-terms#privacy"
+          >Privacy policy</a
+        >
+      </div>
     </section>
   </BaseLayout>
 </template>

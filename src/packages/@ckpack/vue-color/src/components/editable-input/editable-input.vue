@@ -53,7 +53,7 @@ export default {
       let { val } = this;
       const number = Number(val);
 
-      if (number) {
+      if (number !== undefined) {
         const amount = this.arrowOffset || 1;
 
         // Up

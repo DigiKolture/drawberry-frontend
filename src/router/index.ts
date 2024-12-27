@@ -6,14 +6,28 @@ import CreateFolder from "@/views/Projects/CreateFolder.vue";
 import Canvas from "@/views/Projects/Canvas.vue";
 import store from "@/store";
 import ESPOAuthCallback from "@/views/ESP/ESPOAuthCallback.vue";
+import Preview from "@/views/Projects/Preview.vue";
+import ForgotPassword from "@/views/Auth/ForgotPassword.vue";
+import ResetPassword from "@/views/Auth/ResetPassword.vue";
+import EmailVerification from "@/views/Auth/EmailVerification.vue";
 
 const routes: Array<RouteRecordRaw> = [
+  {
+    path: "/",
+    name: "Home",
+    component: Login,
+    meta: {
+      authRequired: false,
+      authPage: true,
+    },
+  },
   {
     path: "/login",
     name: "Login",
     component: Login,
     meta: {
       authRequired: false,
+      authPage: true,
     },
   },
   {
@@ -22,6 +36,36 @@ const routes: Array<RouteRecordRaw> = [
     component: Register,
     meta: {
       authRequired: false,
+      authPage: true,
+    },
+  },
+  {
+    path: "/forgot/password",
+    name: "ForgotPassword",
+    component: ForgotPassword,
+    meta: {
+      authRequired: false,
+      authPage: true,
+    },
+  },
+  {
+    path: "/reset/password/:token",
+    name: "ResetPassword",
+    component: ResetPassword,
+    props: true,
+    meta: {
+      authRequired: false,
+      authPage: true,
+    },
+  },
+  {
+    path: "/email/verification/:token",
+    name: "EmailVerification",
+    component: EmailVerification,
+    props: true,
+    meta: {
+      authRequired: false,
+      authPage: true,
     },
   },
   {
@@ -30,6 +74,7 @@ const routes: Array<RouteRecordRaw> = [
     component: ProjectIndex,
     meta: {
       authRequired: true,
+      authPage: false,
     },
     children: [
       {
@@ -37,6 +82,10 @@ const routes: Array<RouteRecordRaw> = [
         name: "CreateFolder",
         component: CreateFolder,
         props: true,
+        meta: {
+          authRequired: true,
+          authPage: false,
+        },
       },
     ],
   },
@@ -48,9 +97,19 @@ const routes: Array<RouteRecordRaw> = [
     component: Canvas,
     meta: {
       authRequired: true,
+      authPage: false,
     },
   },
-
+  {
+    path: "/project/:id/preview",
+    name: "Preview",
+    props: true,
+    component: Preview,
+    meta: {
+      authRequired: false,
+      authPage: false,
+    },
+  },
   {
     path: "/esp/:esp/callback",
     name: "ESPOAuthCallback",
@@ -58,6 +117,7 @@ const routes: Array<RouteRecordRaw> = [
     component: ESPOAuthCallback,
     meta: {
       authRequired: true,
+      authPage: false,
     },
   },
 ];
@@ -69,18 +129,19 @@ const router = createRouter({
 
 router.beforeEach((routeTo, routeFrom, next) => {
   const authRequired = routeTo.matched.some((route) => route.meta.authRequired);
+  const authPage = routeTo.matched.some((route) => route.meta.authPage);
   const authUser = store.getters["auth/authUser"];
-  // const jwt = store.getters["auth/jwt"];
-  const jwt = localStorage.getItem("access-token");
+  // const jwt = localStorage.getItem("access-token");
 
-  if (!authRequired) {
-    return next();
+  if (!authUser && authRequired) {
+    return next({ name: "Login" });
   }
 
-  if (authUser && jwt) {
-    return next();
+  if (authUser && authPage) {
+    return next({ name: "ProjectIndex" });
   }
-  return next({ name: "Login" });
+
+  return next();
 });
 
 export default router;

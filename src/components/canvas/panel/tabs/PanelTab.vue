@@ -1,6 +1,10 @@
 <template>
-  <section class="panel__tab">
-    <div @click="setActiveTab" class="panel__tab__head">
+  <section :id="`panel-tab-${index}`" class="panel__tab">
+    <div
+      @click="setActiveTab"
+      @dblclick="closeAllTabs"
+      class="panel__tab__head"
+    >
       <h5>{{ properties.title }}</h5>
       <BaseIcon :icon="`canvas/panel/tab/${showBody ? 'open' : 'close'}`" />
     </div>
@@ -21,6 +25,10 @@ export default defineComponent({
       type: Object,
       required: true,
     },
+    index: {
+      type: Number,
+      required: true,
+    },
     showBody: {
       type: Boolean,
       required: false,
@@ -32,8 +40,13 @@ export default defineComponent({
       emit("update", props.properties.index);
     };
 
+    const closeAllTabs = () => {
+      emit("close_tabs");
+    };
+
     return {
       setActiveTab,
+      closeAllTabs,
     };
   },
 });

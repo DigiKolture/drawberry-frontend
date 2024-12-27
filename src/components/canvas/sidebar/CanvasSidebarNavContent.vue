@@ -15,7 +15,12 @@
         />
       </div>
     </div>
-    <div class="sidebar__nav__contents__body">
+    <div
+      class="sidebar__nav__contents__body"
+      :class="{
+        has__modal: GENERAL_STYLE_TYPE_COLORS.includes(colorPicker),
+      }"
+    >
       <div
         v-if="showContent('add_component')"
         class="sidebar__nav__content__item"
@@ -33,13 +38,14 @@
   </div>
 </template>
 <script lang="ts">
-import { computed, defineComponent, ref } from "vue";
+import { computed, defineComponent, watch } from "vue";
 import BaseButtonIcon from "@/components/icon/BaseButtonIcon.vue";
 import store from "@/store";
 import ComponentsContainer from "@/components/canvas/sidebar/components/ComponentsContainer.vue";
 import ComponentItemsContainer from "@/components/canvas/sidebar/component-items/ComponentItemsContainer.vue";
 import LayersContainer from "@/components/canvas/sidebar/layers/LayersContainer.vue";
 import StylesContainer from "@/components/canvas/sidebar/styles/StylesContainer.vue";
+import { GENERAL_STYLE_TYPE_COLORS } from "@/store/modules/modals/types";
 
 export default defineComponent({
   name: "CanvasSidebarNavContent",
@@ -53,6 +59,10 @@ export default defineComponent({
   setup() {
     const sidebarNavContent = computed(() => {
       return store.getters["canvas/sidebarNavContent"];
+    });
+
+    const colorPicker = computed(() => {
+      return store.getters["modals/colorPicker"];
     });
 
     const sidebarDock = computed(() => {
@@ -71,6 +81,20 @@ export default defineComponent({
       return firstLetter.toUpperCase() + remLetters.join("");
     });
 
+    const workspaceComponents = computed(() => {
+      return store.getters["canvas/workspaceComponents"];
+    });
+
+    watch(
+      () => workspaceComponents.value.length,
+      () => {
+        store.commit("layers/RESET_TAB_STATES");
+        // store.commit("panel/RESET_TAB_STATES");
+        store.commit("panel/DELETE_ALL_TAB_STATES");
+      },
+      { deep: true }
+    );
+
     const closeSidebarNavContent = () => {
       store.commit("canvas/SET_SIDEBAR_NAVBAR_CONTENT", null);
     };
@@ -82,7 +106,9 @@ export default defineComponent({
     return {
       sidebarNavContent,
       sidebarDock,
+      GENERAL_STYLE_TYPE_COLORS,
       showContent,
+      colorPicker,
       closeSidebarNavContent,
       formatContentTitle,
       toggleSidebarDock,

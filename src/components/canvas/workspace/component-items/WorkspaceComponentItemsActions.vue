@@ -31,6 +31,7 @@ import { computed, defineComponent, ref } from "vue";
 import { drag_and_drop } from "@/composables/canvas/drag_and_drop";
 import BaseButtonIcon from "@/components/icon/BaseButtonIcon.vue";
 import store from "@/store";
+import { focus } from "@/composables/canvas/focus";
 
 export default defineComponent({
   name: "WorkspaceComponentItemsActions",
@@ -58,6 +59,8 @@ export default defineComponent({
 
     const disabledButton = ref(false);
 
+    const { removeFocus } = focus();
+
     const workspaceComponents = computed(() => {
       return store.getters["canvas/workspaceComponents"];
     });
@@ -78,20 +81,11 @@ export default defineComponent({
       const updatedIndex = increment
         ? props.itemIndex + 1
         : props.itemIndex - 1;
-      store.commit("canvas/SET_FOCUSED_INDEX", updatedIndex);
 
       if (increment) {
-        await changeComponentItemPosition(
-          props.projectId,
-          currentIndex,
-          updatedIndex
-        );
+        await changeComponentItemPosition(currentIndex, updatedIndex, false);
       } else {
-        await changeComponentItemPosition(
-          props.projectId,
-          currentIndex,
-          updatedIndex
-        );
+        await changeComponentItemPosition(currentIndex, updatedIndex, false);
       }
     };
 
@@ -99,11 +93,12 @@ export default defineComponent({
       disabledButton.value = true;
       const projectComponentItem = workspaceComponents.value[props.itemIndex];
 
-      await store.dispatch("canvas/duplicateProjectComponent", {
-        projectId: props.projectId,
-        projectComponentItemId: projectComponentItem.id,
-        positionIndex: props.itemIndex + 1,
-      });
+      store
+        .dispatch("canvas/duplicateProjectComponent", {
+          projectComponentItem,
+          positionIndex: props.itemIndex + 1,
+        })
+        .then();
 
       disabledButton.value = false;
     };
@@ -116,14 +111,14 @@ export default defineComponent({
         id: null,
         componentIndex: null,
       });
-      await store.dispatch("canvas/deleteProjectComponent", {
-        projectId: props.projectId,
-        projectComponentItemId: projectComponentItem.id,
-        positionIndex: props.itemIndex,
-      });
-      store.commit("canvas/SET_FOCUSED_ELEMENT", null);
-      store.commit("canvas/SET_FOCUSED_ELEMENT", null);
-
+      store
+        .dispatch("canvas/deleteProjectComponent", {
+          projectId: props.projectId,
+          projectComponentItemId: projectComponentItem.id,
+          positionIndex: props.itemIndex,
+        })
+        .then();
+      removeFocus();
       disabledButton.value = false;
     };
 

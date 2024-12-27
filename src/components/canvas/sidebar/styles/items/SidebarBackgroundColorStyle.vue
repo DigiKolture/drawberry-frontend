@@ -1,47 +1,45 @@
 <template>
-  <PanelStyle title="BACKGROUND COLOR">
+  <PanelStyle :modifier="`general-${name}`" title="BACKGROUND COLOR">
     <ColorPickerStyle
-      ref="colorPickerStyleRef"
-      :color="color"
-      @update-color="updateColor"
+      :type="ColorPickerTypes.GENERAL_STYLE_BG_COLOR"
+      v-model="color"
     />
   </PanelStyle>
 </template>
 <script lang="ts">
-import { computed, defineComponent, ref, watch } from "vue";
+import { defineComponent, ref, watch } from "vue";
 import PanelStyle from "@/components/canvas/panel/styles/PanelStyle.vue";
 import ColorPickerStyle from "@/components/canvas/panel/ColorPickerStyle.vue";
-import store from "@/store";
+import { ColorPickerTypes } from "@/store/modules/modals/types";
+import { generalStyleUpdater } from "@/composables/canvas/modifiers/general-style-updater";
 
 export default defineComponent({
   name: "SidebarBackgroundColorStyle",
   components: { ColorPickerStyle, PanelStyle },
   setup() {
+    const name = "backgroundColor";
+    const { modifier } = generalStyleUpdater(name);
     const show = ref(true);
-
     const colorPickerStyleRef = ref();
 
-    const style = computed(() => {
-      return store.getters["canvas/style"];
-    });
-
     const color = ref({
-      hex8: style.value.backgroundColor,
+      hex8: modifier.value,
     });
 
     watch(color, (newVal: any) => {
-      style.value.backgroundColor = newVal.hex8;
-      store.dispatch("canvas/updateProjectStyle", style.value).then();
+      modifier.value = newVal.hex8;
     });
 
-    const updateColor = (newVal: any) => {
-      color.value = newVal;
-    };
+    watch(modifier, (newVal: any) => {
+      color.value.hex8 = newVal;
+    });
+
     return {
+      name,
       show,
+      ColorPickerTypes,
       color,
       colorPickerStyleRef,
-      updateColor,
     };
   },
 });

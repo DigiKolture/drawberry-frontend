@@ -1,0 +1,95 @@
+.header-export.action__dropdown{
+    width: 221px;
+    left: 195px;
+    top: 60px;
+    padding: 0;
+}
+
+.export__empty{
+    @apply flex flex-col;
+    row-gap: 8px;
+    padding-top: 16px;
+    padding-bottom: 16px;
+}
+
+.export__empty__icons{
+    @apply flex items-center justify-center;
+}
+
+.export__empty__icon{
+    @apply  overflow-hidden flex items-center;
+    border-radius: 40px;
+    padding: 6px;
+    border: 1.5px solid #454856;
+    background: #353843;
+    margin-left: -5px;
+}
+
+.export__empty__icon svg{
+    width: 16px;
+    height: 16px;
+    margin: 0;
+}
+
+.export__empty__content{
+    @apply flex flex-col items-center text-white;
+    row-gap: 5px;
+}
+
+.export__empty__content h6{
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.4px;
+}
+
+.export__empty__content p{
+    font-size: 10px;
+    font-weight: 400;
+    letter-spacing: 0.4px;
+    text-align: center;
+}
+
+.export__empty__content button{
+    @apply mt-1;
+    font-weight: 700;
+}
+
+.export__footer{
+    border-top: 1px solid #353843;
+    padding-bottom: 8px;
+}
+
+.export__esps{
+    @apply flex flex-col text-white;
+    row-gap: 8px;
+}
+
+.export__esps__header{
+    @apply flex items-center justify-between;
+    padding-top: 16px;
+    padding-left: 16px;
+    padding-right: 16px;
+}
+
+.export__esps__header h5{
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.export__esps__lists{
+    @apply flex flex-col;
+    /*row-gap: 16px;*/
+}
+.header-export .action__dropdown__item__icon  {
+    width: 30px;
+}
+
+.header-export .action__dropdown__item__icon svg {
+    width: 24px;
+    height: 24px;
+}
+
+.export__esps__lists__add .action__dropdown__item__icon svg{
+    width: 18px;
+    height: 18px;
+}

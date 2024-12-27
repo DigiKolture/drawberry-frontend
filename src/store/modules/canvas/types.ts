@@ -12,16 +12,56 @@ export interface ProjectStyle {
   previewText: string;
 }
 
+export interface UpdatedComponent {
+  projectComponentItemId: string;
+  json: any[];
+}
+
 export interface CanvasState {
   focusedElement: object | null;
+  focusedParentElement: object | null;
+  focusedChildrenElements: any[];
   focusedIndex: number | null;
   currentHoverElement: CurrentHoverElementType;
   sidebarNavContent: string | null;
-  currentPreview: string | null;
   sidebarDock: boolean;
-  showPreview: boolean;
   workspaceComponents: any[];
+  hasWorkspaceComponent: boolean;
+  saveStatus: CanvasSaveStatus;
+  loadState: CanvasLoadingState;
+  updatedComponents: UpdatedComponent[];
+  scrollIntervalsIds: number[];
   googleFonts: any[];
   fontWeights: number[];
+  generalStyle: ProjectStyle;
   style: ProjectStyle;
+  dropLoading: boolean;
+  savedColors: string[];
+}
+
+export enum CanvasEditableTypes {
+  STYLE = "style",
+  ATTRIBUTE = "attribute",
+  CONTENT = "content",
+}
+
+export enum CanvasSaveStatus {
+  SAVED = "saved",
+  UPDATED = "updated",
+  OFFLINE = "offline",
+  PAUSED = "paused",
+}
+
+export enum CanvasLoadingState {
+  UNINITIALIZED = "uninitialized",
+  IN_PROGRESS = "in_progress",
+  SUCCESS = "success",
+  FAILED = "failed",
+}
+
+export enum CanvasSaveStatusDescriptions {
+  SAVED = "Changes saved",
+  UPDATED = "Saving changes",
+  OFFLINE = "offline",
+  PAUSED = "Saving paused",
 }

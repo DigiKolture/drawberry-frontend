@@ -1,23 +1,32 @@
 <template>
   <div class="folders__body__list__item">
-    <BaseIcon icon="projects/folder" />
-    <h6>{{ sliceString(folder.name) }}</h6>
-    <div class="folders__list__item__hamburger">
+    <span class="folders__body__list__item__icon"
+      ><BaseIcon icon="projects/folder"
+    /></span>
+    <h6>{{ sliceString(folder.name, 10) }}</h6>
+    <span @click.stop="toggleOpen" class="folders__list__item__hamburger">
       <BaseIcon icon="hamburger/horizontal" />
-    </div>
+    </span>
+    <FolderItemDropdown :class="{ open }" />
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
+import { computed, defineComponent } from "vue";
 import BaseIcon from "@/components/icon/BaseIcon.vue";
 import { helpers } from "@/composables/helpers";
+import FolderItemDropdown from "@/components/folders/FolderItemDropdown.vue";
+import store from "@/store";
 
 export default defineComponent({
   name: "FolderListItem",
-  components: { BaseIcon },
+  components: { FolderItemDropdown, BaseIcon },
 
   props: {
+    index: {
+      type: Number,
+      required: true,
+    },
     folder: {
       type: Object,
       required: true,
@@ -31,10 +40,23 @@ export default defineComponent({
       emit("create-project");
     };
 
+    const open = computed(() => {
+      return store.getters["modals/folderItem"] === props.index;
+    });
+
+    const toggleOpen = () => {
+      store.commit("modals/TOGGLE_STRING_MODAL", {
+        modal: "folder_item",
+        value: props.index,
+      });
+    };
+
     return {
       createProject,
       formatDate,
       sliceString,
+      open,
+      toggleOpen,
     };
   },
 });

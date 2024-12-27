@@ -49,4 +49,58 @@ export const actions: ActionTree<FolderState, RootState> = {
         }
       });
   },
+
+  updateFolder({ commit, dispatch }, { data, id }): Promise<void> {
+    return AxiosClient.put(`${baseUrl}/${id}`, data)
+      .then((res: any) => {
+        dispatch("getFolders");
+        return res.data.data;
+      })
+      .catch((err: any): any => {
+        if (err instanceof Error) {
+          const message = err.message;
+          return Promise.reject(new Error(message));
+        }
+      });
+  },
+
+  duplicateFolder({ commit }, { data, id }): Promise<void> {
+    return AxiosClient.post(`${baseUrl}/${id}/duplicate`, data)
+      .then((res: any) => {
+        return res.data.data;
+      })
+      .catch((err: any): any => {
+        if (err instanceof Error) {
+          const message = err.message;
+          return Promise.reject(new Error(message));
+        }
+      });
+  },
+
+  deleteFolder({ commit, dispatch }, folderId: string): Promise<void> {
+    return AxiosClient.delete(`${baseUrl}/${folderId}`)
+      .then((res: any) => {
+        dispatch("getFolders");
+        return res.data;
+      })
+      .catch((err: any): any => {
+        if (err instanceof Error) {
+          const message = err.message;
+          return Promise.reject(new Error(message));
+        }
+      });
+  },
+  undoDeletedFolder({ commit, dispatch }, folderId: string): Promise<void> {
+    return AxiosClient.post(`${baseUrl}/${folderId}/undo/delete`)
+      .then((res: any) => {
+        dispatch("getFolders");
+        return res.data;
+      })
+      .catch((err: any): any => {
+        if (err instanceof Error) {
+          const message = err.message;
+          return Promise.reject(new Error(message));
+        }
+      });
+  },
 };

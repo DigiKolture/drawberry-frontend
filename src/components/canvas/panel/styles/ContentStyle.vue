@@ -1,40 +1,61 @@
 <template>
-  <PanelStyle title="Content">
+  <PanelStyle :modifier="name" title="Content">
     <div class="content__style">
-      <textarea v-model="content" class="canvas__textarea"> </textarea>
+      <textarea v-model="localValue" class="canvas__textarea"> </textarea>
     </div>
   </PanelStyle>
 </template>
 <script lang="ts">
-import { computed, defineComponent, ref, watch } from "vue";
+import { defineComponent, ref, watch } from "vue";
 import PanelStyle from "./PanelStyle.vue";
-import store from "@/store";
+import { modifiersUpdater } from "@/composables/canvas/modifiers/modifiers-updater";
+import { HistoryActionTypes } from "@/store/modules/history/types";
+import { helpers } from "@/composables/helpers";
 
 export default defineComponent({
   name: "ContentStyle",
   components: { PanelStyle },
+  props: {
+    childId: {
+      type: String,
+      default: "",
+      required: false,
+    },
+    childIndex: {
+      type: Number,
+      default: -1,
+      required: false,
+    },
+  },
+  setup(props) {
+    const name = "textContent";
 
-  setup() {
-    const name = "innerHtml";
-    const focusedElement = computed(() => {
-      return store.getters["canvas/focusedElement"];
+    const { nlToBr, brToNl } = helpers();
+
+    const { modifier } = modifiersUpdater(
+      props,
+      name,
+      HistoryActionTypes.COMPONENT_CONTENT
+    );
+
+    const localValue = ref(brToNl(modifier.value));
+
+    watch(localValue, (newVal: string) => {
+      if (!newVal) return;
+      modifier.value = nlToBr(newVal);
     });
 
-    const content = ref(focusedElement.value[name]);
-
-    watch(content, (newVal: string) => {
-      if (newVal) {
-        focusedElement.value[name] = newVal;
-        store.dispatch("canvas/updateFocusedElement", focusedElement.value);
-      }
-    });
-
-    watch(focusedElement, (newVal) => {
-      content.value = newVal[name];
-    });
+    // watch(modifier, (newVal) => {
+    //     const formattedNewVal = brToNl(newVal);
+    //
+    //   // Check if the new formatted value is different from localValue
+    //   if (formattedNewVal === localValue.value) return;
+    //   localValue.value = formattedNewVal;
+    // });
 
     return {
-      content,
+      name,
+      localValue,
     };
   },
 });

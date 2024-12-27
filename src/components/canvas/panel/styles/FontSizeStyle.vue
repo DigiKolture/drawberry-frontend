@@ -1,49 +1,48 @@
 <template>
-  <PanelStyle :name="name" title="Size">
+  <PanelStyle :modifier="name" :name="name" title="Size">
     <div class="font__size__style">
-      <input v-model="size" class="canvas__input__number" type="number" />
+      <input v-model="localValue" class="canvas__input__number" type="number" />
     </div>
   </PanelStyle>
 </template>
 <script lang="ts">
-import { computed, defineComponent, ref, watch } from "vue";
-import store from "@/store";
+import { defineComponent, ref, watch } from "vue";
 import PanelStyle from "@/components/canvas/panel/styles/PanelStyle.vue";
+import { modifiersUpdater } from "@/composables/canvas/modifiers/modifiers-updater";
 
 export default defineComponent({
   name: "FontSizeStyle",
   components: { PanelStyle },
-  setup() {
+  props: {
+    childId: {
+      type: String,
+      default: "",
+      required: false,
+    },
+    childIndex: {
+      type: Number,
+      default: -1,
+      required: false,
+    },
+  },
+  setup(props) {
     const name = "font-size";
     const unit = "px";
 
-    const focusedElement = computed(() => {
-      return store.getters["canvas/focusedElement"];
+    const { modifier } = modifiersUpdater(props, name);
+
+    const localValue = ref(modifier.value?.slice(0, -2));
+
+    watch(localValue, (newVal) => {
+      modifier.value = `${newVal}${unit}`;
     });
 
-    const size = ref(
-      focusedElement.value.attributes.style.value[name]?.slice(0, -2)
-    );
-    let sizeWithUnit = ref(focusedElement.value.attributes.style.value[name]);
-
-    watch(size, (newVal: string | number) => {
-      if (typeof newVal === "string" && newVal.endsWith(unit)) {
-        sizeWithUnit.value = newVal;
-      } else {
-        sizeWithUnit.value = newVal + unit;
-      }
-      focusedElement.value.attributes.style.value[name] = sizeWithUnit.value;
-      store.dispatch("canvas/updateFocusedElement", focusedElement.value);
-    });
-
-    watch(focusedElement, (newVal) => {
-      size.value = newVal.attributes.style.value[name].slice(0, -2);
-      sizeWithUnit.value = newVal.attributes.style.value[name];
+    watch(modifier, (newVal) => {
+      localValue.value = newVal?.slice(0, -2);
     });
 
     return {
-      focusedElement,
-      size,
+      localValue,
       name,
     };
   },

@@ -1,16 +1,29 @@
 section.canvas__layout{
-    @apply flex w-full h-full;
+    @apply flex w-full h-full relative;
 }
+
+ /*Applies to the text class in the components items*/
+ td.text {
+     /*white-space: pre-line;*/
+ }
 
 .canvas__container{
     @apply grid w-full;
-    grid-template-columns: var(--canvas-sidebar-nav-width) 1fr 239px;
+    grid-template-columns: var(--canvas-sidebar-nav-width) 1fr;
     grid-auto-rows: 1fr;
     /*grid-gap: 10px;*/
 }
 
+.canvas__container.has__right__panel{
+    grid-template-columns: var(--canvas-sidebar-nav-width) 1fr var(--canvas-right-panel-width);
+}
+
 .canvas__container.nav__content__docked{
-    grid-template-columns: calc(var(--canvas-sidebar-nav-width) + var(--canvas-sidebar-nav-content-width)) 1fr 239px;
+    grid-template-columns: calc(var(--canvas-sidebar-nav-width) + var(--canvas-sidebar-nav-content-width)) 1fr;
+}
+
+.canvas__container.nav__content__docked.has__right__panel{
+    grid-template-columns: calc(var(--canvas-sidebar-nav-width) + var(--canvas-sidebar-nav-content-width)) 1fr var(--canvas-right-panel-width);
 }
 
 .canvas__container.preview{
@@ -36,16 +49,19 @@ section.canvas__layout{
 }
 
 .canvas__workspace__container{
-    @apply flex items-center flex-col;
+    @apply  flex items-center flex-col h-full;
     padding-top: 40px;
     padding-bottom: 40px;
 }
 
 
 .canvas__panel{
-    @apply h-full;
+    @apply h-full fixed overflow-y-auto;
     background: #2D3039;
     box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
+    right: 0;
+    width: var(--canvas-right-panel-width);
+    height: calc(100% - var(--header-height))
 }
 
 
@@ -135,22 +151,45 @@ input.canvas__input__text:focus{
 /*CANVAS INPUT NUMBER*/
 
 
+.editable{
 
-
-/*.editable:hover {*/
-/*    border: 1px solid #ADAFBB;*/
-/*}*/
-
-
-.workspace__component__items__list__item .hover {
-    /*@apply absolute;*/
-    padding: 1px 2px;
-    border: 1px solid #ADAFBB;
 }
 
-.workspace__component__items__list__item .focus {
+/*.editable:hover {*/
+/*    border: 1px solid #848F9F;*/
+/*}*/
+.workspace__component__items__list__item .editable{
+    scroll-margin-top: 124px;
+    scroll-margin-bottom: 80px;
+}
+
+.layers__component__item .layers__component__item__element, .layers__component__item__header{
+    scroll-margin-top: 80px;
+    scroll-margin-bottom: 40px;
+}
+
+.workspace__component__items__list__item.hovered .hover {
+    @apply relative;
+    z-index: 4;
+    /*padding: 1px 2px;*/
+    /*box-sizing: border-box;*/
+    /*padding: 2px;*/
+    outline: 1px solid #848F9F !important;
+    /*display: inline-block;*/
+}
+
+.workspace__component__items__list__item .hover.parent{
+    outline: none !important;
+    padding: 0 !important;
+}
+
+.workspace__component__items__list__item.focused .focus {
+    @apply relative;
+    box-sizing: border-box;
     padding: 1px 2px ;
-    border: 2px solid #1873CD;
+    z-index: 5;
+    outline: 2px solid #1873CD !important;
+    /*border: 2px solid #1873CD !important;*/
 }
 
 .canvas__container.preview .workspace__component__items__list__item .hover {
@@ -170,9 +209,42 @@ input.canvas__input__text:focus{
     /*pointer-events: none*/
 }
 
+.screen-size-constraint{
+    @apply w-full h-full fixed;
+    top:0;
+    left: 0;
+    background: rgba(30, 31, 38, 0.7);
+    z-index: 10000000000000;
+    /*overflow-x: hidden;*/
+}
 
+.screen-size-constraint__modal{
+    @apply fixed flex flex-col justify-center items-center;
+    top: 25%;
+    row-gap: 20px;
+    z-index: 10000;
+    /*overflow-x: hidden;*/
 
+}
 
+.screen-size-constraint svg{
+    height: 91px;
+    width: 78px;
+}
 
+.screen-size-constraint__content{
+    @apply flex flex-col text-white ;
+    row-gap: 16px;
+}
 
+.screen-size-constraint__content h5{
+    /*font-weight: 500;*/
+    font-size: 20px;
+    text-align: center;
+}
 
+.screen-size-constraint__content p{
+    font-weight: 400;
+    font-size: 16px;
+    text-align: center;
+}

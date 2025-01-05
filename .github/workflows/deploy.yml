@@ -22,15 +22,17 @@ jobs:
             echo "::set-output name=compose_file::docker-compose.prod.yml"
             echo "::set-output name=port::8082"
             echo "::set-output name=environment::production"
-            echo "::set-output name=base_url::https://drawberry.io"
-            echo "::set-output name=api_url::https://api.drawberry.io"
+            echo "::set-output name=base_url::${{ vars.PROD_BASE_URL }}"
+            echo "::set-output name=api_url::${{ vars.PROD_BASE_API_URL }}"
+            echo "::set-output name=google_client_id::${{ vars.PROD_GOOGLE_CLIENT_ID }}"
           else
             echo "::set-output name=env_name::dev"
             echo "::set-output name=compose_file::docker-compose.dev.yml"
             echo "::set-output name=port::8081"
             echo "::set-output name=environment::development"
-            echo "::set-output name=base_url::https://dev.drawberry.io"
-            echo "::set-output name=api_url::https://dev.api.drawberry.io"
+            echo "::set-output name=base_url::${{ vars.DEV_BASE_URL }}"
+            echo "::set-output name=api_url::${{ vars.DEV_BASE_API_URL }}"
+            echo "::set-output name=google_client_id::${{ vars.DEV_GOOGLE_CLIENT_ID }}"
           fi
           
           echo "Environment name: ${{ steps.vars.outputs.env_name }}"
@@ -63,13 +65,13 @@ jobs:
             VUE_APP_ENVIRONMENT=${{ steps.vars.outputs.environment }}
             VUE_APP_BASE_URL=${{ steps.vars.outputs.base_url }}
             VUE_APP_BASE_API_URL=${{ steps.vars.outputs.api_url }}
-            VUE_APP_GOOGLE_CLIENT_ID=${{ secrets.VUE_APP_GOOGLE_CLIENT_ID }}
+            VUE_APP_GOOGLE_CLIENT_ID=${{ steps.vars.outputs.google_client_id }}
             EOF
             
-            # Build and restart using appropriate compose file
+            echo "Build and restart using appropriate compose file.."
             docker-compose -f docker-compose.yml -f ${{ steps.vars.outputs.compose_file }} up -d --build
             
-            # Clean up old images
+            echo "Clean up old images..."
             docker image prune -f
             
             echo "Deployment completed successfully!"

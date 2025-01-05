@@ -102,7 +102,7 @@ export default defineComponent({
     const uploadToServer = async (image: string) => {
       const res = await store.dispatch("canvas/uploadImageToCloudinary", {
         image,
-        folder: "drawberry/styles/images",
+        folder: "styles/images",
       });
       if (res.error || !res.url) return;
       emit("update:modelValue", res.url);

@@ -15,8 +15,8 @@ jobs:
         id: vars
         run: |
           echo "Current branch: ${{ github.ref }}"
-    
-          if [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
+          
+          if [[ ${{ github.ref }} == 'refs/heads/main' ]]; then
             echo "::set-output name=env_name::prod"
             echo "::set-output name=compose_file::docker-compose.prod.yml"
             echo "::set-output name=port::8082"

@@ -10,22 +10,19 @@ import GAuth from "vue3-google-oauth2";
 
 const app = createApp(App);
 
+// @ts-ignore
+const VUE_APP_BASE_URL: string = process.env.VUE_APP_BASE_URL
+
 Sentry.init({
   app,
-  dsn: "https://da239c46ae977d40628f438f2254dde4@o4506475697864704.ingest.sentry.io/4506475701272576",
+  dsn: process.env.VUE_APP_SENTRY_DSN,
   environment: process.env.VUE_APP_ENVIRONMENT,
   integrations: [
-    new Sentry.BrowserTracing({
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      tracePropagationTargets: ["localhost", process.env.VUE_APP_BASE_URL],
-    }),
-    new Sentry.Replay({
-      maskAllText: false,
-      blockAllMedia: false,
-    }),
+    Sentry.browserTracingIntegration({ router }),
+    Sentry.replayIntegration(),
   ],
   tracesSampleRate: 1.0,
+  tracePropagationTargets: ["localhost", VUE_APP_BASE_URL],
   replaysSessionSampleRate: 0.1,
   replaysOnErrorSampleRate: 1.0,
 });

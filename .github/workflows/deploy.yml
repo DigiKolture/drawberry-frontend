@@ -64,6 +64,7 @@ jobs:
             VUE_APP_BASE_API_URL=${{ steps.vars.outputs.api_url }}
             VUE_APP_GOOGLE_CLIENT_ID=${{ steps.vars.outputs.google_client_id }}
             VUE_APP_SENTRY_DSN=${{ vars.VUE_APP_SENTRY_DSN }}
+            SENTRY_AUTH_TOKEN=${{ secrets.SENTRY_AUTH_TOKEN }}
             EOF
             
             echo "Build and restart using appropriate compose file.."

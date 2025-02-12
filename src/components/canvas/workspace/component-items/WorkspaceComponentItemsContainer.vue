@@ -64,7 +64,7 @@ export default defineComponent({
     const { upsertComponentItem } = drag_and_drop();
     const { removeHoverElement, addHoverToElement } = hover();
     const { removeFocus, removeCurrentFocus, focusComponentElement } = focus();
-    const { extractUniqueFontFamilies } = fonts();
+    const { extractUniqueFontFamilies, addFontWeightsToFontFamilies } = fonts();
     const { getComponentElementIndexUsingId } = layers();
     const { canvasLoading } = canvas();
 
@@ -91,7 +91,7 @@ export default defineComponent({
       if (fontFamilies.value.length === 0) return;
       WebFont.load({
         google: {
-          families: fontFamilies.value,
+          families: addFontWeightsToFontFamilies(fontFamilies.value),
         },
       });
     });

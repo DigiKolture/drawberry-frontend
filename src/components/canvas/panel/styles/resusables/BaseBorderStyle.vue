@@ -7,7 +7,7 @@
       />
       <ColorPickerStyle
         ref="colorPickerStyleRef"
-        :type="ColorPickerTypes.PANEL_BOX_SHADOW_COLOR"
+        :type="ColorPickerTypes.PANEL_BORDER_TOP_COLOR"
         v-model="localBorder.color"
         title="Color"
       />

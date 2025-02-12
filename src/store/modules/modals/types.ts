@@ -35,6 +35,7 @@ export enum ColorPickerTypes {
   PANEL_STYLE_BG_COLOR = "panel_style_bg_color",
   PANEL_STYLE_TEXT_COLOR = "panel_style_text_color",
   PANEL_BOX_SHADOW_COLOR = "panel_box_shadow_color",
+  PANEL_BORDER_TOP_COLOR = "panel_border_top_color",
 }
 
 export const GENERAL_STYLE_TYPE_COLORS = [
@@ -46,4 +47,5 @@ export const PANEL_STYLE_TYPE_COLORS = [
   ColorPickerTypes.PANEL_STYLE_BG_COLOR,
   ColorPickerTypes.PANEL_STYLE_TEXT_COLOR,
   ColorPickerTypes.PANEL_BOX_SHADOW_COLOR,
+  ColorPickerTypes.PANEL_BORDER_TOP_COLOR,
 ];

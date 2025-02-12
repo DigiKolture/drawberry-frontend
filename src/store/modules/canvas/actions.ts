@@ -14,6 +14,7 @@ import { HistoryActionTypes } from "@/store/modules/history/types";
 import { history } from "@/composables/canvas/history";
 import { focus } from "@/composables/canvas/focus";
 import { project } from "@/composables/project/project";
+import store from "@/store";
 
 const { undoStack } = history();
 const { updateComponentBorder, removeClasses } = canvas();
@@ -120,6 +121,12 @@ export const actions: ActionTree<CanvasState, RootState> = {
 
     state.workspaceComponents.splice(data.positionIndex, 0, projectComponent);
     commit("SET_WORKSPACE_COMPONENTS", state.workspaceComponents);
+
+    //TODO: can optimize to only update font for the added component
+    store.commit("canvas/UPDATE_ALL_PROJECT_COMPONENTS_STYLE", {
+      "font-family": state.style.fontFamily,
+      "font-weight": 400,
+    });
 
     dispatch("updateProjectComponentsAndStyles").then();
   },

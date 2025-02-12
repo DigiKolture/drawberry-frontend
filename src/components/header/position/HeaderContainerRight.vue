@@ -149,6 +149,7 @@ export default defineComponent({
 
     const goToProject = () => {
       router.push({ name: "Canvas", params: { id: project.value.id } });
+      store.commit("canvas/SET_NAVIGATED_FROM_PREVIEW", true);
     };
 
     const isUserProject = computed(() => {

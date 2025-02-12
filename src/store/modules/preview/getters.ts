@@ -4,6 +4,9 @@ import { PreviewState } from "@/store/modules/preview/types";
 import { ProjectStyle } from "@/store/modules/canvas/types";
 
 export const getters: GetterTree<PreviewState, RootState> = {
+  navigatedFromCanvas(state: PreviewState): boolean {
+    return state.navigatedFromCanvas;
+  },
   currentPreview(state: PreviewState): string | null {
     return state.currentPreview ? state.currentPreview : "desktop";
   },

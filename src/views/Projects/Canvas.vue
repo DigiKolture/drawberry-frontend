@@ -88,6 +88,9 @@ export default defineComponent({
         store.commit("projects/SET_PROJECT_ID", projectId),
       ]);
 
+      //Set navigated from preview to false after navigation has been handled
+      store.commit("canvas/SET_NAVIGATED_FROM_PREVIEW", false);
+
       // Close all right panels and mark as mounted
       store.commit("modals/CLOSE_ALL_RIGHT_PANELS");
       store.commit("canvas/SET_LOAD_STATE", CanvasLoadingState.SUCCESS);

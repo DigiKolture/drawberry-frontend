@@ -25,6 +25,7 @@ jobs:
             echo "::set-output name=api_url::${{ vars.PROD_BASE_API_URL }}"
             echo "::set-output name=google_client_id::${{ vars.PROD_GOOGLE_CLIENT_ID }}"
             echo "::set-output name=google_analytics_measurement_id::${{ vars.PROD_GOOGLE_ANALYTICS_MEASUREMENT_ID }}"
+            echo "::set-output name=clarity_id::${{ vars.PROD_CLARITY_ID }}"
           else
             echo "::set-output name=env_name::dev"
             echo "::set-output name=compose_file::docker-compose.dev.yml"
@@ -33,7 +34,7 @@ jobs:
             echo "::set-output name=base_url::${{ vars.DEV_BASE_URL }}"
             echo "::set-output name=api_url::${{ vars.DEV_BASE_API_URL }}"
             echo "::set-output name=google_client_id::${{ vars.DEV_GOOGLE_CLIENT_ID }}"
-            echo "::set-output name=google_analytics_measurement_id::${{ vars.DEV_GOOGLE_ANALYTICS_MEASUREMENT_ID }}"
+            echo "::set-output name=clarity_id::${{ vars.DEV_CLARITY_ID }}"
           fi
           
           echo "Environment name: ${{ steps.vars.outputs.env_name }}"
@@ -68,6 +69,7 @@ jobs:
             VUE_APP_SENTRY_DSN=${{ vars.VUE_APP_SENTRY_DSN }}
             SENTRY_AUTH_TOKEN=${{ secrets.SENTRY_AUTH_TOKEN }}
             VUE_APP_GOOGLE_ANALYTICS_MEASUREMENT_ID=${{ steps.vars.outputs.google_analytics_measurement_id }}
+            VUE_APP_CLARITY_ID=${{ steps.vars.outputs.clarity_id }}
             EOF
             
             echo "Build and restart using appropriate compose file.."

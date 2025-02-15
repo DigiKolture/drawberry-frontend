@@ -5,6 +5,7 @@ import store from "./store";
 import "./assets/tailwind.css";
 import * as Sentry from "@sentry/vue";
 import VueGtag from "vue-gtag";
+import Clarity from "@microsoft/clarity";
 /* eslint-disable */
 // @ts-ignore
 import GAuth from "vue3-google-oauth2";
@@ -27,6 +28,11 @@ Sentry.init({
   replaysSessionSampleRate: 0.1,
   replaysOnErrorSampleRate: 1.0,
 });
+
+const CLARITY_ID = process.env.VUE_APP_CLARITY_ID;
+if (CLARITY_ID){
+  Clarity.init(CLARITY_ID);
+}
 
 const MEASUREMENT_ID = process.env.VUE_APP_GOOGLE_ANALYTICS_MEASUREMENT_ID;
 if (MEASUREMENT_ID){

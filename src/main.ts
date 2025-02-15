@@ -42,6 +42,6 @@ if (MEASUREMENT_ID){
   app.use(VueGtag, {
     appName:  `DB Frontend ${process.env.VUE_APP_ENVIRONMENT}`,
     pageTrackerScreenviewEnabled: true,
-    config: { id: "MEASUREMENT_ID" }
+    config: { id: MEASUREMENT_ID }
   }, router)
 }

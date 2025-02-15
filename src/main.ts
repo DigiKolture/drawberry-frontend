@@ -28,6 +28,14 @@ Sentry.init({
   replaysOnErrorSampleRate: 1.0,
 });
 
+const MEASUREMENT_ID = process.env.VUE_APP_GOOGLE_ANALYTICS_MEASUREMENT_ID;
+if (MEASUREMENT_ID){
+  app.use(VueGtag, {
+    appName:  `DB Frontend ${process.env.VUE_APP_ENVIRONMENT}`,
+    pageTrackerScreenviewEnabled: true,
+    config: { id: MEASUREMENT_ID }
+  }, router)
+}
 
 const gAuthOptions = {
   clientId: process.env.VUE_APP_GOOGLE_CLIENT_ID,
@@ -37,11 +45,4 @@ const gAuthOptions = {
 };
 app.use(GAuth, gAuthOptions).use(store).use(router).mount("#app");
 
-const MEASUREMENT_ID = process.env.VUE_APP_GOOGLE_ANALYTICS_MEASUREMENT_ID;
-if (MEASUREMENT_ID){
-  app.use(VueGtag, {
-    appName:  `DB Frontend ${process.env.VUE_APP_ENVIRONMENT}`,
-    pageTrackerScreenviewEnabled: true,
-    config: { id: MEASUREMENT_ID }
-  }, router)
-}
+

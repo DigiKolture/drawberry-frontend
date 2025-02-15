@@ -9,6 +9,9 @@ import {
 import { RootState } from "@/store/types";
 
 export const getters: GetterTree<CanvasState, RootState> = {
+  navigatedFromPreview(state: CanvasState): boolean {
+    return state.navigatedFromPreview;
+  },
   focusedElement(state: CanvasState): object | null {
     return state.focusedElement;
   },

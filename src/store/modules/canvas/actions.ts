@@ -14,6 +14,7 @@ import { HistoryActionTypes } from "@/store/modules/history/types";
 import { history } from "@/composables/canvas/history";
 import { focus } from "@/composables/canvas/focus";
 import { project } from "@/composables/project/project";
+import store from "@/store";
 
 const { undoStack } = history();
 const { updateComponentBorder, removeClasses } = canvas();
@@ -28,7 +29,7 @@ const { scrollTo } = focus();
 
 export const actions: ActionTree<CanvasState, RootState> = {
   getProjectComponentItems(
-    { commit, getters, dispatch },
+    { state, commit, getters, dispatch },
     projectId: string
   ): Promise<void> {
     dispatch("prepareCanvas");
@@ -37,7 +38,10 @@ export const actions: ActionTree<CanvasState, RootState> = {
       .then((res: any) => {
         const data = res.data;
         commit("projects/SET_PROJECT", data.data.project, { root: true });
-        commit("history/RESET_HISTORY_STACK", {}, { root: true });
+        const fromPreview = state.navigatedFromPreview;
+        if (!fromPreview) {
+          commit("history/RESET_HISTORY_STACK", {}, { root: true });
+        }
         commit("SET_WORKSPACE_COMPONENTS", {
           components: formatProjectComponents(data.data.project.components),
           saveStatus: CanvasSaveStatus.SAVED,
@@ -117,6 +121,12 @@ export const actions: ActionTree<CanvasState, RootState> = {
 
     state.workspaceComponents.splice(data.positionIndex, 0, projectComponent);
     commit("SET_WORKSPACE_COMPONENTS", state.workspaceComponents);
+
+    //TODO: can optimize to only update font for the added component
+    store.commit("canvas/UPDATE_ALL_PROJECT_COMPONENTS_STYLE", {
+      "font-family": state.style.fontFamily,
+      "font-weight": 400,
+    });
 
     dispatch("updateProjectComponentsAndStyles").then();
   },

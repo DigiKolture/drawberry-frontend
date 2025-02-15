@@ -37,6 +37,7 @@ export default defineComponent({
     const { extractUniqueFontFamilies } = fonts();
 
     onMounted(async () => {
+      store.commit("canvas/SET_NAVIGATED_FROM_PREVIEW", false);
       store.commit("projects/SET_PROJECT", null);
       const project = await store.dispatch(
         "projects/getProjectComponentsForPreview",

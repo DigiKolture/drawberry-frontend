@@ -10,8 +10,10 @@ import { mutations } from "@/store/modules/canvas/mutations";
 import { actions } from "@/store/modules/canvas/actions";
 
 const state: CanvasState = {
+  navigatedFromPreview: false, // This is used to check if the user navigated from the preview page when on the canvas page
   focusedElement: null,
   focusedParentElement: null,
+
   focusedChildrenElements: [],
   currentHoverElement: {
     id: null,

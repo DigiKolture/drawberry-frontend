@@ -16,6 +16,10 @@ const { updateComponentBorder } = canvas();
 const { isObject } = helpers();
 
 export const mutations: MutationTree<CanvasState> = {
+  SET_NAVIGATED_FROM_PREVIEW(state: CanvasState, data: boolean) {
+    state.navigatedFromPreview = data;
+    return state.navigatedFromPreview;
+  },
   SET_FOCUSED_ELEMENT(state: CanvasState, data: object) {
     state.focusedElement = data;
     return state.focusedElement;

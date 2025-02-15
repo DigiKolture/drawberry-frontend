@@ -43,6 +43,13 @@ export function fonts() {
     return getFontWeights(font.variants);
   };
 
+  const addFontWeightsToFontFamilies = (families: string[]): string[] => {
+    return families.map((family: string) => {
+      const weights = getFontWeightsWithFamily(family);
+      return `${family}:${weights.join(",")}`;
+    });
+  };
+
   const extractUniqueFontFamilies = (data: any[]) => {
     const uniqueFontFamilies: Set<string> = new Set();
 
@@ -75,6 +82,7 @@ export function fonts() {
     getFullFamily,
     getFontWeightsWithFamily,
     getFontWeights,
+    addFontWeightsToFontFamilies,
     extractUniqueFontFamilies,
   };
 }

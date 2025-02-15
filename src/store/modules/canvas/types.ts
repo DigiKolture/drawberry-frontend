@@ -18,6 +18,7 @@ export interface UpdatedComponent {
 }
 
 export interface CanvasState {
+  navigatedFromPreview: boolean;
   focusedElement: object | null;
   focusedParentElement: object | null;
   focusedChildrenElements: any[];

@@ -4,6 +4,7 @@ import router from "./router";
 import store from "./store";
 import "./assets/tailwind.css";
 import * as Sentry from "@sentry/vue";
+import VueGtag from "vue-gtag";
 /* eslint-disable */
 // @ts-ignore
 import GAuth from "vue3-google-oauth2";
@@ -35,3 +36,12 @@ const gAuthOptions = {
   plugin_name: "chat"
 };
 app.use(GAuth, gAuthOptions).use(store).use(router).mount("#app");
+
+const MEASUREMENT_ID = process.env.VUE_APP_GOOGLE_ANALYTICS_MEASUREMENT_ID;
+if (MEASUREMENT_ID){
+  app.use(VueGtag, {
+    appName:  `DB Frontend ${process.env.VUE_APP_ENVIRONMENT}`,
+    pageTrackerScreenviewEnabled: true,
+    config: { id: "MEASUREMENT_ID" }
+  }, router)
+}

@@ -34,6 +34,7 @@ jobs:
             echo "::set-output name=base_url::${{ vars.DEV_BASE_URL }}"
             echo "::set-output name=api_url::${{ vars.DEV_BASE_API_URL }}"
             echo "::set-output name=google_client_id::${{ vars.DEV_GOOGLE_CLIENT_ID }}"
+            echo "::set-output name=google_analytics_measurement_id::${{ vars.DEV_GOOGLE_ANALYTICS_MEASUREMENT_ID }}"
             echo "::set-output name=clarity_id::${{ vars.DEV_CLARITY_ID }}"
           fi
           

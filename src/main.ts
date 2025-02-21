@@ -34,13 +34,10 @@ if (CLARITY_ID){
   Clarity.init(CLARITY_ID);
 }
 
-const MEASUREMENT_ID = process.env.VUE_APP_GOOGLE_ANALYTICS_MEASUREMENT_ID;
+// const MEASUREMENT_ID = process.env.VUE_APP_GOOGLE_ANALYTICS_MEASUREMENT_ID;
+const MEASUREMENT_ID = "G-6N20GZ3R5L";
 if (MEASUREMENT_ID){
-  app.use(VueGtag, {
-    appName:  `DB Frontend ${process.env.VUE_APP_ENVIRONMENT}`,
-    pageTrackerScreenviewEnabled: true,
-    config: { id: MEASUREMENT_ID }
-  }, router)
+
 }
 
 const gAuthOptions = {

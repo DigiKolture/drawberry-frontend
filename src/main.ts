@@ -34,10 +34,12 @@ if (CLARITY_ID){
   Clarity.init(CLARITY_ID);
 }
 
-// const MEASUREMENT_ID = process.env.VUE_APP_GOOGLE_ANALYTICS_MEASUREMENT_ID;
-const MEASUREMENT_ID = "G-6N20GZ3R5L";
+const MEASUREMENT_ID = process.env.VUE_APP_GOOGLE_ANALYTICS_MEASUREMENT_ID;
+console.log({MEASUREMENT_ID});
 if (MEASUREMENT_ID){
-
+  app.use(VueGtag, {
+    config: { id: MEASUREMENT_ID,  }
+  }, router)
 }
 
 const gAuthOptions = {

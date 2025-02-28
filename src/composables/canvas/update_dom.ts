@@ -109,12 +109,7 @@ export function updateDom() {
     // }
 
     //UPDATE Content
-    // TODO: Update Condition
-    if (
-      elementJson.textContent !== null &&
-      elementJson.textContent !== "" &&
-      elementJson.textContent.trim()
-    ) {
+    if (elementJson.types.includes("text")) {
       el.html(elementJson.textContent);
     }
 

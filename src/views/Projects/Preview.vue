@@ -50,11 +50,17 @@ export default defineComponent({
         user: project.user,
       });
       style.value = project.style;
-      workspaceComponents.value = project.components;
+      workspaceComponents.value = project.components.slice(3);
     });
 
     const getHTML = (componentItem) => {
-      return updateComponentItemDom(componentItem).html;
+      console.log(
+        `<<<<<<<<<< componentItem - ${componentItem.id} >>>>>>>>>>>>>>>`
+      );
+      // console.log(updateComponentItemDom(componentItem).html);
+      const html = updateComponentItemDom(componentItem).html;
+      console.log({ html });
+      return html;
     };
 
     const fontFamilies = computed(() => {

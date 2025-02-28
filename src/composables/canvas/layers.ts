@@ -3,7 +3,7 @@ import { computed } from "vue";
 import store from "@/store";
 
 export function layers() {
-  const { sliceString } = helpers();
+  const { sliceString, replaceBreak } = helpers();
 
   const workspaceComponents = computed(() => {
     return store.getters["canvas/workspaceComponents"];
@@ -23,7 +23,7 @@ export function layers() {
     const text = element.textContent;
 
     if (text !== null) {
-      return sliceString(text, 16);
+      return replaceBreak(sliceString(text, 16));
     } else if (id.includes("background")) {
       return "Background";
     } else if (id.includes("logo")) {

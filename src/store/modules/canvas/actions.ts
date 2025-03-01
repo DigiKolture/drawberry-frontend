@@ -123,9 +123,12 @@ export const actions: ActionTree<CanvasState, RootState> = {
     commit("SET_WORKSPACE_COMPONENTS", state.workspaceComponents);
 
     //TODO: can optimize to only update font for the added component
-    store.commit("canvas/UPDATE_ALL_PROJECT_COMPONENTS_STYLE", {
-      "font-family": state.style.fontFamily,
-      "font-weight": 400,
+    store.commit("canvas/UPDATE_PROJECT_COMPONENTS_STYLE", {
+      projectIndex: data.positionIndex,
+      style: {
+        "font-family": state.style.fontFamily,
+        "font-weight": 400,
+      },
     });
 
     dispatch("updateProjectComponentsAndStyles").then();

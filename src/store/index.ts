@@ -36,6 +36,18 @@ export default createStore({
   },
   plugins: [
     createPersistedState({
+      paths: [
+        "auth",
+        "components",
+        "canvas",
+        "esp",
+        "modals",
+        "preview",
+        "panel",
+        "layers",
+        "toast",
+        "history",
+      ],
       storage: {
         getItem: (key) => localStorage.getItem(key),
         setItem: (key, state) => localStorage.setItem(key, state),

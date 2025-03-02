@@ -35,7 +35,6 @@ if (CLARITY_ID){
 }
 
 const MEASUREMENT_ID = process.env.VUE_APP_GOOGLE_ANALYTICS_MEASUREMENT_ID;
-console.log({MEASUREMENT_ID});
 if (MEASUREMENT_ID){
   app.use(VueGtag, {
     config: { id: MEASUREMENT_ID,  }

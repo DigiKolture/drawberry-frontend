@@ -161,7 +161,7 @@ export default defineComponent({
 
       ui.changeComponentItemsStatus(false);
 
-      // handleScroll(e);
+      handleScroll(e);
 
       const show = validateWorkspaceIndicator(type, fromIndex, toIndex);
       if (!show) return;
@@ -170,7 +170,6 @@ export default defineComponent({
     };
 
     const handleDragEnd = () => {
-      // stopScrolling();
       store.commit("canvas/SET_SCROLL_INTERVAL_IDS", []);
     };
     const handleDragEnter = () => {

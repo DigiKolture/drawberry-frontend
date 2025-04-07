@@ -20,6 +20,10 @@ export const mutations: MutationTree<CanvasState> = {
     state.navigatedFromPreview = data;
     return state.navigatedFromPreview;
   },
+  SET_LLM_PROMPT(state: CanvasState, data: string) {
+    state.llmPrompt = data;
+    return state.llmPrompt;
+  },
   SET_FOCUSED_ELEMENT(state: CanvasState, data: object) {
     state.focusedElement = data;
     return state.focusedElement;

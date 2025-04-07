@@ -1,3 +1,5 @@
+import { HistoryActionTypes } from "@/store/modules/history/types";
+
 export interface CurrentHoverElementType {
   id: string | null;
   componentIndex: number | null;
@@ -19,6 +21,7 @@ export interface UpdatedComponent {
 
 export interface CanvasState {
   navigatedFromPreview: boolean;
+  llmPrompt: string;
   focusedElement: object | null;
   focusedParentElement: object | null;
   focusedChildrenElements: any[];
@@ -45,6 +48,12 @@ export enum CanvasEditableTypes {
   ATTRIBUTE = "attribute",
   CONTENT = "content",
 }
+
+export const ActionToEditableTypeMap = {
+  [HistoryActionTypes.COMPONENT_STYLE]: CanvasEditableTypes.STYLE,
+  [HistoryActionTypes.COMPONENT_ATTRIBUTE]: CanvasEditableTypes.ATTRIBUTE,
+  [HistoryActionTypes.COMPONENT_CONTENT]: CanvasEditableTypes.CONTENT,
+};
 
 export enum CanvasSaveStatus {
   SAVED = "saved",

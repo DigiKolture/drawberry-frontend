@@ -63,6 +63,38 @@ export function modifiers() {
     }
   };
 
+  const updateStyleLLM = (data: any) => {
+    const { modifier, componentIndex, elementId, previousValue, value } = data;
+    const projectComponentItem = workspaceComponents.value[componentIndex];
+    const jsonIndex = projectComponentItem.json.findIndex(
+      (el: any) => el.id === elementId
+    );
+    if (jsonIndex < 0) return;
+
+    if (data.type === HistoryActionTypes.COMPONENT_STYLE) {
+      projectComponentItem.json[jsonIndex].attributes.style.value[modifier] =
+        value;
+    } else if (data.type === HistoryActionTypes.COMPONENT_ATTRIBUTE) {
+      projectComponentItem.json[jsonIndex].attributes[modifier].value = value;
+    } else if (data.type === HistoryActionTypes.COMPONENT_CONTENT) {
+      projectComponentItem.json[jsonIndex][modifier] = value;
+    }
+
+    store.commit("canvas/UPDATE_ELEMENT_IN_COMPONENTS_DOM", {
+      elementId,
+      componentIndex,
+    });
+
+    updateHistory({
+      type: data.type,
+      workspaceComponentItemId: workspaceComponents.value[componentIndex].id,
+      elementId,
+      modifier,
+      previousValue,
+      value,
+    });
+  };
+
   const updateAttribute = async (
     modifier: string,
     value: string,
@@ -146,5 +178,6 @@ export function modifiers() {
     updateStyle,
     updateAttribute,
     updateContent,
+    updateStyleLLM,
   };
 }

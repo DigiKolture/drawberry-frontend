@@ -527,6 +527,7 @@ export function history() {
   return {
     undoStack,
     updateHistory,
+    updateElementFocusAndScroll,
     undo,
     redo,
     canUndo,

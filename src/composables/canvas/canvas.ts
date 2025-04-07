@@ -21,6 +21,10 @@ export function canvas() {
     return store.getters["canvas/hasWorkspaceComponent"];
   });
 
+  const workspaceComponents = computed(() => {
+    return store.getters["canvas/workspaceComponents"];
+  });
+
   const canvasLoadState = computed(() => {
     return store.getters["canvas/loadState"];
   });
@@ -44,6 +48,17 @@ export function canvas() {
   const updatedComponents = computed(() => {
     return store.getters["canvas/updatedComponents"];
   });
+
+  const getElementWithComponentIndex = (
+    componentIndex: number,
+    elementId: string
+  ) => {
+    const workspaceComponent = workspaceComponents.value[componentIndex];
+    const elementIndex = findIndex(workspaceComponent.json, "id", elementId);
+    if (elementIndex === null) return null;
+
+    return workspaceComponent.json[elementIndex];
+  };
 
   const hasProjectChanged = () => {
     if (updatedComponents.value.length > 0) {
@@ -119,5 +134,6 @@ export function canvas() {
     pushComponentsElementsUpdates,
     updateComponentBorder,
     removeClasses,
+    getElementWithComponentIndex,
   };
 }

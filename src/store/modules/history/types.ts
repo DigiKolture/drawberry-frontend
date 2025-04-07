@@ -23,6 +23,12 @@ export interface BaseHistoryAction {
   timestamp?: number; //in milliseconds
 }
 
+export enum HistoryComponentUpdateTypes {
+  COMPONENT_STYLE = "component_style",
+  COMPONENT_ATTRIBUTE = "component_attribute",
+  COMPONENT_CONTENT = "component_content",
+}
+
 export interface ProjectComponentHistoryAction extends BaseHistoryAction {
   type:
     | HistoryActionTypes.COMPONENT_STYLE

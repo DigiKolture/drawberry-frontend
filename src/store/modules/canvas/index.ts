@@ -12,6 +12,7 @@ import { actions } from "@/store/modules/canvas/actions";
 const state: CanvasState = {
   navigatedFromPreview: false, // This is used to check if the user navigated from the preview page when on the canvas page
   focusedElement: null,
+  llmPrompt: "",
   focusedParentElement: null,
 
   focusedChildrenElements: [],

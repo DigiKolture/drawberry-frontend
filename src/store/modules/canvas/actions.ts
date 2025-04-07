@@ -181,7 +181,48 @@ export const actions: ActionTree<CanvasState, RootState> = {
     })
       .then((res: any) => {
         commit("SET_SAVE_STATUS", CanvasSaveStatus.SAVED);
-        commit("SET_UPDATED_COMPONENTS", []);
+        commit("SET_UPDATED_COMPONENTS", []); // TODO: Check if this is still relevant
+        return res.data.data;
+      })
+      .catch((err: any): any => {
+        if (err instanceof Error) {
+          const message = err.message;
+          return Promise.reject(new Error(message));
+        }
+      });
+  },
+
+  async updateProjectComponentsAndStylesWithLLM({
+    state,
+    commit,
+  }): Promise<void> {
+    const currentRoute: any = router.currentRoute;
+    const projectId = currentRoute._value.params.id;
+
+    const projectComponents = state.workspaceComponents.map(
+      (workspaceComponent) => {
+        return {
+          projectComponentItemId: workspaceComponent.id,
+          json: removeClasses(workspaceComponent.json),
+          componentItemId: workspaceComponent.componentItem,
+          defaultJson: workspaceComponent.defaultJson,
+          html: workspaceComponent.defaultHtml,
+          defaultHtml: workspaceComponent.defaultHtml,
+          componentItemHistoryId: workspaceComponent.componentItemHistory,
+          version: workspaceComponent.version,
+        };
+      }
+    );
+    const style: ProjectStyle = state.style;
+    return AxiosClient.put(`/projects/${projectId}/components/styles/llm`, {
+      prompt: state.llmPrompt,
+      projectComponents,
+      style,
+      // histories: undoStack.value,
+    })
+      .then((res: any) => {
+        commit("SET_SAVE_STATUS", CanvasSaveStatus.SAVED);
+        commit("SET_UPDATED_COMPONENTS", []); // TODO: Check if this is still relevant
         return res.data.data;
       })
       .catch((err: any): any => {

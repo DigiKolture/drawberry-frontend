@@ -16,6 +16,8 @@
         :esp="dropdown.esp"
       />
     </div>
+
+    <LLMPromptForm />
   </div>
 </template>
 
@@ -24,10 +26,11 @@ import { defineComponent } from "vue";
 import BaseButtonIcon from "@/components/icon/BaseButtonIcon.vue";
 import ManageESPListItem from "@/components/esp/ManageESPListItem.vue";
 import store from "@/store";
+import LLMPromptForm from "@/components/llm/LLMPromptForm.vue";
 
 export default defineComponent({
   name: "ManageESPs",
-  components: { ManageESPListItem, BaseButtonIcon },
+  components: { LLMPromptForm, ManageESPListItem, BaseButtonIcon },
   setup() {
     const data = [
       {

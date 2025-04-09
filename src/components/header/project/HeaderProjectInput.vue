@@ -2,6 +2,7 @@
   <div class="header__middle__input__skeleton" v-if="canvasLoading"></div>
   <div v-else class="header__middle__input__container">
     <input
+      v-if="project"
       v-model="project.name"
       type="text"
       ref="inputField"

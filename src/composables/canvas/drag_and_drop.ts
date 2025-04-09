@@ -18,6 +18,8 @@ export function drag_and_drop() {
   const NORMAL_SCROLL_SPEED = 40;
   const EXTREME_SCROLL_SPEED = 100; // Faster scroll speed when near the very edge
 
+  const dropPosition = ref(""); // 'top' or 'bottom'
+
   const workspaceComponents = computed(() => {
     return store.getters["canvas/workspaceComponents"];
   });
@@ -87,6 +89,11 @@ export function drag_and_drop() {
 
     e.dataTransfer.setData("fromComponentItemIndex", itemIndex);
     e.dataTransfer.setData("type", "from-workspace");
+
+    //Used for scrolling when component is being dragged
+    e.dataTransfer.setData("dragComponentItemHeight", e.target.offsetHeight);
+    e.dataTransfer.setData("dragComponentItemOffsetY", e.offsetY);
+    e.dataTransfer.setData("dragComponentItemCurrentY", e.clientY);
   };
 
   const focusedIndex = computed(() => {
@@ -151,7 +158,134 @@ export function drag_and_drop() {
     store.dispatch("canvas/updateProjectComponentsAndStyles").then();
   };
 
+  const handleScroll3 = (event: any) => {
+    const fromComponentItemIndex = event.dataTransfer.getData(
+      "fromComponentItemIndex"
+    );
+    const dragElementHeight = event.dataTransfer.getData("dragElementHeight");
+    const dragOffsetY = event.dataTransfer.getData("dragOffsetY");
+    const dragCurrentY = event.dataTransfer.getData("dragCurrentY");
+
+    if (!fromComponentItemIndex) return;
+    // console.log({ draggedIndex: draggedIndex.value });
+    // if (draggedIndex.value === null) return;
+
+    const draggedIndex = parseInt(fromComponentItemIndex);
+
+    // Get the element being dragged over
+    const target = event.target.closest(
+      ".workspace__component__items__list__item"
+    );
+    if (!target) return;
+
+    // Skip if dragging over itself
+    // if (target.id === `workspace-component-item-${draggedIndex}`) return;
+
+    // Get the bounding rectangle of the target element
+    const targetRect = target.getBoundingClientRect();
+
+    // console.log({ targetRect: JSON.stringify(targetRect) });
+
+    // Calculate the center point of the dragged element
+    // This represents where the dragged element would be positioned
+    const draggedElementCenterY =
+      event.clientY - dragOffsetY + dragElementHeight / 2;
+
+    // Calculate middle point of the target element
+    const targetMiddle = targetRect.top + targetRect.height / 2;
+
+    // Determine if the dragged element's center is above or below the target's middle
+    if (draggedElementCenterY < targetMiddle) {
+      dropPosition.value = "top";
+      // console.log(" <<<<<<<<<<< TOP >>>>>>>>>>>>");
+    } else {
+      dropPosition.value = "bottom";
+      // console.log(" <<<<<<<<<<< BOTTOM >>>>>>>>>>>>");
+    }
+
+    const currentY = event.clientY;
+    const offsetY = event.offsetY;
+    const height = window.innerHeight;
+
+    const distanceFromTop = currentY;
+    const distanceFromBottom = height - distanceFromTop;
+    const realDistanceFromTop = distanceFromTop - dragOffsetY; // Subtract the offset
+
+    if (
+      distanceFromTop < parseInt(dragCurrentY) && // If the item is being dragged up
+      realDistanceFromTop < TOP_THRESHOLD // Check if the item is close to the top
+    ) {
+      console.log("Scroll down >>>>>>>>>>>>>>>");
+    }
+
+    console.log({
+      dragCurrentY,
+      distanceFromTop,
+      realDistanceFromTop,
+      distanceFromBottom,
+      draggedIndex,
+      dragElementHeight,
+      offsetY,
+      dragOffsetY,
+    });
+
+    if (distanceFromTop < 65 + 20) {
+      console.log("Scroll up >>>>>>>>>>");
+    }
+  };
   const handleScroll = (event: any) => {
+    const fromComponentItemIndex = event.dataTransfer.getData(
+      "fromComponentItemIndex"
+    );
+    const dragElementHeight = event.dataTransfer.getData(
+      "dragComponentItemHeight"
+    );
+    const dragOffsetY = event.dataTransfer.getData("dragComponentItemOffsetY");
+    const dragCurrentY = event.dataTransfer.getData(
+      "dragComponentItemCurrentY"
+    );
+
+    if (!fromComponentItemIndex) return;
+
+    const currentY = event.clientY;
+    const height = window.innerHeight;
+
+    const distanceFromTop = currentY;
+    const distanceFromBottom = height - distanceFromTop;
+    const realDistanceFromTop = distanceFromTop - parseInt(dragOffsetY); // Subtract the offset
+    const realDistanceFromBottom =
+      distanceFromBottom -
+      (parseInt(dragElementHeight) - parseInt(dragOffsetY)); // Subtract the offset
+
+    if (
+      distanceFromTop < parseInt(dragCurrentY) // If the item is being dragged up
+    ) {
+      if (realDistanceFromTop < TOP_EDGE_THRESHOLD) {
+        window.scrollBy(0, -EXTREME_SCROLL_SPEED);
+      } else if (realDistanceFromTop < TOP_THRESHOLD) {
+        window.scrollBy(0, -NORMAL_SCROLL_SPEED);
+      }
+    } else if (distanceFromTop > parseInt(dragCurrentY)) {
+      if (realDistanceFromBottom < BOTTOM_EDGE_THRESHOLD) {
+        window.scrollBy(0, EXTREME_SCROLL_SPEED);
+      } else if (realDistanceFromBottom < BOTTOM_THRESHOLD) {
+        window.scrollBy(0, NORMAL_SCROLL_SPEED);
+      }
+    }
+
+    // console.log({
+    //   dragCurrentY,
+    //   distanceFromTop,
+    //   realDistanceFromTop,
+    //   distanceFromBottom,
+    //   realDistanceFromBottom,
+    //   draggedIndex,
+    //   dragElementHeight,
+    //   offsetY,
+    //   dragOffsetY,
+    // });
+  };
+  const handleScroll2 = (event: any) => {
     const currentY = event.clientY;
     const height = window.innerHeight;
 

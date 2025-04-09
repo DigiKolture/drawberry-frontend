@@ -36,6 +36,7 @@ import {
 import EmailPreviewModal from "@/components/header/preview/EmailPreviewModal.vue";
 import { history } from "@/composables/canvas/history";
 import { useRoute } from "vue-router";
+import router from "@/router";
 
 export default defineComponent({
   name: "CanvasPage",
@@ -84,7 +85,11 @@ export default defineComponent({
       await Promise.all([
         store.dispatch("components/getComponents"),
         store.dispatch("canvas/getGoogleFonts"),
-        store.dispatch("canvas/getProjectComponentItems", projectId),
+        store
+          .dispatch("canvas/getProjectComponentItems", projectId)
+          .catch(() => {
+            router.push("/projects");
+          }),
         store.commit("projects/SET_PROJECT_ID", projectId),
       ]);
 

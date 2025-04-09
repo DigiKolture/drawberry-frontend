@@ -28,7 +28,11 @@ export function helpers() {
     if (str.length <= num) return str;
     return str.slice(0, num) + "...";
   };
-
+  const replaceBreak = (str: string) => {
+    // This regex matches <br>, <BR>, <Br>, etc. with optional whitespace
+    const brRegex = /<\s*br\s*\/?>/gi;
+    return str.replace(brRegex, " ");
+  };
   const isNumeric = (value: any) => {
     return !isNaN(value) && value.trim() !== "";
   };
@@ -136,6 +140,7 @@ export function helpers() {
     copy,
     isObject,
     sliceString,
+    replaceBreak,
     diffForHumans,
     rejectError,
     isObjectsMatched,

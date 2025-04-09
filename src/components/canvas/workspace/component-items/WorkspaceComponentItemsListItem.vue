@@ -170,7 +170,6 @@ export default defineComponent({
     };
 
     const handleDragEnd = () => {
-      stopScrolling();
       store.commit("canvas/SET_SCROLL_INTERVAL_IDS", []);
     };
     const handleDragEnter = () => {

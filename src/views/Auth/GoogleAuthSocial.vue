@@ -31,7 +31,7 @@ export default defineComponent({
         const email = googleUser.getBasicProfile().getEmail();
         const firstName = googleUser.getBasicProfile().getGivenName();
         const lastName = googleUser.getBasicProfile().getFamilyName();
-        console.log({ email, firstName, lastName });
+        // console.log({ email, firstName, lastName });
 
         await store
           .dispatch("auth/oAuthLogin", {

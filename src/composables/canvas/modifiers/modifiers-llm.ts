@@ -1,17 +1,15 @@
 import { computed } from "vue";
 import store from "@/store";
 import { history } from "@/composables/canvas/history";
-import {
-  HistoryActionTypes,
-  ProjectComponentModifyPositionHistoryAction,
-} from "@/store/modules/history/types";
+import { HistoryActionTypes } from "@/store/modules/history/types";
 import { drag_and_drop } from "@/composables/canvas/drag_and_drop";
 import { modifiersProjectActions } from "@/composables/canvas/modifiers/modifiers-project-actions";
 
 export function modifiersLLM() {
   const { updateHistory } = history();
   const { changeComponentItemPosition } = drag_and_drop();
-  const { deleteProjectComponent } = modifiersProjectActions();
+  const { duplicateProjectComponent, deleteProjectComponent } =
+    modifiersProjectActions();
   const style = computed(() => store.getters["canvas/style"]);
 
   const workspaceComponents = computed(() => {
@@ -64,6 +62,12 @@ export function modifiersLLM() {
     store.dispatch("canvas/updateProjectStyle", style.value).then();
   };
 
+  const duplicateProjectComponentLLM = (data: any) => {
+    const { componentIndex, positionIndex } = data;
+
+    duplicateProjectComponent(componentIndex, positionIndex);
+  };
+
   const updateProjectComponentModifyPositionLLM = (data: any) => {
     const { toIndex, positionIndex } = data;
 
@@ -79,6 +83,7 @@ export function modifiersLLM() {
   return {
     updateStyleLLM,
     updateProjectStyleLLM,
+    duplicateProjectComponentLLM,
     updateProjectComponentModifyPositionLLM,
     deleteProjectComponentLLM,
   };

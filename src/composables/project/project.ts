@@ -30,7 +30,7 @@ export function project() {
     projectId: string,
     projectComponentCleaned: any
   ) => {
-    //TODO: removeClasses might not be needed here anymore
+    // TODO: Might remove removeClasses since I am now checking if the current index is selected or hovered on before showing the border
     return {
       _id: newProjectComponentId,
       id: newProjectComponentId,

@@ -3,14 +3,57 @@ import store from "@/store";
 import { history } from "@/composables/canvas/history";
 import { focus } from "@/composables/canvas/focus";
 import { HistoryActionTypes } from "@/store/modules/history/types";
+import ObjectId from "bson-objectid";
+import { project } from "@/composables/project/project";
+import { useRoute } from "vue-router";
 
 export function modifiersProjectActions() {
   const { updateHistory } = history();
   const { removeFocus } = focus();
+  const { duplicateProjectComponentObj } = project();
+  const route = useRoute();
 
   const workspaceComponents = computed(() => {
     return store.getters["canvas/workspaceComponents"];
   });
+
+  /**
+   * @param itemIndex - Component Index to duplicate
+   * @param positionIndex - Position to place the duplicated component
+   */
+  const duplicateProjectComponent = (
+    itemIndex: number,
+    positionIndex: number
+  ) => {
+    const projectComponentItem = workspaceComponents.value[itemIndex];
+
+    const newProjectComponentId = new ObjectId().toHexString();
+    const projectId = route.params.id as string;
+
+    const projectComponentCleaned = JSON.parse(
+      JSON.stringify(projectComponentItem)
+    );
+
+    const projectComponent = duplicateProjectComponentObj(
+      newProjectComponentId,
+      projectId,
+      projectComponentCleaned
+    );
+
+    updateHistory({
+      type: HistoryActionTypes.PROJECT_COMPONENT_DUPLICATE,
+      projectComponent,
+      positionIndex,
+      workspaceComponentItemId: newProjectComponentId,
+    });
+
+    workspaceComponents.value.splice(positionIndex, 0, projectComponent);
+    store.commit("canvas/SET_WORKSPACE_COMPONENTS", workspaceComponents.value);
+
+    //TODO: Might remove this temp since we are calling API every 5 secs
+    // store.dispatch("canvas/updateProjectComponentsAndStyles");
+  };
+
   const deleteProjectComponent = (positionIndex: number) => {
     const projectComponent = workspaceComponents.value[positionIndex];
 
@@ -44,6 +87,7 @@ export function modifiersProjectActions() {
   };
 
   return {
+    duplicateProjectComponent,
     deleteProjectComponent,
   };
 }

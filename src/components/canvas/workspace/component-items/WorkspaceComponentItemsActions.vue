@@ -57,8 +57,10 @@ export default defineComponent({
       changeComponentItemPosition,
     } = drag_and_drop();
 
-    const { deleteProjectComponent: deleteComponent } =
-      modifiersProjectActions();
+    const {
+      duplicateProjectComponent: duplicateComponent,
+      deleteProjectComponent: deleteComponent,
+    } = modifiersProjectActions();
 
     const disabledButton = ref(false);
 
@@ -92,14 +94,17 @@ export default defineComponent({
 
     const duplicateProjectComponent = async () => {
       disabledButton.value = true;
-      const projectComponentItem = workspaceComponents.value[props.itemIndex];
 
-      store
-        .dispatch("canvas/duplicateProjectComponent", {
-          projectComponentItem,
-          positionIndex: props.itemIndex + 1,
-        })
-        .then();
+      duplicateComponent(props.itemIndex, props.itemIndex + 1);
+
+      // const projectComponentItem = workspaceComponents.value[props.itemIndex];
+
+      // store
+      //   .dispatch("canvas/duplicateProjectComponent", {
+      //     projectComponentItem,
+      //     positionIndex: props.itemIndex + 1,
+      //   })
+      //   .then();
 
       disabledButton.value = false;
     };

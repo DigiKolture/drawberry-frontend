@@ -262,32 +262,17 @@ export const actions: ActionTree<CanvasState, RootState> = {
     state.workspaceComponents.splice(positionIndex, 0, projectComponent);
     commit("SET_WORKSPACE_COMPONENTS", state.workspaceComponents);
 
+    //TODO: Might remove this temp since we are calling API every 5 secs
     dispatch("updateProjectComponentsAndStyles");
   },
-  deleteProjectComponent(
-    { state, commit, dispatch },
-    { projectId, projectComponentItemId, positionIndex }
-  ): Promise<void> {
-    const projectComponent = state.workspaceComponents[positionIndex];
+  deleteProjectComponent(_, { projectComponentItemId }): Promise<void> {
+    const currentRoute: any = router.currentRoute;
+    const projectId = currentRoute._value.params.id;
 
-    updateHistory({
-      type: HistoryActionTypes.PROJECT_COMPONENT_DELETE,
-      projectComponent,
-      positionIndex,
-      workspaceComponentItemId: projectComponentItemId,
-    });
-
-    state.workspaceComponents.splice(positionIndex, 1);
-    commit("SET_WORKSPACE_COMPONENTS", state.workspaceComponents);
-
-    if (state.workspaceComponents.length == 0) {
-      commit("SET_HAS_WORKSPACE_COMPONENTS", false);
-    }
     return AxiosClient.delete(
       `/projects/${projectId}/components/${projectComponentItemId}`
     )
       .then((res: any) => {
-        dispatch("updateProjectComponentsAndStyles");
         return res.data.data;
       })
       .catch((err: any): any => {

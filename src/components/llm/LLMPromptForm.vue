@@ -42,11 +42,17 @@ import {
 import { history } from "@/composables/canvas/history";
 import { canvas } from "@/composables/canvas/canvas";
 import { ActionToEditableTypeMap } from "@/store/modules/canvas/types";
+import { modifiersLLM } from "@/composables/canvas/modifiers/modifiers-llm";
 
 export default defineComponent({
   name: "LLMPromptForm",
   setup() {
-    const { updateStyleLLM } = modifiers();
+    const {
+      updateStyleLLM,
+      updateProjectStyleLLM,
+      updateProjectComponentModifyPositionLLM,
+      deleteProjectComponentLLM,
+    } = modifiersLLM();
     const { updateElementFocusAndScroll } = history();
     const { getElementWithComponentIndex } = canvas();
 
@@ -70,6 +76,17 @@ export default defineComponent({
               Object.values(HistoryComponentUpdateTypes).includes(update.type)
             ) {
               updateStyleLLM(update);
+            } else if (update.type === HistoryActionTypes.PROJECT_STYLE) {
+              updateProjectStyleLLM(update);
+            } else if (
+              update.type ===
+              HistoryActionTypes.PROJECT_COMPONENT_MODIFY_POSITION
+            ) {
+              updateProjectComponentModifyPositionLLM(update);
+            } else if (
+              update.type === HistoryActionTypes.PROJECT_COMPONENT_DELETE
+            ) {
+              deleteProjectComponentLLM(update);
             }
           }
 

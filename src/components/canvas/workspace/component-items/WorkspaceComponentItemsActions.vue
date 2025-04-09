@@ -31,7 +31,7 @@ import { computed, defineComponent, ref } from "vue";
 import { drag_and_drop } from "@/composables/canvas/drag_and_drop";
 import BaseButtonIcon from "@/components/icon/BaseButtonIcon.vue";
 import store from "@/store";
-import { focus } from "@/composables/canvas/focus";
+import { modifiersProjectActions } from "@/composables/canvas/modifiers/modifiers-project-actions";
 
 export default defineComponent({
   name: "WorkspaceComponentItemsActions",
@@ -57,9 +57,10 @@ export default defineComponent({
       changeComponentItemPosition,
     } = drag_and_drop();
 
-    const disabledButton = ref(false);
+    const { deleteProjectComponent: deleteComponent } =
+      modifiersProjectActions();
 
-    const { removeFocus } = focus();
+    const disabledButton = ref(false);
 
     const workspaceComponents = computed(() => {
       return store.getters["canvas/workspaceComponents"];
@@ -105,20 +106,9 @@ export default defineComponent({
 
     const deleteProjectComponent = async () => {
       disabledButton.value = true;
-      const projectComponentItem = workspaceComponents.value[props.itemIndex];
 
-      store.commit("canvas/SET_CURRENT_HOVER_ELEMENT", {
-        id: null,
-        componentIndex: null,
-      });
-      store
-        .dispatch("canvas/deleteProjectComponent", {
-          projectId: props.projectId,
-          projectComponentItemId: projectComponentItem.id,
-          positionIndex: props.itemIndex,
-        })
-        .then();
-      removeFocus();
+      deleteComponent(props.itemIndex);
+
       disabledButton.value = false;
     };
 

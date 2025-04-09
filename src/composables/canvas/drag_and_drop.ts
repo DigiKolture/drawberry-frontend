@@ -135,6 +135,7 @@ export function drag_and_drop() {
       if (toIndex > 0 && toIndex > fromIndex) toIndex = toIndex - 1;
     }
 
+    // Remove focus from the current component if it's not the one being changed
     if (focusedIndex.value === fromIndex) {
       store.commit("canvas/SET_FOCUSED_INDEX", toIndex);
     } else {
@@ -154,8 +155,8 @@ export function drag_and_drop() {
 
     store.commit("canvas/SET_WORKSPACE_COMPONENTS", workspaceComponents.value);
 
-    // TODO: Might remove this, cos API runs every 5 seconds
-    store.dispatch("canvas/updateProjectComponentsAndStyles").then();
+    // TODO: Might remove this, cos API runs every 5 seconds (Removed temp)
+    // store.dispatch("canvas/updateProjectComponentsAndStyles").then();
   };
 
   const handleScroll3 = (event: any) => {

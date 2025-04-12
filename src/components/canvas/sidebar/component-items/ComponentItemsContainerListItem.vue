@@ -14,6 +14,7 @@ import { useRoute } from "vue-router";
 import store from "@/store";
 import { focus } from "@/composables/canvas/focus";
 import { ui } from "@/assets/js/canvas";
+import { modifiersProjectActions } from "@/composables/canvas/modifiers/modifiers-project-actions";
 const { dragComponentItemToCanvas } = drag_and_drop();
 
 export default defineComponent({
@@ -33,6 +34,7 @@ export default defineComponent({
   setup(props, { emit }) {
     const route = useRoute();
     const { removeCurrentFocus, removeFocus } = focus();
+    const { addProjectComponent } = modifiersProjectActions();
 
     onMounted(() => {
       store.commit("canvas/SET_DROP_LOADING", false);
@@ -72,14 +74,7 @@ export default defineComponent({
       removeCurrentFocus();
       removeFocus();
 
-      store
-        .dispatch("canvas/addComponentToProject", {
-          data: {
-            componentItem,
-            positionIndex: workspaceComponents.value.length,
-          },
-        })
-        .then();
+      addProjectComponent(componentItem, workspaceComponents.value.length);
 
       emit("enable");
       store.commit("canvas/SET_DROP_LOADING", false);

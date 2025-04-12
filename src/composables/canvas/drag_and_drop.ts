@@ -4,10 +4,12 @@ import { ui } from "@/assets/js/canvas";
 import { focus } from "@/composables/canvas/focus";
 import { HistoryActionTypes } from "@/store/modules/history/types";
 import { history } from "@/composables/canvas/history";
+import { modifiersProjectActions } from "@/composables/canvas/modifiers/modifiers-project-actions";
 const { updateHistory } = history();
 
 export function drag_and_drop() {
   const intervalId = ref<number | null>(null);
+  const { addProjectComponent } = modifiersProjectActions();
 
   const { removeCurrentFocus, removeFocus, removeAllFocus } = focus();
   const SCROLL_INTERVAL = 50; // ms between scroll events
@@ -70,14 +72,7 @@ export function drag_and_drop() {
     // workspaceComponents.value.push(componentItem);
     // store.commit("canvas/SET_WORKSPACE_COMPONENTS", workspaceComponents.value);
 
-    store
-      .dispatch("canvas/addComponentToProject", {
-        data: {
-          componentItem,
-          positionIndex: toIndex,
-        },
-      })
-      .then();
+    addProjectComponent(componentItem, toIndex);
   };
 
   const moveComponentItemPosition = (e: any, itemIndex: any) => {

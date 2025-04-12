@@ -4,21 +4,41 @@ import { history } from "@/composables/canvas/history";
 import { HistoryActionTypes } from "@/store/modules/history/types";
 import { drag_and_drop } from "@/composables/canvas/drag_and_drop";
 import { modifiersProjectActions } from "@/composables/canvas/modifiers/modifiers-project-actions";
+import component from "*.vue";
 
 export function modifiersLLM() {
   const { updateHistory } = history();
   const { changeComponentItemPosition } = drag_and_drop();
-  const { duplicateProjectComponent, deleteProjectComponent } =
-    modifiersProjectActions();
+  const {
+    addProjectComponent,
+    duplicateProjectComponent,
+    deleteProjectComponent,
+  } = modifiersProjectActions();
   const style = computed(() => store.getters["canvas/style"]);
 
   const workspaceComponents = computed(() => {
     return store.getters["canvas/workspaceComponents"];
   });
 
+  const components = computed(() => {
+    return store.getters["components/components"];
+  });
+
   const updateStyleLLM = (data: any) => {
     const { modifier, componentIndex, elementId, previousValue, value } = data;
     const projectComponentItem = workspaceComponents.value[componentIndex];
+
+    if (!projectComponentItem) {
+      console.log("Project component item not found");
+      console.log({
+        modifier,
+        componentIndex,
+        elementId,
+        previousValue,
+        value,
+      });
+      return;
+    }
     const jsonIndex = projectComponentItem.json.findIndex(
       (el: any) => el.id === elementId
     );
@@ -62,6 +82,29 @@ export function modifiersLLM() {
     store.dispatch("canvas/updateProjectStyle", style.value).then();
   };
 
+  const addProjectComponentLLM = (data: any) => {
+    const componentItemId = data.componentItemId;
+    let positionIndex = data.positionIndex;
+    let componentItem = null;
+
+    for (const component of components.value) {
+      for (const item of component.items) {
+        if (item.id === componentItemId) {
+          componentItem = item;
+          break;
+        }
+      }
+    }
+    if (!componentItem) return;
+
+    //Check if positionIndex is out of range
+    if (positionIndex < 0 || positionIndex > workspaceComponents.value.length) {
+      positionIndex = workspaceComponents.value.length;
+    }
+
+    addProjectComponent(componentItem, positionIndex);
+  };
+
   const duplicateProjectComponentLLM = (data: any) => {
     const { componentIndex, positionIndex } = data;
 
@@ -83,6 +126,7 @@ export function modifiersLLM() {
   return {
     updateStyleLLM,
     updateProjectStyleLLM,
+    addProjectComponentLLM,
     duplicateProjectComponentLLM,
     updateProjectComponentModifyPositionLLM,
     deleteProjectComponentLLM,

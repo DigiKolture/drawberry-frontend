@@ -6,16 +6,72 @@ import { HistoryActionTypes } from "@/store/modules/history/types";
 import ObjectId from "bson-objectid";
 import { project } from "@/composables/project/project";
 import { useRoute } from "vue-router";
+import { helpers } from "@/composables/helpers";
+import { canvas } from "@/composables/canvas/canvas";
+const { copyObject } = helpers();
+const { updateComponentBorder } = canvas();
 
 export function modifiersProjectActions() {
   const { updateHistory } = history();
   const { removeFocus } = focus();
-  const { duplicateProjectComponentObj } = project();
+  const { createProjectComponentObj, duplicateProjectComponentObj } = project();
   const route = useRoute();
+
+  const style = computed(() => {
+    return store.getters["canvas/style"];
+  });
 
   const workspaceComponents = computed(() => {
     return store.getters["canvas/workspaceComponents"];
   });
+
+  /**
+   * @param componentItem
+   * @param positionIndex
+   */
+  const addProjectComponent = (componentItem: any, positionIndex: number) => {
+    const projectId = route.params.id as string;
+
+    const projectComponentId = new ObjectId().toHexString();
+    const componentItemCopy = copyObject(componentItem);
+
+    const { html, json } = updateComponentBorder(
+      style.value.layout,
+      componentItemCopy.json,
+      componentItemCopy.html
+    );
+
+    const projectComponent = createProjectComponentObj(
+      projectComponentId,
+      projectId,
+      componentItemCopy,
+      json,
+      html
+    );
+
+    store.commit("canvas/SET_HAS_WORKSPACE_COMPONENTS", true);
+
+    updateHistory({
+      type: HistoryActionTypes.PROJECT_COMPONENT_ADD,
+      projectComponent,
+      positionIndex: positionIndex,
+      workspaceComponentItemId: projectComponentId,
+    });
+
+    workspaceComponents.value.splice(positionIndex, 0, projectComponent);
+    store.commit("canvas/SET_WORKSPACE_COMPONENTS", workspaceComponents.value);
+
+    //TODO: can optimize to only update font for the added component
+    store.commit("canvas/UPDATE_PROJECT_COMPONENTS_STYLE", {
+      projectIndex: positionIndex,
+      style: {
+        "font-family": style.value.fontFamily,
+        "font-weight": 400,
+      },
+    });
+
+    store.dispatch("canvas/updateProjectComponentsAndStyles").then();
+  };
 
   /**
    * @param itemIndex - Component Index to duplicate
@@ -87,6 +143,7 @@ export function modifiersProjectActions() {
   };
 
   return {
+    addProjectComponent,
     duplicateProjectComponent,
     deleteProjectComponent,
   };

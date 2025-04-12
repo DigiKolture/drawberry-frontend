@@ -50,6 +50,7 @@ export default defineComponent({
     const {
       updateStyleLLM,
       updateProjectStyleLLM,
+      addProjectComponentLLM,
       duplicateProjectComponentLLM,
       updateProjectComponentModifyPositionLLM,
       deleteProjectComponentLLM,
@@ -79,6 +80,10 @@ export default defineComponent({
               updateStyleLLM(update);
             } else if (update.type === HistoryActionTypes.PROJECT_STYLE) {
               updateProjectStyleLLM(update);
+            } else if (
+              update.type === HistoryActionTypes.PROJECT_COMPONENT_ADD
+            ) {
+              addProjectComponentLLM(update);
             } else if (
               update.type === HistoryActionTypes.PROJECT_COMPONENT_DUPLICATE
             ) {

@@ -85,54 +85,6 @@ export const actions: ActionTree<CanvasState, RootState> = {
         }
       });
   },
-  async addComponentToProject(
-    { state, commit, dispatch },
-    { data }
-  ): Promise<void> {
-    const currentRoute: any = router.currentRoute;
-    const projectId = currentRoute._value.params.id;
-
-    const projectComponentId = new ObjectId().toHexString();
-    // const componentItem = data.componentItem;
-    const componentItem = copyObject(data.componentItem);
-
-    const { html, json } = updateComponentBorder(
-      state.style.layout,
-      componentItem.json,
-      componentItem.html
-    );
-
-    const projectComponent = createProjectComponentObj(
-      projectComponentId,
-      projectId,
-      componentItem,
-      json,
-      html
-    );
-
-    commit("SET_HAS_WORKSPACE_COMPONENTS", true);
-
-    updateHistory({
-      type: HistoryActionTypes.PROJECT_COMPONENT_ADD,
-      projectComponent,
-      positionIndex: data.positionIndex,
-      workspaceComponentItemId: projectComponentId,
-    });
-
-    state.workspaceComponents.splice(data.positionIndex, 0, projectComponent);
-    commit("SET_WORKSPACE_COMPONENTS", state.workspaceComponents);
-
-    //TODO: can optimize to only update font for the added component
-    store.commit("canvas/UPDATE_PROJECT_COMPONENTS_STYLE", {
-      projectIndex: data.positionIndex,
-      style: {
-        "font-family": state.style.fontFamily,
-        "font-weight": 400,
-      },
-    });
-
-    dispatch("updateProjectComponentsAndStyles").then();
-  },
 
   updateProjectComponent(
     _,

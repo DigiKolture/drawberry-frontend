@@ -268,7 +268,6 @@ export function drag_and_drop() {
         window.scrollBy(0, NORMAL_SCROLL_SPEED);
       }
     }
-
     // console.log({
     //   dragCurrentY,
     //   distanceFromTop,
@@ -379,6 +378,7 @@ export function drag_and_drop() {
   return {
     dragComponentItemToCanvas,
     moveComponentItem,
+    checkIfParentIsBeenDragged,
     upsertComponentItem,
     moveComponentItemPosition,
     changeComponentItemPosition,

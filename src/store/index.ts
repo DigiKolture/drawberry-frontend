@@ -11,6 +11,7 @@ import panel from "@/store/modules/panel";
 import layers from "@/store/modules/layers";
 import toast from "@/store/modules/toast";
 import history from "@/store/modules/history";
+import element from "@/store/modules/element";
 import createPersistedState from "vuex-persistedstate";
 
 export default createStore({
@@ -33,6 +34,7 @@ export default createStore({
     layers,
     toast,
     history,
+    element,
   },
   plugins: [
     createPersistedState({
@@ -47,6 +49,7 @@ export default createStore({
         "layers",
         "toast",
         "history",
+        "element",
       ],
       storage: {
         getItem: (key) => localStorage.getItem(key),

@@ -36,7 +36,7 @@ export default defineComponent({
     },
   },
   setup() {
-    const { upsertComponentItem } = drag_and_drop();
+    const { upsertComponentItem, checkIfParentIsBeenDragged } = drag_and_drop();
     const { validateWorkspaceIndicator } = indicators();
 
     const drop = ref(false);
@@ -55,6 +55,7 @@ export default defineComponent({
     });
 
     const handleDragOver = (e: any) => {
+      //TODO: Set this values to null or empty when dragging element
       const fromIndex = e.dataTransfer.getData("fromComponentItemIndex");
       const type = e.dataTransfer.getData("type");
       const toIndex = itemIndex.value;

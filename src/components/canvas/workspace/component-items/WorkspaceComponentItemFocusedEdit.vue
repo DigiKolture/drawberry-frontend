@@ -31,7 +31,7 @@ export default defineComponent({
       required: true,
     },
   },
-  setup() {
+  setup(props) {
     const selectedElementId = ref<string | null>(null);
     const elementPositionStyle = ref({ display: "none" }) as any;
     const showActions = ref<boolean>(true);
@@ -47,7 +47,7 @@ export default defineComponent({
       return store.getters["canvas/focusedIndex"];
     });
 
-    const focusedEl = computed(() => {
+    const focusedElement = computed(() => {
       return store.getters["canvas/focusedElement"];
     });
 
@@ -58,16 +58,13 @@ export default defineComponent({
     const focusedElementRef = ref<HTMLElement | null>(null) as any;
 
     const duplicate = () => {
-      duplicateItem(focusedIndex.value, focusedEl.value.id);
+      duplicateItem(focusedIndex.value, focusedElement.value.id);
     };
 
     const updateElementPosition = async () => {
       await nextTick(); // Wait for DOM updates
 
-      // const focusedIndex = store.getters["canvas/focusedIndex"];
-      const focusedElement = store.getters["canvas/focusedElement"];
-
-      if (focusedIndex.value === null || focusedElement === null) {
+      if (focusedIndex.value === null || focusedElement.value === null) {
         elementPositionStyle.value = { display: "none" };
         return;
       }
@@ -84,7 +81,10 @@ export default defineComponent({
         return;
       }
 
-      const element = componentContainer.querySelector(".focus");
+      // const element = componentContainer.querySelector(".focus");
+      const element = componentContainer.querySelector(
+        `#${focusedElement.value.id}`
+      );
       if (!element) {
         elementPositionStyle.value = { display: "none" };
         return;

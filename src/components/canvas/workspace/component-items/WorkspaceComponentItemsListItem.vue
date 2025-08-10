@@ -183,10 +183,11 @@ export default defineComponent({
       // html = transformHtmlWithDuplicates(html, json);
       html = arrangeElementsInComponentHTML(html, json);
 
-      for (let elementJson of json) {
-        // if (!elementJson.attributes.style.value) continue;
-        html = updateElementDom(html, elementJson);
-      }
+      //Moved to arrangeElementsInComponentHTML
+      // for (let elementJson of json) {
+      //   // if (!elementJson.attributes.style.value) continue;
+      //   html = updateElementDom(html, elementJson);
+      // }
       //eslint-disable-next-line vue/no-mutating-props
       props.componentItem.html = html;
     };

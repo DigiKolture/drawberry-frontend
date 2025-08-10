@@ -9,7 +9,7 @@
       >
         <BaseIcon icon="canvas/workspace/element/drag" />
       </button>
-      <button>
+      <button @click="duplicate">
         <BaseIcon icon="canvas/workspace/element/duplicate" />
       </button>
     </div>
@@ -20,6 +20,7 @@
 import { defineComponent, ref, watch, nextTick, computed } from "vue";
 import store from "@/store";
 import BaseIcon from "@/components/icon/BaseIcon.vue";
+import { duplicateElements } from "@/composables/canvas/duplicate";
 
 export default defineComponent({
   name: "WorkspaceComponentItemFocusedEdit",
@@ -34,6 +35,7 @@ export default defineComponent({
     const selectedElementId = ref<string | null>(null);
     const elementPositionStyle = ref({ display: "none" }) as any;
     const showActions = ref<boolean>(true);
+    const { duplicateItem } = duplicateElements();
 
     const actions = [
       { name: "drag", icon: "canvas/workspace/element/drag" },
@@ -45,11 +47,19 @@ export default defineComponent({
       return store.getters["canvas/focusedIndex"];
     });
 
+    const focusedEl = computed(() => {
+      return store.getters["canvas/focusedElement"];
+    });
+
     const workspaceComponents = computed(() => {
       return store.getters["canvas/workspaceComponents"];
     });
 
     const focusedElementRef = ref<HTMLElement | null>(null) as any;
+
+    const duplicate = () => {
+      duplicateItem(focusedIndex.value, focusedEl.value.id);
+    };
 
     const updateElementPosition = async () => {
       await nextTick(); // Wait for DOM updates
@@ -145,6 +155,7 @@ export default defineComponent({
     };
 
     return {
+      duplicate,
       selectedElementId,
       elementPositionStyle,
       actions,

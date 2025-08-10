@@ -1,5 +1,9 @@
 import { computed } from "vue";
 import store from "@/store";
+import { arrange } from "@/composables/canvas/elements/arrange";
+import { helpers } from "@/composables/helpers";
+const { arrangeElementsInComponentHTML } = arrange();
+const { copyObject } = helpers();
 
 export function duplicateElements() {
   const workspaceComponents = computed(() => {
@@ -157,34 +161,35 @@ export function duplicateElements() {
     return htmlString;
   };
 
-  const duplicateItem = (
-    rowId: string,
-    itemIndex: number,
-    jsonIndex: number
-  ) => {
+  const duplicateItem = (itemIndex: number, focusedElementId: string) => {
     const componentItem = workspaceComponents.value[itemIndex];
     // Clone the json array to prevent affecting defaultJson
     componentItem.json = structuredClone(componentItem.json);
 
-    const jsonElement = componentItem.json[jsonIndex];
+    let jsonIndex = componentItem.json.findIndex(
+      (item: any) => item.id === focusedElementId
+    );
+
+    const jsonElement = copyObject(componentItem.json[jsonIndex]);
+    const wrapperId = jsonElement.wrapperId;
 
     const randomSuffix = getRandomSuffix();
 
     const duplicatedElement = {
       ...jsonElement,
       id: duplicateId(jsonElement.id, randomSuffix),
-      rowId,
     };
 
     const copyJsonIndex = jsonIndex + 1;
     const children = [];
-    for (const focusedChildrenElement of focusedChildrenElements.value) {
+    for (const focusedChildrenElementRaw of focusedChildrenElements.value) {
+      const focusedChildrenElement = copyObject(focusedChildrenElementRaw);
+
       jsonIndex++;
       const duplicatedChildElement = {
         ...focusedChildrenElement,
         id: duplicateId(focusedChildrenElement.id, randomSuffix),
         parent: duplicatedElement.id,
-        rowId,
       };
 
       componentItem.json.splice(jsonIndex, 0, duplicatedChildElement);
@@ -196,20 +201,26 @@ export function duplicateElements() {
       children,
     });
 
-    let htmlString = componentItem.html;
+    const htmlString = componentItem.html;
     const rowIndexOfOriginalElement = componentItem.json
       .filter(
-        (item: any) => item.id && item.parent == null && item.rowId == rowId
+        (item: any) =>
+          item.id && item.parent == null && item.wrapperId == wrapperId
       )
       .findIndex((item: any) => item.id === jsonElement.id);
 
-    const rowChildren = getAllChildrenById(htmlString, rowId);
-    const childHTML = rowChildren[rowIndexOfOriginalElement];
+    const rowChildren = getAllChildrenById(htmlString, wrapperId);
+    // const childHTML = rowChildren[rowIndexOfOriginalElement];
 
-    const newHTML = updateIdsAndParents(childHTML, randomSuffix);
-    rowChildren.splice(rowIndexOfOriginalElement + 1, 0, newHTML);
-    htmlString = replaceChildrenById(rowId, htmlString, rowChildren);
-    componentItem.html = htmlString;
+    // console.log(rowChildren);
+
+    // const newHTML = updateIdsAndParents(childHTML, randomSuffix);
+    // rowChildren.splice(rowIndexOfOriginalElement + 1, 0, newHTML);
+    // htmlString = replaceChildrenById(rowId, htmlString, rowChildren);
+    componentItem.html = arrangeElementsInComponentHTML(
+      componentItem.html,
+      componentItem.json
+    );
   };
 
   const transformHtmlWithDuplicates = (htmlString: any, jsonData: any) => {

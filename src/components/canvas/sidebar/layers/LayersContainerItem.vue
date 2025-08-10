@@ -53,6 +53,7 @@
         @mouseover.stop="handleMouseOver(element)"
         @click="handleClick(element)"
         :element="element"
+        :item-index="itemIndex"
         :componentItem="componentItem"
       />
     </div>

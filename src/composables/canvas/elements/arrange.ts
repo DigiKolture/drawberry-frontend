@@ -1,4 +1,6 @@
 import * as cheerio from "cheerio";
+import { updateDom } from "@/composables/canvas/update_dom";
+const { updateElementDom } = updateDom();
 
 export function arrange() {
   const getFirstWrapperId = (ids: string[], json: any) => {
@@ -10,11 +12,40 @@ export function arrange() {
     //TODO: Return the first element's wrapperId if no wrapperId is found
     return null;
   };
+
+  const updateIdsAndParents = (htmlString: string, suffix: string): string => {
+    return htmlString.replace(
+      /(id|parent)="([^"]+?)"/g,
+      (match, attr, value) => {
+        const newValue = value.replace(/_dup_[a-zA-Z0-9]+$/, "");
+        return `${attr}="${newValue}_dup_${suffix}"`;
+      }
+    );
+  };
   const getHTMLOfParentAndChildren = (
     htmlString: string,
     parentId: string,
     childrenIds: string[]
-  ) => {
+  ): string => {
+    if (parentId.includes("_dup_")) {
+      const sourceSplit = parentId.split("_dup_");
+      const sourceId = sourceSplit[0];
+      const suffix = sourceSplit[sourceSplit.length - 1];
+      const sourceChildrenIds = childrenIds.map((id) => id.split("_dup_")[0]);
+
+      // console.log({ sourceId, sourceChildrenIds });
+
+      const sourceWrapperHTML = getHTMLOfParentAndChildren(
+        htmlString,
+        sourceId,
+        sourceChildrenIds
+      );
+
+      // console.log("Source Wrapper HTML:", sourceWrapperHTML);
+
+      return updateIdsAndParents(sourceWrapperHTML, suffix);
+    }
+
     const parser = new DOMParser();
     const doc = parser.parseFromString(htmlString, "text/html");
 
@@ -67,16 +98,27 @@ export function arrange() {
     return parents;
   };
 
-  const arrangeElementsInComponentHTML = (htmlString: any, jsonData: any) => {
+  const arrangeElementsInComponentHTML = (
+    htmlString: any,
+    jsonData: any,
+    updateStyle = true
+  ) => {
     const newJson = [...jsonData];
 
     //Remove the first element which is the component item itself
     newJson.shift();
 
     const parents = getParentElements(htmlString, newJson);
+    let html = updateHTML(htmlString, parents);
 
-    console.log(parents);
-    return updateHTML(htmlString, parents);
+    if (updateStyle) {
+      for (const elementJson of jsonData) {
+        // if (!elementJson.attributes.style.value) continue;
+        html = updateElementDom(html, elementJson);
+      }
+    }
+
+    return html;
   };
 
   const updateHTML = (htmlString: string, parents: any[]): string => {

@@ -173,60 +173,6 @@ export function duplicateElements() {
     return htmlString;
   };
 
-  const duplicateItem2 = (itemIndex: number, focusedElementId: string) => {
-    const componentItem = workspaceComponents.value[itemIndex];
-    // Clone the json array to prevent affecting defaultJson
-    componentItem.json = structuredClone(componentItem.json);
-
-    let jsonIndex = componentItem.json.findIndex(
-      (item: any) => item.id === focusedElementId
-    );
-
-    const jsonElement = copyObject(componentItem.json[jsonIndex]);
-
-    const randomSuffix = getRandomSuffix();
-
-    const duplicatedElement = {
-      ...jsonElement,
-      id: duplicateId(jsonElement.id, randomSuffix),
-    };
-
-    const copyJsonIndex = jsonIndex + 1;
-    const children = [];
-    for (const focusedChildrenElementRaw of focusedChildrenElements.value) {
-      const focusedChildrenElement = copyObject(focusedChildrenElementRaw);
-
-      jsonIndex++;
-      const duplicatedChildElement = {
-        ...focusedChildrenElement,
-        id: duplicateId(focusedChildrenElement.id, randomSuffix),
-        parent: duplicatedElement.id,
-      };
-
-      componentItem.json.splice(jsonIndex, 0, duplicatedChildElement);
-      children.push(duplicatedChildElement.id);
-    }
-
-    componentItem.json.splice(copyJsonIndex, 0, {
-      ...duplicatedElement,
-      children,
-    });
-
-    updateHistory({
-      type: HistoryActionTypes.PROJECT_COMPONENT_ELEMENT_DUPLICATE,
-      projectComponent: componentItem,
-      positionIndex: itemIndex,
-      workspaceComponentItemId: componentItem.id,
-      elementId: jsonElement.id,
-      duplicatedElementId: duplicatedElement.id,
-    });
-
-    componentItem.html = arrangeElementsInComponentHTML(
-      componentItem.html,
-      componentItem.json
-    );
-  };
-
   const duplicateElementWithChildren = (
     componentItem: any,
     elementId: string,

@@ -2,8 +2,15 @@ import { computed } from "vue";
 import store from "@/store";
 import { arrange } from "@/composables/canvas/elements/arrange";
 import { helpers } from "@/composables/helpers";
+import { history } from "@/composables/canvas/history";
 const { arrangeElementsInComponentHTML } = arrange();
 const { copyObject } = helpers();
+const { updateHistory } = history();
+const { findIndex } = helpers();
+import {
+  ProjectComponentElementDuplicateHistoryAction,
+  HistoryActionTypes,
+} from "@/store/modules/history/types";
 
 export function duplicateElements() {
   const workspaceComponents = computed(() => {
@@ -29,6 +36,11 @@ export function duplicateElements() {
     //In case the elementId already has a duplicate suffix, we need to remove it first. So we are using the original elementId
     const splitElement = elementId.split("_dup_")[0];
     return `${splitElement}_dup_${randomSuffix}`;
+  };
+
+  const extractSuffix = (elementId: string) => {
+    const splitElement = elementId.split("_dup_");
+    return splitElement[1];
   };
 
   const getRowId = (element: any) => {
@@ -161,7 +173,7 @@ export function duplicateElements() {
     return htmlString;
   };
 
-  const duplicateItem = (itemIndex: number, focusedElementId: string) => {
+  const duplicateItem2 = (itemIndex: number, focusedElementId: string) => {
     const componentItem = workspaceComponents.value[itemIndex];
     // Clone the json array to prevent affecting defaultJson
     componentItem.json = structuredClone(componentItem.json);
@@ -171,7 +183,6 @@ export function duplicateElements() {
     );
 
     const jsonElement = copyObject(componentItem.json[jsonIndex]);
-    const wrapperId = jsonElement.wrapperId;
 
     const randomSuffix = getRandomSuffix();
 
@@ -201,26 +212,140 @@ export function duplicateElements() {
       children,
     });
 
-    const htmlString = componentItem.html;
-    const rowIndexOfOriginalElement = componentItem.json
-      .filter(
-        (item: any) =>
-          item.id && item.parent == null && item.wrapperId == wrapperId
-      )
-      .findIndex((item: any) => item.id === jsonElement.id);
+    updateHistory({
+      type: HistoryActionTypes.PROJECT_COMPONENT_ELEMENT_DUPLICATE,
+      projectComponent: componentItem,
+      positionIndex: itemIndex,
+      workspaceComponentItemId: componentItem.id,
+      elementId: jsonElement.id,
+      duplicatedElementId: duplicatedElement.id,
+    });
 
-    const rowChildren = getAllChildrenById(htmlString, wrapperId);
-    // const childHTML = rowChildren[rowIndexOfOriginalElement];
-
-    // console.log(rowChildren);
-
-    // const newHTML = updateIdsAndParents(childHTML, randomSuffix);
-    // rowChildren.splice(rowIndexOfOriginalElement + 1, 0, newHTML);
-    // htmlString = replaceChildrenById(rowId, htmlString, rowChildren);
     componentItem.html = arrangeElementsInComponentHTML(
       componentItem.html,
       componentItem.json
     );
+  };
+
+  const duplicateElementWithChildren = (
+    componentItem: any,
+    elementId: string,
+    randomSuffix: string,
+    focusedChildrenElements: any[] = []
+  ) => {
+    let jsonIndex = componentItem.json.findIndex(
+      (item: any) => item.id === elementId
+    );
+
+    if (jsonIndex === -1) return null;
+
+    const jsonElement = copyObject(componentItem.json[jsonIndex]);
+
+    const duplicatedElement = {
+      ...jsonElement,
+      id: duplicateId(jsonElement.id, randomSuffix),
+    };
+
+    const copyJsonIndex = jsonIndex + 1;
+    const children = [];
+
+    // Duplicate children elements
+    for (const focusedChildrenElementRaw of focusedChildrenElements) {
+      const focusedChildrenElement = copyObject(focusedChildrenElementRaw);
+
+      jsonIndex++;
+      const duplicatedChildElement = {
+        ...focusedChildrenElement,
+        id: duplicateId(focusedChildrenElement.id, randomSuffix),
+        parent: duplicatedElement.id,
+      };
+
+      componentItem.json.splice(jsonIndex, 0, duplicatedChildElement);
+      children.push(duplicatedChildElement.id);
+    }
+
+    // Insert the duplicated parent element
+    componentItem.json.splice(copyJsonIndex, 0, {
+      ...duplicatedElement,
+      children,
+    });
+
+    return {
+      duplicatedElement,
+      children,
+      originalElementId: elementId,
+    };
+  };
+
+  const removeDuplicatedElement = (
+    componentItem: any,
+    duplicatedElementId: string
+  ) => {
+    // Find and remove all children of the duplicated element first
+    const duplicatedElement = componentItem.json.find(
+      (item: any) => item.id === duplicatedElementId
+    );
+
+    if (duplicatedElement && duplicatedElement.children) {
+      // Remove children in reverse order to maintain indices
+      for (let i = duplicatedElement.children.length - 1; i >= 0; i--) {
+        const childId = duplicatedElement.children[i];
+        const childIndex = componentItem.json.findIndex(
+          (item: any) => item.id === childId
+        );
+        if (childIndex !== -1) {
+          componentItem.json.splice(childIndex, 1);
+        }
+      }
+    }
+
+    // Remove the duplicated element itself
+    const duplicatedElementIndex = componentItem.json.findIndex(
+      (item: any) => item.id === duplicatedElementId
+    );
+    if (duplicatedElementIndex !== -1) {
+      componentItem.json.splice(duplicatedElementIndex, 1);
+      return true;
+    }
+    return false;
+  };
+
+  // Core reusable function to update component HTML and store
+  const updateComponentAndStore = (componentItem: any) => {
+    componentItem.html = arrangeElementsInComponentHTML(
+      componentItem.html,
+      componentItem.json
+    );
+    store.commit("canvas/SET_WORKSPACE_COMPONENTS", workspaceComponents.value);
+  };
+
+  const duplicateItem = (itemIndex: number, focusedElementId: string) => {
+    const componentItem = workspaceComponents.value[itemIndex];
+    // Clone the json array to prevent affecting defaultJson
+    componentItem.json = structuredClone(componentItem.json);
+
+    const randomSuffix = getRandomSuffix();
+
+    const result = duplicateElementWithChildren(
+      componentItem,
+      focusedElementId,
+      randomSuffix,
+      focusedChildrenElements.value
+    );
+
+    if (!result) return null;
+
+    updateHistory({
+      type: HistoryActionTypes.PROJECT_COMPONENT_ELEMENT_DUPLICATE,
+      projectComponent: componentItem,
+      positionIndex: itemIndex,
+      workspaceComponentItemId: componentItem.id,
+      elementId: result.originalElementId,
+      duplicatedElementId: result.duplicatedElement.id,
+    });
+
+    updateComponentAndStore(componentItem);
+    return result;
   };
 
   const transformHtmlWithDuplicates = (htmlString: any, jsonData: any) => {
@@ -239,10 +364,70 @@ export function duplicateElements() {
     return htmlString;
   };
 
+  // Undo/Redo function - now using reusable logic
+  const updateProjectComponentDuplicate = (
+    action: ProjectComponentElementDuplicateHistoryAction,
+    undo: boolean
+  ) => {
+    const { workspaceComponentItemId, elementId, duplicatedElementId } = action;
+
+    // Find the component in workspace
+    const componentIndex = findIndex(
+      workspaceComponents.value,
+      "id",
+      workspaceComponentItemId
+    );
+    if (componentIndex === null) return null;
+
+    const componentItem = workspaceComponents.value[componentIndex];
+
+    if (undo) {
+      // Remove the duplicated element and its children
+      const removed = removeDuplicatedElement(
+        componentItem,
+        duplicatedElementId
+      );
+      if (!removed) return null;
+    } else {
+      // Redo: Re-duplicate the element
+      const randomSuffix = extractSuffix(duplicatedElementId);
+
+      // Find children that need to be duplicated for redo
+      const originalElement = componentItem.json.find(
+        (item: any) => item.id === elementId
+      );
+
+      const childrenElements = [];
+      if (originalElement && originalElement.children) {
+        for (const childId of originalElement.children) {
+          const childElement = componentItem.json.find(
+            (item: any) => item.id === childId
+          );
+          if (childElement) {
+            childrenElements.push(childElement);
+          }
+        }
+      }
+
+      const result = duplicateElementWithChildren(
+        componentItem,
+        elementId,
+        randomSuffix,
+        childrenElements
+      );
+
+      if (!result) return null;
+    }
+
+    updateComponentAndStore(componentItem);
+    return workspaceComponents.value;
+  };
+
   return {
     getRowId,
     duplicateItem,
     getUpdatedHTMLForRow,
     transformHtmlWithDuplicates,
+    updateProjectComponentDuplicate,
   };
 }

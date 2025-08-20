@@ -47,6 +47,11 @@ export function elementsDragAndDrop() {
 
     const elementItem = jsonData[realFromIndex];
 
+    // Cannot reorder elements across different wrappers
+    if (elementItem.wrapperId !== jsonData[realToIndex].wrapperId) {
+      return;
+    }
+
     // Remove from original position and insert at new position
     componentItem.json.splice(realFromIndex, 1);
     componentItem.json.splice(realToIndex, 0, elementItem);

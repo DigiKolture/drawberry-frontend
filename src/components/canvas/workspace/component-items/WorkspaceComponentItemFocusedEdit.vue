@@ -21,6 +21,8 @@ import { defineComponent, ref, watch, nextTick, computed } from "vue";
 import store from "@/store";
 import BaseIcon from "@/components/icon/BaseIcon.vue";
 import { duplicateElements } from "@/composables/canvas/duplicate";
+import { helpers } from "@/composables/helpers";
+import { elementsDragAndDrop } from "@/composables/canvas/elements/el_drag_and_drop";
 
 export default defineComponent({
   name: "WorkspaceComponentItemFocusedEdit",
@@ -31,11 +33,12 @@ export default defineComponent({
       required: true,
     },
   },
-  setup(props) {
+  setup() {
     const selectedElementId = ref<string | null>(null);
     const elementPositionStyle = ref({ display: "none" }) as any;
     const showActions = ref<boolean>(true);
     const { duplicateItem } = duplicateElements();
+    const { getRealParentIndex, setElementDragData } = elementsDragAndDrop();
 
     const actions = [
       { name: "drag", icon: "canvas/workspace/element/drag" },
@@ -137,6 +140,8 @@ export default defineComponent({
       e.dataTransfer.effectAllowed = "move";
       e.dataTransfer.dropEffect = "move";
       e.dataTransfer.setData("fromItemElementId", focusedElementRef.value.id);
+
+      setElementDragData(e, focusedElementRef.value.id);
 
       const elementRect = element.getBoundingClientRect();
       const offsetX = e.clientX - elementRect.left;

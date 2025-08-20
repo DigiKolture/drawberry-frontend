@@ -284,7 +284,6 @@ export function duplicateElements() {
     updateHistory({
       type: HistoryActionTypes.PROJECT_COMPONENT_ELEMENT_DUPLICATE,
       projectComponent: componentItem,
-      positionIndex: itemIndex,
       workspaceComponentItemId: componentItem.id,
       elementId: result.originalElementId,
       duplicatedElementId: result.duplicatedElement.id,

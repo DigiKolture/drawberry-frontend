@@ -72,7 +72,6 @@ export interface ProjectComponentElementDuplicateHistoryAction {
   type: HistoryActionTypes.PROJECT_COMPONENT_ELEMENT_DUPLICATE;
   workspaceComponentItemId: string;
   projectComponent: any;
-  positionIndex?: number;
   elementId: string;
   duplicatedElementId: string;
   modifier?: string;

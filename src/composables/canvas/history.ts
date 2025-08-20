@@ -7,7 +7,6 @@ import {
   HistoryAction,
   HistoryActionTypes,
   ProjectComponentAddDeleteHistoryAction,
-  ProjectComponentElementDuplicateHistoryAction,
   ProjectComponentHistoryAction,
   ProjectComponentModifyPositionHistoryAction,
   ProjectGeneralStyleHistoryAction,
@@ -15,9 +14,11 @@ import {
 import { focus } from "@/composables/canvas/focus";
 import { CanvasEditableTypes } from "@/store/modules/canvas/types";
 import { duplicateElements } from "@/composables/canvas/duplicate";
+import { elementsDragAndDrop } from "@/composables/canvas/elements/el_drag_and_drop";
 
 const { findIndex } = helpers();
 const { updateProjectComponentDuplicate } = duplicateElements();
+const { updateProjectComponentElementModifyPosition } = elementsDragAndDrop();
 const {
   isElementAlreadyFocused,
   focusComponentElement,
@@ -209,6 +210,11 @@ export function history() {
       action.type === HistoryActionTypes.PROJECT_COMPONENT_ELEMENT_DUPLICATE
     ) {
       return updateProjectComponentDuplicate(action, undo);
+    } else if (
+      action.type ===
+      HistoryActionTypes.PROJECT_COMPONENT_ELEMENT_MODIFY_POSITION
+    ) {
+      return updateProjectComponentElementModifyPosition(action, undo);
     }
     return null;
   };

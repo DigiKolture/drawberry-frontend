@@ -101,8 +101,10 @@ export function focus() {
   };
 
   const scrollTo = (itemIndex: number, id: string) => {
+    // TODO: Come back to this
     scrollToFtn(`#layer-component-item-${itemIndex} #${id}`);
     scrollToFtn(`#workspace-component-item-${itemIndex} #${id}`);
+    //NOT IN USE
     // if (scrollType === FOCUS_SCROLL_TYPES.FROM_WORKSPACE) {
     //   scrollToFtn(`#layer-component-item-${itemIndex} #${id}`);
     // } else if (scrollType === FOCUS_SCROLL_TYPES.FROM_LAYER) {

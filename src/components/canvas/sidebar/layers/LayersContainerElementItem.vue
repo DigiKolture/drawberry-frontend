@@ -19,6 +19,7 @@
 import { computed, defineComponent } from "vue";
 import BaseIcon from "@/components/icon/BaseIcon.vue";
 import { layers } from "@/composables/canvas/layers";
+import store from "@/store";
 
 export default defineComponent({
   name: "LayersContainerElementItem",
@@ -30,6 +31,10 @@ export default defineComponent({
     },
     componentItem: {
       type: Object,
+      required: true,
+    },
+    itemIndex: {
+      type: Number,
       required: true,
     },
     header: {
@@ -45,7 +50,22 @@ export default defineComponent({
     const title = getLayerElementTitle(props.element);
     const icon = getLayerElementIcon(props.element);
 
+    const focusedIndex = computed(() => {
+      return store.getters["canvas/focusedIndex"];
+    });
+
+    const focusedElement = computed(() => {
+      return store.getters["canvas/focusedElement"];
+    });
+
     const isActive = (state: string) => {
+      return (
+        props.itemIndex === focusedIndex.value &&
+        props.element.id === focusedElement.value?.id
+      );
+    };
+
+    const isActive2 = (state: string) => {
       return (
         props.element.classes &&
         typeof props.element.classes == "object" &&

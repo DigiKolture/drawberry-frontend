@@ -114,9 +114,17 @@ export function updateDom() {
     }
 
     switch (elementJson.visibility) {
-      case ProjectComponentElementsVisibilities.SHOW:
-        el.css("display", "").css("visibility", ""); // Resets to default if visible
+      case ProjectComponentElementsVisibilities.SHOW: {
+        // Resets to default if visible
+        const styleAttr = el.attr("style") || "";
+        const hasDisplayNone = styleAttr.match(/display\s*:\s*none/i) !== null;
+        if (hasDisplayNone) {
+          el.css("display", "").css("visibility", "");
+        } else {
+          el.css("visibility", "");
+        }
         break;
+      }
       case ProjectComponentElementsVisibilities.GHOST:
         el.css("visibility", "hidden").css("display", "");
         break;

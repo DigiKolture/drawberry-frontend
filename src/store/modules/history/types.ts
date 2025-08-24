@@ -12,6 +12,8 @@ export enum HistoryActionTypes {
   PROJECT_COMPONENT_DUPLICATE = "project_component_duplicate",
   PROJECT_COMPONENT_DELETE = "project_component_delete",
   PROJECT_COMPONENT_MODIFY_POSITION = "project_component_modify_position",
+  PROJECT_COMPONENT_ELEMENT_DUPLICATE = "project_component_element_duplicate",
+  PROJECT_COMPONENT_ELEMENT_MODIFY_POSITION = "project_component_element_modify_position",
 }
 
 export interface BaseHistoryAction {
@@ -65,8 +67,32 @@ export interface ProjectComponentModifyPositionHistoryAction {
   timestamp?: number;
 }
 
+export interface ProjectComponentElementDuplicateHistoryAction {
+  id?: string;
+  type: HistoryActionTypes.PROJECT_COMPONENT_ELEMENT_DUPLICATE;
+  workspaceComponentItemId: string;
+  projectComponent: any;
+  elementId: string;
+  duplicatedElementId: string;
+  modifier?: string;
+  timestamp?: number;
+}
+
+export interface ProjectComponentElementModifyHistoryAction {
+  id?: string;
+  type: HistoryActionTypes.PROJECT_COMPONENT_ELEMENT_MODIFY_POSITION;
+  workspaceComponentItemId: string;
+  elementId: string;
+  positionIndex: number;
+  toIndex: number;
+  modifier?: string;
+  timestamp?: number;
+}
+
 export type HistoryAction =
   | ProjectComponentHistoryAction
   | ProjectGeneralStyleHistoryAction
   | ProjectComponentAddDeleteHistoryAction
-  | ProjectComponentModifyPositionHistoryAction;
+  | ProjectComponentModifyPositionHistoryAction
+  | ProjectComponentElementDuplicateHistoryAction
+  | ProjectComponentElementModifyHistoryAction;

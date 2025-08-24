@@ -24,6 +24,8 @@ export function indicators() {
     fromIndex: string,
     toIndex: number
   ) => {
+    //Checking if type is not provided (Incase of dragging the element and not the component itself)
+    if (!type) return false;
     if (type != "from-workspace") return true;
     return validateIndicator(fromIndex, toIndex);
   };

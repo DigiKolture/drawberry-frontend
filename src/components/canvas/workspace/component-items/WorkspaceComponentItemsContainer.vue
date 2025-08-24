@@ -50,6 +50,7 @@ import { fonts } from "@/composables/canvas/fonts";
 import { CanvasLoadingState } from "@/store/modules/canvas/types";
 import CanvasWorkspaceLoading from "@/components/canvas/workspace/CanvasWorkspaceSkeleton.vue";
 import { canvas } from "@/composables/canvas/canvas";
+import { duplicateElements } from "@/composables/canvas/duplicate";
 
 export default defineComponent({
   name: "WorkspaceComponentItemsContainer",
@@ -66,7 +67,8 @@ export default defineComponent({
     const { removeFocus, removeCurrentFocus, focusComponentElement } = focus();
     const { extractUniqueFontFamilies, addFontWeightsToFontFamilies } = fonts();
     const { getComponentElementIndexUsingId } = layers();
-    const { canvasLoading } = canvas();
+    const { canvasLoading, isRow } = canvas();
+    const { duplicateItem } = duplicateElements();
 
     const route = useRoute();
     const projectId = route.params.id as string;
@@ -203,6 +205,17 @@ export default defineComponent({
           jsonIndex = getComponentElementIndexUsingId(componentItem, elementId);
         }
       }
+
+      // let rowId = isRow(target);
+      // console.log({ rowId, elementId });
+      // if (
+      //   rowId &&
+      //   focusedElement.value &&
+      //   focusedElement.value.id === elementId
+      // ) {
+      //   console.log("<<<<<< Duplicate Item >>>>> " + rowId);
+      //   duplicateItem(rowId, itemIndex, jsonIndex);
+      // }
 
       focusComponentElement(itemIndex, jsonIndex);
     };

@@ -1,8 +1,12 @@
 <template>
-  <div class="workspace__component__items__list">
+  <div
+    id="workspace__component__items__list"
+    class="workspace__component__items__list"
+  >
     <WorkspaceComponentDropIndicator v-if="dropIndex === itemIndex" />
     <WorkspaceComponentDropSkeleton v-if="dropLoadingIndex === itemIndex" />
     <div
+      ref="componentContainer"
       class="workspace__component__items__list__item"
       :class="{
         focused: focusedIndex === itemIndex,
@@ -25,6 +29,7 @@
       @dragenter.prevent
       v-if="canvasLoaded"
     ></div>
+    <WorkspaceComponentItemFocusedEdit :item-index="itemIndex" />
     <WorkspaceComponentItemsActions
       v-if="showActions"
       :component-item="componentItem"
@@ -34,7 +39,15 @@
   </div>
 </template>
 <script lang="ts">
-import { computed, defineComponent, onMounted, ref, watch } from "vue";
+import {
+  computed,
+  defineComponent,
+  onMounted,
+  ref,
+  watch,
+  nextTick,
+  onUpdated,
+} from "vue";
 import { drag_and_drop } from "@/composables/canvas/drag_and_drop";
 import { updateDom } from "@/composables/canvas/update_dom";
 import store from "@/store";
@@ -44,10 +57,15 @@ import WorkspaceComponentDropIndicator from "@/components/canvas/workspace/utili
 import { indicators } from "@/composables/canvas/indicators";
 import { ui } from "@/assets/js/canvas";
 import { canvas } from "@/composables/canvas/canvas";
+import { duplicateElements } from "@/composables/canvas/duplicate";
+import { elementsDragAndDrop } from "@/composables/canvas/elements/el_drag_and_drop";
+import { arrange } from "@/composables/canvas/elements/arrange";
+import WorkspaceComponentItemFocusedEdit from "@/components/canvas/workspace/component-items/WorkspaceComponentItemFocusedEdit.vue";
 
 export default defineComponent({
   name: "WorkspaceComponentItemsListItem",
   components: {
+    WorkspaceComponentItemFocusedEdit,
     WorkspaceComponentDropIndicator,
     WorkspaceComponentDropSkeleton,
     WorkspaceComponentItemsActions,
@@ -72,20 +90,30 @@ export default defineComponent({
       moveComponentItemPosition,
       upsertComponentItem,
       handleScroll,
-      stopScrolling,
+      checkIfParentIsBeenDragged,
     } = drag_and_drop();
     const { validateWorkspaceIndicator } = indicators();
     const { canvasLoaded } = canvas();
+    const { enableInnerDrag } = elementsDragAndDrop();
+    const { arrangeElementsInComponentHTML } = arrange();
 
     const { updateElementDom } = updateDom();
     const disabledButton = ref(false);
 
     const dropIndex = ref(-1);
     const dropLoadingIndex = ref(-1);
-    const intervalId = ref<number | null>(null);
 
     onMounted(() => {
-      // store.commit("canvas/SET_WORKSPACE_COMPONENTS", []);
+      nextTick(() => {
+        enableInnerDrag(props.itemIndex);
+        // checkForFocusClass();
+      });
+    });
+
+    onUpdated(() => {
+      nextTick(() => {
+        enableInnerDrag(props.itemIndex);
+      });
     });
 
     const classes = computed(() => {
@@ -109,6 +137,13 @@ export default defineComponent({
         loadStylesForComponent(props);
       }
     });
+
+    watch(
+      () => props.componentItem.json,
+      () => {
+        // loadStylesForComponent(props);
+      }
+    );
 
     const disabledTopModifyPosition = computed(() => {
       return disabledButton.value || props.itemIndex === 0;
@@ -145,11 +180,14 @@ export default defineComponent({
     const loadStylesForComponent = (props: any) => {
       let html = props.componentItem.html;
       const json = props.componentItem.json;
+      // html = transformHtmlWithDuplicates(html, json);
+      html = arrangeElementsInComponentHTML(html, json);
 
-      for (let elementJson of json) {
-        // if (!elementJson.attributes.style.value) continue;
-        html = updateElementDom(html, elementJson);
-      }
+      //Moved to arrangeElementsInComponentHTML
+      // for (let elementJson of json) {
+      //   // if (!elementJson.attributes.style.value) continue;
+      //   html = updateElementDom(html, elementJson);
+      // }
       //eslint-disable-next-line vue/no-mutating-props
       props.componentItem.html = html;
     };
@@ -161,7 +199,8 @@ export default defineComponent({
 
       ui.changeComponentItemsStatus(false);
 
-      handleScroll(e);
+      // TODO: Make this work with element drag
+      // handleScroll(e);
 
       const show = validateWorkspaceIndicator(type, fromIndex, toIndex);
       if (!show) return;
@@ -215,6 +254,7 @@ export default defineComponent({
 
     return {
       dropIndex,
+      focusedElement,
       canvasLoadState,
       canvasLoaded,
       dropLoadingIndex,
@@ -240,3 +280,5 @@ export default defineComponent({
   },
 });
 </script>
+
+<style scoped></style>

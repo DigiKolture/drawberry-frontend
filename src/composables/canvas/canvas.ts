@@ -93,6 +93,22 @@ export function canvas() {
     };
   };
 
+  const isRow = (element: any) => {
+    let current = element;
+
+    while (current && current.parentElement.hasAttribute("parent")) {
+      current = current.parentElement;
+
+      console.log(
+        `Current element: ${current.tagName}, Parent ID: ${current.id}`
+      );
+    }
+    const isARow = current.parentElement.classList.contains("row");
+
+    console.log(`Current Parent: ${current.parentElement.id}`);
+    return isARow ? current.parentElement.id : null;
+  };
+
   const pushComponentsElementsUpdates = (
     focusedElement: any,
     projectComponentItem: any
@@ -134,6 +150,7 @@ export function canvas() {
     pushComponentsElementsUpdates,
     updateComponentBorder,
     removeClasses,
+    isRow,
     getElementWithComponentIndex,
   };
 }

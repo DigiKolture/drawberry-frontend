@@ -67,7 +67,7 @@ export const actions: ActionTree<ComponentState, RootState> = {
     return AxiosClient.get(`${baseUrl}?sort=created_at&order=desc`)
       .then((res: any) => {
         const data = res.data;
-        console.log(trimComponentItems(data));
+        // console.log(trimComponentItems(data));
         commit("SET_COMPONENTS", data.data.components);
         return res.data;
       })

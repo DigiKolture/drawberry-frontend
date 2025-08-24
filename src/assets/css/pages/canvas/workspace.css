@@ -111,6 +111,7 @@
   This prevents child elements from intercepting drag events that should
   be handled by their parent block element instead
   */
+
 [block] > *[parent] {
     pointer-events: none !important;
 }

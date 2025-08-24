@@ -33,12 +33,12 @@ export default defineComponent({
       required: true,
     },
   },
-  setup() {
+  setup(props) {
     const selectedElementId = ref<string | null>(null);
     const elementPositionStyle = ref({ display: "none" }) as any;
     const showActions = ref<boolean>(true);
     const { duplicateItem } = duplicateElements();
-    const { getRealParentIndex, setElementDragData } = elementsDragAndDrop();
+    const { getBlockId, setElementDragData } = elementsDragAndDrop();
 
     const actions = [
       { name: "drag", icon: "canvas/workspace/element/drag" },
@@ -139,9 +139,22 @@ export default defineComponent({
 
       e.dataTransfer.effectAllowed = "move";
       e.dataTransfer.dropEffect = "move";
-      e.dataTransfer.setData("fromItemElementId", focusedElementRef.value.id);
 
-      setElementDragData(e, focusedElementRef.value.id);
+      const componentItem = workspaceComponents.value[props.itemIndex];
+
+      /**
+       * I am using the blockId because the drag and drop system for elements
+       * enables drag and drop ONLY on elements with the block attribute
+       */
+      const blockId = getBlockId(
+        focusedElementRef.value.id,
+        componentItem.json
+      );
+
+      if (blockId) {
+        e.dataTransfer.setData("fromItemElementId", blockId);
+        setElementDragData(e, blockId);
+      }
 
       const elementRect = element.getBoundingClientRect();
       const offsetX = e.clientX - elementRect.left;

@@ -47,21 +47,32 @@ export function elementsDragAndDrop() {
     return json.findIndex((el: any) => el.id === element.parent);
   };
 
+  const getBlockId = (elementId: number, json: any[]): null | string => {
+    const element = find(json, "id", elementId);
+    if (element == null) return null;
+    return element.blockId ? element.blockId : element.id;
+  };
+
   const reorderElements = (
     fromIndex: number,
     toIndex: number,
     componentItem: any
   ) => {
     const jsonData = componentItem.json;
-    const realFromIndex = getRealParentIndex(jsonData, fromIndex);
-    const realToIndex = getRealParentIndex(jsonData, toIndex);
 
-    const elementItem = jsonData[realFromIndex];
-
-    // Cannot reorder elements across different wrappers
-    if (elementItem.wrapperId !== jsonData[realToIndex].wrapperId) {
+    /**
+     * Cannot reorder elements across different wrappers
+     * I am using this index instead of the parent index because only the block indexes are guaranteed to have a wrapperId
+     *  wrapperId can be null for parent element
+     */
+    if (jsonData[fromIndex].wrapperId !== jsonData[toIndex].wrapperId) {
       return false;
     }
+
+    const realFromIndex = getRealParentIndex(jsonData, fromIndex);
+    const elementItem = jsonData[realFromIndex];
+
+    const realToIndex = getRealParentIndex(jsonData, toIndex);
 
     // Remove from original position and insert at new position
     componentItem.json.splice(realFromIndex, 1);
@@ -82,6 +93,7 @@ export function elementsDragAndDrop() {
     if (startIndex !== null) {
       startIndex = getRealParentIndex(projectComponentItem.json, startIndex);
     }
+
     if (startIndex !== null) {
       e.dataTransfer.setData("fromItemElementIndex", startIndex);
     }
@@ -176,6 +188,7 @@ export function elementsDragAndDrop() {
           "id",
           lastToId.value
         );
+
         if (toIndex !== null) {
           const realFromIndex = getRealParentIndex(
             projectComponentItem.json,
@@ -189,7 +202,7 @@ export function elementsDragAndDrop() {
           const jsonElement = find(
             projectComponentItem.json,
             "id",
-            e.dataTransfer.getData("fromItemElementId")
+            e.dataTransfer.getData("fromItemElementId") //Using this because lastFromId changes when drag occurs
           );
 
           if (realFromIndex !== realToIndex) {
@@ -265,6 +278,7 @@ export function elementsDragAndDrop() {
   };
 
   return {
+    getBlockId,
     getRealParentIndex,
     enableInnerDrag,
     setElementDragData,

@@ -6,6 +6,14 @@ export const mutations: MutationTree<ElementState> = {
     state.isDragging = data;
     return state.isDragging;
   },
+  SET_FROM_ITEM_ELEMENT_ID(state, data): string | null {
+    state.fromItemElementId = data;
+    return state.fromItemElementId;
+  },
+  SET_FROM_ITEM_ELEMENT_INDEX(state, data): number | null {
+    state.fromItemElementIndex = data;
+    return state.fromItemElementIndex;
+  },
   SET_LAST_DRAG_FROM_ELEMENT_ID(state, data): string | null {
     state.lastDragFromElementId = data;
     return state.lastDragFromElementId;

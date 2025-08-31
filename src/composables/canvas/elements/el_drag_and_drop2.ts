@@ -25,12 +25,6 @@ export function elementsDragAndDrop() {
     return store.getters["canvas/focusedIndex"];
   });
   const isDragging = computed(() => store.getters["element/isDragging"]);
-  const fromItemElementId = computed(
-    () => store.getters["element/fromItemElementId"]
-  );
-  const fromItemElementIndex = computed(
-    () => store.getters["element/fromItemElementIndex"]
-  );
   const lastFromId = computed(
     () => store.getters["element/lastDragFromElementId"]
   );
@@ -101,8 +95,7 @@ export function elementsDragAndDrop() {
     }
 
     if (startIndex !== null) {
-      store.commit("element/SET_FROM_ITEM_ELEMENT_INDEX", startIndex);
-      // e.dataTransfer.setData("fromItemElementIndex", startIndex);
+      e.dataTransfer.setData("fromItemElementIndex", startIndex);
     }
   };
 
@@ -138,8 +131,12 @@ export function elementsDragAndDrop() {
         e.dataTransfer.effectAllowed = "move";
         e.dataTransfer.dropEffect = "move";
 
-        store.commit("element/SET_FROM_ITEM_ELEMENT_ID", editable.id);
-        // e.dataTransfer.setData("fromItemElementId", editable.id);
+        e.dataTransfer.setData("fromItemElementId", editable.id);
+
+        console.log({
+          edibleId: editable.id,
+          fromItemElementId: e.dataTransfer.getData("fromItemElementId"),
+        });
 
         setElementDragData(e, editable.id);
         e.stopPropagation();
@@ -152,7 +149,7 @@ export function elementsDragAndDrop() {
         }
 
         const fromIndexDrag = editables.findIndex(
-          (el: any) => el.id === fromItemElementId.value
+          (el: any) => el.id === e.dataTransfer.getData("fromItemElementId")
         );
 
         if (!canDropElement(fromIndexDrag, index)) {
@@ -201,7 +198,7 @@ export function elementsDragAndDrop() {
         if (toIndex !== null) {
           const realFromIndex = getRealParentIndex(
             projectComponentItem.json,
-            fromItemElementIndex.value
+            parseInt(e.dataTransfer.getData("fromItemElementIndex"))
           );
           const realToIndex = getRealParentIndex(
             projectComponentItem.json,
@@ -211,7 +208,7 @@ export function elementsDragAndDrop() {
           const jsonElement = find(
             projectComponentItem.json,
             "id",
-            fromItemElementId.value //Using this because lastFromId changes when drag occurs
+            e.dataTransfer.getData("fromItemElementId") //Using this because lastFromId changes when drag occurs
           );
 
           if (realFromIndex !== realToIndex) {

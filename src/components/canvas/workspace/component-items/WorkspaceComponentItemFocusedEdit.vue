@@ -152,7 +152,8 @@ export default defineComponent({
       );
 
       if (blockId) {
-        e.dataTransfer.setData("fromItemElementId", blockId);
+        store.commit("element/SET_FROM_ITEM_ELEMENT_ID", blockId);
+        // e.dataTransfer.setData("fromItemElementId", blockId);
         setElementDragData(e, blockId);
       }
 

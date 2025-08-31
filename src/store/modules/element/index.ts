@@ -7,6 +7,8 @@ import { ElementState } from "@/store/modules/element/types";
 
 export const state: ElementState = {
   isDragging: false,
+  fromItemElementId: null,
+  fromItemElementIndex: null,
   lastDragFromElementId: null,
   lastDragToElementId: null,
 };

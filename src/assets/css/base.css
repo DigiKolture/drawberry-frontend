@@ -50,6 +50,9 @@ img,video{
     /*--canvas-sidebar-nav-content-width: 263px;*/
     --canvas-right-panel-width: 239px;
 
+    --canvas-workspace-container-padding: 30px;
+    --canvas-mobile-breakpoint-width: 375px;
+
     --color-grey-00: #fff;
     --color-grey-10: #e1e6ed;
     --color-grey-20: #848f9f;

@@ -1,10 +1,13 @@
 <template>
-  <div>
+  <div class="canvas__workspace__container" id="canvas-workspace-container">
     <CanvasWorkspaceLoading v-if="canvasLoading" />
+    <CanvasBreakpointBar />
     <div
-      class="canvas__workspace__container"
-      id="canvas-workspace-container"
+      class="canvas__workspace__items__cover"
+      id="canvas-workspace-item-cover"
       @mouseover.self="handleMouseLeave"
+      :style="styles"
+      :class="breakpoint"
     >
       <div
         id="canvas-workspace-items-container"
@@ -51,10 +54,12 @@ import { CanvasLoadingState } from "@/store/modules/canvas/types";
 import CanvasWorkspaceLoading from "@/components/canvas/workspace/CanvasWorkspaceSkeleton.vue";
 import { canvas } from "@/composables/canvas/canvas";
 import { duplicateElements } from "@/composables/canvas/duplicate";
+import CanvasBreakpointBar from "@/components/canvas/workspace/CanvasBreakpointBar.vue";
 
 export default defineComponent({
   name: "WorkspaceComponentItemsContainer",
   components: {
+    CanvasBreakpointBar,
     CanvasWorkspaceLoading,
     WorkspaceLastComponentDecoy,
     CanvasWorkspaceEmpty,
@@ -67,7 +72,7 @@ export default defineComponent({
     const { removeFocus, removeCurrentFocus, focusComponentElement } = focus();
     const { extractUniqueFontFamilies, addFontWeightsToFontFamilies } = fonts();
     const { getComponentElementIndexUsingId } = layers();
-    const { canvasLoading } = canvas();
+    const { canvasLoading, canvasLoaded } = canvas();
 
     const route = useRoute();
     const projectId = route.params.id as string;
@@ -84,8 +89,21 @@ export default defineComponent({
       return store.getters["canvas/workspaceComponents"];
     });
 
+    const breakpoint = computed(() => store.getters["canvas/breakpoint"]);
+
     const fontFamilies = computed(() => {
       return extractUniqueFontFamilies(workspaceComponents.value);
+    });
+
+    const styles = computed(() => {
+      if (!canvasLoaded.value) {
+        return {};
+      }
+      return {
+        backgroundColor: style.value.backgroundColor,
+        backgroundImage: `url('${style.value.backgroundImage}')`,
+        backgroundSize: "cover",
+      };
     });
 
     watch(fontFamilies, () => {
@@ -209,6 +227,7 @@ export default defineComponent({
     return {
       focusedElement,
       canvasLoading,
+      breakpoint,
       fontFamilies,
       focusedIndex,
       workspaceComponents,
@@ -216,6 +235,7 @@ export default defineComponent({
       projectId,
       handleClick,
       style,
+      styles,
       handleMouseOver,
       handleCommandHold,
       handleMouseLeave,

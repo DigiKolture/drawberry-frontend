@@ -17,7 +17,6 @@
         </aside>
         <section
           class="canvas__workspace"
-          :style="styles"
           id="canvas-workspace"
           @click="handleClickEmpty"
         >

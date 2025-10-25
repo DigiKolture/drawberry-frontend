@@ -5,12 +5,16 @@ import {
   CurrentHoverElementType,
   ProjectStyle,
   UpdatedComponent,
+  CanvasBreakpoints,
 } from "@/store/modules/canvas/types";
 import { RootState } from "@/store/types";
 
 export const getters: GetterTree<CanvasState, RootState> = {
   navigatedFromPreview(state: CanvasState): boolean {
     return state.navigatedFromPreview;
+  },
+  breakpoint(state: CanvasState): CanvasBreakpoints {
+    return state.breakpoint;
   },
   llmPrompt(state: CanvasState): string {
     return state.llmPrompt;

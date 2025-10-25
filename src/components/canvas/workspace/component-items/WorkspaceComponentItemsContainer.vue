@@ -35,7 +35,7 @@
   </div>
 </template>
 <script lang="ts">
-import { computed, defineComponent, onMounted, ref, watch } from "vue";
+import { computed, defineComponent, onMounted, watch } from "vue";
 import WorkspaceComponentItemsListItem from "./WorkspaceComponentItemsListItem.vue";
 import CanvasWorkspaceEmpty from "../CanvasWorkspaceEmpty.vue";
 import { drag_and_drop } from "@/composables/canvas/drag_and_drop";
@@ -67,8 +67,7 @@ export default defineComponent({
     const { removeFocus, removeCurrentFocus, focusComponentElement } = focus();
     const { extractUniqueFontFamilies, addFontWeightsToFontFamilies } = fonts();
     const { getComponentElementIndexUsingId } = layers();
-    const { canvasLoading, isRow } = canvas();
-    const { duplicateItem } = duplicateElements();
+    const { canvasLoading } = canvas();
 
     const route = useRoute();
     const projectId = route.params.id as string;
@@ -187,7 +186,6 @@ export default defineComponent({
           elementId = componentItem.json[0].id;
         }
       }
-
       // TODO: Might remove
       removeCurrentFocus();
 
@@ -205,18 +203,6 @@ export default defineComponent({
           jsonIndex = getComponentElementIndexUsingId(componentItem, elementId);
         }
       }
-
-      // let rowId = isRow(target);
-      // console.log({ rowId, elementId });
-      // if (
-      //   rowId &&
-      //   focusedElement.value &&
-      //   focusedElement.value.id === elementId
-      // ) {
-      //   console.log("<<<<<< Duplicate Item >>>>> " + rowId);
-      //   duplicateItem(rowId, itemIndex, jsonIndex);
-      // }
-
       focusComponentElement(itemIndex, jsonIndex);
     };
 

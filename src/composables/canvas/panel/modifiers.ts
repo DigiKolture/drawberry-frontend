@@ -18,6 +18,8 @@ export function modifiers() {
     return store.getters["canvas/focusedIndex"];
   });
 
+  const breakpoint = computed(() => store.getters["canvas/breakpoint"]);
+
   const focusedChildrenElements = computed(
     () => store.getters["canvas/focusedChildrenElements"]
   );
@@ -36,10 +38,13 @@ export function modifiers() {
           workspaceComponents.value[focusedIndex.value].id,
         elementId: focusedElement.value.id,
         modifier: style,
-        previousValue: focusedElement.value.attributes.style.value[style],
+        previousValue:
+          focusedElement.value.attributes.style.value[style][breakpoint.value],
         value,
+        breakpoint: breakpoint.value,
       });
-      focusedElement.value.attributes.style.value[style] = value;
+      focusedElement.value.attributes.style.value[style][breakpoint.value] =
+        value;
       store.dispatch("canvas/updateFocusedElement", focusedElement.value);
     } else {
       updateHistory({
@@ -51,11 +56,13 @@ export function modifiers() {
         previousValue:
           focusedChildrenElements.value[childIndex].attributes.style.value[
             style
-          ],
+          ][breakpoint.value],
         value,
+        breakpoint: breakpoint.value,
       });
-      focusedChildrenElements.value[childIndex].attributes.style.value[style] =
-        value;
+      focusedChildrenElements.value[childIndex].attributes.style.value[style][
+        breakpoint.value
+      ] = value;
       store.dispatch(
         "canvas/updateFocusedElement",
         focusedChildrenElements.value[childIndex]

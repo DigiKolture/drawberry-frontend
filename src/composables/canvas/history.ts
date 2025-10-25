@@ -12,7 +12,10 @@ import {
   ProjectGeneralStyleHistoryAction,
 } from "@/store/modules/history/types";
 import { focus } from "@/composables/canvas/focus";
-import { CanvasEditableTypes } from "@/store/modules/canvas/types";
+import {
+  CanvasBreakpoints,
+  CanvasEditableTypes,
+} from "@/store/modules/canvas/types";
 import { duplicateElements } from "@/composables/canvas/duplicate";
 import { elementsDragAndDrop } from "@/composables/canvas/elements/el_drag_and_drop";
 
@@ -310,6 +313,7 @@ export function history() {
   ) => {
     const { type, elementId, workspaceComponentItemId, modifier } = action;
     const value = undo ? action.previousValue : action.value;
+    const breakpoint = action.breakpoint || CanvasBreakpoints.DESKTOP;
 
     const componentIndex = findIndex(
       workspaceComponents.value,
@@ -325,7 +329,7 @@ export function history() {
     const element = workspaceComponent.json[elementIndex];
 
     if (type === HistoryActionTypes.COMPONENT_STYLE) {
-      element.attributes.style.value[modifier] = value;
+      element.attributes.style.value[modifier][breakpoint] = value;
       return await updateElementFocusAndScroll(
         componentIndex,
         element,
@@ -387,122 +391,6 @@ export function history() {
     return element;
   };
 
-  const updateComponent2 = async (
-    action: ProjectComponentHistoryAction,
-    undo: boolean
-  ) => {
-    const { type, elementId, workspaceComponentItemId, modifier } = action;
-    const value = undo ? action.previousValue : action.value;
-    if (type === HistoryActionTypes.COMPONENT_STYLE) {
-      const componentIndex = findIndex(
-        workspaceComponents.value,
-        "id",
-        workspaceComponentItemId
-      );
-      if (componentIndex === null) return null;
-      const workspaceComponent = workspaceComponents.value[componentIndex];
-      const elementIndex = findIndex(workspaceComponent.json, "id", elementId);
-      if (elementIndex === null) return null;
-      const element = workspaceComponent.json[elementIndex];
-      element.attributes.style.value[modifier] = value;
-      const selectedElementId = element.parent ? element.parent : element.id;
-      const selElementIndex = findIndex(
-        workspaceComponent.json,
-        "id",
-        selectedElementId
-      );
-      if (selElementIndex === null) return null;
-      if (!isElementAlreadyFocused(componentIndex, selectedElementId)) {
-        await focusComponentElement(
-          componentIndex,
-          selElementIndex,
-          FOCUS_SCROLL_TYPES.BOTH,
-          CanvasEditableTypes.STYLE,
-          modifier
-        ).then();
-      } else {
-        await updateFocusedElementDomAndScroll(
-          componentIndex,
-          element,
-          CanvasEditableTypes.STYLE,
-          modifier
-        );
-      }
-      return element;
-    } else if (type === HistoryActionTypes.COMPONENT_ATTRIBUTE) {
-      const componentIndex = findIndex(
-        workspaceComponents.value,
-        "id",
-        workspaceComponentItemId
-      );
-      if (componentIndex === null) return null;
-      const workspaceComponent = workspaceComponents.value[componentIndex];
-      const elementIndex = findIndex(workspaceComponent.json, "id", elementId);
-      if (elementIndex === null) return null;
-      const element = workspaceComponent.json[elementIndex];
-      element.attributes[modifier].value = value;
-      const selectedElementId = element.parent ? element.parent : element.id;
-      const selElementIndex = findIndex(
-        workspaceComponent.json,
-        "id",
-        selectedElementId
-      );
-      if (selElementIndex === null) return null;
-      if (!isElementAlreadyFocused(componentIndex, selectedElementId)) {
-        await focusComponentElement(
-          componentIndex,
-          selElementIndex,
-          FOCUS_SCROLL_TYPES.BOTH,
-          CanvasEditableTypes.ATTRIBUTE,
-          modifier
-        ).then();
-      } else {
-        await updateFocusedElementDomAndScroll(
-          componentIndex,
-          element,
-          CanvasEditableTypes.ATTRIBUTE,
-          modifier
-        );
-      }
-      return element;
-    } else if (type === HistoryActionTypes.COMPONENT_CONTENT) {
-      const componentIndex = findIndex(
-        workspaceComponents.value,
-        "id",
-        workspaceComponentItemId
-      );
-      if (componentIndex === null) return null;
-      const workspaceComponent = workspaceComponents.value[componentIndex];
-      const elementIndex = findIndex(workspaceComponent.json, "id", elementId);
-      if (elementIndex === null) return null;
-      const element = workspaceComponent.json[elementIndex];
-      element[modifier] = value;
-      const selectedElementId = element.parent ? element.parent : element.id;
-      const selElementIndex = findIndex(
-        workspaceComponent.json,
-        "id",
-        selectedElementId
-      );
-      if (selElementIndex === null) return null;
-      if (!isElementAlreadyFocused(componentIndex, selectedElementId)) {
-        await focusComponentElement(
-          componentIndex,
-          selElementIndex,
-          FOCUS_SCROLL_TYPES.BOTH,
-          CanvasEditableTypes.CONTENT
-        ).then();
-      } else {
-        await updateFocusedElementDomAndScroll(
-          componentIndex,
-          element,
-          CanvasEditableTypes.CONTENT
-        );
-      }
-      return element;
-    }
-    return null;
-  };
-
   const undo = () => {
     if (undoStack.value.length === 0) {
       return;
@@ -510,6 +398,7 @@ export function history() {
 
     const lastAction = undoStack.value.pop();
     const result = update(lastAction, true);
+
     if (result === null) return;
 
     // store.commit("canvas/UPDATE_ELEMENT_IN_COMPONENTS_DOM", {

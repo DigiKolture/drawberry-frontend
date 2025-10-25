@@ -1,8 +1,13 @@
 import * as cheerio from "cheerio";
 import { helpers } from "@/composables/helpers";
+import store from "@/store";
+import { computed } from "vue";
+import { CanvasBreakpoints } from "@/store/modules/canvas/types";
 
 export function updateDom() {
   const { brToNl } = helpers();
+
+  const breakpoint = computed(() => store.getters["canvas/breakpoint"]);
 
   enum ProjectComponentElementsVisibilities {
     SHOW = "show",
@@ -56,20 +61,16 @@ export function updateDom() {
     }
 
     const style: Record<string, any> = elementJson.attributes.style.value;
+    const flattenedStyle: Record<string, any> = {};
+
     if (style) {
       for (const [key, value] of Object.entries(style)) {
-        style[key] = value;
-        // if (typeof value !== "string" && key === "font-size") {
-        //   style[key] = value.unit ? `${value.value}${value.unit}` : value.value;
-        // } else if (typeof value === "object") {
-        //   style[key] = value.value;
-        // } else {
-        //   style[key] = value;
-        // }
+        flattenedStyle[key] =
+          value[breakpoint.value] || value[CanvasBreakpoints.DESKTOP];
       }
     }
 
-    if (style && style["background-color"]) {
+    if (flattenedStyle && flattenedStyle["background-color"]) {
       el.attr("bgcolor", style["background-color"]);
     }
     if (
@@ -77,10 +78,12 @@ export function updateDom() {
       attributes["background"] &&
       attributes["background"].value
     ) {
-      style["background-image"] = `url(${attributes["background"].value})`;
+      flattenedStyle[
+        "background-image"
+      ] = `url(${attributes["background"].value})`;
     }
 
-    el.css(style);
+    el.css(flattenedStyle);
     if (typeof elementJson.classes == "object") {
       const classAttribute = el.attr("class");
       const classList = classAttribute ? classAttribute.split(" ") : [];

@@ -86,18 +86,12 @@ export default defineComponent({
   },
 
   setup(props, { emit }) {
-    const {
-      moveComponentItemPosition,
-      upsertComponentItem,
-      handleScroll,
-      checkIfParentIsBeenDragged,
-    } = drag_and_drop();
+    const { moveComponentItemPosition, upsertComponentItem } = drag_and_drop();
     const { validateWorkspaceIndicator } = indicators();
     const { canvasLoaded } = canvas();
     const { enableInnerDrag } = elementsDragAndDrop();
     const { arrangeElementsInComponentHTML } = arrange();
 
-    const { updateElementDom } = updateDom();
     const disabledButton = ref(false);
 
     const dropIndex = ref(-1);

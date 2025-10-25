@@ -2,6 +2,8 @@ import { computed } from "vue";
 import store from "@/store";
 
 export function fonts() {
+  const breakpoint = computed(() => store.getters["canvas/breakpoint"]);
+
   const googleFonts = computed(() => {
     return store.getters["canvas/googleFonts"];
   });
@@ -63,7 +65,7 @@ export function fonts() {
         ) {
           const fontFamilyValue: string = obj.attributes.style.value[
             "font-family"
-          ] as string;
+          ][breakpoint.value] as string;
           const fontFamilyName: string = fontFamilyValue
             .split(",")[0]
             .replace(/'/g, "")

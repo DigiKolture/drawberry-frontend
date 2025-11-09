@@ -108,7 +108,6 @@ export const actions: ActionTree<CanvasState, RootState> = {
     // if (!hasProjectChanged()) {
     //   return;
     // }
-    return;
     const currentRoute: any = router.currentRoute;
     const projectId = currentRoute._value.params.id;
 

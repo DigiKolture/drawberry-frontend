@@ -55,7 +55,7 @@ section.canvas__layout{
     /*padding-top: 40px;*/
     /*padding-bottom: 40px;*/
     /*background-color: #f6f6f6;*/
-    background-color: #aaa;
+    background-color: #e1e6ed;
     padding: var(--canvas-workspace-container-padding);
     padding-top: 42px;
 }
@@ -274,10 +274,12 @@ input.canvas__input__text:focus{
     @apply w-full absolute;
     left: 0;
     top: 0;
+    /*top: var(--header-height);*/
     height: 12px;
     background-color: white;
     padding-left: var(--canvas-workspace-container-padding);
     padding-right: var(--canvas-workspace-container-padding);
+    z-index: 100;
 }
 
 .canvas__breakpoint__bar__desktop{

@@ -126,10 +126,17 @@ export default defineComponent({
       return store.getters["canvas/workspaceComponents"];
     });
 
+    const breakpoint = computed(() => store.getters["canvas/breakpoint"]);
+
     watch(canvasLoaded, (value) => {
       if (value) {
         loadStylesForComponent(props);
       }
+    });
+
+    //Update project component DOM on breakpoint change
+    watch(breakpoint, () => {
+      loadStylesForComponent(props);
     });
 
     watch(

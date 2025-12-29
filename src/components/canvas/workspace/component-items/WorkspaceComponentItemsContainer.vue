@@ -50,6 +50,7 @@ import WebFont from "webfontloader";
 import { focus } from "@/composables/canvas/focus";
 import WorkspaceLastComponentDecoy from "@/components/canvas/workspace/component-items/WorkspaceLastComponentDecoy.vue";
 import { fonts } from "@/composables/canvas/fonts";
+import * as cheerio from "cheerio";
 import { CanvasLoadingState } from "@/store/modules/canvas/types";
 import CanvasWorkspaceLoading from "@/components/canvas/workspace/CanvasWorkspaceSkeleton.vue";
 import { canvas } from "@/composables/canvas/canvas";
@@ -135,18 +136,26 @@ export default defineComponent({
       itemIndex: any,
       event: any
     ) => {
-      const target = event.target;
-      if (
-        !target.classList.contains("editable") ||
-        target.classList.contains("focus") ||
-        target.classList.contains("parent")
-      ) {
+      // Use closest to find the nearest editable element (child or the wrapper itself)
+      const target = (event.target as HTMLElement).closest(".editable");
+
+      console.log({ elementId: target?.id });
+
+      if (!target || target.classList.contains("focus")) {
         return;
       }
-      const elementId = target.id;
-      // console.log({ elementId });
 
-      // If any of the component has an hover element, REMOVE it
+      if (target.classList.contains("parent")) {
+        return;
+      }
+
+      const elementId = target.id;
+
+      // Prevent the event from bubbling up to the main component container
+      // and triggering multiple hover updates
+      event.stopPropagation();
+
+      //If any of the component has an hover element, REMOVE it
       removeHoverElement();
 
       // ADD hover to the hovered element
@@ -189,12 +198,25 @@ export default defineComponent({
       let elementId = event.target.id;
       const parentId = event.target.getAttribute("parent");
 
+      console.log({ elementId, parentId });
+
+      const $ = cheerio.load(componentItem.html);
+
       // If the target doesn't have the "editable" class, select the first item (whole component)
       if (!target.classList.contains("editable")) {
         elementId = componentItem.json[0].id;
       } else if (parentId) {
         // Check if the target has a parent with the specified parentId (its possible that the parentId is a child in the DOM (HTMl element)
-        const isParentPresent = event.target.closest(`#${parentId}`);
+        // const isParentPresent = event.target.closest(`#${parentId}`);
+        const targetElement = $(`#${elementId}`);
+        const parentElement = $(`#${parentId}`);
+
+        // Check if parent contains target OR target contains parent
+        const isParentPresent =
+          parentElement.length > 0 &&
+          targetElement.length > 0 &&
+          (parentElement.find(`#${elementId}`).length > 0 ||
+            targetElement.find(`#${parentId}`).length > 0);
 
         if (isParentPresent) {
           // If the parent exists in the DOM, set elementId to parentId
@@ -206,6 +228,8 @@ export default defineComponent({
       }
       // TODO: Might remove
       removeCurrentFocus();
+
+      console.log("elementId on click:", elementId);
 
       const currentFocusedIndex = focusedIndex.value;
       let jsonIndex = 0; //Ensures the first element (whole component) is selected if the current component is not active

@@ -29,7 +29,10 @@
       @dragenter.prevent
       v-if="canvasLoaded"
     ></div>
-    <WorkspaceComponentItemFocusedEdit :item-index="itemIndex" />
+    <WorkspaceComponentItemFocusedEdit
+      v-if="focusedIndex === itemIndex"
+      :item-index="itemIndex"
+    />
     <WorkspaceComponentItemsActions
       v-if="showActions"
       :component-item="componentItem"

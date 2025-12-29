@@ -40,6 +40,10 @@ export function updateDom() {
   const updateElementDom = (html: string, elementJson: any, here = false) => {
     const $ = cheerio.load(html);
     const el = $(`#${elementJson.id}`);
+    if (el.length === 0) {
+      console.log(`Element with id "${elementJson.id}" not found in HTML`);
+      // return "";
+    }
     let tagName = el.prop("tagName");
     tagName = tagName.toLowerCase();
     const elementAttributes = el.attr();

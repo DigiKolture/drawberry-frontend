@@ -51,7 +51,7 @@ section.canvas__layout{
 }
 
 .canvas__workspace__container{
-    @apply relative  flex items-center justify-center flex-col h-full w-full;
+    @apply relative  flex items-center  flex-col h-full w-full;
     /*padding-top: 40px;*/
     /*padding-bottom: 40px;*/
     /*background-color: #f6f6f6;*/
@@ -171,8 +171,9 @@ input.canvas__input__text:focus{
 /*CANVAS INPUT NUMBER*/
 
 
-.editable{
-
+.editable {
+    pointer-events: auto !important;
+    cursor: pointer;
 }
 
 /*.editable:hover {*/

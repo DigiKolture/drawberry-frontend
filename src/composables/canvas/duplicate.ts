@@ -4,13 +4,17 @@ import { arrange } from "@/composables/canvas/elements/arrange";
 import { helpers } from "@/composables/helpers";
 import { history } from "@/composables/canvas/history";
 const { arrangeElementsInComponentHTML } = arrange();
-const { copyObject } = helpers();
+const { copyObject, find } = helpers();
+const { getParentChildrenElements } = focus();
 const { updateHistory } = history();
+import * as cheerio from "cheerio";
 const { findIndex } = helpers();
 import {
   ProjectComponentElementDuplicateHistoryAction,
   HistoryActionTypes,
 } from "@/store/modules/history/types";
+import { focus } from "@/composables/canvas/focus";
+import { loadRouteLocation } from "vue-router";
 
 export function duplicateElements() {
   const workspaceComponents = computed(() => {
@@ -41,6 +45,18 @@ export function duplicateElements() {
   const extractSuffix = (elementId: string) => {
     const splitElement = elementId.split("_dup_");
     return splitElement[1];
+  };
+
+  const getBlockParent = (json: any[], blockId: string): string => {
+    const block = json.find((el: any) => el.id === blockId);
+    if (block.parent == null) return blockId;
+    return block.parent;
+  };
+
+  const getParentBlock = (json: any[], parentId: string): string => {
+    const parent = json.find((el: any) => el.id === parentId);
+    if (parent.blockId == null) return parentId;
+    return parent.blockId;
   };
 
   const getRowId = (element: any) => {
@@ -177,9 +193,11 @@ export function duplicateElements() {
     componentItem: any,
     elementId: string,
     randomSuffix: string,
-    focusedChildrenElements: any[] = []
-  ) => {
-    let jsonIndex = componentItem.json.findIndex(
+    wrapperId: string,
+    focusedChildrenElements: any[] = [],
+    duplicatedElementStartIndex = 0
+  ): any => {
+    const jsonIndex = componentItem.json.findIndex(
       (item: any) => item.id === elementId
     );
 
@@ -192,29 +210,62 @@ export function duplicateElements() {
       id: duplicateId(jsonElement.id, randomSuffix),
     };
 
-    const copyJsonIndex = jsonIndex + 1;
+    //Update the wrapperId only if it's not null, we only set wrapperId for the block element
+    if (jsonElement.wrapperId !== null) {
+      duplicatedElement.wrapperId = wrapperId;
+    }
+
+    //Update the blockId only if it's not null, we only set blockId for block children, so if there is a blockId, we need to update it
+    if (jsonElement.blockId !== null) {
+      duplicatedElement.blockId = duplicateId(
+        jsonElement.blockId,
+        randomSuffix
+      );
+    }
+
+    let duplicatedChildrenIndexStart = duplicatedElementStartIndex;
     const children = [];
+
+    // Insert the duplicated parent element
+    componentItem.json.splice(
+      duplicatedElementStartIndex,
+      0,
+      duplicatedElement
+    );
 
     // Duplicate children elements
     for (const focusedChildrenElementRaw of focusedChildrenElements) {
       const focusedChildrenElement = copyObject(focusedChildrenElementRaw);
 
-      jsonIndex++;
+      duplicatedChildrenIndexStart++;
       const duplicatedChildElement = {
         ...focusedChildrenElement,
         id: duplicateId(focusedChildrenElement.id, randomSuffix),
         parent: duplicatedElement.id,
       };
 
-      componentItem.json.splice(jsonIndex, 0, duplicatedChildElement);
+      if (focusedChildrenElement.wrapperId !== null) {
+        duplicatedChildElement.wrapperId = wrapperId;
+      }
+      if (focusedChildrenElement.blockId !== null) {
+        duplicatedChildElement.blockId = duplicatedElement.blockId;
+      }
+
+      componentItem.json.splice(
+        duplicatedChildrenIndexStart,
+        0,
+        duplicatedChildElement
+      );
       children.push(duplicatedChildElement.id);
     }
 
-    // Insert the duplicated parent element
-    componentItem.json.splice(copyJsonIndex, 0, {
-      ...duplicatedElement,
-      children,
-    });
+    duplicatedElement.children = children;
+
+    // // Insert the duplicated parent element
+    // componentItem.json.splice(duplicatedElementStartIndex, 0, {
+    //   ...duplicatedElement,
+    //   children,
+    // });
 
     return {
       duplicatedElement,
@@ -265,32 +316,164 @@ export function duplicateElements() {
     store.commit("canvas/SET_WORKSPACE_COMPONENTS", workspaceComponents.value);
   };
 
+  const getBlockIdsAtSameDepth = (id: string, html: string) => {
+    const $ = cheerio.load(html);
+    const el = $(`#${id}`);
+
+    // Check if element exists
+    if (el.length === 0) {
+      console.log(`Element with id "${id}" not found in HTML`);
+      return [];
+    }
+
+    const blockIds: string[] = [];
+
+    // Get only direct children with block attribute
+    el.children("[block][id]").each((i, element) => {
+      const blockId = $(element).attr("id");
+      if (blockId) {
+        blockIds.push(blockId);
+      }
+    });
+
+    return blockIds;
+  };
+
+  const getBlockIds = (id: string, html: string) => {
+    const $ = cheerio.load(html);
+    const el = $(`#${id}`);
+
+    // Check if element exists
+    if (el.length === 0) {
+      console.log(`Element with id "${id}" not found in HTML`);
+      return [id]; // Return original ID if not found
+    }
+
+    const blockIds = [];
+
+    // Check if the main element itself has a block attribute
+    if (el.attr("block") !== undefined) {
+      blockIds.push(id);
+    }
+
+    // Find all children with block attribute and collect their IDs
+    el.find("[block][id]").each((i, element) => {
+      const blockId = $(element).attr("id");
+      if (blockId) {
+        blockIds.push(blockId);
+      }
+    });
+
+    return blockIds;
+  };
+
+  const getLastIndexForParentAndChildElements = (
+    jsonArray: any[],
+    id: string
+  ) => {
+    let idIndex = -1;
+    let parentIndex = -1;
+
+    for (let i = 0; i < jsonArray.length; i++) {
+      if (jsonArray[i].id === id) {
+        idIndex = i;
+      }
+      if (jsonArray[i].parent === id) {
+        parentIndex = i;
+      }
+    }
+
+    return Math.max(idIndex, parentIndex);
+  };
+
   const duplicateItem = (itemIndex: number, focusedElementId: string) => {
     const componentItem = workspaceComponents.value[itemIndex];
     // Clone the json array to prevent affecting defaultJson
     componentItem.json = structuredClone(componentItem.json);
 
-    const randomSuffix = getRandomSuffix();
+    const parentBlockId = getParentBlock(componentItem.json, focusedElementId);
 
-    const result = duplicateElementWithChildren(
-      componentItem,
-      focusedElementId,
-      randomSuffix,
-      focusedChildrenElements.value
+    console.log({ focusedElementId, parentBlockId });
+
+    const blockIds = getBlockIds(parentBlockId, componentItem.html);
+
+    if (blockIds.length === 0) {
+      return;
+    }
+
+    const getLastParentId = getBlockParent(
+      componentItem.json,
+      blockIds[blockIds.length - 1]
     );
 
-    if (!result) return null;
+    let lastIndex = getLastIndexForParentAndChildElements(
+      componentItem.json,
+      getLastParentId
+    );
 
-    updateHistory({
-      type: HistoryActionTypes.PROJECT_COMPONENT_ELEMENT_DUPLICATE,
-      projectComponent: componentItem,
-      workspaceComponentItemId: componentItem.id,
-      elementId: result.originalElementId,
-      duplicatedElementId: result.duplicatedElement.id,
-    });
+    console.log({ blockIds });
+
+    const blockWrappers: Record<string, string> = {};
+
+    const firstBlock = find(componentItem.json, "id", blockIds[0]);
+    blockWrappers[blockIds[0]] = firstBlock.wrapperId;
+
+    console.log("Wrappers before duplication:", blockWrappers);
+
+    for (let i = 0; i < blockIds.length; i++) {
+      const randomSuffix = getRandomSuffix();
+
+      const blockId = blockIds[i];
+      const parentId = getBlockParent(componentItem.json, blockId);
+      const parent = find(componentItem.json, "id", parentId);
+      const parentChildrenElements = getParentChildrenElements(
+        parent,
+        componentItem
+      );
+
+      //Only the block has the wrapperId
+      const block = find(componentItem.json, "id", blockId);
+
+      //If it's the first block, use the same wrapperId, if its another block (which is wrapped inside the first block), then we need to use the wrapperId of the element that will be duplicated
+      const wrapperId = blockWrappers[blockId];
+      // if (i == 0) {
+      //   wrapperId = block.wrapperId;
+      // } else {
+      //   wrapperId = blockWrappers[blockId];
+      // }
+      const { duplicatedElement } = duplicateElementWithChildren(
+        componentItem,
+        parentId,
+        randomSuffix,
+        wrapperId,
+        parentChildrenElements,
+        lastIndex + 1
+      );
+
+      lastIndex += 1 + parentChildrenElements.length;
+
+      const blockIdsAtSameDepth = getBlockIdsAtSameDepth(
+        blockId,
+        componentItem.html
+      );
+
+      for (const blockIdAtSameDepth of blockIdsAtSameDepth) {
+        blockWrappers[blockIdAtSameDepth] = duplicatedElement.id;
+      }
+    }
+
+    // updateHistory({
+    //   type: HistoryActionTypes.PROJECT_COMPONENT_ELEMENT_DUPLICATE,
+    //   projectComponent: componentItem,
+    //   workspaceComponentItemId: componentItem.id,
+    //   elementId: result.originalElementId,
+    //   duplicatedElementId: result.duplicatedElement.id,
+    // });
+
+    // console.log({ result });
 
     updateComponentAndStore(componentItem);
-    return result;
+    // return result;
   };
 
   const transformHtmlWithDuplicates = (htmlString: any, jsonData: any) => {
@@ -354,10 +537,12 @@ export function duplicateElements() {
         }
       }
 
+      //TODO: Fix start index in ftn
       const result = duplicateElementWithChildren(
         componentItem,
         elementId,
         randomSuffix,
+        originalElement.wrapperId,
         childrenElements
       );
 

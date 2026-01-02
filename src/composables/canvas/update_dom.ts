@@ -3,6 +3,8 @@ import { helpers } from "@/composables/helpers";
 import store from "@/store";
 import { computed } from "vue";
 import { CanvasBreakpoints } from "@/store/modules/canvas/types";
+import { arrange } from "@/composables/canvas/elements/arrange";
+const { arrangeElementsInComponentHTML } = arrange();
 
 export function updateDom() {
   const { brToNl } = helpers();
@@ -25,9 +27,7 @@ export function updateDom() {
     let html = componentItem.html;
     const json = componentItem.json;
 
-    for (const elementJson of json) {
-      html = updateElementDom(html, elementJson);
-    }
+    html = arrangeElementsInComponentHTML(html, json, true);
     componentItem.html = html;
     return componentItem;
   };

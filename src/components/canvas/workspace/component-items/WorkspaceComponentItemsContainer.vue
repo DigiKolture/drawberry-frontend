@@ -139,8 +139,6 @@ export default defineComponent({
       // Use closest to find the nearest editable element (child or the wrapper itself)
       const target = (event.target as HTMLElement).closest(".editable");
 
-      console.log({ elementId: target?.id });
-
       if (!target || target.classList.contains("focus")) {
         return;
       }

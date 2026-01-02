@@ -12,6 +12,7 @@ import { history } from "@/composables/canvas/history";
 const { arrangeElementsInComponentHTML } = arrange();
 const { findIndex, find } = helpers();
 const { updateHistory } = history();
+import * as cheerio from "cheerio";
 
 export function elementsDragAndDrop() {
   onMounted(() => {
@@ -59,6 +60,46 @@ export function elementsDragAndDrop() {
     return element.blockId ? element.blockId : element.id;
   };
 
+  const getAllParentIdsWithBlock = (html: string, id: string) => {
+    const $ = cheerio.load(html);
+    const el = $(`#${id}`);
+
+    // Check if element exists
+    if (el.length === 0) {
+      return [];
+    }
+
+    const parentIds = [];
+
+    // Check if the main element itself has no parent attribute
+    if (!el.attr("parent")) {
+      parentIds.push(id);
+    }
+
+    // Find all descendants with an id but no parent attribute (at all depths)
+    el.find("[id]:not([parent])").each((i, element) => {
+      const elementId = $(element).attr("id");
+      if (elementId) {
+        parentIds.push(elementId);
+      }
+    });
+
+    return parentIds;
+  };
+
+  const getIndicesFromIds = (jsonData: any[], ids: string[]) => {
+    const indices: number[] = [];
+
+    ids.forEach((id: string) => {
+      const index = jsonData.findIndex((item: any) => item.id === id);
+      if (index !== -1) {
+        indices.push(index);
+      }
+    });
+
+    return indices;
+  };
+
   const reorderElements = (
     fromIndex: number,
     toIndex: number,
@@ -76,13 +117,85 @@ export function elementsDragAndDrop() {
     }
 
     const realFromIndex = getRealParentIndex(jsonData, fromIndex);
-    const elementItem = jsonData[realFromIndex];
-
     const realToIndex = getRealParentIndex(jsonData, toIndex);
 
+    if (realFromIndex === realToIndex) {
+      return false;
+    }
+
+    const fromBlockIds = getAllParentIdsWithBlock(
+      componentItem.html,
+      jsonData[realFromIndex].id
+    );
+    const toBlockIds = getAllParentIdsWithBlock(
+      componentItem.html,
+      jsonData[realToIndex].id
+    );
+
+    console.log({ fromBlockIds, toBlockIds });
+
+    console.log("Before Reorder:");
+    console.log(componentItem.json);
+
     // Remove from original position and insert at new position
-    componentItem.json.splice(realFromIndex, 1);
-    componentItem.json.splice(realToIndex, 0, elementItem);
+    // componentItem.json.splice(realFromIndex, 1);
+    // componentItem.json.splice(realToIndex, 0, elementItem);
+
+    // Get all indices for fromBlockIds and toBlockIds
+    const fromIndices = getIndicesFromIds(jsonData, fromBlockIds);
+    const toIndices = getIndicesFromIds(jsonData, toBlockIds);
+
+    console.log({ fromIndices, toIndices });
+
+    // Sort indices to maintain order
+    fromIndices.sort((a, b) => a - b);
+    toIndices.sort((a, b) => a - b);
+
+    console.log({ fromIndices, toIndices });
+
+    // Determine direction: forward (moving down) or backward (moving up)
+    const minFromIndex = Math.min(...fromIndices);
+    const maxToIndex = Math.max(...toIndices);
+    const isMovingBackward = minFromIndex > maxToIndex;
+
+    console.log({ isMovingBackward, minFromIndex, maxToIndex });
+
+    // Extract elements to move
+    const elementsToMove = fromIndices.map((index: number) => jsonData[index]);
+
+    // Remove elements from original positions (remove from highest index first to avoid index shifting)
+    [...fromIndices]
+      .sort((a, b) => b - a)
+      .forEach((index: number) => {
+        componentItem.json.splice(index, 1);
+      });
+
+    let adjustedToIndex;
+
+    if (isMovingBackward) {
+      // Moving backward: insert BEFORE the first element in toIndices
+      const firstToIndex = Math.min(...toIndices);
+      // Adjust for removed elements that were before the insertion point
+      adjustedToIndex =
+        firstToIndex -
+        fromIndices.filter((i: number) => i < firstToIndex).length;
+    } else {
+      // Moving forward: insert AFTER the last element in toIndices
+      const lastToIndex = Math.max(...toIndices);
+      // Adjust for removed elements that were before or at the insertion point
+      adjustedToIndex =
+        lastToIndex +
+        1 -
+        fromIndices.filter((i: number) => i <= lastToIndex).length;
+    }
+
+    console.log({ adjustedToIndex });
+
+    // Insert all elements at new position
+    componentItem.json.splice(adjustedToIndex, 0, ...elementsToMove);
+
+    console.log("After Reorder:");
+    console.log(componentItem.json);
 
     // Update HTML to reflect new order
     componentItem.html = arrangeElementsInComponentHTML(
@@ -176,6 +289,8 @@ export function elementsDragAndDrop() {
         const toIndex = componentItem.json.findIndex(
           (el: any) => el.id === editable.id
         );
+
+        console.log({ fromIndex, toIndex });
 
         const reorder = reorderElements(fromIndex, toIndex, componentItem);
         if (!reorder) return;

@@ -1,3 +1,5 @@
+import { CanvasBreakpoints } from "@/store/modules/canvas/types";
+
 export interface HistoryState {
   undoStack: HistoryAction[];
   redoStack: HistoryAction[];
@@ -20,6 +22,7 @@ export interface BaseHistoryAction {
   id?: string;
   type: HistoryActionTypes;
   modifier: string;
+  breakpoint?: CanvasBreakpoints;
   value: string | number;
   previousValue: string;
   timestamp?: number; //in milliseconds

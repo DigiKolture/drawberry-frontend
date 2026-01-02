@@ -106,6 +106,10 @@
     /*margin-top: -10px;*/
 }
 
+.editable{
+    /*border: 2px solid salmon;*/
+}
+
 /*
   Disable pointer events on child elements that have a parent attribute
   This prevents child elements from intercepting drag events that should

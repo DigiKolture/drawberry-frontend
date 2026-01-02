@@ -19,10 +19,12 @@ section.canvas__layout{
 }
 
 .canvas__container.nav__content__docked{
+/*.canvas__container{*/
     grid-template-columns: calc(var(--canvas-sidebar-nav-width) + var(--canvas-sidebar-nav-content-width)) 1fr;
 }
 
 .canvas__container.nav__content__docked.has__right__panel{
+/*.canvas__container.has__right__panel{*/
     grid-template-columns: calc(var(--canvas-sidebar-nav-width) + var(--canvas-sidebar-nav-content-width)) 1fr var(--canvas-right-panel-width);
 }
 
@@ -49,9 +51,27 @@ section.canvas__layout{
 }
 
 .canvas__workspace__container{
-    @apply  flex items-center flex-col h-full;
-    padding-top: 40px;
-    padding-bottom: 40px;
+    @apply relative  flex items-center  flex-col h-full w-full;
+    /*padding-top: 40px;*/
+    /*padding-bottom: 40px;*/
+    /*background-color: #f6f6f6;*/
+    background-color: #e1e6ed;
+    padding: var(--canvas-workspace-container-padding);
+    padding-top: 42px;
+}
+
+.canvas__workspace__items__cover{
+    @apply items-center justify-center flex w-full;
+    /*padding: 34px 50px;*/
+    border-radius: 8px;
+    /*border: 1px solid #E1E6ED;*/
+    padding-top: 34px;
+}
+
+.canvas__workspace__items__cover.mobile{
+    width: 380px;
+    padding-left: 3px;
+    padding-right: 3px;
 }
 
 
@@ -151,8 +171,9 @@ input.canvas__input__text:focus{
 /*CANVAS INPUT NUMBER*/
 
 
-.editable{
-
+.editable {
+    pointer-events: auto !important;
+    cursor: pointer;
 }
 
 /*.editable:hover {*/
@@ -247,4 +268,58 @@ input.canvas__input__text:focus{
     font-weight: 400;
     font-size: 16px;
     text-align: center;
+}
+
+
+.canvas__breakpoint__bar{
+    @apply w-full absolute;
+    left: 0;
+    top: 0;
+    /*top: var(--header-height);*/
+    height: 12px;
+    background-color: white;
+    padding-left: var(--canvas-workspace-container-padding);
+    padding-right: var(--canvas-workspace-container-padding);
+    z-index: 100;
+}
+
+.canvas__breakpoint__bar__desktop{
+    @apply relative flex items-center justify-center w-full h-full cursor-pointer;
+    border-left: 1px solid #E1E6ED;
+    border-right: 1px solid #E1E6ED;
+}
+
+.canvas__breakpoint__bar__mobile{
+    @apply flex w-full h-full relative hover cursor-pointer;
+    width: var(--canvas-mobile-breakpoint-width);
+    border-left: 1px solid #E1E6ED;
+    border-right: 1px solid #E1E6ED;
+}
+
+.canvas__breakpoint__bar__desktop.active{
+    background-color: #D3E9F6;
+}
+
+.canvas__breakpoint__bar__mobile.active{
+    background-color: #D3E9F6;
+}
+
+.canvas__breakpoint_button{
+    @apply absolute flex items-center justify-center cursor-pointer;
+    right: -12px;
+    top: 5px;
+    height: 24px;
+    width: 24px;
+    border-radius: 40px;
+    background-color: white;
+    border: 1px solid #E1E6ED;
+}
+
+.canvas__breakpoint_button.active{
+    border: 1px solid #1873CD;
+    background-color: #D3E9F6;
+}
+
+.canvas__breakpoint_button.active svg path{
+    fill: #1873CD;
 }

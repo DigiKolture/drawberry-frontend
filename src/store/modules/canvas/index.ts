@@ -3,6 +3,7 @@ import {
   CanvasState,
   CanvasSaveStatus,
   CanvasLoadingState,
+  CanvasBreakpoints,
 } from "@/store/modules/canvas/types";
 import { RootState } from "@/store/types";
 import { getters } from "@/store/modules/canvas/getters";
@@ -13,6 +14,7 @@ const state: CanvasState = {
   navigatedFromPreview: false, // This is used to check if the user navigated from the preview page when on the canvas page
   focusedElement: null,
   llmPrompt: "",
+  breakpoint: CanvasBreakpoints.DESKTOP,
   focusedParentElement: null,
 
   focusedChildrenElements: [],

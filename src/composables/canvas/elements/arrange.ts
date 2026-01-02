@@ -22,11 +22,37 @@ export function arrange() {
       }
     );
   };
+
+  // Remove all HTML elements except the parent and its children
+  const removeAllElementsExceptParentAndChildren = (
+    html: string,
+    parentId: string,
+    childrenIds: string[]
+  ): string => {
+    const $ = cheerio.load(html, null, false);
+
+    // Create a Set of IDs to keep (parent + children)
+    const idsToKeep = new Set([parentId, ...childrenIds]);
+
+    // Find all elements with an id attribute in the entire HTML
+    $("[id]").each((i, element) => {
+      const elementId = $(element).attr("id");
+
+      // Remove if not in the keep list
+      if (elementId && !idsToKeep.has(elementId)) {
+        $(element).remove();
+      }
+    });
+
+    return $.html();
+  };
+
   const getHTMLOfParentAndChildren = (
     htmlString: string,
     parentId: string,
     childrenIds: string[]
   ): string => {
+    //If the parentId is a duplicated element, we need to find the source element and get its HTML then update the IDs with the duplicated suffix
     if (parentId.includes("_dup_")) {
       const sourceSplit = parentId.split("_dup_");
       const sourceId = sourceSplit[0];
@@ -69,9 +95,15 @@ export function arrange() {
     };
 
     const commonAncestor = getCommonAncestor(elements);
-    return commonAncestor
+    const html = commonAncestor
       ? commonAncestor.outerHTML
       : elements.map((el) => el.outerHTML).join("\n");
+
+    return removeAllElementsExceptParentAndChildren(
+      html,
+      parentId,
+      childrenIds
+    );
   };
 
   const getParentElements = (htmlString: any, jsonData: any[]) => {
@@ -109,12 +141,16 @@ export function arrange() {
     newJson.shift();
 
     const parents = getParentElements(htmlString, newJson);
+    console.log("Parents:", parents);
     let html = updateHTML(htmlString, parents);
+    console.log("Updated HTML:", html);
 
     if (updateStyle) {
       for (const elementJson of jsonData) {
         // if (!elementJson.attributes.style.value) continue;
+        console.log({ elementJson: JSON.parse(JSON.stringify(elementJson)) });
         html = updateElementDom(html, elementJson);
+        // console.log("HTML after style update:", html);
       }
     }
 

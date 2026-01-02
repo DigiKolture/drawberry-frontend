@@ -88,6 +88,7 @@ export default defineComponent({
       const element = componentContainer.querySelector(
         `#${focusedElement.value.id}`
       );
+
       if (!element) {
         elementPositionStyle.value = { display: "none" };
         return;
@@ -111,6 +112,7 @@ export default defineComponent({
         height: `${elementRect.height}px`,
         display: "block",
       };
+
       focusedElementRef.value = element;
     };
 

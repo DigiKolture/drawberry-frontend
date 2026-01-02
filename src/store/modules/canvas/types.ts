@@ -22,6 +22,7 @@ export interface UpdatedComponent {
 export interface CanvasState {
   navigatedFromPreview: boolean;
   llmPrompt: string;
+  breakpoint: CanvasBreakpoints;
   focusedElement: object | null;
   focusedParentElement: object | null;
   focusedChildrenElements: any[];
@@ -74,4 +75,9 @@ export enum CanvasSaveStatusDescriptions {
   UPDATED = "Saving changes",
   OFFLINE = "offline",
   PAUSED = "Saving paused",
+}
+
+export enum CanvasBreakpoints {
+  DESKTOP = "desktop",
+  MOBILE = "mobile",
 }

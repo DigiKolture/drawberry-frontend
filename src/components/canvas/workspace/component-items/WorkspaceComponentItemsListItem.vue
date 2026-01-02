@@ -29,7 +29,10 @@
       @dragenter.prevent
       v-if="canvasLoaded"
     ></div>
-    <WorkspaceComponentItemFocusedEdit :item-index="itemIndex" />
+    <WorkspaceComponentItemFocusedEdit
+      v-if="focusedIndex === itemIndex"
+      :item-index="itemIndex"
+    />
     <WorkspaceComponentItemsActions
       v-if="showActions"
       :component-item="componentItem"
@@ -86,18 +89,12 @@ export default defineComponent({
   },
 
   setup(props, { emit }) {
-    const {
-      moveComponentItemPosition,
-      upsertComponentItem,
-      handleScroll,
-      checkIfParentIsBeenDragged,
-    } = drag_and_drop();
+    const { moveComponentItemPosition, upsertComponentItem } = drag_and_drop();
     const { validateWorkspaceIndicator } = indicators();
     const { canvasLoaded } = canvas();
     const { enableInnerDrag } = elementsDragAndDrop();
     const { arrangeElementsInComponentHTML } = arrange();
 
-    const { updateElementDom } = updateDom();
     const disabledButton = ref(false);
 
     const dropIndex = ref(-1);
@@ -132,10 +129,17 @@ export default defineComponent({
       return store.getters["canvas/workspaceComponents"];
     });
 
+    const breakpoint = computed(() => store.getters["canvas/breakpoint"]);
+
     watch(canvasLoaded, (value) => {
       if (value) {
         loadStylesForComponent(props);
       }
+    });
+
+    //Update project component DOM on breakpoint change
+    watch(breakpoint, () => {
+      loadStylesForComponent(props);
     });
 
     watch(

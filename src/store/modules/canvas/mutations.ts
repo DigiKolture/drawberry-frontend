@@ -6,6 +6,7 @@ import {
   CurrentHoverElementType,
   ProjectStyle,
   UpdatedComponent,
+  CanvasBreakpoints,
 } from "@/store/modules/canvas/types";
 import { updateDom } from "@/composables/canvas/update_dom";
 import { canvas } from "@/composables/canvas/canvas";
@@ -19,6 +20,10 @@ export const mutations: MutationTree<CanvasState> = {
   SET_NAVIGATED_FROM_PREVIEW(state: CanvasState, data: boolean) {
     state.navigatedFromPreview = data;
     return state.navigatedFromPreview;
+  },
+  SET_BREAKPOINT(state: CanvasState, data: CanvasBreakpoints) {
+    state.breakpoint = data;
+    return state.breakpoint;
   },
   SET_LLM_PROMPT(state: CanvasState, data: string) {
     state.llmPrompt = data;
@@ -212,7 +217,7 @@ export const mutations: MutationTree<CanvasState> = {
           element.attributes.style.value &&
           property in element.attributes.style.value
         ) {
-          element.attributes.style.value[property] = value;
+          element.attributes.style.value[property][state.breakpoint] = value;
         }
       //TODO: Create an update element dom for array of elements
       workspaceComponent.html = updateElementDom(
@@ -230,7 +235,7 @@ export const mutations: MutationTree<CanvasState> = {
             element.attributes.style.value &&
             property in element.attributes.style.value
           ) {
-            element.attributes.style.value[property] = value;
+            element.attributes.style.value[property][state.breakpoint] = value;
           }
         //TODO: Create an update element dom for array of elements
         workspaceComponent.html = updateElementDom(

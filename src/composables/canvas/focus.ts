@@ -118,7 +118,11 @@ export function focus() {
     // }
   };
 
-  const setParentFocusedElement = (focusedElement: any, componentItem: any) => {
+  // Function 1: Get children elements from component
+  const getParentChildrenElements = (
+    focusedElement: any,
+    componentItem: any
+  ) => {
     const childIds = focusedElement.children;
     const children = [];
 
@@ -129,11 +133,16 @@ export function focus() {
           childId
         );
         children.push(componentItem.json[jsonIndex]);
-        store.commit("canvas/SET_FOCUSED_CHILDREN_ELEMENTS", children);
       }
-    } else {
-      store.commit("canvas/SET_FOCUSED_CHILDREN_ELEMENTS", []);
     }
+
+    return children;
+  };
+
+  // Function 2: Set parent focused element (uses the above function)
+  const setParentFocusedElement = (focusedElement: any, componentItem: any) => {
+    const children = getParentChildrenElements(focusedElement, componentItem);
+    store.commit("canvas/SET_FOCUSED_CHILDREN_ELEMENTS", children);
   };
 
   const isElementAlreadyFocused = (
@@ -234,6 +243,7 @@ export function focus() {
     focusComponentElement,
     scrollTo,
     isFocusedTheFirstElement,
+    getParentChildrenElements,
     updateFocusedElementDomAndScroll,
   };
 }

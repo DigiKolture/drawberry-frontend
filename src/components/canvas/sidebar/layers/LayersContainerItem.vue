@@ -158,6 +158,10 @@ export default defineComponent({
         elementId
       );
 
+      console.log(
+        `Focusing element in layer component item: ${itemIndex}, element id: ${elementId}, json index: ${jsonIndex}`
+      );
+
       focusComponentElement(
         itemIndex,
         jsonIndex,

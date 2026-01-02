@@ -45,24 +45,37 @@ export default defineComponent({
     const { extractFirstFontFamily, getFullFamily, getFont, getFontWeights } =
       fonts();
 
+    // Flag to prevent circular updates during redo
+    const isUpdatingFromModifier = ref(false);
+
     const googleFonts = computed(() => {
       return store.getters["canvas/googleFonts"];
     });
 
+    // const localValue = ref(extractFirstFontFamily(modifier.value));
     const localValue = ref(extractFirstFontFamily(modifier.value));
 
-    watch(localValue, (newVal) => {
-      if (!newVal) return;
+    watch(localValue, (newVal, oldValue) => {
+      if (!newVal || isUpdatingFromModifier.value) return;
+
       modifier.value = getFullFamily(newVal);
       const font = getFont(newVal);
-      const weights = getFontWeights(font.variants);
-      store.commit("canvas/SET_FONT_WEIGHTS", weights);
+      if (font) {
+        const weights = getFontWeights(font.variants);
+        store.commit("canvas/SET_FONT_WEIGHTS", weights);
+      }
       //Reset font weight after changing font family
-      updateStyle("font-weight", 400, props.childIndex);
+      updateStyle("font-weight", "400", props.childIndex);
     });
 
     watch(modifier, (newVal) => {
+      // Set flag to prevent triggering localValue watcher
+      isUpdatingFromModifier.value = true;
       localValue.value = extractFirstFontFamily(newVal);
+      // Reset flag on next tick
+      setTimeout(() => {
+        isUpdatingFromModifier.value = false;
+      }, 0);
     });
 
     return { name, googleFonts, localValue };

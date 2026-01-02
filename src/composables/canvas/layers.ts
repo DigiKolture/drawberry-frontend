@@ -26,12 +26,12 @@ export function layers() {
       return replaceBreak(sliceString(text, 16));
     } else if (id.includes("background")) {
       return "Background";
+    } else if (id.includes("container") || id.includes("wrapper")) {
+      return "Container";
     } else if (id.includes("logo")) {
       return "Logo";
     } else if (hasNumberBeforeImage(id)) {
       return extractImageNames(id);
-    } else if (id.includes("container")) {
-      return "Container";
     } else if (id.includes("image")) {
       return "Image";
     }
@@ -48,12 +48,12 @@ export function layers() {
       icon = "text";
     } else if (id.includes("background")) {
       icon = "background";
+    } else if (id.includes("container") || id.includes("wrapper")) {
+      icon = "container";
     } else if (id.includes("logo") || id.includes("banner")) {
       icon = "image";
     } else if (id.includes("image")) {
       icon = "image";
-    } else if (id.includes("container")) {
-      return "container";
     } else {
       icon = "text";
     }

@@ -30,6 +30,7 @@ import ShareProjectPreviewModal from "@/components/canvas/modals/ShareProjectPre
 import UserInitialsDropdown from "@/components/header/dropdown/UserInitialsDropdown.vue";
 import ScreenSizeConstraint from "@/components/canvas/modals/ScreenSizeConstraint.vue";
 import {
+  CanvasBreakpoints,
   CanvasLoadingState,
   CanvasSaveStatus,
 } from "@/store/modules/canvas/types";
@@ -80,6 +81,7 @@ export default defineComponent({
 
     onMounted(async () => {
       store.commit("canvas/SET_LOAD_STATE", CanvasLoadingState.IN_PROGRESS);
+      store.commit("canvas/SET_BREAKPOINT", CanvasBreakpoints.DESKTOP);
 
       // Await asynchronous tasks and set project data
       await Promise.all([

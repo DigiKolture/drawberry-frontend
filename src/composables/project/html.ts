@@ -13,6 +13,7 @@ export function projectHtml() {
 
     for (const projectComponent of projectComponents) {
       const { html } = updateComponentItemDom(projectComponent);
+
       if (resultHTML == null) {
         resultHTML = html;
       } else {

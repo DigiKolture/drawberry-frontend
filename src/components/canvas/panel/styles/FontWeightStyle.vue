@@ -35,6 +35,8 @@ export default defineComponent({
   setup(props) {
     const name = "font-weight";
 
+    const breakpoint = computed(() => store.getters["canvas/breakpoint"]);
+
     const { getTargetElement } = modifiers();
     const { modifier } = modifiersUpdater(props, name);
     const { getFontWeightsWithFamily } = fonts();
@@ -42,7 +44,7 @@ export default defineComponent({
     const weightOptions = getFontWeightsWithFamily(
       getTargetElement(props.childId, props.childIndex).attributes.style.value[
         "font-family"
-      ]
+      ][breakpoint.value]
     );
     store.commit("canvas/SET_FONT_WEIGHTS", weightOptions);
 

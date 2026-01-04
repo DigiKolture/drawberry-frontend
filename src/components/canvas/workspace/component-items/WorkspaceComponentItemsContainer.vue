@@ -188,6 +188,64 @@ export default defineComponent({
     const handleClick = (
       componentItem: any,
       itemIndex: any,
+      clicked: true,
+      event: any
+    ) => {
+      event.preventDefault();
+      event.stopPropagation(); // Stop parent components from capturing the click
+
+      // 1. Find the nearest editable element
+      const editableTarget = (event.target as HTMLElement).closest(".editable");
+
+      // If no editable found, default to the main component container
+      if (!editableTarget) {
+        focusComponentElement(itemIndex, 0);
+        return;
+      }
+
+      let elementId = editableTarget.id;
+      const parentIdAttr = editableTarget.getAttribute("parent");
+
+      // 2. Handle the "parent" attribute redirect
+      if (parentIdAttr) {
+        // We check if the parentId actually exists in the current DOM tree
+        // instead of using Cheerio load
+        const parentExists =
+          editableTarget.closest(`#${parentIdAttr}`) ||
+          document.getElementById(parentIdAttr);
+
+        if (parentExists) {
+          elementId = parentIdAttr;
+        } else {
+          // Fallback to component root if the specified parent isn't found
+          elementId = componentItem.json[0].id;
+        }
+      }
+
+      removeCurrentFocus();
+
+      const currentFocusedIndex = focusedIndex.value;
+      let jsonIndex = 0;
+
+      // 3. Selection Logic
+      if (clicked) {
+        // Only drill down into child elements if the component is already active
+        // OR if the user is holding Cmd/Ctrl
+        if (
+          currentFocusedIndex === itemIndex ||
+          event.metaKey ||
+          event.ctrlKey
+        ) {
+          jsonIndex = getComponentElementIndexUsingId(componentItem, elementId);
+        }
+      }
+
+      focusComponentElement(itemIndex, jsonIndex);
+    };
+
+    const handleClick2 = (
+      componentItem: any,
+      itemIndex: any,
       clicked: true, //click -> true, dbclick -> false
       event: any
     ) => {

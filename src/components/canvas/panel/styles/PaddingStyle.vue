@@ -64,13 +64,17 @@ export default defineComponent({
 
     const paddingOptions = ["top", "left", "right", "bottom"];
 
-    let padding: any = reactive(parsePadding(modifier.value));
+    let padding: any = reactive(parsePadding(modifier.value || "0px"));
 
     const activePadding = ref(getDefaultPaddingPosition(padding));
     const singlePadding = ref(padding[activePadding.value] ?? padding.top);
     const centerValue: any = ref(getDefaultPaddingValue(padding));
 
+    // Flag to prevent circular updates
+    const isUpdatingFromModifier = ref(false);
+
     watch(activePadding, (newVal) => {
+      console.log("activePadding changed:", newVal);
       if (activePadding.value !== "center") {
         singlePadding.value = padding[newVal];
       } else {
@@ -78,11 +82,28 @@ export default defineComponent({
       }
     });
 
-    watch(centerValue, (newVal) => {
-      singlePadding.value = newVal;
+    // FIXED: Single watch for modifier changes
+    watch(modifier, (newVal) => {
+      if (!newVal) return;
+
+      isUpdatingFromModifier.value = true;
+
+      const parsedPadding = parsePadding(newVal);
+      Object.assign(padding, parsedPadding);
+
+      activePadding.value = getDefaultPaddingPosition(padding);
+      singlePadding.value = padding[activePadding.value] ?? padding.top;
+      centerValue.value = getDefaultPaddingValue(padding);
+
+      // Reset flag after Vue updates
+      setTimeout(() => {
+        isUpdatingFromModifier.value = false;
+      }, 0);
     });
 
     watch(singlePadding, (newVal) => {
+      if (isUpdatingFromModifier.value) return; // Prevent circular update
+
       if (activePadding.value !== "center") {
         centerValue.value = 0;
         padding[activePadding.value] = newVal;
@@ -97,18 +118,15 @@ export default defineComponent({
       }
     });
 
+    // FIXED: Only watch padding to update modifier
     watch(
       () => ({ ...padding }),
       (newVal) => {
+        if (isUpdatingFromModifier.value) return; // Prevent circular update
+
         modifier.value = `${newVal.top}${unit} ${newVal.right}${unit} ${newVal.bottom}${unit} ${newVal.left}${unit}`;
       }
     );
-
-    watch(modifier, (newVal) => {
-      const parsedPadding = parsePadding(newVal);
-      Object.assign(padding, parsedPadding);
-      centerValue.value = getDefaultPaddingValue(padding);
-    });
 
     const changePaddingOption = (option: string) => {
       activePadding.value = option;

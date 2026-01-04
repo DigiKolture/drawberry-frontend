@@ -166,6 +166,8 @@ export function arrange() {
       $el.remove();
     });
 
+    console.log("HTML after removing block elements:", $.html());
+
     //Add all parent elements to their respective wrappers in the order of the json
     for (const parent of parents) {
       const wrapper = $(`#${parent.wrapperId}`);

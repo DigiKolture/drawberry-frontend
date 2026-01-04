@@ -36,13 +36,16 @@
 
 
 .canvas__workspace__empty__container{
-    @apply h-full w-full flex justify-center;
+    @apply h-full w-full flex justify-center items-center;
+
     /*background-color: chartreuse;*/
 }
 
 .canvas__workspace__empty{
     @apply text-center flex flex-col items-center justify-center;
-    margin-top: 117px;
+    /*margin-top: 117px;*/
+    margin-top: 60px;
+    margin-bottom: 60px;
     height: 127px;
     width: 362px;
     row-gap: 24px;

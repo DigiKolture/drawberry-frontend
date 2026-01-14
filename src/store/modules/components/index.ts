@@ -10,6 +10,12 @@ const state: ComponentState = {
   componentItems: [],
   myComponentItems: [],
   selectedComponent: null,
+  sidebarDraggedComponentItemIndex: null,
+  draggedComponentItemIndex: null,
+  dragSource: null,
+  draggedComponentItemHeight: null,
+  draggedComponentItemOffsetY: null,
+  draggedComponentItemCurrentY: null,
 };
 
 export const data: Module<ComponentState, RootState> = {

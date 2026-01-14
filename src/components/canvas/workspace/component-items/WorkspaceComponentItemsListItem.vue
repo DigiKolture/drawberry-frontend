@@ -196,9 +196,9 @@ export default defineComponent({
       props.componentItem.html = html;
     };
 
-    const handleDragOver = (e: any) => {
-      const fromIndex = e.dataTransfer.getData("fromComponentItemIndex");
-      const type = e.dataTransfer.getData("type");
+    const handleDragOver = () => {
+      const fromIndex = store.getters["components/draggedComponentItemIndex"];
+      const type = store.getters["components/dragSource"];
       const toIndex = props.itemIndex;
 
       ui.changeComponentItemsStatus(false);

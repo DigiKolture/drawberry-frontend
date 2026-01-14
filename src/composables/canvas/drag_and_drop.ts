@@ -54,8 +54,10 @@ export function drag_and_drop() {
     e.dataTransfer.effectAllowed = "move";
     e.dataTransfer.dropEffect = "move";
 
-    e.dataTransfer.setData("componentItemIndex", itemIndex);
-    e.dataTransfer.setData("type", "from-sidebar");
+    store.commit("components/SET_SIDEBAR_COMPONENT_DATA", {
+      index: itemIndex,
+      source: "from-sidebar",
+    });
   };
 
   const moveComponentItem = async (
@@ -63,10 +65,12 @@ export function drag_and_drop() {
     toIndex: number,
     projectId: string
   ) => {
-    const componentItemIndex = e.dataTransfer.getData("componentItemIndex");
-    if (!componentItemIndex) return;
+    const sidebarDraggedComponentItemIndex =
+      store.getters["components/sidebarDraggedComponentItemIndex"];
+    if (sidebarDraggedComponentItemIndex == null) return;
 
-    const componentItem = componentItems.value[parseInt(componentItemIndex)];
+    const componentItem =
+      componentItems.value[sidebarDraggedComponentItemIndex];
     if (!componentItem || !projectId) return;
 
     // workspaceComponents.value.push(componentItem);
@@ -82,13 +86,14 @@ export function drag_and_drop() {
     e.dataTransfer.effectAllowed = "move";
     e.dataTransfer.dropEffect = "move";
 
-    e.dataTransfer.setData("fromComponentItemIndex", itemIndex);
-    e.dataTransfer.setData("type", "from-workspace");
-
-    //Used for scrolling when component is being dragged
-    e.dataTransfer.setData("dragComponentItemHeight", e.target.offsetHeight);
-    e.dataTransfer.setData("dragComponentItemOffsetY", e.offsetY);
-    e.dataTransfer.setData("dragComponentItemCurrentY", e.clientY);
+    store.commit("components/SET_DRAG_DATA", {
+      index: itemIndex,
+      source: "from-workspace",
+      //Used for scrolling when component is being dragged
+      height: e.target.offsetHeight,
+      offsetY: e.offsetY,
+      currentY: e.clientY,
+    });
   };
 
   const focusedIndex = computed(() => {
@@ -100,7 +105,7 @@ export function drag_and_drop() {
     toIndex: number,
     projectId: string
   ) => {
-    const type = e.dataTransfer.getData("type");
+    const type = store.getters["components/dragSource"];
 
     if (type === "from-sidebar") {
       ui.changeComponentItemsStatus(false);
@@ -109,13 +114,12 @@ export function drag_and_drop() {
       await moveComponentItem(e, toIndex, projectId);
       // focusComponentElement(toIndex, 0);
     } else {
-      const fromComponentItemIndex = e.dataTransfer.getData(
-        "fromComponentItemIndex"
-      );
+      const fromComponentItemIndex =
+        store.getters["components/draggedComponentItemIndex"];
 
-      if (!fromComponentItemIndex || !projectId) return;
+      if (fromComponentItemIndex === null || !projectId) return;
 
-      changeComponentItemPosition(parseInt(fromComponentItemIndex), toIndex);
+      changeComponentItemPosition(fromComponentItemIndex, toIndex);
     }
   };
 
@@ -154,92 +158,14 @@ export function drag_and_drop() {
     // store.dispatch("canvas/updateProjectComponentsAndStyles").then();
   };
 
-  const handleScroll3 = (event: any) => {
-    const fromComponentItemIndex = event.dataTransfer.getData(
-      "fromComponentItemIndex"
-    );
-    const dragElementHeight = event.dataTransfer.getData("dragElementHeight");
-    const dragOffsetY = event.dataTransfer.getData("dragOffsetY");
-    const dragCurrentY = event.dataTransfer.getData("dragCurrentY");
-
-    if (!fromComponentItemIndex) return;
-    // console.log({ draggedIndex: draggedIndex.value });
-    // if (draggedIndex.value === null) return;
-
-    const draggedIndex = parseInt(fromComponentItemIndex);
-
-    // Get the element being dragged over
-    const target = event.target.closest(
-      ".workspace__component__items__list__item"
-    );
-    if (!target) return;
-
-    // Skip if dragging over itself
-    // if (target.id === `workspace-component-item-${draggedIndex}`) return;
-
-    // Get the bounding rectangle of the target element
-    const targetRect = target.getBoundingClientRect();
-
-    // console.log({ targetRect: JSON.stringify(targetRect) });
-
-    // Calculate the center point of the dragged element
-    // This represents where the dragged element would be positioned
-    const draggedElementCenterY =
-      event.clientY - dragOffsetY + dragElementHeight / 2;
-
-    // Calculate middle point of the target element
-    const targetMiddle = targetRect.top + targetRect.height / 2;
-
-    // Determine if the dragged element's center is above or below the target's middle
-    if (draggedElementCenterY < targetMiddle) {
-      dropPosition.value = "top";
-      // console.log(" <<<<<<<<<<< TOP >>>>>>>>>>>>");
-    } else {
-      dropPosition.value = "bottom";
-      // console.log(" <<<<<<<<<<< BOTTOM >>>>>>>>>>>>");
-    }
-
-    const currentY = event.clientY;
-    const offsetY = event.offsetY;
-    const height = window.innerHeight;
-
-    const distanceFromTop = currentY;
-    const distanceFromBottom = height - distanceFromTop;
-    const realDistanceFromTop = distanceFromTop - dragOffsetY; // Subtract the offset
-
-    if (
-      distanceFromTop < parseInt(dragCurrentY) && // If the item is being dragged up
-      realDistanceFromTop < TOP_THRESHOLD // Check if the item is close to the top
-    ) {
-      console.log("Scroll down >>>>>>>>>>>>>>>");
-    }
-
-    console.log({
-      dragCurrentY,
-      distanceFromTop,
-      realDistanceFromTop,
-      distanceFromBottom,
-      draggedIndex,
-      dragElementHeight,
-      offsetY,
-      dragOffsetY,
-    });
-
-    if (distanceFromTop < 65 + 20) {
-      console.log("Scroll up >>>>>>>>>>");
-    }
-  };
   const handleScroll = (event: any) => {
-    const fromComponentItemIndex = event.dataTransfer.getData(
-      "fromComponentItemIndex"
-    );
-    const dragElementHeight = event.dataTransfer.getData(
-      "dragComponentItemHeight"
-    );
-    const dragOffsetY = event.dataTransfer.getData("dragComponentItemOffsetY");
-    const dragCurrentY = event.dataTransfer.getData(
-      "dragComponentItemCurrentY"
-    );
+    const fromComponentItemIndex =
+      store.getters["components/draggedComponentItemIndex"];
+    const dragElementHeight =
+      store.getters["components/draggedComponentItemHeight"];
+    const dragOffsetY = store.getters["components/draggedComponentItemOffsetY"];
+    const dragCurrentY =
+      store.getters["components/draggedComponentItemCurrentY"];
 
     if (!fromComponentItemIndex) return;
 
@@ -279,93 +205,6 @@ export function drag_and_drop() {
     //   offsetY,
     //   dragOffsetY,
     // });
-  };
-  const handleScroll2 = (event: any) => {
-    const currentY = event.clientY;
-    const height = window.innerHeight;
-
-    const distanceFromTop = currentY;
-    const distanceFromBottom = height - distanceFromTop;
-
-    // Check for extreme edge cases first
-    if (distanceFromBottom < BOTTOM_EDGE_THRESHOLD) {
-      startScrolling(event, 1, true); // Scroll down fast
-    } else if (distanceFromTop < TOP_EDGE_THRESHOLD) {
-      startScrolling(event, -1, true); // Scroll up fast
-    } else if (distanceFromBottom < BOTTOM_THRESHOLD) {
-      startScrolling(event, 1, false); // Normal scroll down
-    } else if (distanceFromTop < TOP_THRESHOLD) {
-      startScrolling(event, -1, false); // Normal scroll up
-    } else {
-      stopScrolling();
-    }
-  };
-
-  const startScrolling = (
-    event: any,
-    direction: number,
-    isExtreme: boolean
-  ) => {
-    if (intervalId.value === null) {
-      const intId = window.setInterval(() => {
-        const distanceFromTop = event.clientY;
-        const height = window.innerHeight;
-        const distanceFromBottom = height - distanceFromTop;
-
-        if (isExtreme) {
-          if (direction === 1 && distanceFromBottom > BOTTOM_EDGE_THRESHOLD) {
-            // stopScrolling();
-            isExtreme = false;
-
-            // return;
-          }
-          if (direction === -1 && distanceFromTop > TOP_EDGE_THRESHOLD) {
-            // stopScrolling();
-            isExtreme = false;
-
-            // return;
-          }
-        }
-
-        if (!isExtreme) {
-          if (direction === 1 && distanceFromBottom > BOTTOM_THRESHOLD) {
-            stopScrolling();
-            return;
-          }
-          if (direction === -1 && distanceFromTop > TOP_THRESHOLD) {
-            stopScrolling();
-            return;
-          }
-        }
-
-        // if (direction === 1) {
-        //   // Scroll to bottom
-        //   const remainingScroll =
-        //     document.documentElement.scrollHeight -
-        //     (window.scrollY + window.innerHeight);
-        //   if (remainingScroll <= 0) {
-        //     stopScrolling();
-        //     return;
-        //   }
-        // } else {
-        //   // Scroll to top
-        //   if (window.scrollY <= 0) {
-        //     stopScrolling();
-        //     return;
-        //   }
-        // }
-
-        if (isExtreme) {
-          window.scrollBy(0, EXTREME_SCROLL_SPEED * direction);
-        } else {
-          window.scrollBy(0, NORMAL_SCROLL_SPEED * direction);
-        }
-        // window.scrollBy(0, 20 * direction);
-      }, SCROLL_INTERVAL);
-      intervalId.value = intId;
-
-      scrollIntervalsIds.value.push(intId);
-    }
   };
 
   const stopScrolling = () => {

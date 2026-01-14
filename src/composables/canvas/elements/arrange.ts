@@ -141,14 +141,14 @@ export function arrange() {
     newJson.shift();
 
     const parents = getParentElements(htmlString, newJson);
-    console.log("Parents:", parents);
+    // console.log("Parents:", parents);
     let html = updateHTML(htmlString, parents);
-    console.log("Updated HTML:", html);
+    // console.log("Updated HTML:", html);
 
     if (updateStyle) {
       for (const elementJson of jsonData) {
         // if (!elementJson.attributes.style.value) continue;
-        console.log({ elementJson: JSON.parse(JSON.stringify(elementJson)) });
+        // console.log({ elementJson: JSON.parse(JSON.stringify(elementJson)) });
         html = updateElementDom(html, elementJson);
         // console.log("HTML after style update:", html);
       }
@@ -166,7 +166,7 @@ export function arrange() {
       $el.remove();
     });
 
-    console.log("HTML after removing block elements:", $.html());
+    // console.log("HTML after removing block elements:", $.html());
 
     //Add all parent elements to their respective wrappers in the order of the json
     for (const parent of parents) {

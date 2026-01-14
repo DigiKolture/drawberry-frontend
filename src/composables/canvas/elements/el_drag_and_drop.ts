@@ -132,10 +132,10 @@ export function elementsDragAndDrop() {
       jsonData[realToIndex].id
     );
 
-    console.log({ fromBlockIds, toBlockIds });
-
-    console.log("Before Reorder:");
-    console.log(componentItem.json);
+    // console.log({ fromBlockIds, toBlockIds });
+    //
+    // console.log("Before Reorder:");
+    // console.log(componentItem.json);
 
     // Remove from original position and insert at new position
     // componentItem.json.splice(realFromIndex, 1);
@@ -145,20 +145,20 @@ export function elementsDragAndDrop() {
     const fromIndices = getIndicesFromIds(jsonData, fromBlockIds);
     const toIndices = getIndicesFromIds(jsonData, toBlockIds);
 
-    console.log({ fromIndices, toIndices });
+    // console.log({ fromIndices, toIndices });
 
     // Sort indices to maintain order
     fromIndices.sort((a, b) => a - b);
     toIndices.sort((a, b) => a - b);
 
-    console.log({ fromIndices, toIndices });
+    // console.log({ fromIndices, toIndices });
 
     // Determine direction: forward (moving down) or backward (moving up)
     const minFromIndex = Math.min(...fromIndices);
     const maxToIndex = Math.max(...toIndices);
     const isMovingBackward = minFromIndex > maxToIndex;
 
-    console.log({ isMovingBackward, minFromIndex, maxToIndex });
+    // console.log({ isMovingBackward, minFromIndex, maxToIndex });
 
     // Extract elements to move
     const elementsToMove = fromIndices.map((index: number) => jsonData[index]);
@@ -189,13 +189,13 @@ export function elementsDragAndDrop() {
         fromIndices.filter((i: number) => i <= lastToIndex).length;
     }
 
-    console.log({ adjustedToIndex });
+    // console.log({ adjustedToIndex });
 
     // Insert all elements at new position
     componentItem.json.splice(adjustedToIndex, 0, ...elementsToMove);
 
-    console.log("After Reorder:");
-    console.log(componentItem.json);
+    // console.log("After Reorder:");
+    // console.log(componentItem.json);
 
     // Update HTML to reflect new order
     componentItem.html = arrangeElementsInComponentHTML(

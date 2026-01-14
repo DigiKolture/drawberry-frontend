@@ -85,6 +85,7 @@ export const mutations: MutationTree<ComponentState> = {
 
   // Helper mutation to clear all drag data
   CLEAR_DRAG_DATA(state: ComponentState) {
+    state.sidebarDraggedComponentItemIndex = null;
     state.draggedComponentItemIndex = null;
     state.dragSource = null;
     state.draggedComponentItemHeight = null;

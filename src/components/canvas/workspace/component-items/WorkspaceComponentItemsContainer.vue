@@ -194,6 +194,9 @@ export default defineComponent({
       event.preventDefault();
       event.stopPropagation(); // Stop parent components from capturing the click
 
+      // Clear any existing drag data
+      store.commit("components/CLEAR_DRAG_DATA");
+
       // 1. Find the nearest editable element
       const editableTarget = (event.target as HTMLElement).closest(".editable");
 

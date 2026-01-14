@@ -241,7 +241,8 @@ export function elementsDragAndDrop() {
           editable.querySelector(".focus") !== null;
 
         if (!hasFocus) {
-          return;
+          e.preventDefault();
+          return false;
         }
 
         store.commit("element/SET_IS_DRAGGING", true);
@@ -289,8 +290,6 @@ export function elementsDragAndDrop() {
         const toIndex = componentItem.json.findIndex(
           (el: any) => el.id === editable.id
         );
-
-        console.log({ fromIndex, toIndex });
 
         const reorder = reorderElements(fromIndex, toIndex, componentItem);
         if (!reorder) return;

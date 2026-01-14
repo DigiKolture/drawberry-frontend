@@ -201,6 +201,8 @@ export default defineComponent({
       const type = store.getters["components/dragSource"];
       const toIndex = props.itemIndex;
 
+      if (fromIndex === null) return;
+
       ui.changeComponentItemsStatus(false);
 
       // TODO: Make this work with element drag
@@ -224,6 +226,7 @@ export default defineComponent({
     };
 
     const clickEvent = (event: any) => {
+      dropIndex.value = -1;
       emit("clicked", props.componentItem, props.itemIndex, true, event);
     };
 

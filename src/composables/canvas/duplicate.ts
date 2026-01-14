@@ -8,6 +8,7 @@ const { copyObject, find } = helpers();
 const { getParentChildrenElements } = focus();
 const { updateHistory } = history();
 import * as cheerio from "cheerio";
+
 const { findIndex } = helpers();
 import {
   ProjectComponentElementDuplicateHistoryAction,
@@ -555,6 +556,7 @@ export function duplicateElements() {
 
   return {
     getRowId,
+    getBlockParent,
     duplicateItem,
     getUpdatedHTMLForRow,
     transformHtmlWithDuplicates,

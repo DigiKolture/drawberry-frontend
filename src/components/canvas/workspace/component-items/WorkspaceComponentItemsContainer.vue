@@ -51,10 +51,8 @@ import { focus } from "@/composables/canvas/focus";
 import WorkspaceLastComponentDecoy from "@/components/canvas/workspace/component-items/WorkspaceLastComponentDecoy.vue";
 import { fonts } from "@/composables/canvas/fonts";
 import * as cheerio from "cheerio";
-import { CanvasLoadingState } from "@/store/modules/canvas/types";
 import CanvasWorkspaceLoading from "@/components/canvas/workspace/CanvasWorkspaceSkeleton.vue";
 import { canvas } from "@/composables/canvas/canvas";
-import { duplicateElements } from "@/composables/canvas/duplicate";
 import CanvasBreakpointBar from "@/components/canvas/workspace/CanvasBreakpointBar.vue";
 
 export default defineComponent({
@@ -193,6 +191,9 @@ export default defineComponent({
     ) => {
       event.preventDefault();
       event.stopPropagation(); // Stop parent components from capturing the click
+
+      // Clear any existing drag data
+      store.commit("components/CLEAR_DRAG_DATA");
 
       // 1. Find the nearest editable element
       const editableTarget = (event.target as HTMLElement).closest(".editable");

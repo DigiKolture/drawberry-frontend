@@ -74,6 +74,10 @@ section.canvas__layout{
     padding-right: 3px;
 }
 
+.canvas__workspace__items__cover.mobile .workspace__component__items__container{
+    width: 367px;
+}
+
 
 .canvas__panel{
     @apply h-full fixed overflow-y-auto;

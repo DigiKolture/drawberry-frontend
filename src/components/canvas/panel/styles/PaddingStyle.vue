@@ -32,7 +32,7 @@
   </PanelStyle>
 </template>
 <script lang="ts">
-import { defineComponent, reactive, ref, watch } from "vue";
+import { defineComponent, reactive, ref, watch, nextTick } from "vue";
 import PanelStyle from "./PanelStyle.vue";
 import BaseSliderIcon from "../BaseSliderIcon.vue";
 import { styles } from "@/composables/canvas/styles";
@@ -72,17 +72,20 @@ export default defineComponent({
 
     // Flag to prevent circular updates
     const isUpdatingFromModifier = ref(false);
+    const isUpdatingFromUserInput = ref(false);
 
-    watch(activePadding, (newVal) => {
-      console.log("activePadding changed:", newVal);
-      if (activePadding.value !== "center") {
-        singlePadding.value = padding[newVal];
+    watch(activePadding, (newVal, oldVal) => {
+      // Update singlePadding to reflect the selected padding side's value
+      if (newVal !== "center") {
+        const newPaddingValue = padding[newVal];
+        singlePadding.value = newPaddingValue;
+        centerValue.value = 0;
       } else {
         singlePadding.value = centerValue.value;
       }
     });
 
-    // FIXED: Single watch for modifier changes
+    // Watch for modifier changes (from external updates, breakpoint changes, undo/redo)
     watch(modifier, (newVal) => {
       if (!newVal) return;
 
@@ -91,18 +94,30 @@ export default defineComponent({
       const parsedPadding = parsePadding(newVal);
       Object.assign(padding, parsedPadding);
 
-      activePadding.value = getDefaultPaddingPosition(padding);
+      // FIXED: Only update activePadding if we're not currently editing
+      // This prevents the active padding from switching when user is making changes
+      if (!isUpdatingFromUserInput.value) {
+        activePadding.value = getDefaultPaddingPosition(padding);
+      }
+
+      // Update singlePadding to match current active padding value
       singlePadding.value = padding[activePadding.value] ?? padding.top;
       centerValue.value = getDefaultPaddingValue(padding);
 
       // Reset flag after Vue updates
-      setTimeout(() => {
+      nextTick(() => {
         isUpdatingFromModifier.value = false;
-      }, 0);
+      });
     });
 
-    watch(singlePadding, (newVal) => {
-      if (isUpdatingFromModifier.value) return; // Prevent circular update
+    // Watch singlePadding to update the actual padding value
+    watch(singlePadding, (newVal, oldVal) => {
+      if (isUpdatingFromModifier.value) {
+        return;
+      }
+
+      // Set flag to indicate user is making changes
+      isUpdatingFromUserInput.value = true;
 
       if (activePadding.value !== "center") {
         centerValue.value = 0;
@@ -116,24 +131,35 @@ export default defineComponent({
           padding["bottom"] = newVal;
         }
       }
+
+      // Clear the user input flag after a short delay
+      setTimeout(() => {
+        isUpdatingFromUserInput.value = false;
+      }, 100);
     });
 
-    // FIXED: Only watch padding to update modifier
+    // Watch padding object to update modifier
     watch(
       () => ({ ...padding }),
       (newVal) => {
-        if (isUpdatingFromModifier.value) return; // Prevent circular update
+        if (isUpdatingFromModifier.value) {
+          return;
+        }
 
-        modifier.value = `${newVal.top}${unit} ${newVal.right}${unit} ${newVal.bottom}${unit} ${newVal.left}${unit}`;
+        const newModifierValue = `${newVal.top}${unit} ${newVal.right}${unit} ${newVal.bottom}${unit} ${newVal.left}${unit}`;
+        modifier.value = newModifierValue;
       }
     );
 
     const changePaddingOption = (option: string) => {
       activePadding.value = option;
+      // Clear user input flag when manually changing padding option
+      isUpdatingFromUserInput.value = false;
     };
 
     const applyPaddingToAll = () => {
       activePadding.value = "center";
+      isUpdatingFromUserInput.value = false;
     };
 
     return {

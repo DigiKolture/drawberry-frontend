@@ -393,7 +393,7 @@ export function duplicateElements() {
 
     const parentBlockId = getParentBlock(componentItem.json, focusedElementId);
 
-    console.log({ focusedElementId, parentBlockId });
+    // console.log({ focusedElementId, parentBlockId });
 
     const blockIds = getBlockIds(parentBlockId, componentItem.html);
 
@@ -411,14 +411,14 @@ export function duplicateElements() {
       getLastParentId
     );
 
-    console.log({ blockIds });
+    // console.log({ blockIds });
 
     const blockWrappers: Record<string, string> = {};
 
     const firstBlock = find(componentItem.json, "id", blockIds[0]);
     blockWrappers[blockIds[0]] = firstBlock.wrapperId;
 
-    console.log("Wrappers before duplication:", blockWrappers);
+    // console.log("Wrappers before duplication:", blockWrappers);
 
     for (let i = 0; i < blockIds.length; i++) {
       const randomSuffix = getRandomSuffix();

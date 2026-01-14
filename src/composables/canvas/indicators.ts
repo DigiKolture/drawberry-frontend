@@ -5,15 +5,11 @@ import { focus } from "@/composables/canvas/focus";
 import router from "@/router";
 
 export function indicators() {
-  const validateIndicator = (fromIndex: string, toIndex: number) => {
-    const parsedFromIndex = fromIndex ? parseInt(fromIndex) : null;
-
-    if (parsedFromIndex == null) return false;
-    if (parsedFromIndex == toIndex) return false;
-    if (parsedFromIndex < toIndex && Math.abs(parsedFromIndex - toIndex) < 2)
-      return false;
-    if (toIndex > parsedFromIndex && Math.abs(parsedFromIndex - toIndex) < 1)
-      return false;
+  const validateIndicator = (fromIndex: number, toIndex: number) => {
+    if (fromIndex == null) return false;
+    if (fromIndex == toIndex) return false;
+    if (fromIndex < toIndex && Math.abs(fromIndex - toIndex) < 2) return false;
+    if (toIndex > fromIndex && Math.abs(fromIndex - toIndex) < 1) return false;
 
     return true;
   };
@@ -21,7 +17,7 @@ export function indicators() {
   // Only validate indicators if user is trying to move components within the workspace and not adding from sidebar
   const validateWorkspaceIndicator = (
     type: string,
-    fromIndex: string,
+    fromIndex: number,
     toIndex: number
   ) => {
     //Checking if type is not provided (Incase of dragging the element and not the component itself)

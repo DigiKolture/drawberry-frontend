@@ -196,10 +196,12 @@ export default defineComponent({
       props.componentItem.html = html;
     };
 
-    const handleDragOver = (e: any) => {
-      const fromIndex = e.dataTransfer.getData("fromComponentItemIndex");
-      const type = e.dataTransfer.getData("type");
+    const handleDragOver = () => {
+      const fromIndex = store.getters["components/draggedComponentItemIndex"];
+      const type = store.getters["components/dragSource"];
       const toIndex = props.itemIndex;
+
+      if (fromIndex === null) return;
 
       ui.changeComponentItemsStatus(false);
 
@@ -224,6 +226,7 @@ export default defineComponent({
     };
 
     const clickEvent = (event: any) => {
+      dropIndex.value = -1;
       emit("clicked", props.componentItem, props.itemIndex, true, event);
     };
 

@@ -15,4 +15,22 @@ export const getters: GetterTree<ComponentState, RootState> = {
   myComponentItems(state: ComponentState): object[] | null {
     return state.myComponentItems;
   },
+  sidebarDraggedComponentItemIndex(state: ComponentState): number | null {
+    return state.sidebarDraggedComponentItemIndex;
+  },
+  draggedComponentItemIndex(state: ComponentState): number | null {
+    return state.draggedComponentItemIndex;
+  },
+  dragSource(state: ComponentState): string | null {
+    return state.dragSource;
+  },
+  draggedComponentItemHeight(state: ComponentState): number | null {
+    return state.draggedComponentItemHeight;
+  },
+  draggedComponentItemOffsetY(state: ComponentState): number | null {
+    return state.draggedComponentItemOffsetY;
+  },
+  draggedComponentItemCurrentY(state: ComponentState): number | null {
+    return state.draggedComponentItemCurrentY;
+  },
 };

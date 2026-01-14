@@ -56,8 +56,8 @@ export default defineComponent({
 
     const handleDragOver = (e: any) => {
       //TODO: Set this values to null or empty when dragging element
-      const fromIndex = e.dataTransfer.getData("fromComponentItemIndex");
-      const type = e.dataTransfer.getData("type");
+      const fromIndex = store.getters["components/draggedComponentItemIndex"];
+      const type = store.getters["components/dragSource"];
       const toIndex = itemIndex.value;
 
       ui.changeComponentItemsStatus(false);
@@ -77,8 +77,10 @@ export default defineComponent({
       itemIndex: number,
       projectId: string
     ) => {
+      console.log("<<<<< DROP COMPONENT >>>>>");
       dropLoading.value = true;
       drop.value = false;
+      console.log({ itemIndex, projectId });
       await upsertComponentItem(event, itemIndex, projectId);
       dropLoading.value = false;
     };

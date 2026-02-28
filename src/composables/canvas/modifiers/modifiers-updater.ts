@@ -16,6 +16,7 @@ export function modifiersUpdater(
     getTargetElement(props.childId, props.childIndex)
   );
 
+  // COMPONENT_STYLE updates are applied to all breakpoints (desktop and mobile stay in sync).
   const modifier = computed({
     get: () => {
       if (type === HistoryActionTypes.COMPONENT_STYLE) {

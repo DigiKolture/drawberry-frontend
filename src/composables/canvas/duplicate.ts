@@ -10,20 +10,12 @@ const { updateHistory } = history();
 import * as cheerio from "cheerio";
 
 const { findIndex } = helpers();
-import {
-  ProjectComponentElementDuplicateHistoryAction,
-  HistoryActionTypes,
-} from "@/store/modules/history/types";
+import { ProjectComponentElementDuplicateHistoryAction } from "@/store/modules/history/types";
 import { focus } from "@/composables/canvas/focus";
-import { loadRouteLocation } from "vue-router";
 
 export function duplicateElements() {
   const workspaceComponents = computed(() => {
     return store.getters["canvas/workspaceComponents"];
-  });
-
-  const focusedChildrenElements = computed(() => {
-    return store.getters["canvas/focusedChildrenElements"];
   });
 
   const deepClone = <T>(obj: T): T => {
@@ -206,6 +198,12 @@ export function duplicateElements() {
 
     const jsonElement = copyObject(componentItem.json[jsonIndex]);
 
+    const duplicateId = (id: string, suffix: string) => {
+      // Strip any existing duplicate suffix before adding the new one
+      const baseId = id.split("_dup_")[0];
+      return `${baseId}_dup_${suffix}`;
+    };
+
     const duplicatedElement = {
       ...jsonElement,
       id: duplicateId(jsonElement.id, randomSuffix),
@@ -224,8 +222,7 @@ export function duplicateElements() {
       );
     }
 
-    let duplicatedChildrenIndexStart = duplicatedElementStartIndex;
-    const children = [];
+    const children: any[] = [];
 
     // Insert the duplicated parent element
     componentItem.json.splice(
@@ -234,39 +231,76 @@ export function duplicateElements() {
       duplicatedElement
     );
 
-    // Duplicate children elements
-    for (const focusedChildrenElementRaw of focusedChildrenElements) {
-      const focusedChildrenElement = copyObject(focusedChildrenElementRaw);
+    // Recursively duplicate children elements
+    const duplicateChildrenRecursively = (
+      parentId: string,
+      newParentId: string,
+      startIndex: number,
+      collectChildren = false
+    ) => {
+      const childElements = componentItem.json
+        .filter(
+          (item: any) =>
+            item.blockId === parentId || item.wrapperId === parentId
+        )
+        .reverse();
 
-      duplicatedChildrenIndexStart++;
-      const duplicatedChildElement = {
-        ...focusedChildrenElement,
-        id: duplicateId(focusedChildrenElement.id, randomSuffix),
-        parent: duplicatedElement.id,
-      };
+      for (const childElement of childElements) {
+        const childIndex = componentItem.json.findIndex(
+          (item: any) => item.id === childElement.id
+        );
+        if (childIndex === -1) continue;
 
-      if (focusedChildrenElement.wrapperId !== null) {
-        duplicatedChildElement.wrapperId = wrapperId;
+        const duplicatedChildElement = {
+          ...copyObject(childElement),
+          id: duplicateId(childElement.id, randomSuffix),
+          parent: childElement.parent
+            ? duplicateId(childElement.parent, randomSuffix)
+            : null,
+        };
+
+        if (childElement.wrapperId !== null) {
+          duplicatedChildElement.wrapperId =
+            childElement.wrapperId === parentId
+              ? newParentId
+              : duplicateId(childElement.wrapperId, randomSuffix);
+        }
+        if (childElement.blockId !== null) {
+          duplicatedChildElement.blockId =
+            childElement.blockId === parentId
+              ? newParentId
+              : duplicateId(childElement.blockId, randomSuffix);
+        }
+
+        if (childElement.children && childElement.children.length > 0) {
+          duplicatedChildElement.children = childElement.children.map(
+            (id: string) => duplicateId(id, randomSuffix)
+          );
+        }
+
+        componentItem.json.splice(startIndex, 0, duplicatedChildElement);
+        if (collectChildren) {
+          children.push(duplicatedChildElement.id);
+        }
+
+        // Recurse for this child's children
+        duplicateChildrenRecursively(
+          childElement.id,
+          duplicatedChildElement.id,
+          startIndex + 1,
+          false
+        );
       }
-      if (focusedChildrenElement.blockId !== null) {
-        duplicatedChildElement.blockId = duplicatedElement.blockId;
-      }
+    };
 
-      componentItem.json.splice(
-        duplicatedChildrenIndexStart,
-        0,
-        duplicatedChildElement
-      );
-      children.push(duplicatedChildElement.id);
-    }
+    duplicateChildrenRecursively(
+      elementId,
+      duplicatedElement.id,
+      duplicatedElementStartIndex + 1,
+      true
+    );
 
     duplicatedElement.children = children;
-
-    // // Insert the duplicated parent element
-    // componentItem.json.splice(duplicatedElementStartIndex, 0, {
-    //   ...duplicatedElement,
-    //   children,
-    // });
 
     return {
       duplicatedElement,
@@ -309,11 +343,61 @@ export function duplicateElements() {
   };
 
   // Core reusable function to update component HTML and store
+  const getJsonOrderFromHtml = (html: string): string[] => {
+    const $ = cheerio.load(html);
+    const rootComponent = $("[component]").first();
+    if (rootComponent.length === 0) return [];
+
+    const orderedIds: string[] = [];
+
+    const traverse = (element: any) => {
+      element.children().each((_: any, child: any) => {
+        const $child = $(child);
+        const childId = $child.attr("id");
+        if (childId) {
+          orderedIds.push(childId);
+        }
+        traverse($child);
+      });
+    };
+
+    traverse(rootComponent);
+    return orderedIds;
+  };
+
+  const reorderJsonByHtml = (componentItem: any) => {
+    const orderedIds = getJsonOrderFromHtml(componentItem.html);
+    if (orderedIds.length === 0) return;
+
+    const elementById = new Map(
+      componentItem.json.map((el: any) => [el.id, el])
+    );
+    const orderedJson: any[] = [];
+
+    for (const id of orderedIds) {
+      const element = elementById.get(id);
+      if (element) {
+        orderedJson.push(element);
+        elementById.delete(id);
+      }
+    }
+
+    for (const element of componentItem.json) {
+      if (elementById.has(element.id)) {
+        orderedJson.push(element);
+        elementById.delete(element.id);
+      }
+    }
+
+    componentItem.json = orderedJson;
+  };
+
   const updateComponentAndStore = (componentItem: any) => {
     componentItem.html = arrangeElementsInComponentHTML(
       componentItem.html,
       componentItem.json
     );
+    reorderJsonByHtml(componentItem);
     store.commit("canvas/SET_WORKSPACE_COMPONENTS", workspaceComponents.value);
   };
 
@@ -350,15 +434,16 @@ export function duplicateElements() {
       return [id]; // Return original ID if not found
     }
 
-    const blockIds = [];
+    const blockIds: string[] = [];
 
-    // Check if the main element itself has a block attribute
+    // If the main element itself has a block attribute, treat it as the top-level block only.
     if (el.attr("block") !== undefined) {
       blockIds.push(id);
+      return blockIds;
     }
 
-    // Find all children with block attribute and collect their IDs
-    el.find("[block][id]").each((i, element) => {
+    // Otherwise, collect only direct child blocks (not nested descendant blocks).
+    el.children("[block][id]").each((i, element) => {
       const blockId = $(element).attr("id");
       if (blockId) {
         blockIds.push(blockId);
@@ -392,7 +477,54 @@ export function duplicateElements() {
     // Clone the json array to prevent affecting defaultJson
     componentItem.json = structuredClone(componentItem.json);
 
-    const parentBlockId = getParentBlock(componentItem.json, focusedElementId);
+    // Get the actual element
+    const focusedElement = componentItem.json.find(
+      (el: any) => el.id === focusedElementId
+    );
+    if (!focusedElement) return;
+
+    // If the selected element is not a block itself, but has a blockId (is a child of a block),
+    // we should duplicate the block instead
+    let elementToDuplicate = focusedElementId;
+    const isBlock =
+      focusedElement.blockId === null && focusedElement.wrapperId !== null;
+
+    if (!isBlock && focusedElement.blockId !== null) {
+      // This is a child element inside a block, so duplicate the block instead
+      elementToDuplicate = focusedElement.blockId;
+    }
+
+    // For child elements inside blocks, directly use the block as the target
+    // without calling getParentBlock, as it may follow parent attributes incorrectly
+    let parentBlockId: string;
+    if (elementToDuplicate !== focusedElementId) {
+      // Direct block duplication path for child elements
+      const randomSuffix = getRandomSuffix();
+      const blockElement = componentItem.json.find(
+        (el: any) => el.id === elementToDuplicate
+      );
+
+      if (!blockElement) return;
+
+      const blockWrapperIndex = getLastIndexForParentAndChildElements(
+        componentItem.json,
+        blockElement.id
+      );
+
+      duplicateElementWithChildren(
+        componentItem,
+        blockElement.id,
+        randomSuffix,
+        blockElement.wrapperId,
+        [],
+        blockWrapperIndex + 1
+      );
+
+      updateComponentAndStore(componentItem);
+      return;
+    } else {
+      parentBlockId = getParentBlock(componentItem.json, elementToDuplicate);
+    }
 
     // console.log({ focusedElementId, parentBlockId });
 
@@ -557,6 +689,7 @@ export function duplicateElements() {
   return {
     getRowId,
     getBlockParent,
+    getParentBlock,
     duplicateItem,
     getUpdatedHTMLForRow,
     transformHtmlWithDuplicates,

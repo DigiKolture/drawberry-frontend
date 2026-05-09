@@ -313,7 +313,6 @@ export function history() {
   ) => {
     const { type, elementId, workspaceComponentItemId, modifier } = action;
     const value = undo ? action.previousValue : action.value;
-    const breakpoint = action.breakpoint || CanvasBreakpoints.DESKTOP;
 
     const componentIndex = findIndex(
       workspaceComponents.value,
@@ -329,7 +328,9 @@ export function history() {
     const element = workspaceComponent.json[elementIndex];
 
     if (type === HistoryActionTypes.COMPONENT_STYLE) {
-      element.attributes.style.value[modifier][breakpoint] = value;
+      Object.values(CanvasBreakpoints).forEach((bp) => {
+        element.attributes.style.value[modifier][bp] = value;
+      });
       return await updateElementFocusAndScroll(
         componentIndex,
         element,

@@ -3,183 +3,218 @@ import { updateDom } from "@/composables/canvas/update_dom";
 const { updateElementDom } = updateDom();
 
 export function arrange() {
-  const getFirstWrapperId = (ids: string[], json: any) => {
-    for (const item of json) {
-      if (ids.includes(item.id) && item.wrapperId) {
-        return item.wrapperId;
-      }
-    }
-    //TODO: Return the first element's wrapperId if no wrapperId is found
-    return null;
-  };
+  const getReorderableSiblings = (json: any[], elementId: string): any[] => {
+    const element = json.find((el) => el.id === elementId);
+    if (!element) return [];
 
-  const updateIdsAndParents = (htmlString: string, suffix: string): string => {
-    return htmlString.replace(
-      /(id|parent)="([^"]+?)"/g,
-      (match, attr, value) => {
-        const newValue = value.replace(/_dup_[a-zA-Z0-9]+$/, "");
-        return `${attr}="${newValue}_dup_${suffix}"`;
-      }
-    );
-  };
+    const parentId = element.blockId || element.wrapperId;
 
-  // Remove all HTML elements except the parent and its children
-  const removeAllElementsExceptParentAndChildren = (
-    html: string,
-    parentId: string,
-    childrenIds: string[]
-  ): string => {
-    const $ = cheerio.load(html, null, false);
-
-    // Create a Set of IDs to keep (parent + children)
-    const idsToKeep = new Set([parentId, ...childrenIds]);
-
-    // Find all elements with an id attribute in the entire HTML
-    $("[id]").each((i, element) => {
-      const elementId = $(element).attr("id");
-
-      // Remove if not in the keep list
-      if (elementId && !idsToKeep.has(elementId)) {
-        $(element).remove();
-      }
-    });
-
-    return $.html();
-  };
-
-  const getHTMLOfParentAndChildren = (
-    htmlString: string,
-    parentId: string,
-    childrenIds: string[]
-  ): string => {
-    //If the parentId is a duplicated element, we need to find the source element and get its HTML then update the IDs with the duplicated suffix
-    if (parentId.includes("_dup_")) {
-      const sourceSplit = parentId.split("_dup_");
-      const sourceId = sourceSplit[0];
-      const suffix = sourceSplit[sourceSplit.length - 1];
-      const sourceChildrenIds = childrenIds.map((id) => id.split("_dup_")[0]);
-
-      // console.log({ sourceId, sourceChildrenIds });
-
-      const sourceWrapperHTML = getHTMLOfParentAndChildren(
-        htmlString,
-        sourceId,
-        sourceChildrenIds
+    if (!parentId) {
+      return json.filter(
+        (el) => !el.blockId && !el.wrapperId && el.id !== json[0].id
       );
-
-      // console.log("Source Wrapper HTML:", sourceWrapperHTML);
-
-      return updateIdsAndParents(sourceWrapperHTML, suffix);
     }
 
-    const parser = new DOMParser();
-    const doc = parser.parseFromString(htmlString, "text/html");
-
-    const allIds = [parentId, ...childrenIds];
-    const elements = allIds
-      .map((id) => doc.getElementById(id))
-      .filter((el): el is HTMLElement => !!el);
-
-    if (elements.length === 0) return "";
-
-    // Try to find the outermost common ancestor that contains all elements
-    const getCommonAncestor = (els: HTMLElement[]): HTMLElement | null => {
-      if (els.length === 1) return els[0];
-
-      let current: HTMLElement | null = els[0];
-      while (current) {
-        if (els.every((el) => current!.contains(el))) return current;
-        current = current.parentElement;
-      }
-      return null;
-    };
-
-    const commonAncestor = getCommonAncestor(elements);
-    const html = commonAncestor
-      ? commonAncestor.outerHTML
-      : elements.map((el) => el.outerHTML).join("\n");
-
-    return removeAllElementsExceptParentAndChildren(
-      html,
-      parentId,
-      childrenIds
-    );
+    return json.filter((el) => {
+      const elParentId = el.blockId || el.wrapperId;
+      return elParentId === parentId;
+    });
   };
 
-  const getParentElements = (htmlString: any, jsonData: any[]) => {
-    const parents: any = [];
+  const reorderElements = (
+    json: any[],
+    fromElementId: string,
+    toElementId: string
+  ): any[] => {
+    const fromElement = json.find((el) => el.id === fromElementId);
+    if (!fromElement) return json;
 
-    for (const element of jsonData) {
-      if (element.parent === null) {
-        parents.push({
-          id: element.id,
-          children: element.children,
-          html: getHTMLOfParentAndChildren(
-            htmlString,
-            element.id,
-            element.children
-          ),
-          wrapperId: getFirstWrapperId(
-            [element.id, ...element.children],
-            jsonData
-          ),
-        });
-      }
+    const siblings = getReorderableSiblings(json, fromElementId);
+
+    const toElement = siblings.find((el) => el.id === toElementId);
+    if (!toElement) {
+      console.log("Cannot drop here - not a sibling");
+      return json;
     }
 
-    return parents;
+    const fromIndex = json.findIndex((el) => el.id === fromElementId);
+    const toIndex = json.findIndex((el) => el.id === toElementId);
+
+    const newJson = [...json];
+
+    const [movedElement] = newJson.splice(fromIndex, 1);
+
+    const adjustedToIndex = fromIndex < toIndex ? toIndex - 1 : toIndex;
+
+    newJson.splice(adjustedToIndex, 0, movedElement);
+
+    return newJson;
   };
 
   const arrangeElementsInComponentHTML = (
-    htmlString: any,
-    jsonData: any,
+    html: string,
+    json: any[],
     updateStyle = true
-  ) => {
-    const newJson = [...jsonData];
+  ): string => {
+    const $ = cheerio.load(html);
 
-    //Remove the first element which is the component item itself
-    newJson.shift();
+    // Find the root component
+    const rootComponent = $("[component]");
+    if (rootComponent.length === 0) return html;
 
-    const parents = getParentElements(htmlString, newJson);
-    // console.log("Parents:", parents);
-    let html = updateHTML(htmlString, parents);
-    // console.log("Updated HTML:", html);
+    // Get the background element (first child of component)
+    const backgroundElement = rootComponent.children().first();
+    if (backgroundElement.length === 0) return html;
 
-    if (updateStyle) {
-      for (const elementJson of jsonData) {
-        // if (!elementJson.attributes.style.value) continue;
-        // console.log({ elementJson: JSON.parse(JSON.stringify(elementJson)) });
-        html = updateElementDom(html, elementJson);
-        // console.log("HTML after style update:", html);
+    const backgroundId = backgroundElement.attr("id");
+
+    // Skip the first element in json, which is the background itself
+    const elementsToArrange = json.slice(1);
+    const getDuplicateInfo = (
+      elementId: string
+    ): { sourceId: string; suffix: string } | null => {
+      const match = elementId.match(/^(.*)_dup_(.+)$/);
+      if (!match) return null;
+      return { sourceId: match[1], suffix: match[2] };
+    };
+
+    const applyDupSuffix = (value: string, suffix: string): string => {
+      const base = value.replace(/_dup_[^_]+$/, "");
+      return `${base}_dup_${suffix}`;
+    };
+
+    const findOriginalElement = (elementId: string): any | null => {
+      const original = originalElements.get(elementId);
+      if (original) {
+        return original.clone();
       }
+
+      const dupInfo = getDuplicateInfo(elementId);
+      if (!dupInfo) return null;
+
+      const sourceOriginal = findOriginalElement(dupInfo.sourceId);
+      if (!sourceOriginal) return null;
+
+      const updateNodeIds = (node: any) => {
+        const id = node.attr("id");
+        if (id) {
+          node.attr("id", applyDupSuffix(id, dupInfo.suffix));
+        }
+        const parent = node.attr("parent");
+        if (parent) {
+          node.attr("parent", applyDupSuffix(parent, dupInfo.suffix));
+        }
+      };
+
+      updateNodeIds(sourceOriginal);
+      sourceOriginal.find("[id]").each((_: any, el: any) => {
+        const $el = $(el);
+        updateNodeIds($el);
+      });
+
+      originalElements.set(elementId, sourceOriginal.clone());
+      return sourceOriginal;
+    };
+
+    const originalElements = new Map<string, any>();
+    const rootId = rootComponent.attr("id");
+    if (rootId) {
+      originalElements.set(rootId, rootComponent.clone());
     }
 
-    return html;
-  };
-
-  const updateHTML = (htmlString: string, parents: any[]): string => {
-    const $ = cheerio.load(htmlString);
-
-    //Remove all elements with the block attribute
-    $("[block]").each((_, el) => {
+    rootComponent.find("[id]").each((_, el) => {
       const $el = $(el);
-      $el.remove();
+      const id = $el.attr("id");
+      if (id) {
+        const $clone = $el.clone();
+        $clone.find("[id]").not(`[id="${id}"]`).remove();
+        originalElements.set(id, $clone);
+      }
     });
 
-    // console.log("HTML after removing block elements:", $.html());
+    // Clear background content
+    backgroundElement.empty();
 
-    //Add all parent elements to their respective wrappers in the order of the json
-    for (const parent of parents) {
-      const wrapper = $(`#${parent.wrapperId}`);
-      if (wrapper.length > 0) {
-        wrapper.append(parent.html);
+    const pendingElements = new Map<string, any>(
+      elementsToArrange.map((el) => [el.id, el])
+    );
+    const appendedElements = new Set<string>();
+
+    const appendElement = (elementData: any): boolean => {
+      const elementId = elementData.id;
+      const parentId =
+        elementData.wrapperId || elementData.blockId || backgroundId;
+
+      const $parent =
+        parentId === backgroundId ? backgroundElement : $(`#${parentId}`);
+      if ($parent.length === 0) return false;
+
+      const $original = findOriginalElement(elementId);
+      if (!$original) return false;
+
+      $parent.append($original.clone());
+      appendedElements.add(elementId);
+      return true;
+    };
+
+    let progress = true;
+    while (pendingElements.size > 0 && progress) {
+      progress = false;
+
+      for (const [elementId, elementData] of Array.from(
+        pendingElements.entries()
+      )) {
+        const parentId =
+          elementData.wrapperId || elementData.blockId || backgroundId;
+
+        if (parentId === backgroundId || $(`#${parentId}`).length > 0) {
+          if (appendElement(elementData)) {
+            pendingElements.delete(elementId);
+            progress = true;
+          } else {
+            pendingElements.delete(elementId);
+          }
+        }
       }
     }
 
-    return $.html();
+    // If some elements still couldn't resolve to an existing parent, append them to the background as fallback.
+    for (const elementData of pendingElements.values()) {
+      if (!appendedElements.has(elementData.id)) {
+        const $original = originalElements.get(elementData.id);
+        if ($original) {
+          backgroundElement.append($original.clone());
+          appendedElements.add(elementData.id);
+        }
+      }
+    }
+
+    let resultHtml = $.html();
+
+    console.log("HTML after arranging elements:", resultHtml);
+
+    if (updateStyle) {
+      for (const elementJson of json) {
+        resultHtml = updateElementDom(resultHtml, elementJson);
+      }
+    }
+
+    return resultHtml;
+  };
+
+  const canDropElement = (
+    json: any[],
+    draggedElementId: string,
+    targetElementId: string
+  ): boolean => {
+    const draggedSiblings = getReorderableSiblings(json, draggedElementId);
+
+    return draggedSiblings.some((s) => s.id === targetElementId);
   };
 
   return {
     arrangeElementsInComponentHTML,
+    reorderElements,
+    canDropElement,
   };
 }

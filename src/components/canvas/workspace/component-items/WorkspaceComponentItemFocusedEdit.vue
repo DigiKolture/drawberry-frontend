@@ -37,7 +37,7 @@ export default defineComponent({
     const selectedElementId = ref<string | null>(null);
     const elementPositionStyle = ref({ display: "none" }) as any;
     const showActions = ref<boolean>(true);
-    const { duplicateItem } = duplicateElements();
+    const { duplicateItem, getParentBlock } = duplicateElements();
     const { getBlockId, setElementDragData } = elementsDragAndDrop();
 
     const actions = [
@@ -94,9 +94,16 @@ export default defineComponent({
         return;
       }
 
-      // Hide actions if the focused element is the first element in the component
+      // Hide actions for root element or for elements without block attribute
       const componentItem = workspaceComponents.value[focusedIndex.value];
-      if (componentItem && componentItem.json[0].id === element.id) {
+      const hasBlockAttribute = element.hasAttribute("block");
+      const parentBlockId = getParentBlock(componentItem.json, element.id);
+      const hasParentBlock = parentBlockId && parentBlockId !== element.id;
+
+      if (
+        !(hasBlockAttribute || hasParentBlock) ||
+        (componentItem && componentItem.json[0].id === element.id)
+      ) {
         showActions.value = false;
       } else {
         showActions.value = true;

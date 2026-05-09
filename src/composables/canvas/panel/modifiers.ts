@@ -2,6 +2,7 @@ import { computed } from "vue";
 import store from "@/store";
 import { history } from "@/composables/canvas/history";
 import { HistoryActionTypes } from "@/store/modules/history/types";
+import { CanvasBreakpoints } from "@/store/modules/canvas/types";
 
 export function modifiers() {
   const { updateHistory } = history();
@@ -43,8 +44,9 @@ export function modifiers() {
         value,
         breakpoint: breakpoint.value,
       });
-      focusedElement.value.attributes.style.value[style][breakpoint.value] =
-        value;
+      Object.values(CanvasBreakpoints).forEach((bp) => {
+        focusedElement.value.attributes.style.value[style][bp] = value;
+      });
       store.dispatch("canvas/updateFocusedElement", focusedElement.value);
     } else {
       updateHistory({
@@ -60,9 +62,12 @@ export function modifiers() {
         value,
         breakpoint: breakpoint.value,
       });
-      focusedChildrenElements.value[childIndex].attributes.style.value[style][
-        breakpoint.value
-      ] = value;
+      Object.values(CanvasBreakpoints).forEach((bp) => {
+        focusedChildrenElements.value[childIndex].attributes.style.value[style][
+          bp
+        ] = value;
+      });
+
       store.dispatch(
         "canvas/updateFocusedElement",
         focusedChildrenElements.value[childIndex]

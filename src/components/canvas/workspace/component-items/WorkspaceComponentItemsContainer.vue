@@ -51,10 +51,8 @@ import { focus } from "@/composables/canvas/focus";
 import WorkspaceLastComponentDecoy from "@/components/canvas/workspace/component-items/WorkspaceLastComponentDecoy.vue";
 import { fonts } from "@/composables/canvas/fonts";
 import * as cheerio from "cheerio";
-import { CanvasLoadingState } from "@/store/modules/canvas/types";
 import CanvasWorkspaceLoading from "@/components/canvas/workspace/CanvasWorkspaceSkeleton.vue";
 import { canvas } from "@/composables/canvas/canvas";
-import { duplicateElements } from "@/composables/canvas/duplicate";
 import CanvasBreakpointBar from "@/components/canvas/workspace/CanvasBreakpointBar.vue";
 
 export default defineComponent({

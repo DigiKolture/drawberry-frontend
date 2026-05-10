@@ -14,11 +14,6 @@ if (fs.existsSync(configPath)) {
 }
 
 module.exports = {
-  // publicPath can be set via VUE_APP_PUBLIC_PATH env var for GitHub Pages (e.g. '/repo-name/')
-  publicPath:
-    process.env.NODE_ENV === "production"
-      ? process.env.VUE_APP_PUBLIC_PATH || "/"
-      : "/",
   pluginOptions: {},
   chainWebpack: (config) => {
     const svgFilePath = options.svgFilePath;

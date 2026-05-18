@@ -6,6 +6,17 @@ import { CanvasBreakpoints } from "@/store/modules/canvas/types";
 
 export function modifiers() {
   const { updateHistory } = history();
+  const breakpointScopedStyles = new Set([
+    "gap",
+    "padding",
+    "margin-bottom",
+    "margin-top",
+    "flex-direction",
+    "font-size",
+    "line-height",
+    "letter-spacing",
+    "font-weight",
+  ]);
 
   const focusedElement = computed(() => {
     return store.getters["canvas/focusedElement"];
@@ -32,6 +43,8 @@ export function modifiers() {
     value: string | number,
     childIndex = -1
   ) => {
+    const syncAcrossBreakpoints = !breakpointScopedStyles.has(style);
+
     if (childIndex === -1) {
       updateHistory({
         type: HistoryActionTypes.COMPONENT_STYLE,
@@ -44,9 +57,14 @@ export function modifiers() {
         value,
         breakpoint: breakpoint.value,
       });
-      Object.values(CanvasBreakpoints).forEach((bp) => {
-        focusedElement.value.attributes.style.value[style][bp] = value;
-      });
+      if (syncAcrossBreakpoints) {
+        Object.values(CanvasBreakpoints).forEach((bp) => {
+          focusedElement.value.attributes.style.value[style][bp] = value;
+        });
+      } else {
+        focusedElement.value.attributes.style.value[style][breakpoint.value] =
+          value;
+      }
       store.dispatch("canvas/updateFocusedElement", focusedElement.value);
     } else {
       updateHistory({
@@ -62,11 +80,17 @@ export function modifiers() {
         value,
         breakpoint: breakpoint.value,
       });
-      Object.values(CanvasBreakpoints).forEach((bp) => {
+      if (syncAcrossBreakpoints) {
+        Object.values(CanvasBreakpoints).forEach((bp) => {
+          focusedChildrenElements.value[childIndex].attributes.style.value[
+            style
+          ][bp] = value;
+        });
+      } else {
         focusedChildrenElements.value[childIndex].attributes.style.value[style][
-          bp
+          breakpoint.value
         ] = value;
-      });
+      }
 
       store.dispatch(
         "canvas/updateFocusedElement",

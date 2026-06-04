@@ -316,33 +316,15 @@ export function duplicateElements() {
     componentItem: any,
     duplicatedElementId: string
   ) => {
-    // Find and remove all children of the duplicated element first
-    const duplicatedElement = componentItem.json.find(
-      (item: any) => item.id === duplicatedElementId
-    );
+    const suffix = duplicatedElementId.split("_dup_").pop();
+    if (!suffix) return false;
 
-    if (duplicatedElement && duplicatedElement.children) {
-      // Remove children in reverse order to maintain indices
-      for (let i = duplicatedElement.children.length - 1; i >= 0; i--) {
-        const childId = duplicatedElement.children[i];
-        const childIndex = componentItem.json.findIndex(
-          (item: any) => item.id === childId
-        );
-        if (childIndex !== -1) {
-          componentItem.json.splice(childIndex, 1);
-        }
-      }
-    }
-
-    // Remove the duplicated element itself
-    const duplicatedElementIndex = componentItem.json.findIndex(
-      (item: any) => item.id === duplicatedElementId
+    const suffixPattern = `_dup_${suffix}`;
+    const before = componentItem.json.length;
+    componentItem.json = componentItem.json.filter(
+      (item: any) => !item.id.endsWith(suffixPattern)
     );
-    if (duplicatedElementIndex !== -1) {
-      componentItem.json.splice(duplicatedElementIndex, 1);
-      return true;
-    }
-    return false;
+    return componentItem.json.length < before;
   };
 
   // Core reusable function to update component HTML and store

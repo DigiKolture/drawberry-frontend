@@ -100,13 +100,19 @@ export default defineComponent({
       const parentBlockId = getParentBlock(componentItem.json, element.id);
       const hasParentBlock = parentBlockId && parentBlockId !== element.id;
 
-      if (
-        !(hasBlockAttribute || hasParentBlock) ||
-        (componentItem && componentItem.json[0].id === element.id)
-      ) {
-        showActions.value = false;
-      } else {
+      // if (
+      //   !(hasBlockAttribute || hasParentBlock) ||
+      //   (componentItem && componentItem.json[0].id === element.id)
+      // ) {
+      //   showActions.value = false;
+      // } else {
+      //   showActions.value = true;
+      // }
+
+      if (hasBlockAttribute) {
         showActions.value = true;
+      } else {
+        showActions.value = false;
       }
 
       const containerRect = componentContainer.getBoundingClientRect();

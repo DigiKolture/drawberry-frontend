@@ -16,6 +16,7 @@ export enum HistoryActionTypes {
   PROJECT_COMPONENT_MODIFY_POSITION = "project_component_modify_position",
   PROJECT_COMPONENT_ELEMENT_DUPLICATE = "project_component_element_duplicate",
   PROJECT_COMPONENT_ELEMENT_MODIFY_POSITION = "project_component_element_modify_position",
+  BATCH = "batch",
 }
 
 export interface BaseHistoryAction {
@@ -92,10 +93,18 @@ export interface ProjectComponentElementModifyHistoryAction {
   timestamp?: number;
 }
 
+export interface BatchHistoryAction {
+  id?: string;
+  type: HistoryActionTypes.BATCH;
+  actions: HistoryAction[];
+  timestamp?: number;
+}
+
 export type HistoryAction =
   | ProjectComponentHistoryAction
   | ProjectGeneralStyleHistoryAction
   | ProjectComponentAddDeleteHistoryAction
   | ProjectComponentModifyPositionHistoryAction
   | ProjectComponentElementDuplicateHistoryAction
-  | ProjectComponentElementModifyHistoryAction;
+  | ProjectComponentElementModifyHistoryAction
+  | BatchHistoryAction;

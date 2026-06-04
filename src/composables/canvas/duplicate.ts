@@ -10,7 +10,10 @@ const { updateHistory } = history();
 import * as cheerio from "cheerio";
 
 const { findIndex } = helpers();
-import { ProjectComponentElementDuplicateHistoryAction } from "@/store/modules/history/types";
+import {
+  HistoryActionTypes,
+  ProjectComponentElementDuplicateHistoryAction,
+} from "@/store/modules/history/types";
 import { focus } from "@/composables/canvas/focus";
 
 export function duplicateElements() {
@@ -547,11 +550,11 @@ export function duplicateElements() {
     // console.log({ blockIds });
 
     const blockWrappers: Record<string, string> = {};
+    const historySubActions: ProjectComponentElementDuplicateHistoryAction[] =
+      [];
 
     const firstBlock = find(componentItem.json, "id", blockIds[0]);
     blockWrappers[blockIds[0]] = firstBlock.wrapperId;
-
-    // console.log("Wrappers before duplication:", blockWrappers);
 
     for (let i = 0; i < blockIds.length; i++) {
       const randomSuffix = getRandomSuffix();
@@ -569,11 +572,6 @@ export function duplicateElements() {
 
       //If it's the first block, use the same wrapperId, if its another block (which is wrapped inside the first block), then we need to use the wrapperId of the element that will be duplicated
       const wrapperId = blockWrappers[blockId];
-      // if (i == 0) {
-      //   wrapperId = block.wrapperId;
-      // } else {
-      //   wrapperId = blockWrappers[blockId];
-      // }
       const { duplicatedElement } = duplicateElementWithChildren(
         componentItem,
         parentId,
@@ -582,6 +580,14 @@ export function duplicateElements() {
         parentChildrenElements,
         lastIndex + 1
       );
+
+      historySubActions.push({
+        type: HistoryActionTypes.PROJECT_COMPONENT_ELEMENT_DUPLICATE,
+        projectComponent: componentItem,
+        workspaceComponentItemId: componentItem.id,
+        elementId: parentId,
+        duplicatedElementId: duplicatedElement.id,
+      });
 
       lastIndex += 1 + parentChildrenElements.length;
 
@@ -595,15 +601,10 @@ export function duplicateElements() {
       }
     }
 
-    // updateHistory({
-    //   type: HistoryActionTypes.PROJECT_COMPONENT_ELEMENT_DUPLICATE,
-    //   projectComponent: componentItem,
-    //   workspaceComponentItemId: componentItem.id,
-    //   elementId: result.originalElementId,
-    //   duplicatedElementId: result.duplicatedElement.id,
-    // });
-
-    // console.log({ result });
+    updateHistory({
+      type: HistoryActionTypes.BATCH,
+      actions: historySubActions,
+    });
 
     updateComponentAndStore(componentItem);
     // return result;

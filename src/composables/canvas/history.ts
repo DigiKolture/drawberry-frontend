@@ -4,6 +4,7 @@ import { helpers } from "@/composables/helpers";
 import ObjectId from "bson-objectid";
 
 import {
+  BatchHistoryAction,
   HistoryAction,
   HistoryActionTypes,
   ProjectComponentAddDeleteHistoryAction,
@@ -218,8 +219,16 @@ export function history() {
       HistoryActionTypes.PROJECT_COMPONENT_ELEMENT_MODIFY_POSITION
     ) {
       return updateProjectComponentElementModifyPosition(action, undo);
+    } else if (action.type === HistoryActionTypes.BATCH) {
+      return updateBatch(action, undo);
     }
     return null;
+  };
+
+  const updateBatch = (action: BatchHistoryAction, undo: boolean) => {
+    const subActions = undo ? [...action.actions].reverse() : action.actions;
+    subActions.forEach((sub) => update(sub, undo));
+    return true;
   };
 
   const updateGeneralStyle = (

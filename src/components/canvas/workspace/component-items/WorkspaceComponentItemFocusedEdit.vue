@@ -39,6 +39,7 @@ export default defineComponent({
     const showActions = ref<boolean>(true);
     const { duplicateItem, getParentBlock } = duplicateElements();
     const { getBlockId, setElementDragData } = elementsDragAndDrop();
+    const { find } = helpers();
 
     const actions = [
       { name: "drag", icon: "canvas/workspace/element/drag" },
@@ -97,8 +98,10 @@ export default defineComponent({
       // Hide actions for root element or for elements without block attribute
       const componentItem = workspaceComponents.value[focusedIndex.value];
       const hasBlockAttribute = element.hasAttribute("block");
-      const parentBlockId = getParentBlock(componentItem.json, element.id);
-      const hasParentBlock = parentBlockId && parentBlockId !== element.id;
+      // const parentBlockId = getParentBlock(componentItem.json, element.id);
+      const element2 = find(componentItem.json, "id", element.id);
+      const hasParentBlock =
+        element2.blockId && element2.children.includes(element2.blockId);
 
       // if (
       //   !(hasBlockAttribute || hasParentBlock) ||
@@ -109,7 +112,7 @@ export default defineComponent({
       //   showActions.value = true;
       // }
 
-      if (hasBlockAttribute) {
+      if (hasBlockAttribute || hasParentBlock) {
         showActions.value = true;
       } else {
         showActions.value = false;

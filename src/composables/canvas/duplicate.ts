@@ -652,13 +652,16 @@ export function duplicateElements() {
         }
       }
 
-      //TODO: Fix start index in ftn
+      const insertIndex =
+        getLastIndexForParentAndChildElements(componentItem.json, elementId) +
+        1;
       const result = duplicateElementWithChildren(
         componentItem,
         elementId,
         randomSuffix,
         originalElement.wrapperId,
-        childrenElements
+        childrenElements,
+        insertIndex
       );
 
       if (!result) return null;

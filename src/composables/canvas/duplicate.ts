@@ -496,7 +496,7 @@ export function duplicateElements() {
         blockElement.id
       );
 
-      duplicateElementWithChildren(
+      const { duplicatedElement } = duplicateElementWithChildren(
         componentItem,
         blockElement.id,
         randomSuffix,
@@ -504,6 +504,14 @@ export function duplicateElements() {
         [],
         blockWrapperIndex + 1
       );
+
+      updateHistory({
+        type: HistoryActionTypes.PROJECT_COMPONENT_ELEMENT_DUPLICATE,
+        projectComponent: componentItem,
+        workspaceComponentItemId: componentItem.id,
+        elementId: blockElement.id,
+        duplicatedElementId: duplicatedElement.id,
+      });
 
       updateComponentAndStore(componentItem);
       return;

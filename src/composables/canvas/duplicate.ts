@@ -532,15 +532,14 @@ export function duplicateElements() {
     // console.log({ blockIds });
 
     const blockWrappers: Record<string, string> = {};
-    const historySubActions: ProjectComponentElementDuplicateHistoryAction[] =
-      [];
+    const randomSuffix = getRandomSuffix();
+    let firstParentId: string | null = null;
+    let firstDuplicatedId: string | null = null;
 
     const firstBlock = find(componentItem.json, "id", blockIds[0]);
     blockWrappers[blockIds[0]] = firstBlock.wrapperId;
 
     for (let i = 0; i < blockIds.length; i++) {
-      const randomSuffix = getRandomSuffix();
-
       const blockId = blockIds[i];
       const parentId = getBlockParent(componentItem.json, blockId);
       const parent = find(componentItem.json, "id", parentId);
@@ -563,13 +562,10 @@ export function duplicateElements() {
         lastIndex + 1
       );
 
-      historySubActions.push({
-        type: HistoryActionTypes.PROJECT_COMPONENT_ELEMENT_DUPLICATE,
-        projectComponent: componentItem,
-        workspaceComponentItemId: componentItem.id,
-        elementId: parentId,
-        duplicatedElementId: duplicatedElement.id,
-      });
+      if (i === 0) {
+        firstParentId = parentId;
+        firstDuplicatedId = duplicatedElement.id;
+      }
 
       lastIndex += 1 + parentChildrenElements.length;
 
@@ -584,8 +580,11 @@ export function duplicateElements() {
     }
 
     updateHistory({
-      type: HistoryActionTypes.BATCH,
-      actions: historySubActions,
+      type: HistoryActionTypes.PROJECT_COMPONENT_ELEMENT_DUPLICATE,
+      projectComponent: componentItem,
+      workspaceComponentItemId: componentItem.id,
+      elementId: firstParentId!,
+      duplicatedElementId: firstDuplicatedId!,
     });
 
     updateComponentAndStore(componentItem);

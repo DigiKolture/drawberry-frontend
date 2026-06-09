@@ -132,6 +132,31 @@ export function arrange() {
       }
     });
 
+    // Build fallback map: elementId → nearest editable ancestor in original HTML.
+    // Used for elements that have no wrapperId or blockId (no block attribute in their
+    // ancestor chain) so they don't all fall to the background root.
+    const editableIds = new Set<string>(
+      elementsToArrange.map((el: any) => el.id)
+    );
+    if (backgroundId) editableIds.add(backgroundId);
+
+    const editableParentMap = new Map<string, string>();
+    rootComponent.find("[id]").each((_, el) => {
+      const $el = $(el);
+      const id = $el.attr("id");
+      if (!id || !editableIds.has(id)) return;
+
+      let $ancestor = $el.parent();
+      while ($ancestor.length > 0 && !$ancestor.is(rootComponent)) {
+        const ancestorId = $ancestor.attr("id");
+        if (ancestorId !== undefined && editableIds.has(ancestorId)) {
+          editableParentMap.set(id, ancestorId);
+          break;
+        }
+        $ancestor = $ancestor.parent();
+      }
+    });
+
     // Clear background content
     backgroundElement.empty();
 
@@ -143,7 +168,10 @@ export function arrange() {
     const appendElement = (elementData: any): boolean => {
       const elementId = elementData.id;
       const parentId =
-        elementData.wrapperId || elementData.blockId || backgroundId;
+        elementData.wrapperId ||
+        elementData.blockId ||
+        editableParentMap.get(elementId) ||
+        backgroundId;
 
       const $parent =
         parentId === backgroundId ? backgroundElement : $(`#${parentId}`);
@@ -165,7 +193,10 @@ export function arrange() {
         pendingElements.entries()
       )) {
         const parentId =
-          elementData.wrapperId || elementData.blockId || backgroundId;
+          elementData.wrapperId ||
+          elementData.blockId ||
+          editableParentMap.get(elementId) ||
+          backgroundId;
 
         if (parentId === backgroundId || $(`#${parentId}`).length > 0) {
           if (appendElement(elementData)) {
@@ -190,8 +221,6 @@ export function arrange() {
     }
 
     let resultHtml = $.html();
-
-    console.log("HTML after arranging elements:", resultHtml);
 
     if (updateStyle) {
       for (const elementJson of json) {

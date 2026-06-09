@@ -38,8 +38,8 @@ httpClient.interceptors.response.use(
   },
   async function (error: AxiosError) {
     if (error.response?.status === 401 || error.response?.status === 403) {
-      // store.commit("auth/LOGOUT");
-      // await router.push("/login");
+      store.commit("auth/LOGOUT");
+      await router.push("/login");
     }
     return Promise.reject(error);
   }

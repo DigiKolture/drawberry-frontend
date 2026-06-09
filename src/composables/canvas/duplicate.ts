@@ -442,19 +442,7 @@ export function duplicateElements() {
     jsonArray: any[],
     id: string
   ) => {
-    let idIndex = -1;
-    let parentIndex = -1;
-
-    for (let i = 0; i < jsonArray.length; i++) {
-      if (jsonArray[i].id === id) {
-        idIndex = i;
-      }
-      if (jsonArray[i].parent === id) {
-        parentIndex = i;
-      }
-    }
-
-    return Math.max(idIndex, parentIndex);
+    return jsonArray.findIndex((el: any) => el.id === id);
   };
 
   const duplicateItem = (itemIndex: number, focusedElementId: string) => {

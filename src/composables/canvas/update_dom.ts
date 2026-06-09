@@ -42,7 +42,7 @@ export function updateDom() {
     const el = $(`#${elementJson.id}`);
     if (el.length === 0) {
       console.log(`Element with id "${elementJson.id}" not found in HTML`);
-      // return "";
+      return html;
     }
     let tagName = el.prop("tagName");
     tagName = tagName.toLowerCase();

@@ -199,7 +199,7 @@ export function elementsDragAndDrop() {
 
     // Update HTML to reflect new order
     componentItem.html = arrangeElementsInComponentHTML(
-      componentItem.html,
+      componentItem.defaultHtml,
       componentItem.json
     );
 
@@ -391,7 +391,7 @@ export function elementsDragAndDrop() {
 
     // Update the component HTML after modifying the JSON
     componentItem.html = arrangeElementsInComponentHTML(
-      componentItem.html,
+      componentItem.defaultHtml,
       componentItem.json
     );
 

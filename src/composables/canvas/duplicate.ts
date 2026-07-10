@@ -379,7 +379,7 @@ export function duplicateElements() {
 
   const updateComponentAndStore = (componentItem: any) => {
     componentItem.html = arrangeElementsInComponentHTML(
-      componentItem.html,
+      componentItem.defaultHtml,
       componentItem.json
     );
     reorderJsonByHtml(componentItem);

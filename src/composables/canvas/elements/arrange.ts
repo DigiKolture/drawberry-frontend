@@ -1,6 +1,5 @@
 import * as cheerio from "cheerio";
 import { updateDom } from "@/composables/canvas/update_dom";
-const { updateElementDom } = updateDom();
 
 export function arrange() {
   const getReorderableSiblings = (json: any[], elementId: string): any[] => {
@@ -51,178 +50,193 @@ export function arrange() {
     return newJson;
   };
 
+  const getDuplicateInfo = (
+    elementId: string
+  ): { sourceId: string; suffix: string } | null => {
+    const match = elementId.match(/^(.*)_dup_(.+)$/);
+    if (!match) return null;
+    return { sourceId: match[1], suffix: match[2] };
+  };
+
+  const applyDupSuffix = (value: string, suffix: string): string => {
+    const base = value.replace(/_dup_[^_]+$/, "");
+    return `${base}_dup_${suffix}`;
+  };
+
+  const isDescendantOf = (node: any, ancestor: any): boolean => {
+    let current = node.parent;
+    while (current) {
+      if (current === ancestor) return true;
+      current = current.parent;
+    }
+    return false;
+  };
+
+  /**
+   * Duplicated elements live in the json but never in the html — duplicate.ts is a
+   * pure-json operation and leaves it to arrange to materialise them. Clone the source
+   * subtree as a unit rather than per-element, so non-editable wrappers nested inside a
+   * duplicated block are carried into the copy.
+   */
+  const synthesizeDuplicates = ($: any, json: any[]): void => {
+    const missing = json.filter(
+      (el) => getDuplicateInfo(el.id) && $(`#${el.id}`).length === 0
+    );
+    if (missing.length === 0) return;
+
+    const cloneSubtreeAfterSource = (sourceNode: any, suffix: string) => {
+      const $clone = $(sourceNode).clone();
+
+      const suffixNode = ($node: any) => {
+        const id = $node.attr("id");
+        if (id) $node.attr("id", applyDupSuffix(id, suffix));
+
+        const parent = $node.attr("parent");
+        if (parent) $node.attr("parent", applyDupSuffix(parent, suffix));
+      };
+
+      suffixNode($clone);
+      $clone
+        .find("[id], [parent]")
+        .each((_: any, el: any) => suffixNode($(el)));
+
+      $(sourceNode).after($clone);
+    };
+
+    const sourceIdsBySuffix = new Map<string, Set<string>>();
+    for (const el of missing) {
+      const { sourceId, suffix } = getDuplicateInfo(el.id) as any;
+      if (!sourceIdsBySuffix.has(suffix)) {
+        sourceIdsBySuffix.set(suffix, new Set());
+      }
+      sourceIdsBySuffix.get(suffix)?.add(sourceId);
+    }
+
+    for (const [suffix, sourceIds] of sourceIdsBySuffix) {
+      const sourceNodes = Array.from(sourceIds)
+        .map((id) => $(`#${id}`)[0])
+        .filter(Boolean);
+
+      // A single duplicate operation shares one suffix across the whole subtree it
+      // copies, so cloning the outermost sources also covers the nested ones.
+      const outermost = sourceNodes.filter(
+        (node) =>
+          !sourceNodes.some(
+            (other) => other !== node && isDescendantOf(node, other)
+          )
+      );
+
+      for (const node of outermost) {
+        cloneSubtreeAfterSource(node, suffix);
+      }
+    }
+  };
+
+  /**
+   * Drop editable elements the json no longer carries (a duplicate that was undone).
+   * Non-editable nodes are never in the json, so they must never be pruned.
+   */
+  const pruneRemovedElements = (
+    $: any,
+    rootComponent: any,
+    jsonIds: Set<string>
+  ): void => {
+    const removed: any[] = [];
+
+    rootComponent.find(".editable[id]").each((_: any, el: any) => {
+      const id = $(el).attr("id");
+      if (id && !jsonIds.has(id)) removed.push(el);
+    });
+
+    for (const el of removed) $(el).remove();
+  };
+
+  /**
+   * Sort each parent's json-backed children into json order, writing them back into the
+   * slots they already occupied. Appending them instead would shunt every non-editable
+   * sibling to the front of the parent.
+   */
+  const reorderToJsonOrder = (
+    rootComponent: any,
+    jsonIndex: Map<string, number>
+  ): void => {
+    const parents = [rootComponent[0], ...rootComponent.find("*").toArray()];
+
+    for (const parent of parents) {
+      const contents = parent.children || [];
+
+      const slots: number[] = [];
+      const nodes: any[] = [];
+
+      contents.forEach((node: any, index: number) => {
+        const id = node.attribs?.id;
+        if (id && jsonIndex.has(id)) {
+          slots.push(index);
+          nodes.push(node);
+        }
+      });
+
+      if (nodes.length < 2) continue;
+
+      const sorted = [...nodes].sort(
+        (a, b) =>
+          (jsonIndex.get(a.attribs.id) as number) -
+          (jsonIndex.get(b.attribs.id) as number)
+      );
+
+      if (sorted.every((node, index) => node === nodes[index])) continue;
+
+      const reordered = [...contents];
+      slots.forEach((slot, index) => {
+        reordered[slot] = sorted[index];
+      });
+
+      reordered.forEach((node: any, index: number) => {
+        node.parent = parent;
+        node.prev = reordered[index - 1] || null;
+        node.next = reordered[index + 1] || null;
+      });
+
+      parent.children = reordered;
+    }
+  };
+
+  /**
+   * Rebuilds a component's html from its pristine markup plus the json.
+   *
+   * `html` must be the pristine component markup (componentItem.defaultHtml), never a
+   * previously arranged string — that keeps this a pure function of (html, json) and
+   * stops each breakpoint switch from re-arranging its own output.
+   */
   const arrangeElementsInComponentHTML = (
     html: string,
     json: any[],
     updateStyle = true
   ): string => {
+    if (!html) return html;
+
     const $ = cheerio.load(html);
 
-    // Find the root component
     const rootComponent = $("[component]");
     if (rootComponent.length === 0) return html;
+    if (rootComponent.children().length === 0) return html;
 
-    // Get the background element (first child of component)
-    const backgroundElement = rootComponent.children().first();
-    if (backgroundElement.length === 0) return html;
-
-    const backgroundId = backgroundElement.attr("id");
-
-    // Skip the first element in json, which is the background itself
-    const elementsToArrange = json.slice(1);
-    const getDuplicateInfo = (
-      elementId: string
-    ): { sourceId: string; suffix: string } | null => {
-      const match = elementId.match(/^(.*)_dup_(.+)$/);
-      if (!match) return null;
-      return { sourceId: match[1], suffix: match[2] };
-    };
-
-    const applyDupSuffix = (value: string, suffix: string): string => {
-      const base = value.replace(/_dup_[^_]+$/, "");
-      return `${base}_dup_${suffix}`;
-    };
-
-    const findOriginalElement = (elementId: string): any | null => {
-      const original = originalElements.get(elementId);
-      if (original) {
-        return original.clone();
-      }
-
-      const dupInfo = getDuplicateInfo(elementId);
-      if (!dupInfo) return null;
-
-      const sourceOriginal = findOriginalElement(dupInfo.sourceId);
-      if (!sourceOriginal) return null;
-
-      const updateNodeIds = (node: any) => {
-        const id = node.attr("id");
-        if (id) {
-          node.attr("id", applyDupSuffix(id, dupInfo.suffix));
-        }
-        const parent = node.attr("parent");
-        if (parent) {
-          node.attr("parent", applyDupSuffix(parent, dupInfo.suffix));
-        }
-      };
-
-      updateNodeIds(sourceOriginal);
-      sourceOriginal.find("[id]").each((_: any, el: any) => {
-        const $el = $(el);
-        updateNodeIds($el);
-      });
-
-      originalElements.set(elementId, sourceOriginal.clone());
-      return sourceOriginal;
-    };
-
-    const originalElements = new Map<string, any>();
-    const rootId = rootComponent.attr("id");
-    if (rootId) {
-      originalElements.set(rootId, rootComponent.clone());
-    }
-
-    rootComponent.find("[id]").each((_, el) => {
-      const $el = $(el);
-      const id = $el.attr("id");
-      if (id) {
-        const $clone = $el.clone();
-        $clone.find("[id]").not(`[id="${id}"]`).remove();
-        originalElements.set(id, $clone);
-      }
-    });
-
-    // Build fallback map: elementId → nearest editable ancestor in original HTML.
-    // Used for elements that have no wrapperId or blockId (no block attribute in their
-    // ancestor chain) so they don't all fall to the background root.
-    const editableIds = new Set<string>(
-      elementsToArrange.map((el: any) => el.id)
+    const jsonIds = new Set<string>(json.map((el) => el.id));
+    const jsonIndex = new Map<string, number>(
+      json.map((el, index) => [el.id, index])
     );
-    if (backgroundId) editableIds.add(backgroundId);
 
-    const editableParentMap = new Map<string, string>();
-    rootComponent.find("[id]").each((_, el) => {
-      const $el = $(el);
-      const id = $el.attr("id");
-      if (!id || !editableIds.has(id)) return;
-
-      let $ancestor = $el.parent();
-      while ($ancestor.length > 0 && !$ancestor.is(rootComponent)) {
-        const ancestorId = $ancestor.attr("id");
-        if (ancestorId !== undefined && editableIds.has(ancestorId)) {
-          editableParentMap.set(id, ancestorId);
-          break;
-        }
-        $ancestor = $ancestor.parent();
-      }
-    });
-
-    // Clear background content
-    backgroundElement.empty();
-
-    const pendingElements = new Map<string, any>(
-      elementsToArrange.map((el) => [el.id, el])
-    );
-    const appendedElements = new Set<string>();
-
-    const appendElement = (elementData: any): boolean => {
-      const elementId = elementData.id;
-      const parentId =
-        elementData.wrapperId ||
-        elementData.blockId ||
-        editableParentMap.get(elementId) ||
-        backgroundId;
-
-      const $parent =
-        parentId === backgroundId ? backgroundElement : $(`#${parentId}`);
-      if ($parent.length === 0) return false;
-
-      const $original = findOriginalElement(elementId);
-      if (!$original) return false;
-
-      $parent.append($original.clone());
-      appendedElements.add(elementId);
-      return true;
-    };
-
-    let progress = true;
-    while (pendingElements.size > 0 && progress) {
-      progress = false;
-
-      for (const [elementId, elementData] of Array.from(
-        pendingElements.entries()
-      )) {
-        const parentId =
-          elementData.wrapperId ||
-          elementData.blockId ||
-          editableParentMap.get(elementId) ||
-          backgroundId;
-
-        if (parentId === backgroundId || $(`#${parentId}`).length > 0) {
-          if (appendElement(elementData)) {
-            pendingElements.delete(elementId);
-            progress = true;
-          } else {
-            pendingElements.delete(elementId);
-          }
-        }
-      }
-    }
-
-    // If some elements still couldn't resolve to an existing parent, append them to the background as fallback.
-    for (const elementData of pendingElements.values()) {
-      if (!appendedElements.has(elementData.id)) {
-        const $original = originalElements.get(elementData.id);
-        if ($original) {
-          backgroundElement.append($original.clone());
-          appendedElements.add(elementData.id);
-        }
-      }
-    }
+    synthesizeDuplicates($, json);
+    pruneRemovedElements($, rootComponent, jsonIds);
+    reorderToJsonOrder(rootComponent, jsonIndex);
 
     let resultHtml = $.html();
 
     if (updateStyle) {
+      // Resolved here rather than at module scope: update_dom imports this module back,
+      // and a top-level call on either side breaks whichever loads second.
+      const { updateElementDom } = updateDom();
+
       for (const elementJson of json) {
         resultHtml = updateElementDom(resultHtml, elementJson);
       }

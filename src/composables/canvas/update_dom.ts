@@ -4,7 +4,6 @@ import store from "@/store";
 import { computed } from "vue";
 import { CanvasBreakpoints } from "@/store/modules/canvas/types";
 import { arrange } from "@/composables/canvas/elements/arrange";
-const { arrangeElementsInComponentHTML } = arrange();
 
 export function updateDom() {
   const { brToNl } = helpers();
@@ -24,7 +23,15 @@ export function updateDom() {
   };
 
   const updateComponentItemDom = (componentItem: any) => {
-    let html = componentItem.html;
+    // Resolved here rather than at module scope: arrange imports this module back, and a
+    // top-level call on either side breaks whichever loads second.
+    const { arrangeElementsInComponentHTML } = arrange();
+
+    // Preview assigns project.components straight from the backend rather than through
+    // formatProjectComponents, so its items carry no defaultHtml. Their html is pristine
+    // regardless — the arranged html is never persisted. Canvas call sites pass
+    // defaultHtml directly; they must never fall back to an already-arranged html.
+    let html = componentItem.defaultHtml ?? componentItem.html;
     const json = componentItem.json;
 
     html = arrangeElementsInComponentHTML(html, json, true);
@@ -69,8 +76,12 @@ export function updateDom() {
 
     if (style) {
       for (const [key, value] of Object.entries(style)) {
-        flattenedStyle[key] =
-          value[breakpoint.value] || value[CanvasBreakpoints.DESKTOP];
+        const bpVal = value[breakpoint.value];
+        const desktopVal = value[CanvasBreakpoints.DESKTOP];
+        // Use ?? so that empty string ("") is preserved, but null/undefined
+        // falls through. Convert the final null/undefined to "" so cheerio
+        // removes the property from the inline style rather than leaving it.
+        flattenedStyle[key] = bpVal ?? desktopVal ?? "";
       }
     }
 

@@ -182,7 +182,7 @@ export default defineComponent({
     });
 
     const loadStylesForComponent = (props: any) => {
-      let html = props.componentItem.html;
+      let html = props.componentItem.defaultHtml;
       const json = props.componentItem.json;
       // html = transformHtmlWithDuplicates(html, json);
       html = arrangeElementsInComponentHTML(html, json);

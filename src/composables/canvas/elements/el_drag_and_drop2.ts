@@ -219,6 +219,7 @@ export function elementsDragAndDrop() {
                 jsonElement.parent === null
                   ? jsonElement.id
                   : jsonElement.parent,
+              targetElementId: lastToId.value,
               positionIndex: realFromIndex,
               toIndex: realToIndex,
             });

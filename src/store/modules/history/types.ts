@@ -86,6 +86,7 @@ export interface ProjectComponentElementModifyHistoryAction {
   type: HistoryActionTypes.PROJECT_COMPONENT_ELEMENT_MODIFY_POSITION;
   workspaceComponentItemId: string;
   elementId: string;
+  targetElementId: string;
   positionIndex: number;
   toIndex: number;
   modifier?: string;

@@ -27,13 +27,13 @@ export function elementsDragAndDrop() {
   });
   const isDragging = computed(() => store.getters["element/isDragging"]);
   const fromItemElementId = computed(
-    () => store.getters["element/fromItemElementId"]
+    () => store.getters["element/fromItemElementId"],
   );
   const fromItemElementIndex = computed(
-    () => store.getters["element/fromItemElementIndex"]
+    () => store.getters["element/fromItemElementIndex"],
   );
   const lastFromId = computed(
-    () => store.getters["element/lastDragFromElementId"]
+    () => store.getters["element/lastDragFromElementId"],
   );
   const lastToId = computed(() => store.getters["element/lastDragToElementId"]);
 
@@ -103,7 +103,7 @@ export function elementsDragAndDrop() {
   const reorderElements = (
     fromIndex: number,
     toIndex: number,
-    componentItem: any
+    componentItem: any,
   ) => {
     const jsonData = componentItem.json;
 
@@ -125,11 +125,11 @@ export function elementsDragAndDrop() {
 
     const fromBlockIds = getAllParentIdsWithBlock(
       componentItem.html,
-      jsonData[realFromIndex].id
+      jsonData[realFromIndex].id,
     );
     const toBlockIds = getAllParentIdsWithBlock(
       componentItem.html,
-      jsonData[realToIndex].id
+      jsonData[realToIndex].id,
     );
 
     // console.log({ fromBlockIds, toBlockIds });
@@ -200,7 +200,7 @@ export function elementsDragAndDrop() {
     // Update HTML to reflect new order
     componentItem.html = arrangeElementsInComponentHTML(
       componentItem.defaultHtml,
-      componentItem.json
+      componentItem.json,
     );
 
     return true;
@@ -266,7 +266,7 @@ export function elementsDragAndDrop() {
         }
 
         const fromIndexDrag = editables.findIndex(
-          (el: any) => el.id === fromItemElementId.value
+          (el: any) => el.id === fromItemElementId.value,
         );
 
         if (!canDropElement(fromIndexDrag, index)) {
@@ -285,10 +285,10 @@ export function elementsDragAndDrop() {
 
         const componentItem = workspaceComponents.value[itemIndex];
         const fromIndex = componentItem.json.findIndex(
-          (el: any) => el.id === draggedEl?.id
+          (el: any) => el.id === draggedEl?.id,
         );
         const toIndex = componentItem.json.findIndex(
-          (el: any) => el.id === editable.id
+          (el: any) => el.id === editable.id,
         );
 
         const reorder = reorderElements(fromIndex, toIndex, componentItem);
@@ -296,7 +296,7 @@ export function elementsDragAndDrop() {
 
         store.commit(
           "element/SET_LAST_DRAG_FROM_ELEMENT_ID",
-          draggedElement.id
+          draggedElement.id,
         );
         store.commit("element/SET_LAST_DRAG_TO_ELEMENT_ID", editable.id);
       });
@@ -309,23 +309,23 @@ export function elementsDragAndDrop() {
         const toIndex = findIndex(
           projectComponentItem.json,
           "id",
-          lastToId.value
+          lastToId.value,
         );
 
         if (toIndex !== null) {
           const realFromIndex = getRealParentIndex(
             projectComponentItem.json,
-            fromItemElementIndex.value
+            fromItemElementIndex.value,
           );
           const realToIndex = getRealParentIndex(
             projectComponentItem.json,
-            toIndex
+            toIndex,
           );
 
           const jsonElement = find(
             projectComponentItem.json,
             "id",
-            fromItemElementId.value //Using this because lastFromId changes when drag occurs
+            fromItemElementId.value, //Using this because lastFromId changes when drag occurs
           );
 
           if (realFromIndex !== realToIndex) {
@@ -336,6 +336,7 @@ export function elementsDragAndDrop() {
                 jsonElement.parent === null
                   ? jsonElement.id
                   : jsonElement.parent,
+              targetElementId: lastToId.value,
               positionIndex: realFromIndex,
               toIndex: realToIndex,
             });
@@ -356,46 +357,42 @@ export function elementsDragAndDrop() {
 
   const updateProjectComponentElementModifyPosition = (
     action: ProjectComponentElementModifyHistoryAction,
-    undo: boolean
+    undo: boolean,
   ) => {
-    const { workspaceComponentItemId, elementId, positionIndex, toIndex } =
-      action;
+    const {
+      workspaceComponentItemId,
+      elementId,
+      targetElementId,
+      positionIndex,
+    } = action;
 
-    // Find the component in workspace
     const componentIndex = findIndex(
       workspaceComponents.value,
       "id",
-      workspaceComponentItemId
+      workspaceComponentItemId,
     );
     if (componentIndex === null) return null;
 
     const componentItem = workspaceComponents.value[componentIndex];
 
-    // Find the element in the component's JSON
-    const elementIndex = componentItem.json.findIndex(
-      (item: any) => item.id === elementId
-    );
-    if (elementIndex === -1) return null;
-
-    const element = componentItem.json[elementIndex];
-
     if (undo) {
-      // Move element back from toIndex to original positionIndex
-      componentItem.json.splice(toIndex, 1);
-      componentItem.json.splice(positionIndex, 0, element);
+      const currentIndex = componentItem.json.findIndex(
+        (e: any) => e.id === elementId,
+      );
+      if (currentIndex === -1) return null;
+      reorderElements(currentIndex, positionIndex, componentItem);
     } else {
-      // Redo: Move element from positionIndex to toIndex
-      componentItem.json.splice(positionIndex, 1);
-      componentItem.json.splice(toIndex, 0, element);
+      if (!targetElementId) return null;
+      const currentIndex = componentItem.json.findIndex(
+        (e: any) => e.id === elementId,
+      );
+      const targetIndex = componentItem.json.findIndex(
+        (e: any) => e.id === targetElementId,
+      );
+      if (currentIndex === -1 || targetIndex === -1) return null;
+      reorderElements(currentIndex, targetIndex, componentItem);
     }
 
-    // Update the component HTML after modifying the JSON
-    componentItem.html = arrangeElementsInComponentHTML(
-      componentItem.defaultHtml,
-      componentItem.json
-    );
-
-    // Update the store
     store.commit("canvas/SET_WORKSPACE_COMPONENTS", workspaceComponents.value);
     return workspaceComponents.value;
   };

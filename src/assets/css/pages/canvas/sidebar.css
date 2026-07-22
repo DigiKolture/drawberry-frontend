@@ -154,14 +154,15 @@ div.components__container{
 .component__items__container{
     @apply grid fixed  overflow-y-auto;
     overscroll-behavior: contain;
-    row-gap: 20px;
-    padding: 30px 30px 100px 30px;
+    margin-top: 20px;
+    row-gap: 10px;
+    justify-content: center;   /* center previews so left/right gaps stay equal */
+    padding: 20px 20px 100px 20px;
     top: var(--header-height);
     height: calc(95% - var(--header-height));
     left: calc(var(--canvas-sidebar-nav-width) + var(--canvas-sidebar-nav-content-width));
     /* width: 393px; */
-    /*width: 600px;*/
-    width: 500px;
+    width: fit-content;   /* hug the zoomed previews so side gaps == padding */
     background: #494B57;
     box-shadow: 30px 0 72px rgba(0, 0, 0, 0.2);
     z-index: 1000;
@@ -178,6 +179,17 @@ div.components__container{
     @apply cursor-pointer;
     /*scale: 0.8;*/
 }
+
+.component__items__list__item.sm {
+    /* Lay the preview out at the real 600px email width so multi-column
+       components (e.g. content cards, whose columns are flex: 1 1 240px)
+       stay side by side, then shrink to fit the panel. zoom is used
+       instead of transform: scale() because it also shrinks the layout
+       box, so there's no leftover whitespace or overflow to compensate. */
+    width: 600px;
+    zoom: 0.7;
+}
+
 
 /*.component__items__container.disabled .component__items__list__item{*/
 /*    @apply  pointer-events-none;*/

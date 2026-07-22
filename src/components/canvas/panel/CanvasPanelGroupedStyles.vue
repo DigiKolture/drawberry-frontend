@@ -12,7 +12,7 @@
         <VisibilityStyle
           v-if="!isFocusedTheFirstElement && hasContent('visibility')"
         />
-        <!--        <HorizontalAlignStyle v-if="hasAttributes('align')" />-->
+        <!--        <HorizontalAlignStyle v-if="hasOwnAttribute('align')" />-->
         <!--        <template v-for="(child, idx) in focusedElement.children">-->
         <!--          <HorizontalAlignStyle-->
         <!--            v-if="childHasAttribute(idx as number, 'align')"-->
@@ -21,7 +21,7 @@
         <!--            :child-index="idx"-->
         <!--          />-->
         <!--        </template>-->
-        <!--        <VerticalAlignStyle v-if="hasAttributes('valign')" />-->
+        <!--        <VerticalAlignStyle v-if="hasOwnAttribute('valign')" />-->
         <!--        <template v-for="(child, idx) in focusedElement.children">-->
         <!--          <VerticalAlignStyle-->
         <!--            v-if="childHasAttribute(idx as number, 'valign')"-->
@@ -39,7 +39,7 @@
         :properties="tabsStyles.spacing"
         :show-body="tabStates[tabsStyles.spacing.index]"
       >
-        <PaddingStyle v-if="showStyle('padding')" />
+        <PaddingStyle v-if="showOwnStyle('padding')" />
         <template v-for="(child, idx) in focusedElement.children">
           <PaddingStyle
             v-if="childHasStyle(idx as number, 'padding')"
@@ -48,7 +48,7 @@
             :child-index="idx"
           />
         </template>
-        <MarginTopStyle v-if="showStyle('margin-top')" />
+        <MarginTopStyle v-if="showOwnStyle('margin-top')" />
         <template v-for="(child, idx) in focusedElement.children">
           <MarginTopStyle
             v-if="childHasStyle(idx as number, 'margin-top')"
@@ -57,7 +57,7 @@
             :child-index="idx"
           />
         </template>
-        <MarginBottomStyle v-if="showStyle('margin-bottom')" />
+        <MarginBottomStyle v-if="showOwnStyle('margin-bottom')" />
         <template v-for="(child, idx) in focusedElement.children">
           <MarginBottomStyle
             v-if="childHasStyle(idx as number, 'margin-bottom')"
@@ -76,7 +76,7 @@
         :properties="tabsStyles.typography"
         :show-body="tabStates[tabsStyles.typography.index]"
       >
-        <FontStyle v-if="showStyle('font-family')" />
+        <FontStyle v-if="showOwnStyle('font-family')" />
         <template v-for="(child, idx) in focusedElement.children">
           <FontStyle
             v-if="childHasStyle(idx as number, 'font-family')"
@@ -85,7 +85,7 @@
             :child-index="idx"
           />
         </template>
-        <TextColorStyle v-if="showStyle('color')" />
+        <TextColorStyle v-if="showOwnStyle('color')" />
         <template v-for="(child, idx) in focusedElement.children">
           <TextColorStyle
             v-if="childHasStyle(idx as number, 'color')"
@@ -95,7 +95,7 @@
           />
         </template>
         <div class="canvas__panel__styles__row" v-if="showTypographyRow">
-          <FontSizeStyle v-if="showStyle('font-size')" />
+          <FontSizeStyle v-if="showOwnStyle('font-size')" />
           <template v-for="(child, idx) in focusedElement.children">
             <FontSizeStyle
               v-if="childHasStyle(idx as number, 'font-size')"
@@ -104,7 +104,7 @@
               :child-index="idx"
             />
           </template>
-          <FontWeightStyle v-if="showStyle('font-weight')" />
+          <FontWeightStyle v-if="showOwnStyle('font-weight')" />
           <template v-for="(child, idx) in focusedElement.children">
             <FontWeightStyle
               v-if="childHasStyle(idx as number, 'font-weight')"
@@ -113,7 +113,7 @@
               :child-index="idx"
             />
           </template>
-          <LineHeightStyle v-if="showStyle('line-height')" />
+          <LineHeightStyle v-if="showOwnStyle('line-height')" />
           <template v-for="(child, idx) in focusedElement.children">
             <LineHeightStyle
               v-if="childHasStyle(idx as number, 'line-height')"
@@ -122,7 +122,7 @@
               :child-index="idx"
             />
           </template>
-          <LetterSpacingStyle v-if="showStyle('letter-spacing')" />
+          <LetterSpacingStyle v-if="showOwnStyle('letter-spacing')" />
           <template v-for="(child, idx) in focusedElement.children">
             <LetterSpacingStyle
               v-if="childHasStyle(idx as number, 'letter-spacing')"
@@ -132,7 +132,7 @@
             />
           </template>
         </div>
-        <TextAlignStyle v-if="showStyle('text-align')" />
+        <TextAlignStyle v-if="showOwnStyle('text-align')" />
         <template v-for="(child, idx) in focusedElement.children">
           <TextAlignStyle
             v-if="childHasStyle(idx as number, 'text-align')"
@@ -141,7 +141,7 @@
             :child-index="idx"
           />
         </template>
-        <ContentStyle v-if="hasContent('textContent')" />
+        <ContentStyle v-if="hasOwnContent('textContent')" />
         <template v-for="(child, idx) in focusedElement.children">
           <ContentStyle
             v-if="childHasContent(idx as number, 'textContent')"
@@ -159,7 +159,7 @@
         :properties="tabsStyles.background"
         :show-body="tabStates[tabsStyles.background.index]"
       >
-        <BackgroundImageAttribute v-if="hasAttributes('background')" />
+        <BackgroundImageAttribute v-if="hasOwnAttribute('background')" />
         <template v-for="(child, idx) in focusedElement.children">
           <BackgroundImageAttribute
             v-if="childHasAttribute(idx as number, 'background')"
@@ -168,7 +168,7 @@
             :child-index="idx"
           />
         </template>
-        <BackgroundColorStyle v-if="showStyle('background-color')" />
+        <BackgroundColorStyle v-if="showOwnStyle('background-color')" />
         <template v-for="(child, idx) in focusedElement.children">
           <BackgroundColorStyle
             v-if="childHasStyle(idx as number, 'background-color')"
@@ -186,7 +186,7 @@
         :properties="tabsStyles.borders"
         :show-body="tabStates[tabsStyles.borders.index]"
       >
-        <BorderRadiusStyle v-if="showStyle('border-radius')" />
+        <BorderRadiusStyle v-if="showOwnStyle('border-radius')" />
         <template v-for="(child, idx) in focusedElement.children">
           <BorderRadiusStyle
             v-if="childHasStyle(idx as number, 'border-radius')"
@@ -195,7 +195,7 @@
             :child-index="idx"
           />
         </template>
-        <BorderTopStyle v-if="showStyle('border-top')" />
+        <BorderTopStyle v-if="showOwnStyle('border-top')" />
         <template v-for="(child, idx) in focusedElement.children">
           <BorderTopStyle
             v-if="childHasStyle(idx as number, 'border-top')"
@@ -213,7 +213,7 @@
         :properties="tabsStyles.effects"
         :show-body="tabStates[tabsStyles.effects.index]"
       >
-        <ShadowStyle v-if="showStyle('box-shadow')" />
+        <ShadowStyle v-if="showOwnStyle('box-shadow')" />
         <template v-for="(child, idx) in focusedElement.children">
           <ShadowStyle
             v-if="childHasStyle(idx as number, 'box-shadow')"
@@ -231,7 +231,7 @@
         :properties="tabsStyles.link"
         :show-body="tabStates[tabsStyles.link.index]"
       >
-        <HrefAttribute v-if="hasAttributes('href')" />
+        <HrefAttribute v-if="hasOwnAttribute('href')" />
         <template v-for="(child, idx) in focusedElement.children">
           <HrefAttribute
             v-if="childHasAttribute(idx as number, 'href')"
@@ -249,7 +249,7 @@
         :properties="tabsStyles.media"
         :show-body="tabStates[tabsStyles.media.index]"
       >
-        <ImageAttribute v-if="hasAttributes('src')" />
+        <ImageAttribute v-if="hasOwnAttribute('src')" />
         <template v-for="(child, idx) in focusedElement.children">
           <ImageAttribute
             v-if="childHasAttribute(idx as number, 'src')"
@@ -316,9 +316,12 @@ export default defineComponent({
     const {
       showTab,
       hasAttributes,
+      hasOwnAttribute,
       hasContent,
+      hasOwnContent,
       tabsStyles,
       showStyle,
+      showOwnStyle,
       hasCurrentOrChildrenStyles,
       childHasStyle,
       childHasContent,
@@ -360,13 +363,16 @@ export default defineComponent({
       styles,
       isFocusedTheFirstElement,
       showStyle,
+      showOwnStyle,
       childHasStyle,
       childHasAttribute,
       hasContent,
+      hasOwnContent,
       toggleTabContents,
       showTab,
       focusedElement,
       hasAttributes,
+      hasOwnAttribute,
       tabsStyles,
       childHasContent,
       tabStates,

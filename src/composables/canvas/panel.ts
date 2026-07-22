@@ -221,6 +221,45 @@ export function panel() {
     return true;
   };
 
+  const anyChildHasContent = (modifier: string) => {
+    return focusedChildrenElements.value?.some(
+      (child: any) =>
+        child && child[modifier] !== null && child[modifier] !== undefined
+    );
+  };
+
+  const anyChildHasStyle = (style: string) => {
+    return focusedChildrenElements.value?.some((child: any) =>
+      Object.keys(child?.attributes?.style?.value || {}).includes(style)
+    );
+  };
+
+  const anyChildHasAttribute = (attribute: string) => {
+    return focusedChildrenElements.value?.some((child: any) =>
+      Object.keys(child?.attributes || {}).includes(attribute)
+    );
+  };
+
+  // The focused element's own content should only be editable when it has no
+  // text-bearing children. Otherwise its textContent is just the aggregate of
+  // its children, and editing it (el.html) would wipe out those children while
+  // also showing a duplicate Content box alongside the child's own.
+  const hasOwnContent = (modifier: string) => {
+    return hasContent(modifier) && !anyChildHasContent(modifier);
+  };
+
+  // Same idea as hasOwnContent for styles/attributes: a wrapper element (e.g. a
+  // div wrapping an anchor) shares the same style/attribute as its child, so the
+  // parent control is a duplicate of the child's. Only show the parent's own
+  // control when no child already carries that style/attribute.
+  const showOwnStyle = (style: string) => {
+    return showStyle(style) && !anyChildHasStyle(style);
+  };
+
+  const hasOwnAttribute = (attribute: string) => {
+    return hasAttributes(attribute) && !anyChildHasAttribute(attribute);
+  };
+
   const showTab = (tab: TabStyles) => {
     for (const style of tab.styles) {
       const hasStyle = hasCurrentOrChildrenStyles(style);
@@ -305,8 +344,11 @@ export function panel() {
     childHasStyle,
     childHasAttribute,
     showStyle,
+    showOwnStyle,
     hasAttributes,
+    hasOwnAttribute,
     hasContent,
+    hasOwnContent,
     childHasContent,
     tabsStyles,
     getIndexOfTab,

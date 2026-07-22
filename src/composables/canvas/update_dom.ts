@@ -127,7 +127,12 @@ export function updateDom() {
     // }
 
     //UPDATE Content
-    if (elementJson.types.includes("text")) {
+    // Only overwrite innerHTML for leaf text elements. A text-type wrapper (e.g. a
+    // <div> whose textContent is just the aggregate of a nested <a>) still has
+    // element children; calling el.html() on it would wipe those children out of
+    // the DOM, so their own edits (content/color) could no longer be found.
+    const hasChildElements = el.children().length > 0;
+    if (elementJson.types.includes("text") && !hasChildElements) {
       el.html(elementJson.textContent);
     }
 

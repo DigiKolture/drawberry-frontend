@@ -57,7 +57,9 @@ section.canvas__layout{
     /*background-color: #f6f6f6;*/
     background-color: #e1e6ed;
     padding: var(--canvas-workspace-container-padding);
-    padding-top: 42px;
+    /* No reserved top space: the sticky breakpoint bar now sits in-flow at the
+       top and provides its own spacing via margin-bottom. */
+    padding-top: 0;
 }
 
 .canvas__workspace__items__cover{
@@ -276,15 +278,18 @@ input.canvas__input__text:focus{
 
 
 .canvas__breakpoint__bar{
-    @apply w-full absolute;
-    left: 0;
-    top: 0;
-    /*top: var(--header-height);*/
+    @apply w-full sticky;
+    top: var(--header-height);
+    /* Reproduces the gap the container's padding-top used to reserve, now that
+       the bar is in-flow (sticky) instead of absolutely positioned. */
+    margin-bottom: var(--canvas-workspace-container-padding);
     height: 12px;
     background-color: white;
     padding-left: var(--canvas-workspace-container-padding);
     padding-right: var(--canvas-workspace-container-padding);
-    z-index: 100;
+    /* Above the component items/overlays (max z-index 30) but below the
+       fixed header (z-index 150) so components scroll underneath it. */
+    z-index: 140;
 }
 
 .canvas__breakpoint__bar__desktop{

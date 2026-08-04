@@ -5,6 +5,7 @@ import components from "@/store/modules/components";
 import canvas from "@/store/modules/canvas";
 import folders from "@/store/modules/folders";
 import esp from "@/store/modules/esp";
+import connectors from "@/store/modules/connectors";
 import modals from "@/store/modules/modals";
 import preview from "@/store/modules/preview";
 import panel from "@/store/modules/panel";
@@ -28,6 +29,7 @@ export default createStore({
     components,
     canvas,
     esp,
+    connectors,
     modals,
     preview,
     panel,
@@ -43,6 +45,7 @@ export default createStore({
         "components",
         "canvas",
         "esp",
+        "connectors",
         "modals",
         "preview",
         "panel",

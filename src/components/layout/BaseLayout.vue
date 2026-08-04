@@ -4,7 +4,7 @@
 
     <main class="main" :class="{ 'small-screen': isSmallScreen }">
       <slot />
-      <ManageESPs v-if="showESPMange" />
+      <ManageConnectors v-if="showESPMange" />
     </main>
   </div>
 </template>
@@ -12,14 +12,14 @@
 <script lang="ts">
 import { computed, defineComponent, onMounted } from "vue";
 import Header from "./Header.vue";
-import ManageESPs from "@/components/esp/ManageESPs.vue";
+import ManageConnectors from "@/components/connectors/ManageConnectors.vue";
 import store from "@/store";
 import { useRoute } from "vue-router";
 import { screenConstraint } from "@/composables/canvas/screen-constraint";
 
 export default defineComponent({
   name: "BaseLayout",
-  components: { ManageESPs, Header },
+  components: { ManageConnectors, Header },
 
   setup() {
     const route = useRoute();

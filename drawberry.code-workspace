@@ -1,11 +1,13 @@
 {
-	"folders": [
-		{
-			"path": "."
-		},
-		{
-			"path": "../drawberry-backend"
-		}
-	],
-	"settings": {}
+  "folders": [
+    {
+      "path": "."
+    },
+    {
+      "path": "../drawberry-backend"
+    }
+  ],
+  "settings": {
+    "liveServer.settings.multiRootWorkspaceName": "drawberry-backend"
+  }
 }

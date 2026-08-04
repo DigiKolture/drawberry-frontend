@@ -28,3 +28,6 @@ pnpm-debug.log*
 
 # Sentry Config File
 .sentryclirc
+
+# foglamp scan (edit token is a secret)
+.foglamp/

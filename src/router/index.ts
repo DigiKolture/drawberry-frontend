@@ -6,6 +6,7 @@ import CreateFolder from "@/views/Projects/CreateFolder.vue";
 import Canvas from "@/views/Projects/Canvas.vue";
 import store from "@/store";
 import ESPOAuthCallback from "@/views/ESP/ESPOAuthCallback.vue";
+import ConnectorOAuthCallback from "@/views/connectors/ConnectorOAuthCallback.vue";
 import Preview from "@/views/Projects/Preview.vue";
 import ForgotPassword from "@/views/Auth/ForgotPassword.vue";
 import ResetPassword from "@/views/Auth/ResetPassword.vue";
@@ -115,6 +116,16 @@ const routes: Array<RouteRecordRaw> = [
     name: "ESPOAuthCallback",
     props: true,
     component: ESPOAuthCallback,
+    meta: {
+      authRequired: true,
+      authPage: false,
+    },
+  },
+  {
+    path: "/connectors/:connector/callback",
+    name: "ConnectorOAuthCallback",
+    props: true,
+    component: ConnectorOAuthCallback,
     meta: {
       authRequired: true,
       authPage: false,

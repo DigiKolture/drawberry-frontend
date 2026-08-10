@@ -1,7 +1,7 @@
 export interface ModalState {
   export: boolean;
   preview: boolean;
-  manage_esp: boolean;
+  manage_connectors: boolean;
   share_preview: boolean;
   email_preview: boolean;
   user_initials: boolean;

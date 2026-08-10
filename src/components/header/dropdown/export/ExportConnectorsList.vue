@@ -1,12 +1,12 @@
 <template>
   <ActionDropdownItem
-    @click="exportProject(esp_item.esp)"
-    v-for="esp_item in esps"
-    :key="esp_item.id"
-    :type="esp_item.esp"
-    :title="`Send to ${capitalizeFirstLetter(esp_item.esp)}`"
-    :icon="`header/export/${esp_item.esp}`"
-    :subtitle="esp_item.accountEmail"
+    @click="exportProject(connection.connectorKey)"
+    v-for="connection in connections"
+    :key="connection.id || connection.connectorKey"
+    :type="connection.connectorKey"
+    :title="`Send to ${capitalizeFirstLetter(connection.connectorKey)}`"
+    :icon="`header/export/${connection.connectorKey}`"
+    :subtitle="connection.accountEmail"
     :disabled="disabled"
     :current="current"
     :class="{ disabled }"
@@ -21,54 +21,49 @@ import ActionDropdownItem from "@/components/dropdown/ActionDropdownItem.vue";
 import { helpers } from "@/composables/helpers";
 
 export default defineComponent({
-  name: "ExportESPsList",
+  name: "ExportConnectorsList",
   components: { ActionDropdownItem },
   setup() {
     const route = useRoute();
-
     const { capitalizeFirstLetter } = helpers();
 
     const disabled = ref(false);
     const current = ref("");
 
-    const esps = computed(() => {
-      return store.getters["esp/esps"];
+    const connections = computed(() => {
+      return store.getters["connectors/connections"];
     });
 
-    const exportProject = (esp: string) => {
+    const exportProject = (connector: string) => {
       disabled.value = true;
-      current.value = esp;
+      current.value = connector;
       store
-        .dispatch("esp/exportProject", {
-          esp,
+        .dispatch("connectors/exportProject", {
+          connector,
           projectId: route.params.id,
         })
         .then(() => {
           disabled.value = false;
           store.commit("modals/CLOSE_MODAL", "export");
 
-          let message = "";
-          if (esp === "google") {
-            message = "Email template sent to drafts in Gmail";
-          } else {
-            message = `Email template sent to ${esp}`;
-          }
-          store.dispatch("toast/showToast", {
-            message,
-          });
+          const message =
+            connector === "google"
+              ? "Email template sent to drafts in Gmail"
+              : `Email template sent to ${connector}`;
+          store.dispatch("toast/showToast", { message });
         })
         .catch(() => {
           disabled.value = false;
           store.dispatch("toast/showToast", {
-            message: `Authorisation error. Please check connected ${esp} account`,
+            message: `Authorisation error. Please check connected ${connector} account`,
             type: "error",
           });
-          store.dispatch("esp/getESPs");
+          store.dispatch("connectors/fetchConnections");
         });
     };
 
     return {
-      esps,
+      connections,
       current,
       disabled,
       capitalizeFirstLetter,

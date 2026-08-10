@@ -1,6 +1,6 @@
 
 
-.manage__esps{
+.manage__connectors{
     @apply  flex flex-col fixed  h-full text-white;
     top: var(--header-height);
     right: 0;
@@ -8,19 +8,19 @@
     background: #2D3039;
 }
 
-.manage__esps__header{
+.manage__connectors__header{
     @apply flex justify-between;
     height: 40px;
     padding: 8px 12px;
     border-bottom: 1px solid #1E1F26;
 }
 
-.manage__esps__header h4{
+.manage__connectors__header h4{
     font-size: 14px;
     font-weight: 700;
 }
 
-.manage__esps__header__close{
+.manage__connectors__header__close{
     @apply flex items-center;
     background-color: transparent;
     padding: 0;
@@ -28,17 +28,17 @@
     height: 20px;
 }
 
-.manage__esps__header__close svg{
+.manage__connectors__header__close svg{
     background-color: transparent;
 }
 
-.manage__esps__list{
+.manage__connectors__list{
     @apply flex flex-col;
     padding: 16px;
     row-gap: 8px;
 }
 
-.manage__esps__list__item{
+.manage__connectors__list__item{
     @apply flex justify-between;
     height: 49px;
     padding: 8px;
@@ -46,13 +46,13 @@
     border: 1px solid #454856;
 }
 
-.manage__esps__list__item__content{
+.manage__connectors__list__item__content{
     @apply flex items-center;
     column-gap: 12px;
 
 }
 
-.esps__list__item__icon{
+.connectors__list__item__icon{
     @apply flex items-center justify-center relative;
     border-radius: 4px;
     background: #353843;
@@ -63,16 +63,16 @@
 
 
 
-.esps__list__item__icon svg{
+.connectors__list__item__icon svg{
     height: 16px;
     width: 16px;
 }
 
-.esps__list__item__icon svg path{
+.connectors__list__item__icon svg path{
     @apply fill-white;
 }
 
- .esp__icon__status{
+ .connector__icon__status{
     @apply absolute rounded-full z-10;
      top: calc(100% - 8px);
      right: 0;
@@ -82,12 +82,12 @@
      border: 2px solid #2D3039;
  }
 
- .esp__icon__status.active{
+ .connector__icon__status.active{
      background-color: #519E47;
  }
 
 
-.manage__esps__list__item__action .button__outline{
+.manage__connectors__list__item__action .button__outline{
     font-size: 12px;
     font-weight: 400;
     height: 28px;

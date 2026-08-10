@@ -1,6 +1,6 @@
 import { MutationTree } from "vuex";
 import { ModalState } from "@/store/modules/modals/types";
-const fixedModals = ["manage_esp"];
+const fixedModals = ["manage_connectors"];
 
 const isFixed = (modal: string) => {
   return !fixedModals.includes(modal);
@@ -74,7 +74,7 @@ export const mutations: MutationTree<ModalState> = {
     return state;
   },
   CLOSE_ALL_RIGHT_PANELS(state: ModalState): ModalState {
-    state.manage_esp = false;
+    state.manage_connectors = false;
     return state;
   },
 };

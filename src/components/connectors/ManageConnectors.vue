@@ -1,15 +1,15 @@
 <template>
-  <div class="manage__esps">
-    <div class="manage__esps__header">
+  <div class="manage__connectors">
+    <div class="manage__connectors__header">
       <h4>Connected apps</h4>
       <BaseButtonIcon
         @click="close"
-        class="manage__esps__header__close"
+        class="manage__connectors__header__close"
         icon="close"
       />
     </div>
-    <div class="manage__esps__list">
-      <p v-if="!catalog.length" class="manage__esps__empty">
+    <div class="manage__connectors__list">
+      <p v-if="!catalog.length" class="manage__connectors__empty">
         Loading connected apps…
       </p>
       <ManageConnectorListItem
@@ -45,7 +45,7 @@ export default defineComponent({
     });
 
     const close = () => {
-      store.commit("modals/CLOSE_MODAL", "manage_esp");
+      store.commit("modals/CLOSE_MODAL", "manage_connectors");
     };
 
     return {
@@ -57,7 +57,7 @@ export default defineComponent({
 </script>
 
 <style scoped>
-.manage__esps__empty {
+.manage__connectors__empty {
   font-size: 12px;
   color: #7c828f;
 }

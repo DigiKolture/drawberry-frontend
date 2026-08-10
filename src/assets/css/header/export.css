@@ -59,24 +59,24 @@
     padding-bottom: 8px;
 }
 
-.export__esps{
+.export__connectors{
     @apply flex flex-col text-white;
     row-gap: 8px;
 }
 
-.export__esps__header{
+.export__connectors__header{
     @apply flex items-center justify-between;
     padding-top: 16px;
     padding-left: 16px;
     padding-right: 16px;
 }
 
-.export__esps__header h5{
+.export__connectors__header h5{
     font-size: 12px;
     font-weight: 700;
 }
 
-.export__esps__lists{
+.export__connectors__lists{
     @apply flex flex-col;
     /*row-gap: 16px;*/
 }
@@ -89,7 +89,7 @@
     height: 24px;
 }
 
-.export__esps__lists__add .action__dropdown__item__icon svg{
+.export__connectors__lists__add .action__dropdown__item__icon svg{
     width: 18px;
     height: 18px;
 }

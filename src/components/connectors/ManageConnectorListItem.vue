@@ -1,20 +1,20 @@
 <template>
-  <div class="manage__esps__list__item connector__item">
+  <div class="manage__connectors__list__item connector__item">
     <div class="connector__item__row">
-      <div class="manage__esps__list__item__content">
-        <div class="esps__list__item__icon">
+      <div class="manage__connectors__list__item__content">
+        <div class="connectors__list__item__icon">
           <BaseIcon :icon="`header/export/${entry.icon}`" />
           <span
             :class="{ active: isConnected }"
-            class="esp__icon__status"
+            class="connector__icon__status"
           ></span>
         </div>
-        <div class="esps__list__item__titles">
+        <div class="connectors__list__item__titles">
           <h5 class="dropdown__item__titles__name">{{ entry.displayName }}</h5>
           <p class="dropdown__item__titles__desc">{{ subtitle }}</p>
         </div>
       </div>
-      <div class="manage__esps__list__item__action connector__item__actions">
+      <div class="manage__connectors__list__item__action connector__item__actions">
         <BaseButton
           v-if="isConnected"
           @click="exportProject"

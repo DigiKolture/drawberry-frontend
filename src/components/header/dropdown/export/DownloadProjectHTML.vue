@@ -30,7 +30,7 @@ export default defineComponent({
     const downloadProjectHTML = () => {
       disabled.value = true;
       store
-        .dispatch("esp/downloadProject")
+        .dispatch("connectors/downloadProject")
         .then(() => {
           disabled.value = false;
           store.commit("modals/CLOSE_MODAL", "export");

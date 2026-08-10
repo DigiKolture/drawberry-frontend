@@ -8,7 +8,7 @@ import { ModalState } from "@/store/modules/modals/types";
 export const stated: ModalState = {
   preview: false,
   export: false,
-  manage_esp: false,
+  manage_connectors: false,
   share_preview: false,
   email_preview: false,
   user_initials: false,

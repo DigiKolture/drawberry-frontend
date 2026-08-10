@@ -3,8 +3,8 @@ import { RootState } from "@/store/types";
 import { centerModals, ModalState } from "@/store/modules/modals/types";
 
 export const getters: GetterTree<ModalState, RootState> = {
-  manageESP(state: ModalState): boolean {
-    return state.manage_esp;
+  manageConnectors(state: ModalState): boolean {
+    return state.manage_connectors;
   },
   sharePreview(state: ModalState): boolean {
     return state.share_preview;

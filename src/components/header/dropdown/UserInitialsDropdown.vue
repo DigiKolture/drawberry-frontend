@@ -43,7 +43,7 @@ export default defineComponent({
         }
         case "integrations": {
           store.commit("modals/CLOSE_MODAL", "user_initials");
-          store.commit("modals/OPEN_MODAL", "manage_esp");
+          store.commit("modals/OPEN_MODAL", "manage_connectors");
           break;
         }
       }

@@ -4,7 +4,7 @@
 
     <main class="main" :class="{ 'small-screen': isSmallScreen }">
       <slot />
-      <ManageConnectors v-if="showESPMange" />
+      <ManageConnectors v-if="showManageConnectorsPanel" />
     </main>
   </div>
 </template>
@@ -29,16 +29,16 @@ export default defineComponent({
       return store.getters["auth/authUser"];
     });
 
-    const showManageESP = computed(() => {
-      return store.getters["modals/manageESP"];
+    const showManageConnectors = computed(() => {
+      return store.getters["modals/manageConnectors"];
     });
 
     const isCanvas = computed(() => {
       return route.name === "Canvas";
     });
 
-    const showESPMange = computed(() => {
-      return authUser.value && isCanvas.value && showManageESP.value;
+    const showManageConnectorsPanel = computed(() => {
+      return authUser.value && isCanvas.value && showManageConnectors.value;
     });
 
     onMounted(() => {
@@ -69,7 +69,7 @@ export default defineComponent({
     };
 
     return {
-      showESPMange,
+      showManageConnectorsPanel,
       isSmallScreen,
       handleGlobalClick,
     };

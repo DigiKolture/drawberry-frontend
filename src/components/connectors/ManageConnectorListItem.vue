@@ -4,6 +4,7 @@
       <div class="manage__connectors__list__item__content">
         <div class="connectors__list__item__icon">
           <BaseIcon :icon="`header/export/${entry.icon}`" />
+
           <span
             :class="{ active: isConnected }"
             class="connector__icon__status"
@@ -14,7 +15,9 @@
           <p class="dropdown__item__titles__desc">{{ subtitle }}</p>
         </div>
       </div>
-      <div class="manage__connectors__list__item__action connector__item__actions">
+      <div
+        class="manage__connectors__list__item__action connector__item__actions"
+      >
         <BaseButton
           v-if="isConnected"
           @click="exportProject"

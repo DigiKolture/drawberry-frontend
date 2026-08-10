@@ -6,6 +6,8 @@
     right: 0;
     width: 378px;
     background: #2D3039;
+    /* Above the canvas breakpoint bar (z-index 140) so the panel overlays it. */
+    z-index: 150;
 }
 
 .manage__connectors__header{

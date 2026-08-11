@@ -1,11 +1,16 @@
 <template>
-  <div></div>
+  <div class="oauth__callback">Connecting…</div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from "vue";
 import store from "@/store";
-import { useRouter } from "vue-router";
+
+// Where to return the user after the provider redirects back. The callback is
+// a fresh full-page load, so the projects store has no current project — the
+// canvas that started the connect stashes its id here first (see
+// ManageConnectorListItem).
+const RETURN_PROJECT_KEY = "connector_oauth_return_project";
 
 export default defineComponent({
   name: "ConnectorOAuthCallback",
@@ -17,17 +22,31 @@ export default defineComponent({
   },
 
   async mounted() {
-    const route = this.$route;
-    const router = useRouter();
+    const connector = this.$route.params.connector as string;
 
-    const query = route.query;
-    const params = route.params;
+    try {
+      await store.dispatch("connectors/connectOAuth", {
+        connector,
+        data: this.$route.query,
+      });
+      store.dispatch("toast/showToast", { message: `${connector} connected` });
+    } catch (err: any) {
+      store.dispatch("toast/showToast", {
+        message: (err && err.message) || `Could not connect ${connector}`,
+        type: "error",
+      });
+    }
 
-    await store.dispatch("connectors/connectOAuth", {
-      connector: params.connector,
-      data: query,
-    });
-    router.push({ name: "Canvas", params: { id: this.project.id } });
+    const projectId =
+      (this.project && this.project.id) ||
+      localStorage.getItem(RETURN_PROJECT_KEY);
+    localStorage.removeItem(RETURN_PROJECT_KEY);
+
+    if (projectId) {
+      this.$router.push({ name: "Canvas", params: { id: projectId } });
+    } else {
+      this.$router.push({ name: "ProjectIndex" });
+    }
   },
 });
 </script>

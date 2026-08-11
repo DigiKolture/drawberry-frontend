@@ -137,7 +137,15 @@ export default defineComponent({
       if (isApiKey.value) {
         showForm.value = !showForm.value;
       } else {
-        // OAuth connectors redirect out to the provider.
+        // OAuth connectors redirect out to the provider. Remember the project
+        // to return to — the callback lands as a fresh page with no current
+        // project loaded.
+        if (route.params.id) {
+          localStorage.setItem(
+            "connector_oauth_return_project",
+            String(route.params.id)
+          );
+        }
         store
           .dispatch("connectors/getRedirectURL", props.entry.key)
           .catch((err: Error) => toast(err.message, "error"));

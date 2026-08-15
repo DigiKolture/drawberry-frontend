@@ -1,8 +1,11 @@
 
 
 .manage__connectors{
-    @apply  flex flex-col fixed  h-full text-white;
+    @apply  flex flex-col fixed text-white;
     top: var(--header-height);
+    /* Span exactly from the header to the viewport bottom so the panel never
+       runs off-screen and its inner list can own the scroll. */
+    bottom: 0;
     right: 0;
     width: 378px;
     background: #2D3039;
@@ -12,6 +15,7 @@
 
 .manage__connectors__header{
     @apply flex justify-between;
+    flex-shrink: 0;
     height: 40px;
     padding: 8px 12px;
     border-bottom: 1px solid #1E1F26;
@@ -36,6 +40,12 @@
 
 .manage__connectors__list{
     @apply flex flex-col;
+    /* Grow to fill the panel and scroll internally when the catalog is long;
+       min-height:0 lets a flex child shrink below its content so its own
+       overflow scrollbar engages instead of pushing siblings off-screen. */
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
     padding: 16px;
     row-gap: 8px;
 }

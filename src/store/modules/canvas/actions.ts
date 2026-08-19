@@ -14,6 +14,7 @@ import { HistoryActionTypes } from "@/store/modules/history/types";
 import { history } from "@/composables/canvas/history";
 import { focus } from "@/composables/canvas/focus";
 import { project } from "@/composables/project/project";
+import { compile } from "@/composables/canvas/compile/compile";
 import store from "@/store";
 
 const { undoStack } = history();
@@ -126,10 +127,28 @@ export const actions: ActionTree<CanvasState, RootState> = {
       }
     );
     const style: ProjectStyle = state.style;
+
+    // Compile the rendered Canvas here — the frontend is the sole producer of the
+    // Compiled email HTML (ADR-0005). The Source hash fingerprints exactly the json being
+    // uploaded, so the backend can tell whether its stored HTML is current. If the Canvas
+    // isn't mounted to measure, compileCanvas returns null and we upload without a
+    // compiled artifact, which the backend reads as "needs recompile".
+    const { compileCanvas } = compile();
+    const compiled = await compileCanvas(
+      projectComponents.map((component) => component.json),
+      style
+    );
+
     return AxiosClient.put(`/projects/${projectId}/components/styles`, {
       projectComponents,
       style,
       histories: undoStack.value,
+      ...(compiled
+        ? {
+            compiledHtml: compiled.compiledHtml,
+            sourceHash: compiled.sourceHash,
+          }
+        : {}),
     })
       .then((res: any) => {
         commit("SET_SAVE_STATUS", CanvasSaveStatus.SAVED);

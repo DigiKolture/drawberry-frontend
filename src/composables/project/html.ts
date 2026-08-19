@@ -869,7 +869,19 @@ body {
     return $.html({ decodeEntities: false, xmlMode: true });
   };
 
+  // Wrap already-emitted body content (the compiled nested tables from the flex→table
+  // emitter) in the same email Chrome getHTML uses — the outer container tables, MSO
+  // conditionals, and <head>. This is the single Chrome layer both the legacy div render
+  // and the measured compiler share (ADR-0005: one producer, reusing html.ts).
+  const wrapInChrome = (bodyContent: string, style: ProjectStyle): string => {
+    let html = `<html><head></head><body>${bodyContent}</body></html>`;
+    html = updateBody(style, html);
+    html = updateHead(html);
+    return html;
+  };
+
   return {
     getHTML,
+    wrapInChrome,
   };
 }

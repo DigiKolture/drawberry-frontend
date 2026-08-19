@@ -6,6 +6,7 @@
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "test:unit": "vue-cli-service test:unit",
+    "test:golden": "playwright test",
     "test:e2e": "vue-cli-service test:e2e",
     "lint": "vue-cli-service lint",
     "sentry:sourcemaps": "sentry-cli sourcemaps inject --org drawberry-ns --project javascript-vue ./dist && sentry-cli sourcemaps upload --org drawberry-ns --project javascript-vue ./dist"
@@ -34,6 +35,7 @@
     "webfontloader": "^1.6.28"
   },
   "devDependencies": {
+    "@playwright/test": "^1.62.1",
     "@types/dompurify": "^3.0.5",
     "@types/jest": "^27.0.1",
     "@types/lodash": "^4.17.13",

@@ -159,13 +159,23 @@ export function projectHtml() {
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta name="format-detection" content="telephone=no">
         <meta name="x-apple-disable-message-reformatting">
+        <!-- Force light (ADR-0006): declare light-only so Apple Mail / iOS stop inverting;
+             no dark-mode media query is emitted anywhere. -->
+        <meta name="color-scheme" content="light">
+        <meta name="supported-color-schemes" content="light">
         <link
     href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,700;1,400;1,500;1,700&display=swap"
     rel="stylesheet">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <style>
-    
+
+  /* Force light (ADR-0006): honoured by Apple Mail / iOS. No dark variant is emitted. */
+  :root {
+    color-scheme: light;
+    supported-color-schemes: light;
+  }
+
    #outlook a {
   padding: 0;
 }
@@ -873,10 +883,24 @@ body {
   // emitter) in the same email Chrome getHTML uses — the outer container tables, MSO
   // conditionals, and <head>. This is the single Chrome layer both the legacy div render
   // and the measured compiler share (ADR-0005: one producer, reusing html.ts).
-  const wrapInChrome = (bodyContent: string, style: ProjectStyle): string => {
+  //
+  // `forceLightOverrides` is the emitter's Outlook.com `[data-ogsc]/[data-ogsb]` colour
+  // reassertion CSS (ADR-0006); it's injected into <head> so dark-mode Outlook keeps the
+  // design's colours. Empty string when the design places no colours.
+  const wrapInChrome = (
+    bodyContent: string,
+    style: ProjectStyle,
+    forceLightOverrides = ""
+  ): string => {
     let html = `<html><head></head><body>${bodyContent}</body></html>`;
     html = updateBody(style, html);
     html = updateHead(html);
+    if (forceLightOverrides) {
+      // updateHead already serialised the document; splice the reassertion style in before
+      // </head> rather than re-parsing and re-serialising the whole email.
+      const styleBlock = `<style type="text/css">\n${forceLightOverrides}\n</style>`;
+      html = html.replace("</head>", `${styleBlock}</head>`);
+    }
     return html;
   };
 

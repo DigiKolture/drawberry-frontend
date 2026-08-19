@@ -1,5 +1,5 @@
 import * as cheerio from "cheerio";
-import { emit } from "@/composables/canvas/compile/emit";
+import { emit, collectColorOverrides } from "@/composables/canvas/compile/emit";
 import {
   MeasuredNode,
   MeasuredRole,
@@ -261,6 +261,146 @@ describe("emit(MeasuredTree)", () => {
       expect(style).toContain("font-size: 32px");
       expect(style).toContain("font-weight: 700");
       expect(style).toContain("color: rgb(17, 17, 17)");
+    });
+
+    it("emits a bare visual box with its measured height and background", () => {
+      const t = tree(
+        600,
+        node("root", [0, 0, 600, 40], {
+          id: "root",
+          children: [
+            node("box", [0, 0, 600, 12], {
+              id: "divider",
+              styles: { backgroundColor: "rgb(230, 230, 230)" },
+            }),
+          ],
+        })
+      );
+      const style = load(emit(t))("#divider").attr("style") || "";
+      expect(style).toContain("height: 12px");
+      expect(style).toContain("background-color: rgb(230, 230, 230)");
+    });
+
+    it("keeps a bare link leaf as an anchor with its href", () => {
+      const t = tree(
+        600,
+        node("root", [0, 0, 600, 20], {
+          id: "root",
+          children: [
+            node("text", [0, 0, 600, 20], {
+              id: "unsub",
+              text: "Unsubscribe",
+              href: "https://example.com/unsub",
+              styles: { fontSize: "12px" },
+            }),
+          ],
+        })
+      );
+      const $ = load(emit(t));
+      expect($("a#unsub").attr("href")).toBe("https://example.com/unsub");
+      expect($("div#unsub").length).toBe(0);
+    });
+  });
+
+  describe("bulletproof VML buttons", () => {
+    const btn = tree(
+      600,
+      node("root", [0, 0, 600, 60], {
+        id: "root",
+        children: [
+          node("button", [200, 0, 200, 44], {
+            id: "cta",
+            text: "Shop now",
+            href: "https://example.com",
+            styles: {
+              backgroundColor: "rgb(0, 122, 255)",
+              color: "rgb(255, 255, 255)",
+              borderRadius: "8px",
+              fontSize: "16px",
+              fontWeight: "700",
+            },
+          }),
+        ],
+      })
+    );
+
+    it("emits an Outlook VML rounded-rect from the measured dimensions", () => {
+      const html = emit(btn);
+      expect(html).toContain("<!--[if mso]>");
+      expect(html).toContain("v:roundrect");
+      expect(html).toContain("<w:anchorlock/>");
+      expect(html).toContain('href="https://example.com"');
+      expect(html).toContain("width:200px");
+      expect(html).toContain("height:44px");
+      // radius 8 / height 44 ≈ 18%
+      expect(html).toContain('arcsize="18%"');
+      // VML needs hex (rgb() falls back to black in Outlook): rgb(0,122,255) → #007aff.
+      expect(html).toContain('fillcolor="#007aff"');
+      expect(html).not.toContain('fillcolor="rgb');
+    });
+
+    it("emits a non-Outlook <a> fallback carrying the same href and colours", () => {
+      const $ = load(emit(btn));
+      const a = $("a#cta");
+      expect(a.attr("href")).toBe("https://example.com");
+      expect(a.text()).toContain("Shop now");
+      const style = a.attr("style") || "";
+      expect(style).toContain("background-color: rgb(0, 122, 255)");
+      expect(style).toContain("border-radius: 8px");
+    });
+  });
+
+  describe("force light (ADR-0006)", () => {
+    const whiteOnBlack = tree(
+      600,
+      node("root", [0, 0, 600, 100], {
+        id: "root",
+        styles: { backgroundColor: "#000000" },
+        children: [
+          node("text", [0, 0, 600, 40], {
+            id: "title",
+            text: "Hi",
+            styles: { color: "#FFFFFF" },
+          }),
+          node("button", [0, 50, 200, 44], {
+            id: "cta",
+            text: "Go",
+            href: "https://example.com",
+            styles: { backgroundColor: "#000000", color: "#FFFFFF" },
+          }),
+        ],
+      })
+    );
+
+    it("bakes off-white / off-black instead of pure #FFFFFF / #000000", () => {
+      const html = emit(whiteOnBlack);
+      expect(html).toContain("#fffffe");
+      expect(html).toContain("#010101");
+      expect(html).not.toMatch(/#ffffff/i);
+      expect(html).not.toMatch(/#000000/i);
+    });
+
+    it("never emits a prefers-color-scheme: dark rule", () => {
+      expect(emit(whiteOnBlack)).not.toContain("prefers-color-scheme");
+    });
+
+    it("collects Outlook [data-ogsc]/[data-ogsb] reassertions for placed colours", () => {
+      const css = collectColorOverrides(whiteOnBlack);
+      expect(css).toContain("#title[data-ogsc] { color: #fffffe !important; }");
+      expect(css).toContain(
+        "#root[data-ogsb] { background-color: #010101 !important; }"
+      );
+    });
+
+    it("emits no overrides for a design that places no colours", () => {
+      const plain = tree(
+        600,
+        node("root", [0, 0, 600, 40], {
+          id: "root",
+          children: [node("text", [0, 0, 600, 40], { id: "t", text: "x" })],
+        })
+      );
+      expect(collectColorOverrides(plain)).toBe("");
     });
   });
 

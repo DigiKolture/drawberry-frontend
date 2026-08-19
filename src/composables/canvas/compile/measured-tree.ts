@@ -25,7 +25,9 @@ export type MeasuredRole =
   | "container" // a box with children, emitted as a nested table
   | "text" // a text leaf; emitted with baked font styles but auto-height
   | "image" // an <img> leaf; emitted with measured width/height
-  | "button"; // a call-to-action leaf; emitted as a padded, coloured link cell
+  | "button" // a call-to-action leaf; emitted as a padded, coloured link cell
+  | "box"; // a childless, textless visual block (divider, colour bar, spacer) — emitted
+//         with its measured height + background so it doesn't collapse
 
 /**
  * A curated subset of computed styles the emitter bakes into the tables. Only what the

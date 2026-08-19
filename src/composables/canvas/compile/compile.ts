@@ -1,6 +1,6 @@
 import { ProjectStyle } from "@/store/modules/canvas/types";
 import { projectHtml } from "@/composables/project/html";
-import { emit } from "./emit";
+import { emit, collectColorOverrides } from "./emit";
 import { measureCanvas } from "./measure";
 import { computeSourceHash } from "./source-hash";
 
@@ -36,7 +36,8 @@ export function compile() {
     if (!tree) return null;
 
     const body = emit(tree);
-    const compiledHtml = wrapInChrome(body, style);
+    const forceLightOverrides = collectColorOverrides(tree);
+    const compiledHtml = wrapInChrome(body, style, forceLightOverrides);
     const sourceHash = await computeSourceHash(componentsJson, style);
     return { compiledHtml, sourceHash };
   };

@@ -51,14 +51,35 @@ const normalizeZero = (value: string): string | undefined =>
 const hasElementChildren = (el: Element): boolean =>
   Array.from(el.children).some((child) => child.nodeType === 1);
 
+/**
+ * The link that makes an element a button: the element itself when it is a link, or a
+ * single wrapped link whose label is the wrapper's only content. In the catalog a button is
+ * a `<div>` carrying the background/radius/padding around one `<a>` label (not an image),
+ * so the coloured wrapper — not the transparent `<a>` — is what to detect.
+ */
+const buttonLink = (el: Element): Element | null => {
+  if (el.tagName.toLowerCase() === "a") return el;
+  const anchors = el.querySelectorAll("a");
+  if (anchors.length !== 1) return null;
+  const anchor = anchors[0];
+  if (anchor.querySelector("img")) return null; // an image link, not a text button
+  return (el.textContent || "").trim() === (anchor.textContent || "").trim()
+    ? anchor
+    : null;
+};
+
 /** Classify a rendered element for emission from its tag and measured styles. */
 const roleOf = (el: Element, style: CSSStyleDeclaration): MeasuredRole => {
   const tag = el.tagName.toLowerCase();
   if (tag === "img") return "image";
-  // A link with a solid background reads as a button (its measured colour/padding/radius
-  // become the bulletproof button in later tickets). A bare link stays text.
-  if (tag === "a" && normalizeColor(style.backgroundColor)) return "button";
-  return hasElementChildren(el) ? "container" : "text";
+  // A solid background wrapped around a single link is a button — its measured
+  // dimensions/colour/radius drive the bulletproof VML button. A bare link stays text
+  // (below) so it keeps its href.
+  if (normalizeColor(style.backgroundColor) && buttonLink(el)) return "button";
+  if (hasElementChildren(el)) return "container";
+  // A childless element with no text is a visual block (divider, colour bar, spacer): keep
+  // its measured height + background rather than collapsing it to an empty text node.
+  return (el.textContent || "").trim() === "" ? "box" : "text";
 };
 
 const measureElement = (
@@ -88,10 +109,27 @@ const measureElement = (
     node.src = el.getAttribute("src") || "";
     node.alt = el.getAttribute("alt") || "";
   } else if (role === "button") {
-    node.href = el.getAttribute("href") || "";
+    const link = buttonLink(el) as Element;
+    node.href = link.getAttribute("href") || "";
     node.text = (el.textContent || "").trim();
+    // The wrapper carries the button's box + background/radius/padding (already read into
+    // node.styles); the inner link carries the label's colour/font. Pull those from the
+    // link so the button text renders as designed.
+    if (link !== el) {
+      const linkStyle = window.getComputedStyle(link);
+      node.styles.color = linkStyle.color || node.styles.color;
+      node.styles.fontFamily = linkStyle.fontFamily || node.styles.fontFamily;
+      node.styles.fontSize = linkStyle.fontSize || node.styles.fontSize;
+      node.styles.fontWeight = linkStyle.fontWeight || node.styles.fontWeight;
+    }
   } else if (role === "text") {
     node.text = (el.textContent || "").trim();
+    // A bare link leaf keeps its href so the emitter renders it as an anchor.
+    if (el.tagName.toLowerCase() === "a") {
+      node.href = el.getAttribute("href") || "";
+    }
+  } else if (role === "box") {
+    // Nothing to read beyond the rect + background already captured — it's a bare block.
   } else {
     for (const child of Array.from(el.children)) {
       const measured = measureElement(child, rootLeft, rootTop);

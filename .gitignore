@@ -31,3 +31,8 @@ pnpm-debug.log*
 
 # foglamp scan (edit token is a secret)
 .foglamp/
+
+# Playwright (Seam-2 golden-diff) output
+/test-results/
+/playwright-report/
+/blob-report/

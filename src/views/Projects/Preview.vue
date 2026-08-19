@@ -1,29 +1,27 @@
 <template>
   <BaseLayout>
     <div class="preview__container" :style="styles">
-      <div
-        class="preview__component__items__container"
-        style="margin-bottom: 100px"
-        :class="[style.layout, currentPreview]"
-      >
-        <div
-          v-for="(componentItem, itemIndex) in workspaceComponents"
-          :key="itemIndex"
-          class="preview__component__items__list__item"
-          v-html="getHTML(componentItem)"
-        ></div>
-      </div>
+      <!-- The read-only preview renders the Compiled email HTML (tables) — the same artifact
+           export/download/test-email serve (ADR-0005) — so "what I see" is "what I send". It
+           is rendered in a sandboxed iframe with no copy-HTML / view-source affordance. The
+           mobile/desktop toggle only sizes the frame; the email's own @media does the rest. -->
+      <iframe
+        v-if="compiledHtml"
+        class="preview__frame"
+        :class="currentPreview"
+        :srcdoc="compiledHtml"
+        title="Email preview"
+        sandbox=""
+      ></iframe>
+      <div v-else class="preview__empty">{{ emptyMessage }}</div>
     </div>
   </BaseLayout>
 </template>
 <script>
-import { computed, defineComponent, onMounted, ref, watch } from "vue";
+import { computed, defineComponent, onMounted, ref } from "vue";
 import store from "@/store";
 import BaseLayout from "@/components/layout/BaseLayout.vue";
 import { useRoute } from "vue-router";
-import { updateDom } from "@/composables/canvas/update_dom";
-import { fonts } from "@/composables/canvas/fonts";
-import WebFont from "webfontloader";
 
 export default defineComponent({
   name: "PreviewPage",
@@ -31,10 +29,8 @@ export default defineComponent({
   setup() {
     const route = useRoute();
     const projectId = route.params.id;
-    let style = ref({});
-    let workspaceComponents = ref([]);
-    const { updateComponentItemDom } = updateDom();
-    const { extractUniqueFontFamilies } = fonts();
+    const style = ref({});
+    const compiledHtml = ref("");
 
     onMounted(async () => {
       store.commit("canvas/SET_NAVIGATED_FROM_PREVIEW", false);
@@ -49,33 +45,19 @@ export default defineComponent({
         id: project.id,
         user: project.user,
       });
-      style.value = project.style;
-      workspaceComponents.value = project.components;
-    });
-
-    const getHTML = (componentItem) => {
-      return updateComponentItemDom(componentItem).html;
-    };
-
-    const fontFamilies = computed(() => {
-      return extractUniqueFontFamilies(workspaceComponents.value);
-    });
-
-    watch(fontFamilies, () => {
-      if (fontFamilies.value.length === 0) return;
-      WebFont.load({
-        google: {
-          families: fontFamilies.value,
-        },
-      });
+      style.value = project.style || {};
+      compiledHtml.value = project.compiledHtml || "";
     });
 
     const currentPreview = computed(() => {
       return store.getters["preview/currentPreview"];
     });
 
+    const emptyMessage =
+      "Preview will appear here once this design has been saved.";
+
     const styles = computed(() => {
-      let styleObj = {
+      const styleObj = {
         backgroundColor: style.value.backgroundColor,
         backgroundSize: "cover",
       };
@@ -96,9 +78,39 @@ export default defineComponent({
       style,
       styles,
       currentPreview,
-      workspaceComponents,
-      getHTML,
+      compiledHtml,
+      emptyMessage,
     };
   },
 });
 </script>
+
+<style scoped>
+.preview__container {
+  display: flex;
+  justify-content: center;
+  min-height: 100%;
+  padding: 24px 0 100px;
+}
+
+.preview__frame {
+  border: 0;
+  width: 100%;
+  max-width: 640px;
+  height: calc(100vh - 140px);
+  background: #ffffff;
+  transition: max-width 0.2s ease;
+}
+
+.preview__frame.mobile {
+  max-width: 375px;
+}
+
+.preview__empty {
+  align-self: center;
+  color: #6b6b6b;
+  font-size: 14px;
+  text-align: center;
+  padding: 40px;
+}
+</style>

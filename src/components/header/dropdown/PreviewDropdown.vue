@@ -40,10 +40,13 @@ export default defineComponent({
 
     const route = useRoute();
 
-    const handleClick = (dropdownName: string) => {
+    const handleClick = async (dropdownName: string) => {
       if (dropdownName === "mobile" || dropdownName === "desktop") {
         store.commit("preview/SET_CURRENT_PREVIEW", dropdownName);
         if (!props.isPreview) {
+          // Recompile-and-store the latest Canvas before opening the preview so it reflects
+          // the current design, not a stale saved copy (ADR-0005 recompile-before-preview).
+          await store.dispatch("canvas/saveIfChanged");
           router.push({ name: "Preview", params: { id: route.params.id } });
         }
       } else if (dropdownName === "email") {

@@ -93,8 +93,11 @@ export default defineComponent({
       store.commit("modals/CLOSE_MODAL", "email_preview");
     };
 
-    const submit = () => {
+    const submit = async () => {
       disabled.value = true;
+      // Recompile-and-store the latest design before sending, so the test email is the same
+      // artifact a fresh export would be (ADR-0005 recompile-before-preview).
+      await store.dispatch("canvas/saveIfChanged");
       store
         .dispatch("projects/previewProjectByEmail", { email: email.value })
         .then(() => {

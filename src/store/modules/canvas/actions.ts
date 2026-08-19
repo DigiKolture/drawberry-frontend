@@ -105,6 +105,14 @@ export const actions: ActionTree<CanvasState, RootState> = {
         }
       });
   },
+  // Recompile-and-store the latest design if it has unsaved changes — the single home for
+  // the ADR-0005 "recompile before preview/export" precondition (used before opening the
+  // preview and before sending a test email). No-op when the design is already saved.
+  async saveIfChanged({ state, dispatch }): Promise<void> {
+    if (state.saveStatus !== CanvasSaveStatus.SAVED) {
+      await dispatch("updateProjectComponentsAndStyles");
+    }
+  },
   async updateProjectComponentsAndStyles({ state, commit }): Promise<void> {
     // if (!hasProjectChanged()) {
     //   return;

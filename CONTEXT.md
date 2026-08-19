@@ -38,3 +38,34 @@ the conflict gets resolved here.
   Gmail, which currently drafts *and* sends.)
 
 - **Connected apps** — the user-facing label (in the UI) for a user's Connections.
+
+## Canvas & Compilation
+
+- **Canvas** — the editor surface where a user builds an email design as a flexbox
+  layout. It is the **source of truth** for how a design looks: a compiled email is
+  judged correct by whether it matches the Canvas.
+
+- **Compile** — turning a design into finished, email-ready HTML: measure the Canvas,
+  emit table-based layout that reproduces it, and wrap it in Chrome. Produces the
+  **Compiled email HTML**.
+
+- **Measurement** — reading the *actual rendered geometry* of the Canvas in a browser
+  (element positions, sizes, alignment, wrapping) so the compiled tables reproduce what
+  the Canvas shows, rather than inferring layout from style rules. "We measure it" is the
+  canonical opposite of "we guess it from CSS."
+
+- **Compiled email HTML** — the finished, table-based email produced by a Compile. It is
+  what gets stored on the project and what **Export**, download, and email preview serve.
+  There is one canonical producer of it (the Canvas side), never two.
+
+- **Source hash** — a hash of a design's inputs, stored alongside the Compiled email HTML,
+  used to tell whether that HTML is current. A mismatch means "stale — needs recompiling"
+  rather than serving out-of-date HTML.
+
+- **Chrome** — the email's outer shell around the compiled content: the container/wrapper
+  tables, Outlook (MSO) conditionals, and the `<head>` (fonts, color-scheme metas). The
+  parts of the email that are structure/boilerplate rather than the user's design.
+
+- **Force light** — the exported email's stance toward dark mode: it declares itself
+  light-only and reasserts its own colors, so clients leave the design's colors alone
+  instead of recoloring them. Not a dark *theme* — the deliberate absence of one.

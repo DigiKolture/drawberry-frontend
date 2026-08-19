@@ -884,21 +884,21 @@ body {
   // conditionals, and <head>. This is the single Chrome layer both the legacy div render
   // and the measured compiler share (ADR-0005: one producer, reusing html.ts).
   //
-  // `forceLightOverrides` is the emitter's Outlook.com `[data-ogsc]/[data-ogsb]` colour
-  // reassertion CSS (ADR-0006); it's injected into <head> so dark-mode Outlook keeps the
-  // design's colours. Empty string when the design places no colours.
+  // `headCss` is the emitter's compile-time CSS for the <head>: the measured mobile-stacking
+  // `@media` block (ticket 03) plus the Outlook `[data-ogsc]/[data-ogsb]` force-light colour
+  // reassertions (ADR-0006). Empty string when the design needs neither.
   const wrapInChrome = (
     bodyContent: string,
     style: ProjectStyle,
-    forceLightOverrides = ""
+    headCss = ""
   ): string => {
     let html = `<html><head></head><body>${bodyContent}</body></html>`;
     html = updateBody(style, html);
     html = updateHead(html);
-    if (forceLightOverrides) {
-      // updateHead already serialised the document; splice the reassertion style in before
-      // </head> rather than re-parsing and re-serialising the whole email.
-      const styleBlock = `<style type="text/css">\n${forceLightOverrides}\n</style>`;
+    if (headCss) {
+      // updateHead already serialised the document; splice the style in before </head>
+      // rather than re-parsing and re-serialising the whole email.
+      const styleBlock = `<style type="text/css">\n${headCss}\n</style>`;
       html = html.replace("</head>", `${styleBlock}</head>`);
     }
     return html;

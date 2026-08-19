@@ -1,7 +1,7 @@
 import { ProjectStyle } from "@/store/modules/canvas/types";
 import { projectHtml } from "@/composables/project/html";
-import { emit, collectColorOverrides } from "./emit";
-import { measureCanvas } from "./measure";
+import { emit, collectColorOverrides, collectMediaQuery } from "./emit";
+import { measureCanvas, measureMobile } from "./measure";
 import { computeSourceHash } from "./source-hash";
 
 // The compile orchestrator threads the whole spine: measure the rendered Canvas -> emit
@@ -32,12 +32,20 @@ export function compile() {
     componentsJson: object[][],
     style: ProjectStyle
   ): Promise<CompileResult | null> => {
-    const tree = measureCanvas();
-    if (!tree) return null;
+    const desktop = measureCanvas();
+    if (!desktop) return null;
+    // Measure a hidden mobile-width render too, so the mobile restacking is observed
+    // (ADR-0004). If it can't be measured, we still ship a correct desktop-only email.
+    const mobile = measureMobile() || undefined;
 
-    const body = emit(tree);
-    const forceLightOverrides = collectColorOverrides(tree);
-    const compiledHtml = wrapInChrome(body, style, forceLightOverrides);
+    const body = emit(desktop, mobile);
+    const headCss = [
+      collectMediaQuery(desktop, mobile),
+      collectColorOverrides(desktop),
+    ]
+      .filter(Boolean)
+      .join("\n");
+    const compiledHtml = wrapInChrome(body, style, headCss);
     const sourceHash = await computeSourceHash(componentsJson, style);
     return { compiledHtml, sourceHash };
   };

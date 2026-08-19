@@ -50,14 +50,22 @@ interface Rect {
   height: number;
 }
 
-const flexDoc = (inner: string): string =>
+const MOBILE_WIDTH = 375;
+
+const flexDoc = (inner: string, width: number = WIDTH): string =>
   `<!doctype html><html><head><style>${PAGE_STYLE}</style></head><body>` +
-  `<div id="${CANVAS_ID}" style="width:${WIDTH}px;">${inner}</div>` +
+  `<div id="${CANVAS_ID}" style="width:${width}px;">${inner}</div>` +
   `</body></html>`;
 
-const tablesDoc = (body: string): string =>
-  `<!doctype html><html><head><style>${PAGE_STYLE}</style></head><body>` +
-  `<div id="tables-root" style="width:${WIDTH}px;">${body}</div>` +
+const tablesDoc = (
+  body: string,
+  width: number = WIDTH,
+  mediaCss = ""
+): string =>
+  `<!doctype html><html><head><style>${PAGE_STYLE}</style>` +
+  (mediaCss ? `<style>${mediaCss}</style>` : "") +
+  `</head><body>` +
+  `<div id="tables-root" style="width:${width}px;">${body}</div>` +
   `</body></html>`;
 
 /** Measure every id'd element's box relative to its container root. */
@@ -236,4 +244,133 @@ test("composite banner: a real component's patterns compile together", async ({
   expect(t.title.x).toBeLessThanOrEqual(POS_TOLERANCE);
   const ctaCentre = t.cta.x + t.cta.width / 2;
   expect(Math.abs(ctaCentre - WIDTH / 2)).toBeLessThanOrEqual(POS_TOLERANCE);
+});
+
+// ── Mobile (ticket 03) ────────────────────────────────────────────────────────────────
+// @media reacts to the viewport, not the container, so we drive width via the viewport.
+
+/** Render the flex fixture at a viewport width and measure it. */
+async function renderFlex(
+  page: Page,
+  flexInner: string,
+  width: number
+): Promise<{ tree: any; rects: Record<string, Rect> }> {
+  await page.setViewportSize({ width, height: 1400 });
+  await page.setContent(flexDoc(flexInner, width));
+  await page.addScriptTag({ content: COMPILE_BUNDLE });
+  const tree = await page.evaluate(() =>
+    (window as any).__compile.measureCanvas()
+  );
+  const rects = await measureIds(page, `#${CANVAS_ID}`);
+  return { tree, rects };
+}
+
+/** Render the emitted tables (with the @media block) at a viewport width and measure. */
+async function renderTables(
+  page: Page,
+  body: string,
+  mediaCss: string,
+  width: number
+): Promise<Record<string, Rect>> {
+  await page.setViewportSize({ width, height: 1400 });
+  await page.setContent(tablesDoc(body, width, mediaCss));
+  return measureIds(page, "#tables-root");
+}
+
+test("mobile: a multi-column row restacks to one column, desktop unchanged", async ({
+  page,
+}) => {
+  // Two columns that sit side by side at 600 and wrap (stack) at 375 — the flex reflow the
+  // compiler must reproduce. Empty coloured boxes keep the fixture layout-pure.
+  const flex = `
+    <div id="row" style="display:flex;flex-wrap:wrap;align-items:stretch;">
+      <div id="colA" style="flex:1 1 280px;min-width:280px;height:80px;background:#eee;"></div>
+      <div id="colB" style="flex:1 1 280px;min-width:280px;height:80px;background:#ddd;"></div>
+    </div>`;
+
+  const desktop = await renderFlex(page, flex, WIDTH);
+  const mobile = await renderFlex(page, flex, MOBILE_WIDTH);
+
+  // Sanity: the flex fixture really does restack (side-by-side desktop, stacked mobile).
+  expect(
+    Math.abs(desktop.rects.colA.y - desktop.rects.colB.y)
+  ).toBeLessThanOrEqual(POS_TOLERANCE);
+  expect(mobile.rects.colB.y).toBeGreaterThan(mobile.rects.colA.y + 40);
+
+  const { body, media } = await page.evaluate(
+    ([d, m]) => {
+      const c = (window as any).__compile;
+      return { body: c.emit(d, m), media: c.collectMediaQuery(d, m) };
+    },
+    [desktop.tree, mobile.tree]
+  );
+  expect(media).toContain("@media");
+
+  // Desktop tables: columns stay side by side, matching the Canvas.
+  const tDesktop = await renderTables(page, body, media, WIDTH);
+  expect(Math.abs(tDesktop.colA.y - tDesktop.colB.y)).toBeLessThanOrEqual(
+    POS_TOLERANCE
+  );
+  expect(tDesktop.colB.x).toBeGreaterThan(tDesktop.colA.x + 100);
+
+  // Mobile tables: columns restack to a single column, matching the Canvas mobile layout.
+  const tMobile = await renderTables(page, body, media, MOBILE_WIDTH);
+  expect(tMobile.colB.y).toBeGreaterThan(tMobile.colA.y + 40);
+  expect(Math.abs(tMobile.colA.x - mobile.rects.colA.x)).toBeLessThanOrEqual(
+    POS_TOLERANCE
+  );
+  expect(
+    Math.abs(tMobile.colA.width - mobile.rects.colA.width)
+  ).toBeLessThanOrEqual(SIZE_TOLERANCE);
+});
+
+test("measureMobile observes the Canvas mobile layout from data-mobile-style", async ({
+  page,
+}) => {
+  // The real production path: the Canvas carries `data-mobile-style` mobile deltas (as the
+  // catalog components do). measureMobile clones offscreen at mobile width, overlays those
+  // deltas, and measures — so the restacking is observed even though the live Canvas (and the
+  // viewport) stay desktop. Here #row is a flex-row that its data-mobile-style stacks.
+  const flex = `
+    <div id="row" style="display:flex;flex-direction:row;" data-mobile-style="flex-direction: column;">
+      <div id="colA" style="width:300px;height:80px;background:#eee;" data-mobile-style="width:100%;"></div>
+      <div id="colB" style="width:300px;height:80px;background:#ddd;" data-mobile-style="width:100%;"></div>
+    </div>`;
+
+  await page.setViewportSize({ width: 900, height: 1200 }); // desktop viewport throughout
+  await page.setContent(flexDoc(flex, WIDTH));
+  await page.addScriptTag({ content: COMPILE_BUNDLE });
+
+  const r = await page.evaluate(() => {
+    const c = (window as any).__compile;
+    const desktop = c.measureCanvas();
+    const mobile = c.measureMobile();
+    const find = (tree: any, id: string): any => {
+      let hit: any = null;
+      const walk = (n: any): void => {
+        if (n.id === id) hit = n;
+        n.children.forEach(walk);
+      };
+      walk(tree.root);
+      return hit;
+    };
+    return {
+      mobileMeasured: mobile !== null,
+      dGapY: Math.abs(
+        find(desktop, "colA").rect.y - find(desktop, "colB").rect.y
+      ),
+      mColAY: find(mobile, "colA").rect.y,
+      mColBY: find(mobile, "colB").rect.y,
+      body: c.emit(desktop, mobile),
+      media: c.collectMediaQuery(desktop, mobile),
+    };
+  });
+
+  expect(r.mobileMeasured).toBe(true);
+  // Desktop: side by side. Mobile (via data-mobile-style): stacked.
+  expect(r.dGapY).toBeLessThanOrEqual(POS_TOLERANCE);
+  expect(r.mColBY).toBeGreaterThan(r.mColAY + 40);
+  // ...and that observed stack drives the responsive output.
+  expect(r.body).toContain("pc-col");
+  expect(r.media).toContain("@media");
 });

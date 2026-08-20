@@ -91,19 +91,25 @@ export default defineComponent({
   justify-content: center;
   min-height: 100%;
   padding: 24px 0 100px;
+  /* Let the fixed-width frame scroll rather than shrink when the pane is narrow, so the
+     email keeps rendering at the chosen breakpoint. */
+  overflow-x: auto;
 }
 
+/* Fixed widths so the preview reproduces the real render, not an in-between one: the email
+   only shows its desktop layout at ~620px+, and its mobile layout below that. A fluid frame
+   would render the email compressed in a narrow pane and diverge from the exported HTML. */
 .preview__frame {
   border: 0;
-  width: 100%;
-  max-width: 640px;
+  width: 700px;
+  flex: 0 0 auto;
   height: calc(100vh - 140px);
   background: #ffffff;
-  transition: max-width 0.2s ease;
+  transition: width 0.2s ease;
 }
 
 .preview__frame.mobile {
-  max-width: 375px;
+  width: 375px;
 }
 
 .preview__empty {

@@ -27,8 +27,11 @@ export default defineComponent({
 
     const disabled = ref(false);
 
-    const downloadProjectHTML = () => {
+    const downloadProjectHTML = async () => {
       disabled.value = true;
+      // Compile-and-store the current Canvas first so the backend serves a fresh Compiled
+      // email HTML (ADR-0005: recompile before download).
+      await store.dispatch("canvas/recompileAndStore");
       store
         .dispatch("connectors/downloadProject")
         .then(() => {

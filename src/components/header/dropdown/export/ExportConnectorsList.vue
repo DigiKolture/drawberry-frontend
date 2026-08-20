@@ -34,9 +34,13 @@ export default defineComponent({
       return store.getters["connectors/connections"];
     });
 
-    const exportProject = (connector: string) => {
+    const exportProject = async (connector: string) => {
       disabled.value = true;
       current.value = connector;
+      // Compile-and-store the current Canvas first, so the backend serves a fresh Compiled
+      // email HTML (ADR-0005: recompile before export). Without this an as-yet-uncompiled
+      // project would export with a "not compiled" error.
+      await store.dispatch("canvas/recompileAndStore");
       store
         .dispatch("connectors/exportProject", {
           connector,

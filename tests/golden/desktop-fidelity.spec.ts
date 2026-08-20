@@ -180,6 +180,30 @@ test("multi-column row: two columns stay side by side at measured widths", async
   expect(t.colB.x).toBeGreaterThan(t.colA.x + 100);
 });
 
+test("container padding: a padded space-between header stays flush within its padding", async ({
+  page,
+}) => {
+  // A coloured panel with side padding, directly holding a space-between row — the real
+  // header shape. The emitter must reproduce the padding, not collapse the columns to the
+  // panel edges.
+  const flex = `
+    <div id="bg" style="padding:20px 35px;background:#eee;">
+      <div id="header" style="display:flex;justify-content:space-between;align-items:center;">
+        <div id="logo" style="width:40px;height:40px;background:#333;"></div>
+        <div id="social" style="width:108px;height:24px;background:#999;"></div>
+      </div>
+    </div>`;
+  const { flex: f, tables: t } = await compileAndMeasure(page, flex);
+  // Logo inset by the left padding; social flush to the right padding edge — matching flex.
+  expect(Math.abs(f.logo.x - t.logo.x)).toBeLessThanOrEqual(POS_TOLERANCE);
+  expect(
+    Math.abs(f.social.x + f.social.width - (t.social.x + t.social.width))
+  ).toBeLessThanOrEqual(POS_TOLERANCE);
+  // Padding is preserved (not collapsed to the container edges).
+  expect(t.logo.x).toBeGreaterThan(20);
+  expect(t.social.x + t.social.width).toBeLessThan(WIDTH - 20);
+});
+
 test("centered button stays centered (the original reported defect)", async ({
   page,
 }) => {

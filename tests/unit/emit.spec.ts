@@ -270,6 +270,29 @@ describe("emit(MeasuredTree)", () => {
       expect(style).toContain("color: rgb(17, 17, 17)");
     });
 
+    it("keeps a quoted font-family from breaking the style attribute", () => {
+      const t = tree(
+        600,
+        node("root", [0, 0, 600, 40], {
+          id: "root",
+          children: [
+            node("text", [0, 0, 600, 40], {
+              id: "title",
+              text: "Hi",
+              // getComputedStyle returns font-family with double quotes.
+              styles: { fontFamily: '"DM Sans", Helvetica, Arial, sans-serif' },
+            }),
+          ],
+        })
+      );
+      const html = emit(t);
+      // The raw output must not carry a double quote that would terminate style="...".
+      expect(html).not.toContain('"DM Sans"');
+      // cheerio parses the attribute intact, and it still names the font.
+      const style = load(html)("#title").attr("style") || "";
+      expect(style).toContain("font-family: 'DM Sans', Helvetica");
+    });
+
     it("emits a bare visual box with its measured height and background", () => {
       const t = tree(
         600,

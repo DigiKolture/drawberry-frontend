@@ -66,12 +66,19 @@ const escapeHtml = (text: string): string =>
 const escapeAttr = (value: string): string =>
   value.replace(/&/g, "&amp;").replace(/"/g, "&quot;");
 
-/** Build an inline style string from ordered [prop, value] pairs, skipping empties. */
+/**
+ * Build an inline style string from ordered [prop, value] pairs, skipping empties. Measured
+ * CSS values can contain double quotes (font-family: "DM Sans", …); since the result is
+ * placed in a double-quoted style="…" attribute, those quotes are normalized to single
+ * quotes so they don't terminate the attribute and drop the whole declaration. Single quotes
+ * are valid CSS and safe in every email client.
+ */
 const styleString = (pairs: Array<[string, string | undefined]>): string =>
   pairs
     .filter(([, value]) => value !== undefined && value !== "")
     .map(([prop, value]) => `${prop}: ${value};`)
-    .join(" ");
+    .join(" ")
+    .replace(/"/g, "'");
 
 const fontStyle = (styles: MeasuredStyles): string =>
   styleString([
@@ -389,6 +396,11 @@ const emitRow = (
   const bandTop = rowTop(row);
   const bandBottom = rowBottom(row);
   const cells: string[] = [];
+  // Reproduce the parent's horizontal padding as leading/trailing spacer cells so the
+  // columns keep their measured x-positions (e.g. a space-between header stays flush to the
+  // edges) instead of collapsing to the cell edge.
+  const leadPad = row[0].rect.x - parent.rect.x;
+  if (leadPad > ROW_TOLERANCE) cells.push(spacerCell("width", leadPad));
   row.forEach((child, index) => {
     const gap = columnGap(row, index);
     if (gap > 0) cells.push(spacerCell("width", gap));
@@ -401,6 +413,10 @@ const emitRow = (
       `<td${widthAttr} valign="${valign}">${emitChild(child, ctx)}</td>`
     );
   });
+  const last = row[row.length - 1];
+  const trailPad =
+    parent.rect.x + parent.rect.width - (last.rect.x + last.rect.width);
+  if (trailPad > ROW_TOLERANCE) cells.push(spacerCell("width", trailPad));
   return `<tr>${cells.join("")}</tr>`;
 };
 
@@ -415,6 +431,11 @@ const emitContainer = (
 ): string => {
   const rows = bucketRows(node.children);
   const body: string[] = [];
+  // Reproduce the container's top padding (space above the first child).
+  if (rows.length > 0) {
+    const padTop = rowTop(rows[0]) - node.rect.y;
+    if (padTop > ROW_TOLERANCE) body.push(spacerRow(padTop));
+  }
   rows.forEach((row, index) => {
     if (index > 0) {
       const gap = rowTop(row) - rowBottom(rows[index - 1]);
@@ -422,6 +443,12 @@ const emitContainer = (
     }
     body.push(emitRow(row, node, ctx));
   });
+  // ...and its bottom padding (space below the last child).
+  if (rows.length > 0) {
+    const padBottom =
+      node.rect.y + node.rect.height - rowBottom(rows[rows.length - 1]);
+    if (padBottom > ROW_TOLERANCE) body.push(spacerRow(padBottom));
+  }
 
   // Fluid/spongy: the table is width:100% capped at the measured px, so it holds the
   // measured width on desktop but shrinks on narrow (non-Outlook) clients instead of forcing

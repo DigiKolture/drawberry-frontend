@@ -30,6 +30,7 @@ const readStyles = (style: CSSStyleDeclaration): MeasuredStyles => ({
   fontWeight: style.fontWeight || undefined,
   lineHeight: style.lineHeight || undefined,
   textAlign: style.textAlign || undefined,
+  textDecoration: style.textDecorationLine || undefined,
   borderRadius: normalizeZero(style.borderRadius),
   paddingTop: normalizeZero(style.paddingTop),
   paddingRight: normalizeZero(style.paddingRight),

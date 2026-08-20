@@ -329,6 +329,47 @@ describe("emit(MeasuredTree)", () => {
       const $ = load(emit(t));
       expect($("a#unsub").attr("href")).toBe("https://example.com/unsub");
       expect($("div#unsub").length).toBe(0);
+      // Links underline by default; with no measured decoration we reassert "none".
+      expect($("a#unsub").attr("style")).toContain("text-decoration: none");
+    });
+
+    it("reproduces a link's measured text-decoration (no unwanted underline)", () => {
+      const noUnderline = tree(
+        600,
+        node("root", [0, 0, 600, 20], {
+          id: "root",
+          children: [
+            node("text", [0, 0, 600, 20], {
+              id: "link",
+              text: "Read",
+              href: "https://example.com",
+              styles: { textDecoration: "none" },
+            }),
+          ],
+        })
+      );
+      expect(load(emit(noUnderline))("#link").attr("style")).toContain(
+        "text-decoration: none"
+      );
+
+      const underlined = tree(
+        600,
+        node("root", [0, 0, 600, 20], {
+          id: "root",
+          children: [
+            node("text", [0, 0, 600, 20], {
+              id: "link",
+              text: "Read",
+              href: "https://example.com",
+              styles: { textDecoration: "underline" },
+            }),
+          ],
+        })
+      );
+      // A design that intentionally underlines is preserved.
+      expect(load(emit(underlined))("#link").attr("style")).toContain(
+        "text-decoration: underline"
+      );
     });
   });
 

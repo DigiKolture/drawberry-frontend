@@ -42,6 +42,8 @@ export interface MeasuredStyles {
   fontWeight?: string;
   lineHeight?: string;
   textAlign?: string;
+  /** e.g. "none" / "underline" — reproduced on links, which otherwise underline by default. */
+  textDecoration?: string;
   borderRadius?: string;
   paddingTop?: string;
   paddingRight?: string;

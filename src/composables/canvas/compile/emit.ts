@@ -80,15 +80,19 @@ const styleString = (pairs: Array<[string, string | undefined]>): string =>
     .join(" ")
     .replace(/"/g, "'");
 
+const fontStylePairs = (
+  styles: MeasuredStyles
+): Array<[string, string | undefined]> => [
+  ["font-family", styles.fontFamily],
+  ["font-size", styles.fontSize],
+  ["font-weight", styles.fontWeight],
+  ["line-height", styles.lineHeight],
+  ["color", forceLightColor(styles.color)],
+  ["text-align", styles.textAlign],
+];
+
 const fontStyle = (styles: MeasuredStyles): string =>
-  styleString([
-    ["font-family", styles.fontFamily],
-    ["font-size", styles.fontSize],
-    ["font-weight", styles.fontWeight],
-    ["line-height", styles.lineHeight],
-    ["color", forceLightColor(styles.color)],
-    ["text-align", styles.textAlign],
-  ]);
+  styleString(fontStylePairs(styles));
 
 const buttonStyle = (styles: MeasuredStyles): string =>
   styleString([
@@ -187,15 +191,21 @@ const emitLeaf = (node: MeasuredNode): string => {
     case "text":
     default: {
       const style = fontStyle(node.styles);
-      const styleAttr = style ? ` style="${style}"` : "";
       const content = escapeHtml(node.text || "");
       // A text leaf that is itself a link keeps its href (e.g. footer "Unsubscribe", header
-      // nav links) rather than being flattened to inert text.
+      // nav links) rather than being flattened to inert text. Links underline by default, so
+      // reproduce the Canvas's measured text-decoration (usually "none") to avoid an
+      // unwanted underline.
       if (node.href) {
+        const linkStyle = styleString([
+          ...fontStylePairs(node.styles),
+          ["text-decoration", node.styles.textDecoration || "none"],
+        ]);
         return `<a${idAttr(node.id)} href="${escapeAttr(
           node.href
-        )}"${styleAttr}>${content}</a>`;
+        )}" style="${linkStyle}">${content}</a>`;
       }
+      const styleAttr = style ? ` style="${style}"` : "";
       return `<div${idAttr(node.id)}${styleAttr}>${content}</div>`;
     }
   }

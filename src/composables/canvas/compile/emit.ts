@@ -350,8 +350,13 @@ const emitHybridRow = (
       );
     }
     const valign = deriveValign(child, bandTop, bandBottom);
+    // Floor the fluid column's max-width: rounding each column up can make the columns sum
+    // to more than the (rounded) container, and inline-block columns wrap on a 1px overflow
+    // (a 3-up row collapsing to 2+1). Flooring guarantees they still fit side by side. The
+    // Outlook ghost cell keeps the exact measured width.
     const w = round(child.rect.width);
-    const colStyle = `display: inline-block; vertical-align: ${valign}; width: 100%; max-width: ${w}px;`;
+    const fluidW = Math.floor(child.rect.width);
+    const colStyle = `display: inline-block; vertical-align: ${valign}; width: 100%; max-width: ${fluidW}px;`;
     parts.push(
       `<!--[if mso]><td width="${w}" valign="${valign}"><![endif]-->` +
         `<div class="${COL_CLASS}" style="${colStyle}">${emitChild(

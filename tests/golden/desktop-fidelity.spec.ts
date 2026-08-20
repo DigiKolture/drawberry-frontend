@@ -348,6 +348,45 @@ test("mobile: a multi-column row restacks to one column, desktop unchanged", asy
   ).toBeLessThanOrEqual(SIZE_TOLERANCE);
 });
 
+test("three-column feature stays 3-up on desktop (no 2+1 wrap from rounding)", async ({
+  page,
+}) => {
+  // Three columns that fit exactly in a 560px band on the Canvas (~186.67px each) but stack
+  // on mobile. Rounding each column up to 187 sums to 561 > 560 and, as inline-block, the
+  // third would wrap to a second row. The emitter must keep them 3-up on desktop.
+  const flex = `
+    <div id="items" style="display:flex;flex-wrap:wrap;max-width:560px;margin:0 auto;">
+      <div id="c1" style="flex:1 1 180px;min-width:180px;height:60px;background:#eee;"></div>
+      <div id="c2" style="flex:1 1 180px;min-width:180px;height:60px;background:#ddd;"></div>
+      <div id="c3" style="flex:1 1 180px;min-width:180px;height:60px;background:#ccc;"></div>
+    </div>`;
+
+  const desktop = await renderFlex(page, flex, WIDTH);
+  const mobile = await renderFlex(page, flex, MOBILE_WIDTH);
+  // Sanity: 3-up on the desktop Canvas, stacked on mobile.
+  expect(
+    Math.max(
+      Math.abs(desktop.rects.c1.y - desktop.rects.c2.y),
+      Math.abs(desktop.rects.c1.y - desktop.rects.c3.y)
+    )
+  ).toBeLessThanOrEqual(POS_TOLERANCE);
+  expect(mobile.rects.c3.y).toBeGreaterThan(mobile.rects.c1.y + 30);
+
+  const { body, media } = await page.evaluate(
+    ([d, m]) => {
+      const c = (window as any).__compile;
+      return { body: c.emit(d, m), media: c.collectMediaQuery(d, m) };
+    },
+    [desktop.tree, mobile.tree]
+  );
+
+  // Desktop tables: all three columns share a row (no 2+1 wrap).
+  const t = await renderTables(page, body, media, WIDTH);
+  expect(Math.abs(t.c1.y - t.c2.y)).toBeLessThanOrEqual(POS_TOLERANCE);
+  expect(Math.abs(t.c1.y - t.c3.y)).toBeLessThanOrEqual(POS_TOLERANCE);
+  expect(t.c3.x).toBeGreaterThan(t.c2.x);
+});
+
 test("measureMobile observes the Canvas mobile layout from data-mobile-style", async ({
   page,
 }) => {

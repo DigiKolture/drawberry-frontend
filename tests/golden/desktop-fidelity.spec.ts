@@ -68,7 +68,11 @@ const tablesDoc = (
   `<div id="tables-root" style="width:${width}px;">${body}</div>` +
   `</body></html>`;
 
-/** Measure every id'd element's box relative to its container root. */
+/**
+ * Measure every id'd element's box relative to its container root. The two-layout output
+ * has duplicate ids (a desktop copy and a mobile copy), so we record only VISIBLE elements
+ * (skip zero-size / display:none) — the copy the current viewport shows wins.
+ */
 const measureIds = (
   page: Page,
   rootSel: string
@@ -79,6 +83,7 @@ const measureIds = (
     const out: Record<string, Rect> = {};
     root.querySelectorAll("[id]").forEach((el) => {
       const r = el.getBoundingClientRect();
+      if (r.width === 0 && r.height === 0) return; // hidden copy of a two-layout section
       out[(el as HTMLElement).id] = {
         x: r.left - base.left,
         y: r.top - base.top,
@@ -387,6 +392,51 @@ test("three-column feature stays 3-up on desktop (no 2+1 wrap from rounding)", a
   expect(t.c3.x).toBeGreaterThan(t.c2.x);
 });
 
+test("mobile copy reproduces stacking AND centering (space-between header)", async ({
+  page,
+}) => {
+  // The header2 shape: a space-between row whose data-mobile-style makes each wrapper
+  // full-width and centres its content. On mobile the wrappers stack AND the logo/social
+  // centre — the exact behaviour the fluid-hybrid approach couldn't reproduce.
+  const flex = `
+    <div id="hdr" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;padding:20px 35px;background:#eee;" data-mobile-style="justify-content:center;padding:20px;">
+      <div id="logoWrap" style="display:flex;justify-content:flex-start;flex:0 0 auto;" data-mobile-style="width:100%;justify-content:center;">
+        <div id="logo" style="width:40px;height:40px;background:#c33;"></div>
+      </div>
+      <div id="socialWrap" style="display:flex;justify-content:flex-end;flex:0 0 auto;" data-mobile-style="width:100%;justify-content:center;">
+        <div id="social" style="width:108px;height:24px;background:#39c;"></div>
+      </div>
+    </div>`;
+
+  await page.setViewportSize({ width: 900, height: 1200 });
+  await page.setContent(flexDoc(flex, WIDTH));
+  await page.addScriptTag({ content: COMPILE_BUNDLE });
+  const { body, media } = await page.evaluate(() => {
+    const c = (window as any).__compile;
+    const desktop = c.measureCanvas();
+    const mobile = c.measureMobile();
+    return {
+      body: c.emit(desktop, mobile),
+      media: c.collectMediaQuery(desktop, mobile),
+    };
+  });
+  expect(media).toContain("@media");
+
+  // Desktop: logo left, social right — same row (they differ by a few px because the
+  // shorter one is vertically centred), not stacked.
+  const tDesktop = await renderTables(page, body, media, WIDTH);
+  expect(Math.abs(tDesktop.logo.y - tDesktop.social.y)).toBeLessThanOrEqual(20);
+  expect(tDesktop.social.x).toBeGreaterThan(tDesktop.logo.x + 100);
+
+  // Mobile: stacked (logo above social) AND both horizontally centred in the 375px column.
+  const tMobile = await renderTables(page, body, media, MOBILE_WIDTH);
+  expect(tMobile.social.y).toBeGreaterThan(tMobile.logo.y + 30);
+  const logoCentre = tMobile.logo.x + tMobile.logo.width / 2;
+  const socialCentre = tMobile.social.x + tMobile.social.width / 2;
+  expect(Math.abs(logoCentre - MOBILE_WIDTH / 2)).toBeLessThanOrEqual(10);
+  expect(Math.abs(socialCentre - MOBILE_WIDTH / 2)).toBeLessThanOrEqual(10);
+});
+
 test("measureMobile observes the Canvas mobile layout from data-mobile-style", async ({
   page,
 }) => {
@@ -433,7 +483,8 @@ test("measureMobile observes the Canvas mobile layout from data-mobile-style", a
   // Desktop: side by side. Mobile (via data-mobile-style): stacked.
   expect(r.dGapY).toBeLessThanOrEqual(POS_TOLERANCE);
   expect(r.mColBY).toBeGreaterThan(r.mColAY + 40);
-  // ...and that observed stack drives the responsive output.
-  expect(r.body).toContain("pc-col");
+  // ...and that observed stack drives the responsive (two-layout) output.
+  expect(r.body).toContain("pc-d");
+  expect(r.body).toContain("pc-m");
   expect(r.media).toContain("@media");
 });

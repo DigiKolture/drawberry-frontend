@@ -475,21 +475,31 @@ describe("emit(MeasuredTree)", () => {
     });
   });
 
-  describe("responsive: hybrid/spongy stacking from the mobile measurement", () => {
-    // Two 290px columns side by side on desktop (shared y); on mobile they stack (distinct
-    // y). The emitter must OBSERVE the stacking from the mobile tree, not infer it.
+  describe("responsive: two-layout from the mobile measurement", () => {
+    // A section ("hdr") with two 290px columns side by side on desktop; on mobile the same
+    // ids stack (distinct y) and go full-width. The emitter must OBSERVE the reflow from the
+    // mobile tree and emit BOTH layouts, not infer or approximate it.
     const desktop = tree(
       600,
       node("root", [0, 0, 600, 120], {
         id: "root",
         children: [
-          node("container", [0, 0, 290, 120], {
-            id: "colA",
-            children: [node("text", [0, 0, 290, 40], { id: "a", text: "A" })],
-          }),
-          node("container", [310, 0, 290, 120], {
-            id: "colB",
-            children: [node("text", [310, 0, 290, 40], { id: "b", text: "B" })],
+          node("container", [0, 0, 600, 120], {
+            id: "hdr",
+            children: [
+              node("container", [0, 0, 290, 120], {
+                id: "colA",
+                children: [
+                  node("text", [0, 0, 290, 40], { id: "a", text: "A" }),
+                ],
+              }),
+              node("container", [310, 0, 290, 120], {
+                id: "colB",
+                children: [
+                  node("text", [310, 0, 290, 40], { id: "b", text: "B" }),
+                ],
+              }),
+            ],
           }),
         ],
       })
@@ -499,8 +509,16 @@ describe("emit(MeasuredTree)", () => {
       node("root", [0, 0, 375, 240], {
         id: "root",
         children: [
-          node("container", [0, 0, 375, 120], { id: "colA", children: [] }),
-          node("container", [0, 120, 375, 120], { id: "colB", children: [] }),
+          node("container", [0, 0, 375, 240], {
+            id: "hdr",
+            children: [
+              node("container", [0, 0, 375, 120], { id: "colA", children: [] }),
+              node("container", [0, 120, 375, 120], {
+                id: "colB",
+                children: [],
+              }),
+            ],
+          }),
         ],
       })
     );
@@ -509,50 +527,68 @@ describe("emit(MeasuredTree)", () => {
       node("root", [0, 0, 375, 120], {
         id: "root",
         children: [
-          node("container", [0, 0, 185, 120], { id: "colA", children: [] }),
-          node("container", [190, 0, 185, 120], { id: "colB", children: [] }),
+          node("container", [0, 0, 375, 120], {
+            id: "hdr",
+            children: [
+              node("container", [0, 0, 185, 120], { id: "colA", children: [] }),
+              node("container", [190, 0, 185, 120], {
+                id: "colB",
+                children: [],
+              }),
+            ],
+          }),
         ],
       })
     );
 
-    it("emits fluid-hybrid columns for a row that stacks on mobile", () => {
-      const html = emit(desktop, mobileStacked);
-      const $ = load(html);
-      // Two fluid columns carrying the measured desktop max-width, wrapped for stacking.
-      expect($("div.pc-col").length).toBe(2);
-      const colAStyle = $("#colA").closest("div.pc-col").attr("style") || "";
-      expect(colAStyle).toContain("max-width: 290px");
-      expect(colAStyle).toContain("display: inline-block");
+    it("emits both a desktop copy and a mobile copy for a section that reflows", () => {
+      const $ = load(emit(desktop, mobileStacked));
+      expect($("div.pc-d").length).toBe(1);
+      expect($("div.pc-m").length).toBe(1);
+      // The mobile copy is hidden by default and from Outlook.
+      const mStyle = $("div.pc-m").attr("style") || "";
+      expect(mStyle).toContain("display: none");
+      expect(mStyle).toContain("mso-hide: all");
     });
 
-    it("wraps the hybrid columns in MSO ghost tables so Outlook keeps fixed widths", () => {
-      const html = emit(desktop, mobileStacked);
-      expect(html).toContain("<!--[if mso]>");
-      expect(html).toContain('<td width="290"');
+    it("the desktop copy keeps the columns side by side at their measured widths", () => {
+      const $ = load(emit(desktop, mobileStacked));
+      const desktopColA = $("div.pc-d #colA");
+      expect(desktopColA.length).toBe(1);
+      expect(desktopColA.closest("td").attr("width")).toBe("290");
     });
 
-    it("leaves a row that stays side-by-side on mobile as plain fixed cells", () => {
+    it("the mobile copy is the measured mobile layout (stacked, full width)", () => {
+      const $ = load(emit(desktop, mobileStacked));
+      const mobileColA = $("div.pc-m #colA");
+      const mobileColB = $("div.pc-m #colB");
+      expect(mobileColA.length).toBe(1);
+      expect(mobileColB.length).toBe(1);
+      // Full-width mobile columns → no fixed 290 width column baked here.
+      expect(mobileColA.closest("td").attr("width")).toBeUndefined();
+    });
+
+    it("leaves a section that stays side-by-side on mobile as a single layout", () => {
       const html = emit(desktop, mobileSideBySide);
-      expect(html).not.toContain("pc-col");
-      // still baked at the measured width via a normal cell
+      expect(html).not.toContain("pc-d");
+      expect(html).not.toContain("pc-m");
       expect(load(html)("#colA").closest("td").attr("width")).toBe("290");
     });
 
-    it("with no mobile tree, output is unchanged desktop (backward compatible)", () => {
+    it("with no mobile tree, output is the plain desktop layout (backward compatible)", () => {
       expect(emit(desktop)).toBe(emit(desktop, undefined));
-      expect(emit(desktop)).not.toContain("pc-col");
+      expect(emit(desktop)).not.toContain("pc-d");
     });
 
-    it("generates a measured @media block that owns the stacking", () => {
+    it("generates the measured @media toggle for a reflowing design", () => {
       const css = collectMediaQuery(desktop, mobileStacked);
       // Breakpoint sits just below the 600px content width so desktop stays desktop.
       expect(css).toMatch(/@media[^{]*max-width:\s*599px/);
-      expect(css).toContain(".pc-col");
-      expect(css).toContain("100% !important");
-      expect(css).toContain(".pc-gap");
+      expect(css).toContain(".pc-d { display: none !important; }");
+      expect(css).toContain(".pc-m { display: block !important; }");
     });
 
-    it("emits no @media when nothing stacks on mobile", () => {
+    it("emits no @media when nothing reflows on mobile", () => {
       expect(collectMediaQuery(desktop, mobileSideBySide)).toBe("");
       expect(collectMediaQuery(desktop, undefined)).toBe("");
     });

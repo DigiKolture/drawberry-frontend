@@ -9,8 +9,9 @@ import { MeasuredNode, MeasuredStyles, MeasuredTree } from "./measured-tree";
 //   - gaps           = measured pixel distance between boxes
 // Buttons are emitted as bulletproof VML (Outlook rounded-rect + a styled <a> fallback)
 // from their measured dimensions, and colours are forced light (off-white/off-black, no
-// dark @media — ADR-0006). Given a mobile MeasuredTree, rows the mobile render shows stacked
-// are emitted fluid-hybrid (spongy) and a measured @media block owns the restacking.
+// dark @media — ADR-0006). Given a mobile MeasuredTree, each section that reflows on mobile
+// is emitted as two layouts — desktop tables and mobile tables (from the mobile measurement)
+// — toggled by a measured @media block (see collectMediaQuery).
 // This function stays browser-free so it can be unit-tested against synthetic fixtures.
 
 /** Boxes within this many px of each other vertically count as the same row. */
@@ -211,10 +212,17 @@ const emitLeaf = (node: MeasuredNode): string => {
   }
 };
 
-/** Content for one child: a nested table for containers, cell content for leaves. */
-const emitChild = (node: MeasuredNode, ctx: EmitContext): string =>
+/**
+ * A function that renders one measured node to HTML. It's threaded through
+ * emitContainer/emitRow so the same layout code can emit either a plain single layout or
+ * the responsive (desktop + mobile) variant, depending on which emitter is passed.
+ */
+type ChildEmitter = (node: MeasuredNode) => string;
+
+/** Plain single-layout child emitter: a nested table for containers, cell content for leaves. */
+const emitChildSingle: ChildEmitter = (node) =>
   node.children.length > 0 && node.role !== "text"
-    ? emitContainer(node, ctx)
+    ? emitContainer(node, node.rect.width, emitChildSingle)
     : emitLeaf(node);
 
 /** Group siblings into rows by measured vertical overlap; sort each row left-to-right. */
@@ -284,18 +292,18 @@ const columnGap = (row: MeasuredNode[], index: number): number =>
     ? 0
     : row[index].rect.x - (row[index - 1].rect.x + row[index - 1].rect.width);
 
-// ── Responsive: hybrid/spongy stacking (ticket 03) ────────────────────────────────────
+// ── Responsive: two-layout (desktop + measured mobile) ────────────────────────────────
 //
-// Compilation measures the design at desktop AND at a hidden mobile width. A desktop row of
-// columns that the mobile measurement shows STACKED (distinct y-tops) is emitted as a
-// fluid-hybrid row: MSO ghost <td> cells hold Outlook at the fixed measured widths, while
-// inline-block `<div class="pc-col">` columns (width:100%, max-width:measured) shrink fluidly
-// and a single measured @media block (collectMediaQuery) forces the full-width stack. Which
-// rows stack is observed, never inferred (ADR-0004).
-
-// `pc-` = the project's email class prefix (matches the chrome's existing pc-* classes).
-const COL_CLASS = "pc-col";
-const GAP_CLASS = "pc-gap";
+// Compilation measures the design at desktop AND at a hidden mobile width. Where a section
+// REFLOWS (its columns restack on mobile), we emit BOTH layouts — the desktop tables from
+// the desktop measurement and the mobile tables from the mobile measurement — and toggle
+// between them with a measured @media block. Because the mobile copy is emitted from the
+// mobile measurement, it reproduces the mobile layout faithfully (stacking AND alignment/
+// centering), not just a stack. Outlook (which ignores @media) is pinned to the desktop copy
+// via `mso-hide:all` on the mobile copy. Which sections reflow is observed, never inferred
+// (ADR-0004). `pc-` matches the chrome's existing email class prefix.
+const D_CLASS = "pc-d"; // desktop copy: shown by default, hidden on mobile
+const M_CLASS = "pc-m"; // mobile copy: hidden by default + in Outlook, shown on mobile
 
 interface EmitContext {
   /** Measured mobile geometry keyed by id — present only when a mobile render was measured. */
@@ -333,61 +341,11 @@ const rowStacksOnMobile = (row: MeasuredNode[], ctx: EmitContext): boolean => {
   return Math.max(...ys) - Math.min(...ys) > ROW_TOLERANCE;
 };
 
-/**
- * A fluid-hybrid row: MSO ghost <td>s pin Outlook to the fixed measured widths, and
- * inline-block `pc-col` divs (fixed max-width, fluid below it) stack via the measured @media.
- */
-const emitHybridRow = (
-  row: MeasuredNode[],
-  parent: MeasuredNode,
-  ctx: EmitContext
-): string => {
-  const bandTop = rowTop(row);
-  const bandBottom = rowBottom(row);
-  const parts: string[] = [
-    `<!--[if mso]><table role="presentation" width="${round(
-      parent.rect.width
-    )}" border="0" cellpadding="0" cellspacing="0"><tr><![endif]-->`,
-  ];
-  row.forEach((child, index) => {
-    const gap = columnGap(row, index);
-    if (gap > 0) {
-      parts.push(
-        `<!--[if mso]><td width="${round(gap)}"></td><![endif]-->` +
-          `<div class="${GAP_CLASS}" style="display: inline-block; width: ${round(
-            gap
-          )}px; font-size: 0; line-height: 0;">&nbsp;</div>`
-      );
-    }
-    const valign = deriveValign(child, bandTop, bandBottom);
-    // Floor the fluid column's max-width: rounding each column up can make the columns sum
-    // to more than the (rounded) container, and inline-block columns wrap on a 1px overflow
-    // (a 3-up row collapsing to 2+1). Flooring guarantees they still fit side by side. The
-    // Outlook ghost cell keeps the exact measured width.
-    const w = round(child.rect.width);
-    const fluidW = Math.floor(child.rect.width);
-    const colStyle = `display: inline-block; vertical-align: ${valign}; width: 100%; max-width: ${fluidW}px;`;
-    parts.push(
-      `<!--[if mso]><td width="${w}" valign="${valign}"><![endif]-->` +
-        `<div class="${COL_CLASS}" style="${colStyle}">${emitChild(
-          child,
-          ctx
-        )}</div>` +
-        `<!--[if mso]></td><![endif]-->`
-    );
-  });
-  parts.push(`<!--[if mso]></tr></table><![endif]-->`);
-  // font-size:0 collapses the whitespace between the inline-block columns.
-  return `<tr><td align="left" style="font-size: 0;">${parts.join(
-    ""
-  )}</td></tr>`;
-};
-
-/** Emit a single row of columns, with measured horizontal gap spacers between them. */
+/** Emit a single row of columns (single layout), with measured gap + padding spacers. */
 const emitRow = (
   row: MeasuredNode[],
   parent: MeasuredNode,
-  ctx: EmitContext
+  emitChild: ChildEmitter
 ): string => {
   // A lone child narrower than its parent is positioned by alignment (a centered button
   // stays centered) rather than a baked column width.
@@ -397,15 +355,8 @@ const emitRow = (
   ) {
     const align = deriveAlign(row[0], parent);
     return `<tr><td align="${align}" valign="top">${emitChild(
-      row[0],
-      ctx
+      row[0]
     )}</td></tr>`;
-  }
-
-  // A multi-column row that the mobile render shows stacked becomes fluid-hybrid so it can
-  // restack; otherwise it stays fixed cells (desktop-faithful, and Outlook-safe).
-  if (row.length > 1 && rowStacksOnMobile(row, ctx)) {
-    return emitHybridRow(row, parent, ctx);
   }
 
   const bandTop = rowTop(row);
@@ -424,9 +375,7 @@ const emitRow = (
     // child fills the cell, and pinning it would block fluid shrink.
     const widthAttr =
       row.length > 1 ? ` width="${round(child.rect.width)}"` : "";
-    cells.push(
-      `<td${widthAttr} valign="${valign}">${emitChild(child, ctx)}</td>`
-    );
+    cells.push(`<td${widthAttr} valign="${valign}">${emitChild(child)}</td>`);
   });
   const last = row[row.length - 1];
   const trailPad =
@@ -441,8 +390,8 @@ const emitRow = (
  */
 const emitContainer = (
   node: MeasuredNode,
-  ctx: EmitContext,
-  width = node.rect.width
+  width: number,
+  emitChild: ChildEmitter
 ): string => {
   const rows = bucketRows(node.children);
   const body: string[] = [];
@@ -456,7 +405,7 @@ const emitContainer = (
       const gap = rowTop(row) - rowBottom(rows[index - 1]);
       if (gap > 0) body.push(spacerRow(gap));
     }
-    body.push(emitRow(row, node, ctx));
+    body.push(emitRow(row, node, emitChild));
   });
   // ...and its bottom padding (space below the last child).
   if (rows.length > 0) {
@@ -465,10 +414,9 @@ const emitContainer = (
     if (padBottom > ROW_TOLERANCE) body.push(spacerRow(padBottom));
   }
 
-  // Fluid/spongy: the table is width:100% capped at the measured px, so it holds the
-  // measured width on desktop but shrinks on narrow (non-Outlook) clients instead of forcing
-  // a min-width the viewport can't honour. Outlook (which ignores max-width) is held to the
-  // fixed widths by the MSO ghost tables in the hybrid rows.
+  // Fluid: width:100% capped at the measured px, so it holds the measured width on desktop
+  // but shrinks on a narrow (non-Outlook) client instead of forcing a min-width the viewport
+  // can't honour. Outlook is pinned to the desktop copy by the two-layout toggle.
   const tableStyle = styleString([
     ["border-collapse", "collapse"],
     ["width", "100%"],
@@ -483,35 +431,71 @@ const emitContainer = (
 };
 
 /**
- * Emit the Compiled email body (nested tables) from the desktop MeasuredTree. When a mobile
- * MeasuredTree is supplied, rows the mobile render shows stacked are emitted fluid-hybrid so
- * they restack on narrow screens (paired with collectMediaQuery); without it the output is
- * the plain desktop layout. The outer table is baked to the measured content width. Chrome
- * (outer shell, head, MSO conditionals, the @media block) is wrapped around this separately.
+ * Does this container REFLOW on mobile — i.e. does any of its multi-column rows restack
+ * (observed from the mobile measurement)? Such a container is emitted as two layouts.
  */
-export const emit = (desktop: MeasuredTree, mobile?: MeasuredTree): string => {
-  const ctx: EmitContext = {
-    mobileIndex: mobile ? buildIndex(mobile) : undefined,
-  };
-  return emitContainer(desktop.root, ctx, desktop.contentWidth);
-};
-
-/** Any row anywhere in the tree that stacks on mobile? Drives whether an @media is needed. */
-const hasStackingRow = (node: MeasuredNode, ctx: EmitContext): boolean => {
-  const rows = bucketRows(node.children);
-  if (rows.some((row) => row.length > 1 && rowStacksOnMobile(row, ctx))) {
-    return true;
-  }
-  return node.children.some(
-    (child) => child.children.length > 0 && hasStackingRow(child, ctx)
+const reflows = (node: MeasuredNode, ctx: EmitContext): boolean => {
+  if (!ctx.mobileIndex || !ctx.mobileIndex.get(node.id)) return false;
+  return bucketRows(node.children).some(
+    (row) => row.length > 1 && rowStacksOnMobile(row, ctx)
   );
 };
 
+/** Wrap the two measured layouts, defaulting to desktop; Outlook keeps desktop (mso-hide). */
+const twoLayout = (desktopHtml: string, mobileHtml: string): string =>
+  `<div class="${D_CLASS}">${desktopHtml}</div>` +
+  `<div class="${M_CLASS}" style="display: none; mso-hide: all;">${mobileHtml}</div>`;
+
 /**
- * The single measured `@media` block that owns mobile stacking (ADR-0004): it collapses the
- * hybrid `pc-col` columns to full width and hides the horizontal `pc-gap` spacers. The
- * breakpoint is the measured desktop content width — stack once the viewport is narrower
- * than the email's desktop column. Returns "" when nothing stacks (or no mobile render).
+ * A child emitter that two-layouts the FIRST container that reflows on mobile — emitting its
+ * desktop tables from the desktop tree and its mobile tables from the mobile tree — and
+ * otherwise descends, so a reflowing section anywhere in the design is caught.
+ */
+const makeResponsiveChildEmitter = (ctx: EmitContext): ChildEmitter => {
+  const emitChild: ChildEmitter = (node) => {
+    if (!(node.children.length > 0 && node.role !== "text"))
+      return emitLeaf(node);
+    // reflows() already confirmed the mobile node exists.
+    if (ctx.mobileIndex && reflows(node, ctx)) {
+      const mobile = ctx.mobileIndex.get(node.id) as MeasuredNode;
+      return twoLayout(
+        emitContainer(node, node.rect.width, emitChildSingle),
+        emitContainer(mobile, mobile.rect.width, emitChildSingle)
+      );
+    }
+    return emitContainer(node, node.rect.width, emitChild);
+  };
+  return emitChild;
+};
+
+/**
+ * Emit the Compiled email body (nested tables) from the desktop MeasuredTree. When a mobile
+ * MeasuredTree is supplied, each section that reflows on mobile is emitted as two layouts —
+ * desktop tables and mobile tables (from the mobile measurement) — toggled by the measured
+ * @media block (collectMediaQuery); without it the output is the plain desktop layout. Chrome
+ * (outer shell, head, MSO conditionals, the @media block) is wrapped around this separately.
+ */
+export const emit = (desktop: MeasuredTree, mobile?: MeasuredTree): string => {
+  if (!mobile) {
+    return emitContainer(desktop.root, desktop.contentWidth, emitChildSingle);
+  }
+  const ctx: EmitContext = { mobileIndex: buildIndex(mobile) };
+  return emitContainer(
+    desktop.root,
+    desktop.contentWidth,
+    makeResponsiveChildEmitter(ctx)
+  );
+};
+
+/** Does any section anywhere in the tree reflow? Drives whether the toggle @media is needed. */
+const hasReflow = (node: MeasuredNode, ctx: EmitContext): boolean =>
+  reflows(node, ctx) || node.children.some((child) => hasReflow(child, ctx));
+
+/**
+ * The measured `@media` block that toggles the desktop/mobile layouts (ADR-0004): below the
+ * measured desktop content width the desktop copy is hidden and the mobile copy shown. The
+ * breakpoint sits just under the content width so a viewport at exactly it still shows
+ * desktop. Returns "" when nothing reflows (or no mobile render).
  */
 export const collectMediaQuery = (
   desktop: MeasuredTree,
@@ -519,14 +503,14 @@ export const collectMediaQuery = (
 ): string => {
   if (!mobile) return "";
   const ctx: EmitContext = { mobileIndex: buildIndex(mobile) };
-  if (!hasStackingRow(desktop.root, ctx)) return "";
+  if (!hasReflow(desktop.root, ctx)) return "";
   // Just below the desktop column width: a viewport at exactly the content width still shows
-  // desktop; anything narrower stacks. (max-width is inclusive.)
+  // desktop; anything narrower switches to the mobile copy. (max-width is inclusive.)
   const breakpoint = round(desktop.contentWidth) - 1;
   return (
     `@media screen and (max-width: ${breakpoint}px) {\n` +
-    `  .${COL_CLASS} { display: block !important; width: 100% !important; max-width: 100% !important; }\n` +
-    `  .${GAP_CLASS} { display: none !important; }\n` +
+    `  .${D_CLASS} { display: none !important; }\n` +
+    `  .${M_CLASS} { display: block !important; }\n` +
     `}`
   );
 };

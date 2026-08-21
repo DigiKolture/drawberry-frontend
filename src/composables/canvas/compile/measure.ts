@@ -143,9 +143,6 @@ const measureElement = (
   return node;
 };
 
-/** The width, in px, of the hidden render used to observe the design's mobile layout. */
-export const MOBILE_RENDER_WIDTH = 375;
-
 /** Measure a root element (its id'd descendants) into a MeasuredTree. */
 const measureRoot = (rootEl: HTMLElement): MeasuredTree | null => {
   const rootRect = rootEl.getBoundingClientRect();
@@ -176,49 +173,4 @@ export const measureCanvas = (
 ): MeasuredTree | null => {
   const rootEl = doc.getElementById(CANVAS_ROOT_ID);
   return rootEl ? measureRoot(rootEl) : null;
-};
-
-/** Overlay each element's `data-mobile-style` onto its inline style, so the clone lays out
- * as the design's mobile breakpoint does. */
-const applyMobileStyles = (root: Element): void => {
-  const nodes = [root, ...Array.from(root.querySelectorAll("*"))];
-  for (const el of nodes) {
-    const mobile = el.getAttribute("data-mobile-style");
-    if (mobile) {
-      const current = el.getAttribute("style") || "";
-      el.setAttribute("style", `${current};${mobile}`);
-    }
-  }
-};
-
-/**
- * Measure the design at a hidden mobile width so its restacking is OBSERVED, not inferred
- * (ADR-0004). Clones the live Canvas offscreen at mobile width, applies the design's
- * `data-mobile-style` overrides, measures, then removes the clone — the visible Canvas is
- * never disturbed. Returns null when the Canvas isn't mounted.
- */
-export const measureMobile = (
-  doc: Document = document,
-  mobileWidth: number = MOBILE_RENDER_WIDTH
-): MeasuredTree | null => {
-  const source = doc.getElementById(CANVAS_ROOT_ID);
-  if (!source) return null;
-
-  const holder = doc.createElement("div");
-  holder.style.cssText = `position: absolute; left: -99999px; top: 0; width: ${mobileWidth}px;`;
-  const clone = source.cloneNode(true) as HTMLElement;
-  // The clone's descendants transiently share ids with the live DOM, but measurement reads
-  // element references directly (getBoundingClientRect, not getElementById), the holder is
-  // synchronous and removed in finally, and duplicated ids carry identical styling — so the
-  // live Canvas is unaffected. Only the root id is stripped, as a belt-and-braces measure.
-  clone.removeAttribute("id");
-  clone.style.width = `${mobileWidth}px`;
-  applyMobileStyles(clone);
-  holder.appendChild(clone);
-  doc.body.appendChild(holder);
-  try {
-    return measureRoot(clone);
-  } finally {
-    doc.body.removeChild(holder);
-  }
 };

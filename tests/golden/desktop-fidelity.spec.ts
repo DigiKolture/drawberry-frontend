@@ -392,12 +392,49 @@ test("three-column feature stays 3-up on desktop (no 2+1 wrap from rounding)", a
   expect(t.c3.x).toBeGreaterThan(t.c2.x);
 });
 
+/**
+ * Build the desktop + mobile MeasuredTrees the way compile.ts now does: two measureCanvas()
+ * passes over the SAME DOM, first in its desktop state, then re-rendered into its mobile
+ * state. In the live app the mobile state is reached by toggling the Canvas breakpoint (which
+ * re-renders each component from the per-breakpoint styles in its json); a fixture here
+ * declares those mobile deltas as `data-mobile-style` and this helper applies them + narrows
+ * the root to reach the identical DOM the toggle would produce. Leaves the page in the mobile
+ * state (with the compile bundle loaded).
+ */
+async function measureDesktopThenMobile(
+  page: Page,
+  flexInner: string
+): Promise<{ desktop: any; mobile: any }> {
+  await page.setContent(flexDoc(flexInner, WIDTH));
+  await page.addScriptTag({ content: COMPILE_BUNDLE });
+  const desktop = await page.evaluate(() =>
+    (window as any).__compile.measureCanvas()
+  );
+  // Re-render into the mobile breakpoint: narrow the root and fold each element's declared
+  // mobile deltas onto its inline style, mirroring what the live breakpoint toggle renders.
+  await page.evaluate((mobileW) => {
+    const root = document.getElementById(
+      "canvas-workspace-items-container"
+    ) as HTMLElement;
+    root.style.width = mobileW + "px";
+    root.querySelectorAll("[data-mobile-style]").forEach((el) => {
+      const cur = el.getAttribute("style") || "";
+      el.setAttribute("style", cur + ";" + el.getAttribute("data-mobile-style"));
+    });
+  }, MOBILE_WIDTH);
+  const mobile = await page.evaluate(() =>
+    (window as any).__compile.measureCanvas()
+  );
+  return { desktop, mobile };
+}
+
 test("mobile copy reproduces stacking AND centering (space-between header)", async ({
   page,
 }) => {
-  // The header2 shape: a space-between row whose data-mobile-style makes each wrapper
-  // full-width and centres its content. On mobile the wrappers stack AND the logo/social
-  // centre — the exact behaviour the fluid-hybrid approach couldn't reproduce.
+  // The header2 shape: a space-between row whose mobile styles make each wrapper full-width
+  // and centre its content. On mobile the wrappers stack AND the logo/social centre — the
+  // exact behaviour the fluid-hybrid approach couldn't reproduce, now driven by measuring the
+  // Canvas as its mobile breakpoint actually renders it.
   const flex = `
     <div id="hdr" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;padding:20px 35px;background:#eee;" data-mobile-style="justify-content:center;padding:20px;">
       <div id="logoWrap" style="display:flex;justify-content:flex-start;flex:0 0 auto;" data-mobile-style="width:100%;justify-content:center;">
@@ -409,17 +446,14 @@ test("mobile copy reproduces stacking AND centering (space-between header)", asy
     </div>`;
 
   await page.setViewportSize({ width: 900, height: 1200 });
-  await page.setContent(flexDoc(flex, WIDTH));
-  await page.addScriptTag({ content: COMPILE_BUNDLE });
-  const { body, media } = await page.evaluate(() => {
-    const c = (window as any).__compile;
-    const desktop = c.measureCanvas();
-    const mobile = c.measureMobile();
-    return {
-      body: c.emit(desktop, mobile),
-      media: c.collectMediaQuery(desktop, mobile),
-    };
-  });
+  const { desktop, mobile } = await measureDesktopThenMobile(page, flex);
+  const { body, media } = await page.evaluate(
+    ([d, m]) => {
+      const c = (window as any).__compile;
+      return { body: c.emit(d, m), media: c.collectMediaQuery(d, m) };
+    },
+    [desktop, mobile]
+  );
   expect(media).toContain("@media");
 
   // Desktop: logo left, social right — same row (they differ by a few px because the
@@ -437,50 +471,47 @@ test("mobile copy reproduces stacking AND centering (space-between header)", asy
   expect(Math.abs(socialCentre - MOBILE_WIDTH / 2)).toBeLessThanOrEqual(10);
 });
 
-test("measureMobile observes the Canvas mobile layout from data-mobile-style", async ({
+test("two-pass measure observes the Canvas mobile restacking", async ({
   page,
 }) => {
-  // The real production path: the Canvas carries `data-mobile-style` mobile deltas (as the
-  // catalog components do). measureMobile clones offscreen at mobile width, overlays those
-  // deltas, and measures — so the restacking is observed even though the live Canvas (and the
-  // viewport) stay desktop. Here #row is a flex-row that its data-mobile-style stacks.
+  // The production path: compile measures the Canvas at desktop, then re-measures it at the
+  // mobile breakpoint (where these columns stack). Here #row is a flex-row whose mobile styles
+  // switch it to a column — the second measureCanvas() pass observes that stack.
   const flex = `
     <div id="row" style="display:flex;flex-direction:row;" data-mobile-style="flex-direction: column;">
       <div id="colA" style="width:300px;height:80px;background:#eee;" data-mobile-style="width:100%;"></div>
       <div id="colB" style="width:300px;height:80px;background:#ddd;" data-mobile-style="width:100%;"></div>
     </div>`;
 
-  await page.setViewportSize({ width: 900, height: 1200 }); // desktop viewport throughout
-  await page.setContent(flexDoc(flex, WIDTH));
-  await page.addScriptTag({ content: COMPILE_BUNDLE });
+  await page.setViewportSize({ width: 900, height: 1200 });
+  const { desktop, mobile } = await measureDesktopThenMobile(page, flex);
 
-  const r = await page.evaluate(() => {
-    const c = (window as any).__compile;
-    const desktop = c.measureCanvas();
-    const mobile = c.measureMobile();
-    const find = (tree: any, id: string): any => {
-      let hit: any = null;
-      const walk = (n: any): void => {
-        if (n.id === id) hit = n;
-        n.children.forEach(walk);
+  const r = await page.evaluate(
+    ([d, m]) => {
+      const c = (window as any).__compile;
+      const find = (tree: any, id: string): any => {
+        let hit: any = null;
+        const walk = (n: any): void => {
+          if (n.id === id) hit = n;
+          n.children.forEach(walk);
+        };
+        walk(tree.root);
+        return hit;
       };
-      walk(tree.root);
-      return hit;
-    };
-    return {
-      mobileMeasured: mobile !== null,
-      dGapY: Math.abs(
-        find(desktop, "colA").rect.y - find(desktop, "colB").rect.y
-      ),
-      mColAY: find(mobile, "colA").rect.y,
-      mColBY: find(mobile, "colB").rect.y,
-      body: c.emit(desktop, mobile),
-      media: c.collectMediaQuery(desktop, mobile),
-    };
-  });
+      return {
+        mobileMeasured: m !== null,
+        dGapY: Math.abs(find(d, "colA").rect.y - find(d, "colB").rect.y),
+        mColAY: find(m, "colA").rect.y,
+        mColBY: find(m, "colB").rect.y,
+        body: c.emit(d, m),
+        media: c.collectMediaQuery(d, m),
+      };
+    },
+    [desktop, mobile]
+  );
 
   expect(r.mobileMeasured).toBe(true);
-  // Desktop: side by side. Mobile (via data-mobile-style): stacked.
+  // Desktop: side by side. Mobile (re-measured at the mobile breakpoint): stacked.
   expect(r.dGapY).toBeLessThanOrEqual(POS_TOLERANCE);
   expect(r.mColBY).toBeGreaterThan(r.mColAY + 40);
   // ...and that observed stack drives the responsive (two-layout) output.

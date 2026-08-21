@@ -1,7 +1,10 @@
+import { nextTick } from "vue";
+import store from "@/store";
 import { ProjectStyle } from "@/store/modules/canvas/types";
+import { CanvasBreakpoints } from "@/store/modules/canvas/types";
 import { projectHtml } from "@/composables/project/html";
 import { emit, collectColorOverrides, collectMediaQuery } from "./emit";
-import { measureCanvas, measureMobile } from "./measure";
+import { measureCanvas, CANVAS_ROOT_ID } from "./measure";
 import { computeSourceHash } from "./source-hash";
 
 // The compile orchestrator threads the whole spine: measure the rendered Canvas -> emit
@@ -16,6 +19,21 @@ export interface CompileResult {
   sourceHash: string;
 }
 
+/**
+ * Switch the Canvas breakpoint and wait for the DOM to reflect it. Each rendered component
+ * watches the `breakpoint` getter and rebuilds its `v-html` from the per-breakpoint style
+ * values in its json (see WorkspaceComponentItemsListItem). `nextTick` is a *microtask*, so
+ * awaiting it flushes Vue's render + DOM patch WITHOUT yielding a paint frame — the browser
+ * never shows an intermediate breakpoint, so the toggle-and-measure below stays invisible.
+ * Two ticks: the breakpoint watcher mutates a reactive prop (`html`) mid-flush, so a second
+ * cycle patches that mutation in; both are microtasks, so still no paint.
+ */
+const settleBreakpoint = async (bp: CanvasBreakpoints): Promise<void> => {
+  store.commit("canvas/SET_BREAKPOINT", bp);
+  await nextTick();
+  await nextTick();
+};
+
 export function compile() {
   const { wrapInChrome } = projectHtml();
 
@@ -23,6 +41,14 @@ export function compile() {
    * Compile the currently-rendered Canvas. Returns null when the Canvas isn't mounted to
    * measure (e.g. save triggered off-Canvas) — the caller then skips uploading compiled
    * HTML, which the backend treats as "needs recompile" rather than serving stale output.
+   *
+   * Desktop and mobile geometry are BOTH observed (ADR-0004) by driving the Canvas through
+   * its real breakpoints: force desktop -> measure, force mobile -> measure, then restore the
+   * user's breakpoint. This decouples the compile from whatever breakpoint the Canvas happens
+   * to be showing (so a compile taken while viewing Mobile no longer bakes a mobile "desktop"
+   * layout), and captures the design's true mobile restacking — which lives in the json's
+   * per-breakpoint styles, not in the desktop DOM — because the mobile measurement reads the
+   * Canvas as the mobile breakpoint actually renders it.
    *
    * @param componentsJson the per-component json arrays being saved (removeClasses'd), so
    *   the Source hash fingerprints exactly what is persisted.
@@ -32,15 +58,26 @@ export function compile() {
     componentsJson: object[][],
     style: ProjectStyle
   ): Promise<CompileResult | null> => {
-    const desktop = measureCanvas();
-    if (!desktop) return null;
-    // Measure a hidden mobile-width render too, so the mobile restacking is observed
-    // (ADR-0004). If it can't be measured, we still ship a correct desktop-only email.
-    const mobile = measureMobile() || undefined;
+    // Nothing to measure if the Canvas isn't mounted — bail before touching breakpoint state.
+    if (!document.getElementById(CANVAS_ROOT_ID)) return null;
 
-    const body = emit(desktop, mobile);
+    const original = store.getters["canvas/breakpoint"] as CanvasBreakpoints;
+    let desktop = null;
+    let mobile = null;
+    try {
+      await settleBreakpoint(CanvasBreakpoints.DESKTOP);
+      desktop = measureCanvas();
+      await settleBreakpoint(CanvasBreakpoints.MOBILE);
+      mobile = measureCanvas();
+    } finally {
+      // Always put the Canvas back the way the user had it, even if measuring threw.
+      await settleBreakpoint(original);
+    }
+    if (!desktop) return null;
+
+    const body = emit(desktop, mobile || undefined);
     const headCss = [
-      collectMediaQuery(desktop, mobile),
+      collectMediaQuery(desktop, mobile || undefined),
       collectColorOverrides(desktop),
     ]
       .filter(Boolean)

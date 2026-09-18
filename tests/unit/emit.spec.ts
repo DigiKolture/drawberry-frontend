@@ -131,66 +131,112 @@ describe("emit(MeasuredTree)", () => {
     });
   });
 
-  describe("alignment from measured x-offset", () => {
-    // A 200px button centered inside a 600px root: left gap 200 == right gap 200.
-    const centered = tree(
-      600,
-      node("root", [0, 0, 600, 60], {
-        id: "root",
-        children: [
-          node("button", [200, 0, 200, 44], {
-            id: "cta",
-            text: "Shop now",
-            href: "https://example.com",
-            styles: {
-              backgroundColor: "rgb(0, 122, 255)",
-              borderRadius: "6px",
-            },
-          }),
-        ],
-      })
-    );
+  describe("position from measured x-offset (lone narrow child)", () => {
+    // A lone child narrower than its parent is placed by spacer cells that reproduce its
+    // measured x, and its measured width is pinned on its cell — so it lands where the
+    // Canvas put it, and a block text leaf wraps where the Canvas wrapped it instead of
+    // spreading to the container's full width.
+    const cellsOf = ($: ReturnType<typeof load>, id: string) =>
+      $(`#${id}`)
+        .closest("tr")
+        .children("td")
+        .toArray()
+        .map((el) => ({
+          width: $(el).attr("width"),
+          holds: $(el).find(`#${id}`).length > 0,
+        }));
 
-    it("centers a button whose measured x-offset is centered", () => {
-      const $ = load(emit(centered));
-      const cell = $("#cta").closest("td");
-      expect(cell.attr("align")).toBe("center");
-    });
-
-    it("left-aligns a button pinned to the left edge", () => {
-      const left = tree(
+    // A 200px button inside a 600px root, at a given measured x.
+    const button = (x: number) =>
+      tree(
         600,
         node("root", [0, 0, 600, 60], {
           id: "root",
           children: [
-            node("button", [0, 0, 200, 44], {
+            node("button", [x, 0, 200, 44], {
               id: "cta",
               text: "Shop now",
               href: "https://example.com",
+              styles: {
+                backgroundColor: "rgb(0, 122, 255)",
+                borderRadius: "6px",
+              },
             }),
           ],
         })
       );
-      const $ = load(emit(left));
-      expect($("#cta").closest("td").attr("align")).toBe("left");
+
+    it("centers a button whose measured x-offset is centered (200 | 200 | 200)", () => {
+      const cells = cellsOf(load(emit(button(200))), "cta");
+      expect(cells.map((c) => c.width)).toEqual(["200", "200", "200"]);
+      expect(cells[1].holds).toBe(true);
     });
 
-    it("right-aligns a button pushed to the right edge", () => {
-      const right = tree(
+    it("left-aligns a button pinned to the left edge (no leading spacer)", () => {
+      const cells = cellsOf(load(emit(button(0))), "cta");
+      expect(cells.map((c) => c.width)).toEqual(["200", "400"]);
+      expect(cells[0].holds).toBe(true);
+    });
+
+    it("right-aligns a button pushed to the right edge (no trailing spacer)", () => {
+      const cells = cellsOf(load(emit(button(400))), "cta");
+      expect(cells.map((c) => c.width)).toEqual(["400", "200"]);
+      expect(cells[1].holds).toBe(true);
+    });
+
+    it("pins an inset paragraph to its measured width so it wraps like the Canvas", () => {
+      // The reported defect: a centered description narrower than its card (x 60, w 480
+      // in a 600 root) was emitted alignment-only, so the block text filled all 600px and
+      // wrapped later than the Canvas did.
+      const t = tree(
         600,
-        node("root", [0, 0, 600, 60], {
+        node("root", [0, 0, 600, 80], {
           id: "root",
           children: [
-            node("button", [400, 0, 200, 44], {
-              id: "cta",
-              text: "Shop now",
-              href: "https://example.com",
+            node("text", [60, 0, 480, 48], {
+              id: "desc",
+              text: "Listen to the soundtrack",
+              styles: { textAlign: "center" },
             }),
           ],
         })
       );
-      const $ = load(emit(right));
-      expect($("#cta").closest("td").attr("align")).toBe("right");
+      const cells = cellsOf(load(emit(t)), "desc");
+      expect(cells.map((c) => c.width)).toEqual(["60", "480", "60"]);
+      expect(cells[1].holds).toBe(true);
+    });
+
+    it("leaves a full-width child unpinned so it fills its cell", () => {
+      const t = tree(
+        600,
+        node("root", [0, 0, 600, 40], {
+          id: "root",
+          children: [node("text", [0, 0, 600, 40], { id: "p", text: "Full" })],
+        })
+      );
+      const cells = cellsOf(load(emit(t)), "p");
+      expect(cells.map((c) => c.width)).toEqual([undefined]);
+    });
+
+    it("emits a text element's own measured padding inside its pinned cell", () => {
+      // The rect is border-box, so padding emitted inside the pinned cell keeps the text
+      // content wrapping at exactly the Canvas width.
+      const t = tree(
+        600,
+        node("root", [0, 0, 600, 80], {
+          id: "root",
+          children: [
+            node("text", [60, 0, 480, 48], {
+              id: "desc",
+              text: "Hi",
+              styles: { paddingLeft: "16px", paddingRight: "16px" },
+            }),
+          ],
+        })
+      );
+      const style = load(emit(t))("#desc").attr("style") || "";
+      expect(style).toContain("padding-left: 16px");
+      expect(style).toContain("padding-right: 16px");
     });
   });
 

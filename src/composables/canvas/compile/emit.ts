@@ -92,8 +92,23 @@ const fontStylePairs = (
   ["text-align", styles.textAlign],
 ];
 
+/**
+ * A text element's own measured padding. Its measured rect is border-box (padding included),
+ * and the cell it lands in is pinned to that rect, so emitting the padding inside the block
+ * keeps the text content wrapping at exactly the width the Canvas showed. (The CONTAINER's
+ * padding is a separate concern, reproduced by spacer cells/rows from the children's offsets.)
+ */
+const paddingPairs = (
+  styles: MeasuredStyles
+): Array<[string, string | undefined]> => [
+  ["padding-top", styles.paddingTop],
+  ["padding-right", styles.paddingRight],
+  ["padding-bottom", styles.paddingBottom],
+  ["padding-left", styles.paddingLeft],
+];
+
 const fontStyle = (styles: MeasuredStyles): string =>
-  styleString(fontStylePairs(styles));
+  styleString([...fontStylePairs(styles), ...paddingPairs(styles)]);
 
 const buttonStyle = (styles: MeasuredStyles): string =>
   styleString([
@@ -247,15 +262,6 @@ const bucketRows = (children: MeasuredNode[]): MeasuredNode[][] => {
   return rows;
 };
 
-/** Horizontal alignment of a lone child, derived from its measured x-offsets. */
-const deriveAlign = (child: MeasuredNode, parent: MeasuredNode): string => {
-  const leftGap = child.rect.x - parent.rect.x;
-  const rightGap =
-    parent.rect.x + parent.rect.width - (child.rect.x + child.rect.width);
-  if (Math.abs(leftGap - rightGap) <= ALIGN_TOLERANCE) return "center";
-  return leftGap > rightGap ? "right" : "left";
-};
-
 /**
  * Vertical alignment of a column within its row, derived from where it sits in the row's
  * measured band — so a shorter item that flex `align-items:center` centred stays centred in
@@ -347,34 +353,30 @@ const emitRow = (
   parent: MeasuredNode,
   emitChild: ChildEmitter
 ): string => {
-  // A lone child narrower than its parent is positioned by alignment (a centered button
-  // stays centered) rather than a baked column width.
-  if (
-    row.length === 1 &&
-    row[0].rect.width < parent.rect.width - ROW_TOLERANCE
-  ) {
-    const align = deriveAlign(row[0], parent);
-    return `<tr><td align="${align}" valign="top">${emitChild(
-      row[0]
-    )}</td></tr>`;
-  }
-
   const bandTop = rowTop(row);
   const bandBottom = rowBottom(row);
   const cells: string[] = [];
   // Reproduce the parent's horizontal padding as leading/trailing spacer cells so the
   // columns keep their measured x-positions (e.g. a space-between header stays flush to the
-  // edges) instead of collapsing to the cell edge.
+  // edges) instead of collapsing to the cell edge. The same spacers position a LONE child
+  // narrower than its parent (a centered button, an inset paragraph): its measured x is the
+  // leading spacer and its measured width is pinned on the cell, so a block text leaf wraps
+  // at the width the Canvas showed instead of filling the whole container. (This used to be
+  // alignment-only to keep the desktop layout fluid; the two-layout mobile copy made that
+  // moot, and alignment alone let block text spread to full width.)
   const leadPad = row[0].rect.x - parent.rect.x;
   if (leadPad > ROW_TOLERANCE) cells.push(spacerCell("width", leadPad));
   row.forEach((child, index) => {
     const gap = columnGap(row, index);
     if (gap > 0) cells.push(spacerCell("width", gap));
     const valign = deriveValign(child, bandTop, bandBottom);
-    // Only bake a fixed column width when the row actually has columns; a single full-width
-    // child fills the cell, and pinning it would block fluid shrink.
-    const widthAttr =
-      row.length > 1 ? ` width="${round(child.rect.width)}"` : "";
+    // Pin the measured width whenever the child doesn't simply fill its parent — real
+    // columns, or a lone child narrower than the container. A single full-width child is
+    // left unpinned so it fills the cell.
+    const pinWidth =
+      row.length > 1 ||
+      child.rect.width < parent.rect.width - ROW_TOLERANCE;
+    const widthAttr = pinWidth ? ` width="${round(child.rect.width)}"` : "";
     cells.push(`<td${widthAttr} valign="${valign}">${emitChild(child)}</td>`);
   });
   const last = row[row.length - 1];

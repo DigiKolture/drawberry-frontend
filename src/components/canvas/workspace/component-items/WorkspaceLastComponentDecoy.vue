@@ -1,6 +1,9 @@
 <template>
+  <!-- data-canvas-chrome: the trailing drop-target decoy is editor UI, never part of the
+       design — the compiler's measurement skips it (would otherwise emit an empty row). -->
   <div
     class="workspace__component__items__list"
+    data-canvas-chrome
     @drop="dropComponent($event, itemIndex, projectId)"
     @dragover.prevent
     @dragenter.prevent

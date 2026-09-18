@@ -522,3 +522,52 @@ test("two-pass measure observes the Canvas mobile restacking", async ({
   expect(r.body).toContain("pc-m");
   expect(r.media).toContain("@media");
 });
+
+test("editor chrome marked data-canvas-chrome is excluded from the compile", async ({
+  page,
+}) => {
+  // The real defect: editing an element shows editor UI (focus toolbar, action bar) as a
+  // sibling/overlay of the component in the same DOM. Measured as content, it overlapped the
+  // component vertically, got bucketed into its row, and was emitted as extra columns that
+  // squeezed the component to ~2/3 width (word-per-line text). Marked chrome must be skipped.
+  const component = `
+    <div id="cmp" style="display:flex;flex-direction:column;align-items:center;padding:42px 40px;background:#1d1e20;">
+      <div id="title" style="font-size:36px;line-height:46px;color:#fff;">Don't take a phishy bait</div>
+    </div>`;
+  const overlay = (attr: string) =>
+    `<div id="chrome" ${attr} style="position:absolute;top:10px;left:300px;width:154px;height:40px;background:#1873cd;"></div>`;
+  const list = (attr: string) =>
+    `<div id="list" style="position:relative;">${component}${overlay(
+      attr
+    )}</div>`;
+
+  const run = async (attr: string) => {
+    await page.setViewportSize({ width: 900, height: 1200 });
+    await page.setContent(flexDoc(list(attr), WIDTH));
+    await page.addScriptTag({ content: COMPILE_BUNDLE });
+    const r = await page.evaluate(() => {
+      const c = (window as any).__compile;
+      const tree = c.measureCanvas();
+      let hasChrome = false;
+      const walk = (n: any): void => {
+        if (n.id === "chrome") hasChrome = true;
+        n.children.forEach(walk);
+      };
+      walk(tree.root);
+      return { hasChrome, body: c.emit(tree) as string };
+    });
+    const t = await renderTables(page, r.body, "", WIDTH);
+    return { hasChrome: r.hasChrome, cmpWidth: t.cmp.width };
+  };
+
+  // Marked: the overlay never reaches the tree, and the component keeps its full width.
+  const marked = await run("data-canvas-chrome");
+  expect(marked.hasChrome).toBe(false);
+  expect(Math.abs(marked.cmpWidth - WIDTH)).toBeLessThanOrEqual(SIZE_TOLERANCE);
+
+  // Negative control — the same overlay WITHOUT the marker reproduces the squeeze, proving
+  // the guard is what prevents it (not the fixture).
+  const unmarked = await run("");
+  expect(unmarked.hasChrome).toBe(true);
+  expect(unmarked.cmpWidth).toBeLessThan(marked.cmpWidth - 50);
+});

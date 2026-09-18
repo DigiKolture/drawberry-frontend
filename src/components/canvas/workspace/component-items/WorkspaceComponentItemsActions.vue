@@ -1,5 +1,6 @@
 <template>
-  <div class="workspace__component__item__actions">
+  <!-- data-canvas-chrome: editor UI, skipped by the compiler's measurement. -->
+  <div class="workspace__component__item__actions" data-canvas-chrome>
     <div class="workspace__component__actions__top">
       <BaseButtonIcon
         :disabled="disabledButton"

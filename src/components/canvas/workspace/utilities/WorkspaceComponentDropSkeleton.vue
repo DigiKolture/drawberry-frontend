@@ -1,5 +1,10 @@
 <template>
-  <div class="workspace__component__drop__skeleton" :class="style.layout">
+  <!-- data-canvas-chrome: editor UI, skipped by the compiler's measurement. -->
+  <div
+    class="workspace__component__drop__skeleton"
+    :class="style.layout"
+    data-canvas-chrome
+  >
     <BaseIcon icon="canvas/workspace/loading" />
   </div>
 </template>

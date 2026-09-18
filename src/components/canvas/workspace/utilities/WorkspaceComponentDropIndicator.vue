@@ -1,5 +1,10 @@
 <template>
-  <div class="workspace__component__drop__indicator" :class="style.layout">
+  <!-- data-canvas-chrome: editor UI, skipped by the compiler's measurement. -->
+  <div
+    class="workspace__component__drop__indicator"
+    :class="style.layout"
+    data-canvas-chrome
+  >
     <span><BaseIcon icon="canvas/workspace/drop-indicator" /></span>
   </div>
 </template>

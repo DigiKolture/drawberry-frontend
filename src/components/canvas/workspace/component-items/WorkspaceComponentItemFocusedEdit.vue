@@ -1,5 +1,11 @@
 <template>
-  <div class="element-controls" :style="elementPositionStyle">
+  <!-- data-canvas-chrome: editor UI, never part of the design — the compiler's measurement
+       skips it (see CANVAS_CHROME_ATTR in composables/canvas/compile/measure.ts). -->
+  <div
+    class="element-controls"
+    :style="elementPositionStyle"
+    data-canvas-chrome
+  >
     <div v-if="showActions" class="element-controls__actions">
       <button
         draggable="true"

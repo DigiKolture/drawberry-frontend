@@ -16,6 +16,17 @@ import {
 /** The DOM id of the container wrapping every rendered component on the Canvas. */
 export const CANVAS_ROOT_ID = "canvas-workspace-items-container";
 
+/**
+ * Marks editor chrome: focus toolbars, component action bars, drop indicators/skeletons,
+ * the trailing drop-target decoy. These live in the same DOM as the design (as siblings or
+ * overlays of the components) but are never part of the email. Measurement skips any
+ * element carrying this attribute, so the editor is excluded by construction — a new piece
+ * of editor UI only has to carry the attribute to stay out of the compile. Without this, a
+ * focused component's toolbar was measured as a sibling that overlapped it vertically,
+ * bucketed into the same row, and emitted as extra columns that squeezed the component.
+ */
+export const CANVAS_CHROME_ATTR = "data-canvas-chrome";
+
 const isVisible = (el: Element, style: CSSStyleDeclaration): boolean => {
   if (style.display === "none" || style.visibility === "hidden") return false;
   const rect = el.getBoundingClientRect();
@@ -88,6 +99,8 @@ const measureElement = (
   rootLeft: number,
   rootTop: number
 ): MeasuredNode | null => {
+  // Editor chrome is never part of the design (see CANVAS_CHROME_ATTR).
+  if (el.hasAttribute(CANVAS_CHROME_ATTR)) return null;
   const style = window.getComputedStyle(el);
   if (!isVisible(el, style)) return null;
 

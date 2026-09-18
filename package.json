@@ -7,6 +7,7 @@
     "build": "vue-cli-service build",
     "test:unit": "vue-cli-service test:unit",
     "test:golden": "playwright test",
+    "gallery:compile": "node scripts/compile-gallery.js",
     "test:e2e": "vue-cli-service test:e2e",
     "lint": "vue-cli-service lint",
     "sentry:sourcemaps": "sentry-cli sourcemaps inject --org drawberry-ns --project javascript-vue ./dist && sentry-cli sourcemaps upload --org drawberry-ns --project javascript-vue ./dist"

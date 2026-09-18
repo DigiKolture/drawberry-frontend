@@ -61,12 +61,17 @@ export function modifiersProjectActions() {
     workspaceComponents.value.splice(positionIndex, 0, projectComponent);
     store.commit("canvas/SET_WORKSPACE_COMPONENTS", workspaceComponents.value);
 
-    //TODO: can optimize to only update font for the added component
+    // Apply the project's font FAMILY to the new component — and only the family. This used
+    // to also force `font-weight: 400`, which flattened every catalog title (800/700/500)
+    // to regular on the current breakpoint the moment a component was added, so titles
+    // rendered non-bold on the Canvas (and, faithfully, in the compiled email). Weights are
+    // the component's design; the font loader resolves them per family, and a browser
+    // synthesises bold for a variant the family lacks. (Changing the project font from the
+    // sidebar still resets weights on purpose — see SidebarFontStyle.)
     store.commit("canvas/UPDATE_PROJECT_COMPONENTS_STYLE", {
       projectIndex: positionIndex,
       style: {
         "font-family": style.value.fontFamily,
-        "font-weight": 400,
       },
     });
 

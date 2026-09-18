@@ -312,52 +312,17 @@ const columnGap = (row: MeasuredNode[], index: number): number =>
 
 // ── Responsive: two-layout (desktop + measured mobile) ────────────────────────────────
 //
-// Compilation measures the design at desktop AND at a hidden mobile width. Where a section
-// REFLOWS (its columns restack on mobile), we emit BOTH layouts — the desktop tables from
-// the desktop measurement and the mobile tables from the mobile measurement — and toggle
-// between them with a measured @media block. Because the mobile copy is emitted from the
-// mobile measurement, it reproduces the mobile layout faithfully (stacking AND alignment/
-// centering), not just a stack. Outlook (which ignores @media) is pinned to the desktop copy
-// via `mso-hide:all` on the mobile copy. Which sections reflow is observed, never inferred
-// (ADR-0004). `pc-` matches the chrome's existing email class prefix.
+// Compilation measures the design at desktop AND at the mobile breakpoint. Every top-level
+// section (one per placed component) is emitted as BOTH layouts — its desktop tables from
+// the desktop measurement and its mobile tables from the mobile measurement — toggled by a
+// measured @media block. Always both, not only where columns restack: the mobile Canvas
+// also differs in font sizes, weights, paddings and image sizes, and a fluid-shrunk desktop
+// copy reproduces none of that (it just scales everything by mobile/desktop width). Because
+// the mobile copy is emitted from the mobile measurement, the mobile layout is observed,
+// never inferred (ADR-0004). Outlook (which ignores @media) is pinned to the desktop copy
+// via `mso-hide:all` on the mobile copy. `pc-` matches the chrome's existing class prefix.
 const D_CLASS = "pc-d"; // desktop copy: shown by default, hidden on mobile
 const M_CLASS = "pc-m"; // mobile copy: hidden by default + in Outlook, shown on mobile
-
-interface EmitContext {
-  /** Measured mobile geometry keyed by id — present only when a mobile render was measured. */
-  mobileIndex?: Map<string, MeasuredNode>;
-}
-
-const indexById = (
-  node: MeasuredNode,
-  map: Map<string, MeasuredNode>
-): void => {
-  if (node.id) map.set(node.id, node);
-  for (const child of node.children) indexById(child, map);
-};
-
-const buildIndex = (tree: MeasuredTree): Map<string, MeasuredNode> => {
-  const map = new Map<string, MeasuredNode>();
-  indexById(tree.root, map);
-  return map;
-};
-
-/**
- * Does this desktop row of columns stack vertically on mobile? Observed from the mobile
- * measurement: if the same ids no longer share a row (their mobile y-tops span more than the
- * row tolerance) they stack. If any column is missing from the mobile tree we can't tell, so
- * treat it as not stacking (falls back to the desktop fixed-cell layout).
- */
-const rowStacksOnMobile = (row: MeasuredNode[], ctx: EmitContext): boolean => {
-  if (!ctx.mobileIndex || row.length < 2) return false;
-  const ys: number[] = [];
-  for (const col of row) {
-    const mobile = ctx.mobileIndex.get(col.id);
-    if (!mobile) return false;
-    ys.push(mobile.rect.y);
-  }
-  return Math.max(...ys) - Math.min(...ys) > ROW_TOLERANCE;
-};
 
 /** Emit a single row of columns (single layout), with measured gap + padding spacers. */
 const emitRow = (
@@ -474,80 +439,49 @@ const emitContainer = (
   );
 };
 
-/**
- * Does this container REFLOW on mobile — i.e. does any of its multi-column rows restack
- * (observed from the mobile measurement)? Such a container is emitted as two layouts.
- */
-const reflows = (node: MeasuredNode, ctx: EmitContext): boolean => {
-  if (!ctx.mobileIndex || !ctx.mobileIndex.get(node.id)) return false;
-  return bucketRows(node.children).some(
-    (row) => row.length > 1 && rowStacksOnMobile(row, ctx)
-  );
-};
-
 /** Wrap the two measured layouts, defaulting to desktop; Outlook keeps desktop (mso-hide). */
 const twoLayout = (desktopHtml: string, mobileHtml: string): string =>
   `<div class="${D_CLASS}">${desktopHtml}</div>` +
   `<div class="${M_CLASS}" style="display: none; mso-hide: all;">${mobileHtml}</div>`;
 
 /**
- * A child emitter that two-layouts the FIRST container that reflows on mobile — emitting its
- * desktop tables from the desktop tree and its mobile tables from the mobile tree — and
- * otherwise descends, so a reflowing section anywhere in the design is caught.
- */
-const makeResponsiveChildEmitter = (ctx: EmitContext): ChildEmitter => {
-  const emitChild: ChildEmitter = (node) => {
-    if (!(node.children.length > 0 && node.role !== "text"))
-      return emitLeaf(node);
-    // reflows() already confirmed the mobile node exists.
-    if (ctx.mobileIndex && reflows(node, ctx)) {
-      const mobile = ctx.mobileIndex.get(node.id) as MeasuredNode;
-      return twoLayout(
-        emitContainer(node, node.rect.width, emitChildSingle),
-        emitContainer(mobile, mobile.rect.width, emitChildSingle)
-      );
-    }
-    return emitContainer(node, node.rect.width, emitChild);
-  };
-  return emitChild;
-};
-
-/**
- * Emit the Compiled email body (nested tables) from the desktop MeasuredTree. When a mobile
- * MeasuredTree is supplied, each section that reflows on mobile is emitted as two layouts —
- * desktop tables and mobile tables (from the mobile measurement) — toggled by the measured
- * @media block (collectMediaQuery); without it the output is the plain desktop layout. Chrome
- * (outer shell, head, MSO conditionals, the @media block) is wrapped around this separately.
+ * Emit the Compiled email body (nested tables) from the desktop MeasuredTree. With a mobile
+ * MeasuredTree, every top-level section is emitted as two layouts (see the Responsive notes
+ * above), toggled by the measured @media block (collectMediaQuery); without it the output is
+ * the plain desktop layout. Sections pair by POSITION: the root's children are the placed
+ * components in order (their wrapper ids repeat, so ids can't pair them), and both trees
+ * hold the same components in the same order. Chrome (outer shell, head, MSO conditionals,
+ * the @media block) is wrapped around this separately.
  */
 export const emit = (desktop: MeasuredTree, mobile?: MeasuredTree): string => {
   if (!mobile) {
     return emitContainer(desktop.root, desktop.contentWidth, emitChildSingle);
   }
-  const ctx: EmitContext = { mobileIndex: buildIndex(mobile) };
-  return emitContainer(
-    desktop.root,
-    desktop.contentWidth,
-    makeResponsiveChildEmitter(ctx)
-  );
+  const mobileSections = mobile.root.children;
+  let position = 0;
+  const emitSection: ChildEmitter = (node) => {
+    const counterpart = mobileSections[position++];
+    const isContainer = node.children.length > 0 && node.role !== "text";
+    if (!isContainer || !counterpart) return emitChildSingle(node);
+    return twoLayout(
+      emitContainer(node, node.rect.width, emitChildSingle),
+      emitContainer(counterpart, counterpart.rect.width, emitChildSingle)
+    );
+  };
+  return emitContainer(desktop.root, desktop.contentWidth, emitSection);
 };
-
-/** Does any section anywhere in the tree reflow? Drives whether the toggle @media is needed. */
-const hasReflow = (node: MeasuredNode, ctx: EmitContext): boolean =>
-  reflows(node, ctx) || node.children.some((child) => hasReflow(child, ctx));
 
 /**
  * The measured `@media` block that toggles the desktop/mobile layouts (ADR-0004): below the
  * measured desktop content width the desktop copy is hidden and the mobile copy shown. The
  * breakpoint sits just under the content width so a viewport at exactly it still shows
- * desktop. Returns "" when nothing reflows (or no mobile render).
+ * desktop. Returns "" without a mobile render (then there is no mobile copy to toggle to).
  */
 export const collectMediaQuery = (
   desktop: MeasuredTree,
   mobile?: MeasuredTree
 ): string => {
-  if (!mobile) return "";
-  const ctx: EmitContext = { mobileIndex: buildIndex(mobile) };
-  if (!hasReflow(desktop.root, ctx)) return "";
+  if (!mobile || mobile.root.children.length === 0) return "";
   // Just below the desktop column width: a viewport at exactly the content width still shows
   // desktop; anything narrower switches to the mobile copy. (max-width is inclusive.)
   const breakpoint = round(desktop.contentWidth) - 1;

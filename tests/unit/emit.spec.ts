@@ -522,9 +522,10 @@ describe("emit(MeasuredTree)", () => {
   });
 
   describe("responsive: two-layout from the mobile measurement", () => {
-    // A section ("hdr") with two 290px columns side by side on desktop; on mobile the same
-    // ids stack (distinct y) and go full-width. The emitter must OBSERVE the reflow from the
-    // mobile tree and emit BOTH layouts, not infer or approximate it.
+    // A section ("hdr") with two 290px columns side by side on desktop. Given a mobile tree,
+    // EVERY top-level section is emitted as both layouts — its mobile copy transcribed from
+    // the mobile measurement, whether the columns stack there (mobileStacked) or stay side by
+    // side at new widths (mobileSideBySide) — never inferred or approximated from desktop.
     const desktop = tree(
       600,
       node("root", [0, 0, 600, 120], {
@@ -614,11 +615,14 @@ describe("emit(MeasuredTree)", () => {
       expect(mobileColA.closest("td").attr("width")).toBeUndefined();
     });
 
-    it("leaves a section that stays side-by-side on mobile as a single layout", () => {
-      const html = emit(desktop, mobileSideBySide);
-      expect(html).not.toContain("pc-d");
-      expect(html).not.toContain("pc-m");
-      expect(load(html)("#colA").closest("td").attr("width")).toBe("290");
+    it("a section that stays side-by-side on mobile still gets its own measured mobile copy", () => {
+      // The mobile Canvas differs even without restacking (here: 185px columns instead of
+      // 290px — in real components also font sizes, paddings, image sizes). A fluid-shrunk
+      // desktop copy would only scale the 290s; the mobile copy transcribes the measurement.
+      const $ = load(emit(desktop, mobileSideBySide));
+      expect($("div.pc-d #colA").closest("td").attr("width")).toBe("290");
+      expect($("div.pc-m #colA").closest("td").attr("width")).toBe("185");
+      expect($("div.pc-m #colB").closest("td").attr("width")).toBe("185");
     });
 
     it("with no mobile tree, output is the plain desktop layout (backward compatible)", () => {
@@ -626,17 +630,20 @@ describe("emit(MeasuredTree)", () => {
       expect(emit(desktop)).not.toContain("pc-d");
     });
 
-    it("generates the measured @media toggle for a reflowing design", () => {
-      const css = collectMediaQuery(desktop, mobileStacked);
-      // Breakpoint sits just below the 600px content width so desktop stays desktop.
-      expect(css).toMatch(/@media[^{]*max-width:\s*599px/);
-      expect(css).toContain(".pc-d { display: none !important; }");
-      expect(css).toContain(".pc-m { display: block !important; }");
+    it("generates the measured @media toggle whenever there is a mobile render", () => {
+      for (const mobile of [mobileStacked, mobileSideBySide]) {
+        const css = collectMediaQuery(desktop, mobile);
+        // Breakpoint sits just below the 600px content width so desktop stays desktop.
+        expect(css).toMatch(/@media[^{]*max-width:\s*599px/);
+        expect(css).toContain(".pc-d { display: none !important; }");
+        expect(css).toContain(".pc-m { display: block !important; }");
+      }
     });
 
-    it("emits no @media when nothing reflows on mobile", () => {
-      expect(collectMediaQuery(desktop, mobileSideBySide)).toBe("");
+    it("emits no @media without a mobile render (there is no mobile copy to toggle to)", () => {
       expect(collectMediaQuery(desktop, undefined)).toBe("");
+      const empty = tree(375, node("root", [0, 0, 375, 0], { id: "root" }));
+      expect(collectMediaQuery(desktop, empty)).toBe("");
     });
   });
 

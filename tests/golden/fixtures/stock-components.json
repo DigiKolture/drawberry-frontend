@@ -1,0 +1,5495 @@
+[
+ {
+  "name": "Header 2",
+  "defaultHtml": "<html><head></head><body><div component=\"Header 2\" id=\"header2\">\n    <div id=\"header2_background\" class=\"editable\" style=\"\n        display: flex;\n        justify-content: space-between;\n        align-items: center;\n        flex-wrap: wrap;\n        gap: 24px;\n        padding: 29px 35px;\n        background-color: #ffffff;\n        border-radius: 0px;\n        box-shadow: 0 0px 0px 0 rgba(0, 0, 0, 0.0);\n        width: 100%;\n        box-sizing: border-box;\n      \" data-mobile-style=\"\n        padding: 24px 20px;\n        justify-content: center;\n        text-align: center;\n        gap: 20px;\n      \">\n      <div id=\"header2_logoWrapper\" style=\"\n          display: flex;\n          align-items: center;\n          justify-content: flex-start;\n          flex: 0 0 auto;\n        \" data-mobile-style=\"\n          width: 100%;\n          justify-content: center;\n        \">\n        <a id=\"header2_logoImageLink\" parent=\"header2_logoImage\" class=\"editable\" href=\"http://example.com\" style=\"\n            text-decoration: none;\n            display: inline-flex;\n            align-items: center;\n            justify-content: center;\n          \">\n          <img id=\"header2_logoImage\" class=\"editable\" src=\"https://res.cloudinary.com/drawberry/image/upload/v1637259610/logo/berrycon-colored_ijwy3c.png\" alt=\"\" style=\"\n              height: 40px;\n              width: auto;\n              max-width: 100%;\n              border: 0;\n              outline: 0;\n              display: block;\n            \" data-mobile-style=\"\n              height: 36px;\n            \">\n        </a>\n      </div>\n\n      <div id=\"header2_socialIconsWrapper\" class=\"editable pc-sm-mw-100pc\" style=\"\n          max-width: 195px;\n          display: flex;\n          justify-content: flex-end;\n          align-items: center;\n          gap: 30px;\n          padding: 10px 0;\n          flex: 0 0 auto;\n          box-sizing: border-box;\n        \" data-mobile-style=\"\n          width: 100%;\n          max-width: 100%;\n          justify-content: center;\n          gap: 24px;\n          padding: 0;\n        \">\n        <a block=\"\" id=\"header2_socialIcon1Link\" parent=\"header2_socialIcon1Image\" class=\"editable\" href=\"http://example.com\" style=\"\n            text-decoration: none;\n            padding: 0;\n            display: inline-flex;\n            align-items: center;\n            justify-content: center;\n          \">\n          <img id=\"header2_socialIcon1Image\" class=\"editable\" src=\"https://res.cloudinary.com/drawberry/image/upload/v1637260268/components/miscellaneous/facebook-dark_uqhmsy.png\" width=\"16\" height=\"16\" alt=\"\" style=\"\n              border: 0;\n              line-height: 100%;\n              outline: 0;\n              display: block;\n              color: #1D1E20;\n            \">\n        </a>\n\n        <a block=\"\" id=\"header2_socialIcon2Link\" parent=\"header2_socialIcon2Image\" href=\"http://example.com\" class=\"editable\" style=\"\n            text-decoration: none;\n            padding: 0;\n            display: inline-flex;\n            align-items: center;\n            justify-content: center;\n          \">\n          <img id=\"header2_socialIcon2Image\" class=\"editable\" src=\"https://res.cloudinary.com/drawberry/image/upload/v1704848622/components/miscellaneous/twitter-x-dark_dkn8rd.png\" width=\"16\" height=\"15\" alt=\"\" style=\"\n              border: 0;\n              line-height: 100%;\n              outline: 0;\n              display: block;\n              color: #1D1E20;\n            \">\n        </a>\n\n        <a block=\"\" id=\"header2_socialIcon3Link\" parent=\"header2_socialIcon3Image\" href=\"http://example.com\" class=\"editable\" style=\"\n            text-decoration: none;\n            padding: 0;\n            display: inline-flex;\n            align-items: center;\n            justify-content: center;\n          \">\n          <img id=\"header2_socialIcon3Image\" class=\"editable\" src=\"https://res.cloudinary.com/drawberry/image/upload/v1637260268/components/miscellaneous/instagram-dark_xnk4ni.png\" width=\"16\" height=\"15\" alt=\"\" style=\"\n              border: 0;\n              line-height: 100%;\n              outline: 0;\n              display: block;\n              color: #1D1E20;\n            \">\n        </a>\n      </div>\n    </div>\n  </div></body></html>",
+  "json": [
+   {
+    "id": "header2_background",
+    "wrapperId": null,
+    "blockId": null,
+    "visibility": "show",
+    "parent": null,
+    "children": [],
+    "types": [
+     "editable"
+    ],
+    "textContent": null,
+    "tag": {
+     "name": "div"
+    },
+    "attributes": {
+     "style": {
+      "value": {
+       "display": {
+        "desktop": "flex",
+        "mobile": "flex"
+       },
+       "gap": {
+        "desktop": "24px",
+        "mobile": "20px"
+       },
+       "align-items": {
+        "desktop": "center",
+        "mobile": "center"
+       },
+       "justify-content": {
+        "desktop": "space-between",
+        "mobile": "center"
+       },
+       "padding": {
+        "desktop": "29px 35px",
+        "mobile": "24px 20px"
+       },
+       "background-color": {
+        "desktop": "#ffffff",
+        "mobile": "#ffffff"
+       },
+       "border-radius": "0px",
+       "box-shadow": "0 0 0 0 rgba(0, 0, 0, 0.0)",
+       "flex-direction": {
+        "desktop": "row",
+        "mobile": "row"
+       },
+       "text-align": {
+        "desktop": null,
+        "mobile": "center"
+       }
+      },
+      "disabled": false
+     }
+    }
+   },
+   {
+    "id": "header2_logoImageLink",
+    "wrapperId": null,
+    "blockId": null,
+    "visibility": "show",
+    "parent": "header2_logoImage",
+    "children": [],
+    "types": [
+     "editable"
+    ],
+    "textContent": null,
+    "tag": {
+     "name": "a"
+    },
+    "attributes": {
+     "href": {
+      "value": "http://example.com",
+      "disabled": false
+     },
+     "style": {
+      "disabled": false
+     }
+    }
+   },
+   {
+    "id": "header2_logoImage",
+    "wrapperId": null,
+    "blockId": null,
+    "visibility": "show",
+    "parent": null,
+    "children": [
+     "header2_logoImageLink"
+    ],
+    "types": [
+     "editable"
+    ],
+    "textContent": null,
+    "tag": {
+     "name": "img"
+    },
+    "attributes": {
+     "src": {
+      "value": "https://res.cloudinary.com/drawberry/image/upload/v1637259610/logo/berrycon-colored_ijwy3c.png",
+      "disabled": false
+     },
+     "style": {
+      "value": {
+       "width": {
+        "desktop": "auto",
+        "mobile": "auto"
+       },
+       "height": {
+        "desktop": "40px",
+        "mobile": "36px"
+       }
+      },
+      "disabled": false
+     }
+    }
+   },
+   {
+    "id": "header2_socialIconsWrapper",
+    "wrapperId": null,
+    "blockId": null,
+    "visibility": "show",
+    "parent": null,
+    "children": [],
+    "types": [
+     "editable",
+     "pc-sm-mw-100pc"
+    ],
+    "textContent": null,
+    "tag": {
+     "name": "div"
+    },
+    "attributes": {
+     "style": {
+      "value": {
+       "display": {
+        "desktop": "flex",
+        "mobile": "flex"
+       },
+       "gap": {
+        "desktop": "30px",
+        "mobile": "24px"
+       },
+       "align-items": {
+        "desktop": "center",
+        "mobile": "center"
+       },
+       "justify-content": {
+        "desktop": "flex-end",
+        "mobile": "center"
+       },
+       "padding": {
+        "desktop": "10px 0",
+        "mobile": "0"
+       },
+       "flex-direction": {
+        "desktop": "row",
+        "mobile": "row"
+       },
+       "width": {
+        "desktop": null,
+        "mobile": "100%"
+       },
+       "max-width": {
+        "desktop": null,
+        "mobile": "100%"
+       }
+      },
+      "disabled": false
+     }
+    }
+   },
+   {
+    "id": "header2_socialIcon1Link",
+    "wrapperId": "header2_socialIconsWrapper",
+    "blockId": null,
+    "visibility": "show",
+    "parent": "header2_socialIcon1Image",
+    "children": [],
+    "types": [
+     "editable"
+    ],
+    "textContent": null,
+    "tag": {
+     "name": "a"
+    },
+    "attributes": {
+     "href": {
+      "value": "http://example.com",
+      "disabled": false
+     },
+     "style": {
+      "value": {
+       "padding": {
+        "desktop": "0",
+        "mobile": "0"
+       }
+      },
+      "disabled": false
+     }
+    }
+   },
+   {
+    "id": "header2_socialIcon1Image",
+    "wrapperId": null,
+    "blockId": "header2_socialIcon1Link",
+    "visibility": "show",
+    "parent": null,
+    "children": [
+     "header2_socialIcon1Link"
+    ],
+    "types": [
+     "editable"
+    ],
+    "textContent": null,
+    "tag": {
+     "name": "img"
+    },
+    "attributes": {
+     "src": {
+      "value": "https://res.cloudinary.com/drawberry/image/upload/v1637260268/components/miscellaneous/facebook-dark_uqhmsy.png",
+      "disabled": false
+     },
+     "style": {
+      "disabled": false
+     }
+    }
+   },
+   {
+    "id": "header2_socialIcon2Link",
+    "wrapperId": "header2_socialIconsWrapper",
+    "blockId": null,
+    "visibility": "show",
+    "parent": "header2_socialIcon2Image",
+    "children": [],
+    "types": [
+     "editable"
+    ],
+    "textContent": null,
+    "tag": {
+     "name": "a"
+    },
+    "attributes": {
+     "href": {
+      "value": "http://example.com",
+      "disabled": false
+     },
+     "style": {
+      "value": {
+       "padding": {
+        "desktop": "0",
+        "mobile": "0"
+       }
+      },
+      "disabled": false
+     }
+    }
+   },
+   {
+    "id": "header2_socialIcon2Image",
+    "wrapperId": null,
+    "blockId": "header2_socialIcon2Link",
+    "visibility": "show",
+    "parent": null,
+    "children": [
+     "header2_socialIcon2Link"
+    ],
+    "types": [
+     "editable"
+    ],
+    "textContent": null,
+    "tag": {
+     "name": "img"
+    },
+    "attributes": {
+     "src": {
+      "value": "https://res.cloudinary.com/drawberry/image/upload/v1704848622/components/miscellaneous/twitter-x-dark_dkn8rd.png",
+      "disabled": false
+     },
+     "style": {
+      "disabled": false
+     }
+    }
+   },
+   {
+    "id": "header2_socialIcon3Link",
+    "wrapperId": "header2_socialIconsWrapper",
+    "blockId": null,
+    "visibility": "show",
+    "parent": "header2_socialIcon3Image",
+    "children": [],
+    "types": [
+     "editable"
+    ],
+    "textContent": null,
+    "tag": {
+     "name": "a"
+    },
+    "attributes": {
+     "href": {
+      "value": "http://example.com",
+      "disabled": false
+     },
+     "style": {
+      "value": {
+       "padding": {
+        "desktop": "0",
+        "mobile": "0"
+       }
+      },
+      "disabled": false
+     }
+    }
+   },
+   {
+    "id": "header2_socialIcon3Image",
+    "wrapperId": null,
+    "blockId": "header2_socialIcon3Link",
+    "visibility": "show",
+    "parent": null,
+    "children": [
+     "header2_socialIcon3Link"
+    ],
+    "types": [
+     "editable"
+    ],
+    "textContent": null,
+    "tag": {
+     "name": "img"
+    },
+    "attributes": {
+     "src": {
+      "value": "https://res.cloudinary.com/drawberry/image/upload/v1637260268/components/miscellaneous/instagram-dark_xnk4ni.png",
+      "disabled": false
+     },
+     "style": {
+      "disabled": false
+     }
+    }
+   }
+  ]
+ },
+ {
+  "name": "Banner 2",
+  "defaultHtml": "<html><head></head><body><div component=\"Banner 2\" id=\"banner2\">\n    <div id=\"banner2_background\" class=\"editable\" style=\"display:flex;flex-direction:column;align-items:center;padding:34px 40px 55px;background-color:#FFFFFF;border-radius:0;box-shadow:0 0 0 0 rgba(0,0,0,0);width:100%;box-sizing:border-box;text-align:center;\" data-mobile-style=\"padding: 25px 20px 20px;\">\n      <div block=\"\" id=\"banner2_logoWrapper\" class=\"editable\" style=\"display:flex;justify-content:center;align-items:center;width:100%;\">\n        <a id=\"banner2_logoImageLink\" parent=\"banner2_logoImage\" class=\"editable\" href=\"http://example.com\" style=\"text-decoration:none;display:inline-flex;align-items:center;justify-content:center;\">\n          <img id=\"banner2_logoImage\" class=\"editable\" src=\"https://res.cloudinary.com/drawberry/image/upload/v1637259610/logo/berrycon-colored_ijwy3c.png\" alt=\"\" style=\"max-width:100%;width:auto;height:40px;border:0;outline:0;display:block;\">\n        </a>\n      </div>\n      <div id=\"banner2_subtitle\" block=\"\" class=\"editable pc-fb-font text\" style=\"margin-top:56px;font-family:'DM Sans', Helvetica, Arial, sans-serif;font-size:14px;line-height:20px;font-weight:500;color:#5C9919;text-align:center;\">Blockbuster</div>\n      <div id=\"banner2_title\" block=\"\" class=\"editable text\" style=\"margin-top:16px;max-width:640px;font-family:'DM Sans', Helvetica, Arial, sans-serif;font-size:36px;line-height:46px;font-weight:800;letter-spacing:-0.6px;color:#1D1E20;text-align:center;\" data-mobile-style=\"font-size: 30px; line-height: 42px;\">The Louder They Roar, The Harder They Fall</div>\n      <div block=\"\" id=\"banner2_imageWrapper\" class=\"editable\" parent=\"banner2_bannerImage\" style=\"margin-top:24px;width:100%;display:flex;justify-content:center;\">\n        <img id=\"banner2_bannerImage\" class=\"editable\" src=\"https://res.cloudinary.com/drawberry/image/upload/v1637260156/components/banner/banner-4-image-1_gyqmwu.jpg\" alt=\"\" style=\"display:block;width:100%;max-width:520px;height:auto;border:0;outline:0;border-radius:8px;\">\n      </div>\n      <div id=\"banner2_bodyText\" block=\"\" class=\"editable pc-fb-font text\" style=\"margin-top:24px;max-width:680px;font-family:'DM Sans', Helvetica, Arial, sans-serif;font-size:18px;line-height:28px;font-weight:300;letter-spacing:-0.2px;color:#1D1E20;text-align:center;\">Listen to The Harder They Fall Soundtrack — Featuring Jay-Z, Kid Cudi, Ms. Lauryn Hill, &amp; more</div>\n      <div id=\"banner2_button\" block=\"\" class=\"editable\" style=\"margin-top:24px;background-color:#5C9919;border-radius:8px;padding:13px 17px;\">\n        <a id=\"banner2_buttonLink\" parent=\"banner2_button\" class=\"editable text\" href=\"http://example.com\" style=\"display:block;text-decoration:none;word-break:break-word;font-family:'DM Sans', Helvetica, Arial, sans-serif;font-size:16px;line-height:24px;font-weight:500;color:#FFFFFF;\">Stream soundtrack</a>\n      </div>\n    </div>\n  </div></body></html>",
+  "json": [
+   {
+    "id": "banner2_background",
+    "wrapperId": null,
+    "blockId": null,
+    "visibility": "show",
+    "parent": null,
+    "children": [],
+    "types": [
+     "editable"
+    ],
+    "textContent": null,
+    "tag": {
+     "name": "div"
+    },
+    "attributes": {
+     "style": {
+      "value": {
+       "display": {
+        "desktop": "flex",
+        "mobile": "flex"
+       },
+       "flex-direction": {
+        "desktop": "column",
+        "mobile": "column"
+       },
+       "align-items": {
+        "desktop": "center",
+        "mobile": "center"
+       },
+       "padding": {
+        "desktop": "34px 40px 55px",
+        "mobile": "25px 20px 20px"
+       },
+       "background-color": {
+        "desktop": "#FFFFFF",
+        "mobile": "#FFFFFF"
+       },
+       "text-align": {
+        "desktop": "center",
+        "mobile": "center"
+       },
+       "border-radius": "0px",
+       "box-shadow": "0 0 0 0 rgba(0, 0, 0, 0.0)"
+      },
+      "disabled": false
+     }
+    }
+   },
+   {
+    "id": "banner2_logoWrapper",
+    "wrapperId": "banner2_background",
+    "blockId": null,
+    "visibility": "show",
+    "parent": null,
+    "children": [],
+    "types": [
+     "editable"
+    ],
+    "textContent": null,
+    "tag": {
+     "name": "div"
+    },
+    "attributes": {
+     "style": {
+      "value": {
+       "display": {
+        "desktop": "flex",
+        "mobile": "flex"
+       },
+       "align-items": {
+        "desktop": "center",
+        "mobile": "center"
+       },
+       "justify-content": {
+        "desktop": "center",
+        "mobile": "center"
+       },
+       "flex-direction": {
+        "desktop": "row",
+        "mobile": "row"
+       }
+      },
+      "disabled": false
+     }
+    }
+   },
+   {
+    "id": "banner2_logoImageLink",
+    "wrapperId": null,
+    "blockId": "banner2_logoWrapper",
+    "visibility": "show",
+    "parent": "banner2_logoImage",
+    "children": [],
+    "types": [
+     "editable"
+    ],
+    "textContent": null,
+    "tag": {
+     "name": "a"
+    },
+    "attributes": {
+     "href": {
+      "value": "http://example.com",
+      "disabled": false
+     },
+     "style": {
+      "disabled": false
+     }
+    }
+   },
+   {
+    "id": "banner2_logoImage",
+    "wrapperId": null,
+    "blockId": "banner2_logoWrapper",
+    "visibility": "show",
+    "parent": null,
+    "children": [
+     "banner2_logoImageLink"
+    ],
+    "types": [
+     "editable"
+    ],
+    "textContent": null,
+    "tag": {
+     "name": "img"
+    },
+    "attributes": {
+     "src": {
+      "value": "https://res.cloudinary.com/drawberry/image/upload/v1637259610/logo/berrycon-colored_ijwy3c.png",
+      "disabled": false
+     },
+     "style": {
+      "value": {
+       "width": {
+        "desktop": "auto",
+        "mobile": "auto"
+       },
+       "height": {
+        "desktop": "40px",
+        "mobile": "40px"
+       }
+      },
+      "disabled": false
+     }
+    }
+   },
+   {
+    "id": "banner2_subtitle",
+    "wrapperId": "banner2_background",
+    "blockId": null,
+    "visibility": "show",
+    "parent": null,
+    "children": [],
+    "types": [
+     "editable",
+     "pc-fb-font",
+     "text"
+    ],
+    "textContent": "Blockbuster",
+    "tag": {
+     "name": "div"
+    },
+    "attributes": {
+     "style": {
+      "value": {
+       "font-family": {
+        "desktop": "'DM Sans', Helvetica, Arial, sans-serif",
+        "mobile": "'DM Sans', Helvetica, Arial, sans-serif"
+       },
+       "font-size": {
+        "desktop": "14px",
+        "mobile": "14px"
+       },
+       "font-weight": {
+        "desktop": 400,
+        "mobile": "500"
+       },
+       "color": {
+        "desktop": "#5C9919",
+        "mobile": "#5C9919"
+       },
+       "line-height": {
+        "desktop": "20px",
+        "mobile": "20px"
+       },
+       "text-align": {
+        "desktop": "center",
+        "mobile": "center"
+       },
+       "margin-top": {
+        "desktop": "56px",
+        "mobile": "56px"
+       }
+      },
+      "disabled": false
+     }
+    }
+   },
+   {
+    "id": "banner2_title",
+    "wrapperId": "banner2_background",
+    "blockId": null,
+    "visibility": "show",
+    "parent": null,
+    "children": [],
+    "types": [
+     "editable",
+     "text"
+    ],
+    "textContent": "The Louder They Roar, The Harder They Fall",
+    "tag": {
+     "name": "div"
+    },
+    "attributes": {
+     "style": {
+      "value": {
+       "font-family": {
+        "desktop": "'DM Sans', Helvetica, Arial, sans-serif",
+        "mobile": "'DM Sans', Helvetica, Arial, sans-serif"
+       },
+       "font-size": {
+        "desktop": "36px",
+        "mobile": "30px"
+       },
+       "font-weight": {
+        "desktop": 400,
+        "mobile": "800"
+       },
+       "color": {
+        "desktop": "#1D1E20",
+        "mobile": "#1D1E20"
+       },
+       "letter-spacing": {
+        "desktop": "-0.6px",
+        "mobile": "-0.6px"
+       },
+       "line-height": {
+        "desktop": "46px",
+        "mobile": "42px"
+       },
+       "text-align": {
+        "desktop": "center",
+        "mobile": "center"
+       },
+       "margin-top": {
+        "desktop": "16px",
+        "mobile": "16px"
+       }
+      },
+      "disabled": false
+     }
+    }
+   },
+   {
+    "id": "banner2_imageWrapper",
+    "wrapperId": "banner2_background",
+    "blockId": null,
+    "visibility": "show",
+    "parent": "banner2_bannerImage",
+    "children": [],
+    "types": [
+     "editable"
+    ],
+    "textContent": null,
+    "tag": {
+     "name": "div"
+    },
+    "attributes": {
+     "style": {
+      "value": {
+       "display": {
+        "desktop": "flex",
+        "mobile": "flex"
+       },
+       "justify-content": {
+        "desktop": "center",
+        "mobile": "center"
+       },
+       "margin-top": {
+        "desktop": "24px",
+        "mobile": "24px"
+       },
+       "flex-direction": {
+        "desktop": "row",
+        "mobile": "row"
+       }
+      },
+      "disabled": false
+     }
+    }
+   },
+   {
+    "id": "banner2_bannerImage",
+    "wrapperId": null,
+    "blockId": "banner2_imageWrapper",
+    "visibility": "show",
+    "parent": null,
+    "children": [
+     "banner2_imageWrapper"
+    ],
+    "types": [
+     "editable"
+    ],
+    "textContent": null,
+    "tag": {
+     "name": "img"
+    },
+    "attributes": {
+     "src": {
+      "value": "https://res.cloudinary.com/drawberry/image/upload/v1637260156/components/banner/banner-4-image-1_gyqmwu.jpg",
+      "disabled": false
+     },
+     "style": {
+      "value": {
+       "width": {
+        "desktop": "100%",
+        "mobile": "100%"
+       },
+       "height": {
+        "desktop": "auto",
+        "mobile": "auto"
+       },
+       "border-radius": {
+        "desktop": "8px",
+        "mobile": "8px"
+       }
+      },
+      "disabled": false
+     }
+    }
+   },
+   {
+    "id": "banner2_bodyText",
+    "wrapperId": "banner2_background",
+    "blockId": null,
+    "visibility": "show",
+    "parent": null,
+    "children": [],
+    "types": [
+     "editable",
+     "pc-fb-font",
+     "text"
+    ],
+    "textContent": "Listen to The Harder They Fall Soundtrack — Featuring Jay-Z, Kid Cudi, Ms. Lauryn Hill, & more",
+    "tag": {
+     "name": "div"
+    },
+    "attributes": {
+     "style": {
+      "value": {
+       "font-family": {
+        "desktop": "'DM Sans', Helvetica, Arial, sans-serif",
+        "mobile": "'DM Sans', Helvetica, Arial, sans-serif"
+       },
+       "font-size": {
+        "desktop": "18px",
+        "mobile": "18px"
+       },
+       "font-weight": {
+        "desktop": 400,
+        "mobile": "300"
+       },
+       "color": {
+        "desktop": "#1D1E20",
+        "mobile": "#1D1E20"
+       },
+       "letter-spacing": {
+        "desktop": "-0.2px",
+        "mobile": "-0.2px"
+       },
+       "line-height": {
+        "desktop": "28px",
+        "mobile": "28px"
+       },
+       "text-align": {
+        "desktop": "center",
+        "mobile": "center"
+       },
+       "margin-top": {
+        "desktop": "24px",
+        "mobile": "24px"
+       }
+      },
+      "disabled": false
+     }
+    }
+   },
+   {
+    "id": "banner2_button",
+    "wrapperId": "banner2_background",
+    "blockId": null,
+    "visibility": "show",
+    "parent": null,
+    "children": [
+     "banner2_buttonLink"
+    ],
+    "types": [
+     "editable"
+    ],
+    "textContent": null,
+    "tag": {
+     "name": "div"
+    },
+    "attributes": {
+     "style": {
+      "value": {
+       "padding": {
+        "desktop": "13px 17px",
+        "mobile": "13px 17px"
+       },
+       "background-color": {
+        "desktop": "#5C9919",
+        "mobile": "#5C9919"
+       },
+       "border-radius": {
+        "desktop": "8px",
+        "mobile": "8px"
+       },
+       "margin-top": {
+        "desktop": "24px",
+        "mobile": "24px"
+       }
+      },
+      "disabled": false
+     }
+    }
+   },
+   {
+    "id": "banner2_buttonLink",
+    "wrapperId": null,
+    "blockId": "banner2_button",
+    "visibility": "show",
+    "parent": "banner2_button",
+    "children": [],
+    "types": [
+     "editable",
+     "text"
+    ],
+    "textContent": "Stream soundtrack",
+    "tag": {
+     "name": "a"
+    },
+    "attributes": {
+     "href": {
+      "value": "http://example.com",
+      "disabled": false
+     },
+     "style": {
+      "value": {
+       "font-family": {
+        "desktop": "'DM Sans', Helvetica, Arial, sans-serif",
+        "mobile": "'DM Sans', Helvetica, Arial, sans-serif"
+       },
+       "font-size": {
+        "desktop": "16px",
+        "mobile": "16px"
+       },
+       "font-weight": {
+        "desktop": 400,
+        "mobile": "500"
+       },
+       "color": {
+        "desktop": "#FFFFFF",
+        "mobile": "#FFFFFF"
+       },
+       "line-height": {
+        "desktop": "24px",
+        "mobile": "24px"
+       }
+      },
+      "disabled": false
+     }
+    }
+   }
+  ]
+ },
+ {
+  "name": "Call to action 2",
+  "defaultHtml": "<html><head></head><body><div component=\"Call to action 2\" id=\"cta2\">\n  <div id=\"cta2_background\" class=\"editable\" style=\"display:flex; flex-direction:column; align-items:center; gap:25px; padding:42px 40px 35px; background-color:#1D1E20; background-image:url('https://res.cloudinary.com/drawberry/image/upload/v1643454318/components/call-to-action/security_bzsqcz.jpg'); background-position:center; background-size:cover; width:100%; box-sizing:border-box; border-radius:0px; box-shadow:0 0px 0px 0 rgba(0,0,0,0.0);\" data-mobile-style=\"padding:25px 20px 20px;\">\n    <div id=\"cta2_copy\" block=\"\" class=\"editable\" style=\"display:flex; flex-direction:column; align-items:center; gap:10px; width:100%; box-sizing:border-box;\">\n      <div id=\"cta2_subtitle\" block=\"\" class=\"editable text pc-fb-font\" style=\"font-family:'DM Sans', Helvetica, Arial, sans-serif; font-size:14px; line-height:20px; font-weight:500; color:#5C9919; text-align:center; margin-bottom:2px;\">Top Tips</div>\n      <div id=\"cta2_title\" block=\"\" class=\"editable text pc-fb-font\" style=\"font-family:'DM Sans', Helvetica, Arial, sans-serif; font-size:36px; line-height:46px; font-weight:700; letter-spacing:-0.6px; color:#FFFFFF; text-align:center;\" data-mobile-style=\"font-size:24px; line-height:34px;\">Don't take a phishy bait</div>\n      <div id=\"cta2_bodyText\" block=\"\" class=\"editable text pc-fb-font\" style=\"font-family:'DM Sans', Helvetica, Arial, sans-serif; font-size:18px; line-height:28px; font-weight:300; color:#FFFFFF; text-align:center;\">Be vigilant, and always double-check the URL of websites you visit.</div>\n    </div>\n    <div id=\"cta2_button\" block=\"\" class=\"editable\" style=\"display:inline-flex; align-items:center; justify-content:center; padding:13px 17px; border-radius:8px; background-color:#5C9919; box-sizing:border-box;\">\n      <a id=\"cta2_buttonLink\" parent=\"cta2_button\" class=\"editable text\" href=\"http://example.com\" style=\"display:block; font-family:'DM Sans', Helvetica, Arial, sans-serif; font-size:16px; line-height:24px; font-weight:500; color:#FFFFFF; text-decoration:none; word-break:break-word;\">Secure you data</a>\n    </div>\n  </div>\n</div></body></html>",
+  "json": [
+   {
+    "id": "cta2_background",
+    "wrapperId": null,
+    "blockId": null,
+    "visibility": "show",
+    "parent": null,
+    "children": [],
+    "types": [
+     "editable"
+    ],
+    "textContent": null,
+    "tag": {
+     "name": "div"
+    },
+    "attributes": {
+     "style": {
+      "value": {
+       "display": {
+        "desktop": "flex",
+        "mobile": "flex"
+       },
+       "flex-direction": {
+        "desktop": "column",
+        "mobile": "column"
+       },
+       "gap": {
+        "desktop": "25px",
+        "mobile": "25px"
+       },
+       "align-items": {
+        "desktop": "center",
+        "mobile": "center"
+       },
+       "padding": {
+        "desktop": "42px 40px 35px",
+        "mobile": "25px 20px 20px"
+       },
+       "background-color": {
+        "desktop": "#1D1E20",
+        "mobile": "#1D1E20"
+       },
+       "border-radius": "0px",
+       "box-shadow": "0 0 0 0 rgba(0, 0, 0, 0.0)",
+       "background-image": {
+        "desktop": "url('https://res.cloudinary.com/drawberry/image/upload/v1643454318/components/call-to-action/security_bzsqcz.jpg')",
+        "mobile": "url('https://res.cloudinary.com/drawberry/image/upload/v1643454318/components/call-to-action/security_bzsqcz.jpg')"
+       },
+       "background-position": {
+        "desktop": "center",
+        "mobile": "center"
+       },
+       "background-size": {
+        "desktop": "cover",
+        "mobile": "cover"
+       }
+      },
+      "disabled": false
+     }
+    }
+   },
+   {
+    "id": "cta2_copy",
+    "wrapperId": "cta2_background",
+    "blockId": null,
+    "visibility": "show",
+    "parent": null,
+    "children": [],
+    "types": [
+     "editable"
+    ],
+    "textContent": null,
+    "tag": {
+     "name": "div"
+    },
+    "attributes": {
+     "style": {
+      "value": {
+       "display": {
+        "desktop": "flex",
+        "mobile": "flex"
+       },
+       "flex-direction": {
+        "desktop": "column",
+        "mobile": "column"
+       },
+       "gap": {
+        "desktop": "10px",
+        "mobile": "10px"
+       },
+       "align-items": {
+        "desktop": "center",
+        "mobile": "center"
+       }
+      },
+      "disabled": false
+     }
+    }
+   },
+   {
+    "id": "cta2_subtitle",
+    "wrapperId": "cta2_copy",
+    "blockId": null,
+    "visibility": "show",
+    "parent": null,
+    "children": [],
+    "types": [
+     "editable",
+     "text",
+     "pc-fb-font"
+    ],
+    "textContent": "Top Tips",
+    "tag": {
+     "name": "div"
+    },
+    "attributes": {
+     "style": {
+      "value": {
+       "font-family": {
+        "desktop": "'DM Sans', Helvetica, Arial, sans-serif",
+        "mobile": "'DM Sans', Helvetica, Arial, sans-serif"
+       },
+       "font-size": {
+        "desktop": "14px",
+        "mobile": "14px"
+       },
+       "font-weight": {
+        "desktop": 400,
+        "mobile": "500"
+       },
+       "color": {
+        "desktop": "#5C9919",
+        "mobile": "#5C9919"
+       },
+       "line-height": {
+        "desktop": "20px",
+        "mobile": "20px"
+       },
+       "text-align": {
+        "desktop": "center",
+        "mobile": "center"
+       },
+       "margin-bottom": {
+        "desktop": "2px",
+        "mobile": "2px"
+       }
+      },
+      "disabled": false
+     }
+    }
+   },
+   {
+    "id": "cta2_title",
+    "wrapperId": "cta2_copy",
+    "blockId": null,
+    "visibility": "show",
+    "parent": null,
+    "children": [],
+    "types": [
+     "editable",
+     "text",
+     "pc-fb-font"
+    ],
+    "textContent": "Don't take a phishy bait",
+    "tag": {
+     "name": "div"
+    },
+    "attributes": {
+     "style": {
+      "value": {
+       "font-family": {
+        "desktop": "'DM Sans', Helvetica, Arial, sans-serif",
+        "mobile": "'DM Sans', Helvetica, Arial, sans-serif"
+       },
+       "font-size": {
+        "desktop": "36px",
+        "mobile": "24px"
+       },
+       "font-weight": {
+        "desktop": 400,
+        "mobile": "700"
+       },
+       "color": {
+        "desktop": "#FFFFFF",
+        "mobile": "#FFFFFF"
+       },
+       "letter-spacing": {
+        "desktop": "-0.6px",
+        "mobile": "-0.6px"
+       },
+       "line-height": {
+        "desktop": "46px",
+        "mobile": "34px"
+       },
+       "text-align": {
+        "desktop": "center",
+        "mobile": "center"
+       }
+      },
+      "disabled": false
+     }
+    }
+   },
+   {
+    "id": "cta2_bodyText",
+    "wrapperId": "cta2_copy",
+    "blockId": null,
+    "visibility": "show",
+    "parent": null,
+    "children": [],
+    "types": [
+     "editable",
+     "text",
+     "pc-fb-font"
+    ],
+    "textContent": "Be vigilant, and always double-check the URL of websites you visit.",
+    "tag": {
+     "name": "div"
+    },
+    "attributes": {
+     "style": {
+      "value": {
+       "font-family": {
+        "desktop": "'DM Sans', Helvetica, Arial, sans-serif",
+        "mobile": "'DM Sans', Helvetica, Arial, sans-serif"
+       },
+       "font-size": {
+        "desktop": "18px",
+        "mobile": "18px"
+       },
+       "font-weight": {
+        "desktop": 400,
+        "mobile": "300"
+       },
+       "color": {
+        "desktop": "#FFFFFF",
+        "mobile": "#FFFFFF"
+       },
+       "line-height": {
+        "desktop": "28px",
+        "mobile": "28px"
+       },
+       "text-align": {
+        "desktop": "center",
+        "mobile": "center"
+       }
+      },
+      "disabled": false
+     }
+    }
+   },
+   {
+    "id": "cta2_button",
+    "wrapperId": "cta2_background",
+    "blockId": null,
+    "visibility": "show",
+    "parent": null,
+    "children": [
+     "cta2_buttonLink"
+    ],
+    "types": [
+     "editable"
+    ],
+    "textContent": null,
+    "tag": {
+     "name": "div"
+    },
+    "attributes": {
+     "style": {
+      "value": {
+       "display": {
+        "desktop": "inline-flex",
+        "mobile": "inline-flex"
+       },
+       "align-items": {
+        "desktop": "center",
+        "mobile": "center"
+       },
+       "justify-content": {
+        "desktop": "center",
+        "mobile": "center"
+       },
+       "padding": {
+        "desktop": "13px 17px",
+        "mobile": "13px 17px"
+       },
+       "background-color": {
+        "desktop": "#5C9919",
+        "mobile": "#5C9919"
+       },
+       "border-radius": {
+        "desktop": "48px",
+        "mobile": "48px"
+       }
+      },
+      "disabled": false
+     }
+    }
+   },
+   {
+    "id": "cta2_buttonLink",
+    "wrapperId": null,
+    "blockId": "cta2_button",
+    "visibility": "show",
+    "parent": "cta2_button",
+    "children": [],
+    "types": [
+     "editable",
+     "text"
+    ],
+    "textContent": "Secure you data",
+    "tag": {
+     "name": "a"
+    },
+    "attributes": {
+     "href": {
+      "value": "http://example.com",
+      "disabled": false
+     },
+     "style": {
+      "value": {
+       "font-family": {
+        "desktop": "'DM Sans', Helvetica, Arial, sans-serif",
+        "mobile": "'DM Sans', Helvetica, Arial, sans-serif"
+       },
+       "font-size": {
+        "desktop": "16px",
+        "mobile": "16px"
+       },
+       "font-weight": {
+        "desktop": 400,
+        "mobile": "500"
+       },
+       "color": {
+        "desktop": "#FFFFFF",
+        "mobile": "#FFFFFF"
+       },
+       "line-height": {
+        "desktop": "24px",
+        "mobile": "24px"
+       }
+      },
+      "disabled": false
+     }
+    }
+   }
+  ]
+ },
+ {
+  "name": "Call to action 5",
+  "defaultHtml": "<html><head></head><body><div component=\"Call to action 5\" id=\"cta5\">\n  <div id=\"cta5_background\" class=\"editable\" style=\"display:flex; flex-direction:column; align-items:center; padding:40px 30px 32px; background-color:#FFFFFF; width:100%; box-sizing:border-box; border-radius:0px; box-shadow:0 0px 0px 0 rgba(0,0,0,0.0);\" data-mobile-style=\"padding:25px 20px;\">\n    <div id=\"cta5_intro\" block=\"\" class=\"editable\" style=\"display:flex; flex-direction:column; align-items:center; gap:24px; width:100%; box-sizing:border-box;\">\n      <div id=\"cta5_logo\" block=\"\" parent=\"cta5_logoImage\" class=\"editable\" style=\"display:flex; justify-content:center; width:100%; box-sizing:border-box;\">\n        <img id=\"cta5_logoImage\" class=\"editable\" src=\"https://res.cloudinary.com/drawberry/image/upload/v1637259610/logo/berrycon-colored_ijwy3c.png\" alt=\"\" style=\"display:block; width:72px; max-width:100%; height:auto; border:0; outline:0; margin:0 auto;\">\n      </div>\n      <div id=\"cta5_copy\" block=\"\" class=\"editable\" style=\"display:flex; flex-direction:column; align-items:center; gap:10px; width:100%; box-sizing:border-box;\">\n        <div id=\"cta5_title\" block=\"\" class=\"editable text pc-fb-font\" style=\"font-family:'DM Sans', Helvetica, Arial, sans-serif; font-size:24px; line-height:34px; font-weight:700; letter-spacing:-0.4px; color:#1D1E20; text-align:center;\">App is available for iOS and Android.</div>\n        <div id=\"cta5_bodyText\" block=\"\" class=\"editable text pc-fb-font\" style=\"font-family:'DM Sans', Helvetica, Arial, sans-serif; font-size:18px; line-height:28px; font-weight:300; color:#8E8F90; text-align:center;\">Optimize performance and customize an even better customer experience on our visual canvas builder.</div>\n      </div>\n    </div>\n    <div id=\"cta5_storeButtons\" block=\"\" class=\"editable\" style=\"display:flex; justify-content:center; align-items:center; flex-wrap:wrap; gap:0; margin-top:16px; width:100%; box-sizing:border-box;\">\n      <div id=\"cta5_appStoreButton\" block=\"\" class=\"editable\" parent=\"cta5_appStoreButtonImage\" style=\"display:flex; align-items:center; justify-content:center; padding:8px; box-sizing:border-box;\">\n        <a id=\"cta5_appStoreButtonLink\" parent=\"cta5_appStoreButtonImage\" class=\"editable\" href=\"http://example.com\" style=\"display:inline-flex; align-items:center; justify-content:center; text-decoration:none;\" aria-label=\"App Store\">\n          <img id=\"cta5_appStoreButtonImage\" class=\"editable\" src=\"https://res.cloudinary.com/drawberry/image/upload/v1637425315/components/miscellaneous/appstore-logo-black_rkd4sj.png\" alt=\"App Store\" width=\"127\" height=\"52\" style=\"display:block; width:127px; max-width:100%; height:auto; border:0; outline:0;\">\n        </a>\n      </div>\n      <div id=\"cta5_playStoreButton\" block=\"\" class=\"editable\" parent=\"cta5_playStoreButtonImage\" style=\"display:flex; align-items:center; justify-content:center; padding:8px; box-sizing:border-box;\">\n        <a id=\"cta5_playStoreButtonLink\" parent=\"cta5_playStoreButtonImage\" class=\"editable\" href=\"http://example.com\" style=\"display:inline-flex; align-items:center; justify-content:center; text-decoration:none;\" aria-label=\"Google Play\">\n          <img id=\"cta5_playStoreButtonImage\" class=\"editable\" src=\"https://res.cloudinary.com/drawberry/image/upload/v1637425315/components/miscellaneous/playstore-logo-black_cphmd5.png\" alt=\"Google Play\" width=\"127\" height=\"52\" style=\"display:block; width:127px; max-width:100%; height:auto; border:0; outline:0;\">\n        </a>\n      </div>\n    </div>\n  </div>\n</div></body></html>",
+  "json": [
+   {
+    "id": "cta5_background",
+    "wrapperId": null,
+    "blockId": null,
+    "visibility": "show",
+    "parent": null,
+    "children": [],
+    "types": [
+     "editable"
+    ],
+    "textContent": null,
+    "tag": {
+     "name": "div"
+    },
+    "attributes": {
+     "style": {
+      "value": {
+       "display": {
+        "desktop": "flex",
+        "mobile": "flex"
+       },
+       "flex-direction": {
+        "desktop": "column",
+        "mobile": "column"
+       },
+       "align-items": {
+        "desktop": "center",
+        "mobile": "center"
+       },
+       "padding": {
+        "desktop": "40px 30px 32px",
+        "mobile": "25px 20px"
+       },
+       "background-color": {
+        "desktop": "#FFFFFF",
+        "mobile": "#FFFFFF"
+       },
+       "border-radius": "0px",
+       "box-shadow": "0 0 0 0 rgba(0, 0, 0, 0.0)"
+      },
+      "disabled": false
+     }
+    }
+   },
+   {
+    "id": "cta5_intro",
+    "wrapperId": "cta5_background",
+    "blockId": null,
+    "visibility": "show",
+    "parent": null,
+    "children": [],
+    "types": [
+     "editable"
+    ],
+    "textContent": null,
+    "tag": {
+     "name": "div"
+    },
+    "attributes": {
+     "style": {
+      "value": {
+       "display": {
+        "desktop": "flex",
+        "mobile": "flex"
+       },
+       "flex-direction": {
+        "desktop": "column",
+        "mobile": "column"
+       },
+       "gap": {
+        "desktop": "24px",
+        "mobile": "24px"
+       },
+       "align-items": {
+        "desktop": "center",
+        "mobile": "center"
+       }
+      },
+      "disabled": false
+     }
+    }
+   },
+   {
+    "id": "cta5_logo",
+    "wrapperId": "cta5_intro",
+    "blockId": null,
+    "visibility": "show",
+    "parent": "cta5_logoImage",
+    "children": [],
+    "types": [
+     "editable"
+    ],
+    "textContent": null,
+    "tag": {
+     "name": "div"
+    },
+    "attributes": {
+     "style": {
+      "value": {
+       "display": {
+        "desktop": "flex",
+        "mobile": "flex"
+       },
+       "justify-content": {
+        "desktop": "center",
+        "mobile": "center"
+       },
+       "flex-direction": {
+        "desktop": "row",
+        "mobile": "row"
+       }
+      },
+      "disabled": false
+     }
+    }
+   },
+   {
+    "id": "cta5_logoImage",
+    "wrapperId": null,
+    "blockId": "cta5_logo",
+    "visibility": "show",
+    "parent": null,
+    "children": [
+     "cta5_logo"
+    ],
+    "types": [
+     "editable"
+    ],
+    "textContent": null,
+    "tag": {
+     "name": "img"
+    },
+    "attributes": {
+     "src": {
+      "value": "https://res.cloudinary.com/drawberry/image/upload/v1637259610/logo/berrycon-colored_ijwy3c.png",
+      "disabled": false
+     },
+     "style": {
+      "value": {
+       "width": {
+        "desktop": "72px",
+        "mobile": "72px"
+       },
+       "height": {
+        "desktop": "auto",
+        "mobile": "auto"
+       }
+      },
+      "disabled": false
+     }
+    }
+   },
+   {
+    "id": "cta5_copy",
+    "wrapperId": "cta5_intro",
+    "blockId": null,
+    "visibility": "show",
+    "parent": null,
+    "children": [],
+    "types": [
+     "editable"
+    ],
+    "textContent": null,
+    "tag": {
+     "name": "div"
+    },
+    "attributes": {
+     "style": {
+      "value": {
+       "display": {
+        "desktop": "flex",
+        "mobile": "flex"
+       },
+       "flex-direction": {
+        "desktop": "column",
+        "mobile": "column"
+       },
+       "gap": {
+        "desktop": "10px",
+        "mobile": "10px"
+       },
+       "align-items": {
+        "desktop": "center",
+        "mobile": "center"
+       }
+      },
+      "disabled": false
+     }
+    }
+   },
+   {
+    "id": "cta5_title",
+    "wrapperId": "cta5_copy",
+    "blockId": null,
+    "visibility": "show",
+    "parent": null,
+    "children": [],
+    "types": [
+     "editable",
+     "text",
+     "pc-fb-font"
+    ],
+    "textContent": "App is available for iOS and Android.",
+    "tag": {
+     "name": "div"
+    },
+    "attributes": {
+     "style": {
+      "value": {
+       "font-family": {
+        "desktop": "'DM Sans', Helvetica, Arial, sans-serif",
+        "mobile": "'DM Sans', Helvetica, Arial, sans-serif"
+       },
+       "font-size": {
+        "desktop": "24px",
+        "mobile": "24px"
+       },
+       "font-weight": {
+        "desktop": 400,
+        "mobile": "700"
+       },
+       "color": {
+        "desktop": "#1D1E20",
+        "mobile": "#1D1E20"
+       },
+       "letter-spacing": {
+        "desktop": "-0.4px",
+        "mobile": "-0.4px"
+       },
+       "line-height": {
+        "desktop": "34px",
+        "mobile": "34px"
+       },
+       "text-align": {
+        "desktop": "center",
+        "mobile": "center"
+       }
+      },
+      "disabled": false
+     }
+    }
+   },
+   {
+    "id": "cta5_bodyText",
+    "wrapperId": "cta5_copy",
+    "blockId": null,
+    "visibility": "show",
+    "parent": null,
+    "children": [],
+    "types": [
+     "editable",
+     "text",
+     "pc-fb-font"
+    ],
+    "textContent": "Optimize performance and customize an even better customer experience on our visual canvas builder.",
+    "tag": {
+     "name": "div"
+    },
+    "attributes": {
+     "style": {
+      "value": {
+       "font-family": {
+        "desktop": "'DM Sans', Helvetica, Arial, sans-serif",
+        "mobile": "'DM Sans', Helvetica, Arial, sans-serif"
+       },
+       "font-size": {
+        "desktop": "18px",
+        "mobile": "18px"
+       },
+       "font-weight": {
+        "desktop": 400,
+        "mobile": "300"
+       },
+       "color": {
+        "desktop": "#8E8F90",
+        "mobile": "#8E8F90"
+       },
+       "line-height": {
+        "desktop": "28px",
+        "mobile": "28px"
+       },
+       "text-align": {
+        "desktop": "center",
+        "mobile": "center"
+       }
+      },
+      "disabled": false
+     }
+    }
+   },
+   {
+    "id": "cta5_storeButtons",
+    "wrapperId": "cta5_background",
+    "blockId": null,
+    "visibility": "show",
+    "parent": null,
+    "children": [],
+    "types": [
+     "editable"
+    ],
+    "textContent": null,
+    "tag": {
+     "name": "div"
+    },
+    "attributes": {
+     "style": {
+      "value": {
+       "display": {
+        "desktop": "flex",
+        "mobile": "flex"
+       },
+       "gap": {
+        "desktop": "0",
+        "mobile": "0"
+       },
+       "align-items": {
+        "desktop": "center",
+        "mobile": "center"
+       },
+       "justify-content": {
+        "desktop": "center",
+        "mobile": "center"
+       },
+       "margin-top": {
+        "desktop": "16px",
+        "mobile": "16px"
+       },
+       "flex-direction": {
+        "desktop": "row",
+        "mobile": "row"
+       }
+      },
+      "disabled": false
+     }
+    }
+   },
+   {
+    "id": "cta5_appStoreButton",
+    "wrapperId": "cta5_storeButtons",
+    "blockId": null,
+    "visibility": "show",
+    "parent": "cta5_appStoreButtonImage",
+    "children": [],
+    "types": [
+     "editable"
+    ],
+    "textContent": null,
+    "tag": {
+     "name": "div"
+    },
+    "attributes": {
+     "style": {
+      "value": {
+       "display": {
+        "desktop": "flex",
+        "mobile": "flex"
+       },
+       "align-items": {
+        "desktop": "center",
+        "mobile": "center"
+       },
+       "justify-content": {
+        "desktop": "center",
+        "mobile": "center"
+       },
+       "padding": {
+        "desktop": "8px",
+        "mobile": "8px"
+       },
+       "flex-direction": {
+        "desktop": "row",
+        "mobile": "row"
+       }
+      },
+      "disabled": false
+     }
+    }
+   },
+   {
+    "id": "cta5_appStoreButtonLink",
+    "wrapperId": null,
+    "blockId": "cta5_appStoreButton",
+    "visibility": "show",
+    "parent": "cta5_appStoreButtonImage",
+    "children": [],
+    "types": [
+     "editable"
+    ],
+    "textContent": null,
+    "tag": {
+     "name": "a"
+    },
+    "attributes": {
+     "href": {
+      "value": "http://example.com",
+      "disabled": false
+     },
+     "style": {
+      "disabled": false
+     }
+    }
+   },
+   {
+    "id": "cta5_appStoreButtonImage",
+    "wrapperId": null,
+    "blockId": "cta5_appStoreButton",
+    "visibility": "show",
+    "parent": null,
+    "children": [
+     "cta5_appStoreButton",
+     "cta5_appStoreButtonLink"
+    ],
+    "types": [
+     "editable"
+    ],
+    "textContent": null,
+    "tag": {
+     "name": "img"
+    },
+    "attributes": {
+     "src": {
+      "value": "https://res.cloudinary.com/drawberry/image/upload/v1637425315/components/miscellaneous/appstore-logo-black_rkd4sj.png",
+      "disabled": false
+     },
+     "style": {
+      "value": {
+       "width": {
+        "desktop": "127px",
+        "mobile": "127px"
+       },
+       "height": {
+        "desktop": "auto",
+        "mobile": "auto"
+       }
+      },
+      "disabled": false
+     }
+    }
+   },
+   {
+    "id": "cta5_playStoreButton",
+    "wrapperId": "cta5_storeButtons",
+    "blockId": null,
+    "visibility": "show",
+    "parent": "cta5_playStoreButtonImage",
+    "children": [],
+    "types": [
+     "editable"
+    ],
+    "textContent": null,
+    "tag": {
+     "name": "div"
+    },
+    "attributes": {
+     "style": {
+      "value": {
+       "display": {
+        "desktop": "flex",
+        "mobile": "flex"
+       },
+       "align-items": {
+        "desktop": "center",
+        "mobile": "center"
+       },
+       "justify-content": {
+        "desktop": "center",
+        "mobile": "center"
+       },
+       "padding": {
+        "desktop": "8px",
+        "mobile": "8px"
+       },
+       "flex-direction": {
+        "desktop": "row",
+        "mobile": "row"
+       }
+      },
+      "disabled": false
+     }
+    }
+   },
+   {
+    "id": "cta5_playStoreButtonLink",
+    "wrapperId": null,
+    "blockId": "cta5_playStoreButton",
+    "visibility": "show",
+    "parent": "cta5_playStoreButtonImage",
+    "children": [],
+    "types": [
+     "editable"
+    ],
+    "textContent": null,
+    "tag": {
+     "name": "a"
+    },
+    "attributes": {
+     "href": {
+      "value": "http://example.com",
+      "disabled": false
+     },
+     "style": {
+      "disabled": false
+     }
+    }
+   },
+   {
+    "id": "cta5_playStoreButtonImage",
+    "wrapperId": null,
+    "blockId": "cta5_playStoreButton",
+    "visibility": "show",
+    "parent": null,
+    "children": [
+     "cta5_playStoreButton",
+     "cta5_playStoreButtonLink"
+    ],
+    "types": [
+     "editable"
+    ],
+    "textContent": null,
+    "tag": {
+     "name": "img"
+    },
+    "attributes": {
+     "src": {
+      "value": "https://res.cloudinary.com/drawberry/image/upload/v1637425315/components/miscellaneous/playstore-logo-black_cphmd5.png",
+      "disabled": false
+     },
+     "style": {
+      "value": {
+       "width": {
+        "desktop": "127px",
+        "mobile": "127px"
+       },
+       "height": {
+        "desktop": "auto",
+        "mobile": "auto"
+       }
+      },
+      "disabled": false
+     }
+    }
+   }
+  ]
+ },
+ {
+  "name": "Footer 5",
+  "defaultHtml": "<html><head></head><body><div component=\"Footer 5\" id=\"footer5\">\n      <div id=\"footer5_background\" class=\"editable\" style=\"\n        display: flex;\n        flex-direction: column;\n        padding: 21px 20px 14px;\n        background-color: #ffffff;\n        border-radius: 0px;\n        box-shadow: 0 0px 0px 0 rgba(0, 0, 0, 0.0);\n        width: 100%;\n        box-sizing: border-box;\n      \" data-mobile-style=\"\n        padding: 5px 0;\n      \">\n        <div id=\"footer5_layout\" class=\"editable\" style=\"\n          display: flex;\n          align-items: stretch;\n          flex-wrap: wrap;\n          gap: 0;\n          width: 100%;\n          box-sizing: border-box;\n        \" data-mobile-style=\"\n          flex-direction: column;\n        \">\n          <div id=\"footer5_followColumn\" block=\"\" class=\"editable\" style=\"\n            display: flex;\n            flex: 1 1 240px;\n            flex-direction: column;\n            gap: 56px;\n            padding: 20px;\n            box-sizing: border-box;\n          \" data-mobile-style=\"\n            flex-basis: auto;\n            width: 100%;\n          \">\n            <div id=\"footer5_followCopy\" block=\"\" class=\"editable\" style=\"\n              display: flex;\n              flex-direction: column;\n              gap: 12px;\n            \">\n              <div id=\"footer5_title1\" block=\"\" class=\"editable text pc-fb-font\" style=\"\n                font-family:'DM Sans', Helvetica, Arial, sans-serif;\n                font-size: 18px;\n                line-height: 24px;\n                font-weight: 500;\n                letter-spacing: -0.2px;\n                color: #1B1B1B;\n              \">Follow us</div>\n\n              <div id=\"footer5_bodyText1\" block=\"\" class=\"editable text pc-fb-font\" style=\"\n                font-family:'DM Sans', Helvetica, Arial, sans-serif;\n                font-size: 14px;\n                line-height: 20px;\n                letter-spacing: -0.2px;\n                color: #9B9B9B;\n              \">We are always looking for new exciting projects and collaborations. Feel free to contact us.</div>\n            </div>\n\n        <div id=\"footer5_socialIcons\" block=\"\" class=\"editable\" style=\"\n          display: flex;\n          justify-content: flex-start;\n          align-items: center;\n          flex-wrap: wrap;\n          gap: 32px;\n          padding: 0 0 16px;\n          box-sizing: border-box;\n        \">\n          <a block=\"\" id=\"footer5_socialIcon1ImageLink\" parent=\"footer5_socialIcon1Image\" class=\"editable\" href=\"http://example.com/\" style=\"\n            display: inline-flex;\n            align-items: center;\n            justify-content: center;\n            padding: 0;\n            text-decoration: none;\n          \">\n            <img id=\"footer5_socialIcon1Image\" class=\"editable\" src=\"https://res.cloudinary.com/drawberry/image/upload/v1637260268/components/miscellaneous/facebook-dark_uqhmsy.png\" width=\"20\" height=\"20\" alt=\"\" style=\"\n              display: block;\n              width: 20px;\n              height: 20px;\n              border: 0;\n              outline: 0;\n              color: #151515;\n            \">\n          </a>\n          <a block=\"\" id=\"footer5_socialIcon2ImageLink\" parent=\"footer5_socialIcon2Image\" class=\"editable\" href=\"http://example.com/\" style=\"\n            display: inline-flex;\n            align-items: center;\n            justify-content: center;\n            padding: 0;\n            text-decoration: none;\n          \">\n            <img id=\"footer5_socialIcon2Image\" class=\"editable\" src=\"https://res.cloudinary.com/drawberry/image/upload/v1704848622/components/miscellaneous/twitter-x-dark_dkn8rd.png\" width=\"21\" height=\"18\" alt=\"\" style=\"\n              display: block;\n              width: 21px;\n              height: 18px;\n              border: 0;\n              outline: 0;\n              color: #151515;\n            \">\n          </a>\n          <a block=\"\" id=\"footer5_socialIcon3ImageLink\" parent=\"footer5_socialIcon3Image\" class=\"editable\" href=\"http://example.com/\" style=\"\n            display: inline-flex;\n            align-items: center;\n            justify-content: center;\n            padding: 0;\n            text-decoration: none;\n          \">\n            <img id=\"footer5_socialIcon3Image\" class=\"editable\" src=\"https://res.cloudinary.com/drawberry/image/upload/v1637260268/components/miscellaneous/instagram-dark_xnk4ni.png\" width=\"21\" height=\"20\" alt=\"\" style=\"\n              display: block;\n              width: 21px;\n              height: 20px;\n              border: 0;\n              outline: 0;\n              color: #151515;\n            \">\n          </a>\n          <a block=\"\" id=\"footer5_socialIcon4ImageLink\" parent=\"footer5_socialIcon4Image\" class=\"editable\" href=\"http://example.com/\" style=\"\n            display: inline-flex;\n            align-items: center;\n            justify-content: center;\n            padding: 0;\n            text-decoration: none;\n          \">\n            <img id=\"footer5_socialIcon4Image\" class=\"editable\" src=\"https://res.cloudinary.com/drawberry/image/upload/v1644040846/components/miscellaneous/linkedin-dark_iljqvf.png\" width=\"20\" height=\"20\" alt=\"\" style=\"\n              display: block;\n              width: 20px;\n              height: 20px;\n              border: 0;\n              outline: 0;\n              color: #151515;\n            \">\n          </a>\n        </div>\n          </div>\n\n          <div id=\"footer5_contactColumn\" block=\"\" class=\"editable\" style=\"\n            display: flex;\n            flex: 1 1 240px;\n            flex-direction: column;\n            gap: 48px;\n            padding: 20px;\n            box-sizing: border-box;\n          \" data-mobile-style=\"\n            flex-basis: auto;\n            width: 100%;\n          \">\n            <div id=\"footer5_contactIntro\" block=\"\" class=\"editable\" style=\"\n              display: flex;\n              flex-direction: column;\n              gap: 12px;\n            \">\n              <div id=\"footer5_title2\" block=\"\" class=\"editable text pc-fb-font\" style=\"\n                font-family:'DM Sans', Helvetica, Arial, sans-serif;\n                font-size: 18px;\n                line-height: 24px;\n                font-weight: 500;\n                letter-spacing: -0.2px;\n                color: #1B1B1B;\n              \">Contact us</div>\n\n              <div id=\"footer5_bodyText2\" block=\"\" class=\"editable text pc-fb-font\" style=\"\n                font-family:'DM Sans', Helvetica, Arial, sans-serif;\n                font-size: 14px;\n                line-height: 20px;\n                letter-spacing: -0.2px;\n                color: #9B9B9B;\n              \">234 Remote Ville, Surulere, Lagos, Nigeria</div>\n            </div>\n\n            <div id=\"footer5_contactDetails\" block=\"\" class=\"editable\" style=\"\n              display: flex;\n              flex-direction: column;\n              align-items: flex-start;\n              gap: 12px;\n            \">\n              <div id=\"footer5_title3\" block=\"\" class=\"editable text pc-fb-font\" style=\"\n                font-family:'DM Sans', Helvetica, Arial, sans-serif;\n                font-size: 18px;\n                line-height: 24px;\n                font-weight: 500;\n                letter-spacing: -0.2px;\n                color: #1B1B1B;\n              \">\n                <a id=\"footer5_title3Link\" parent=\"footer5_title3\" class=\"editable text\" href=\"tel:+2340000001234\" style=\"\n                  color: #1B1B1B;\n                  text-decoration: none;\n                \">(+234) 000 000 1234</a>\n              </div>\n\n              <a block=\"\" id=\"footer5_textLink\" class=\"editable text pc-fb-font\" href=\"mailto:hello@domain.com\" style=\"\n                font-family:'DM Sans', Helvetica, Arial, sans-serif;\n                font-size: 14px;\n                line-height: 24px;\n                font-weight: 500;\n                color: #1873CD;\n                text-decoration: none;\n              \">hello@domain.com</a>\n            </div>\n          </div>\n        </div>\n      </div>\n    </div></body></html>",
+  "json": [
+   {
+    "id": "footer5_background",
+    "wrapperId": null,
+    "blockId": null,
+    "visibility": "show",
+    "parent": null,
+    "children": [],
+    "types": [
+     "editable"
+    ],
+    "textContent": null,
+    "tag": {
+     "name": "div"
+    },
+    "attributes": {
+     "style": {
+      "value": {
+       "display": {
+        "desktop": "flex",
+        "mobile": "flex"
+       },
+       "flex-direction": {
+        "desktop": "column",
+        "mobile": "column"
+       },
+       "padding": {
+        "desktop": "21px 20px 14px",
+        "mobile": "5px 0"
+       },
+       "background-color": {
+        "desktop": "#ffffff",
+        "mobile": "#ffffff"
+       },
+       "border-radius": "0px",
+       "box-shadow": "0 0 0 0 rgba(0, 0, 0, 0.0)"
+      },
+      "disabled": false
+     }
+    }
+   },
+   {
+    "id": "footer5_layout",
+    "wrapperId": null,
+    "blockId": null,
+    "visibility": "show",
+    "parent": null,
+    "children": [],
+    "types": [
+     "editable"
+    ],
+    "textContent": null,
+    "tag": {
+     "name": "div"
+    },
+    "attributes": {
+     "style": {
+      "value": {
+       "display": {
+        "desktop": "flex",
+        "mobile": "flex"
+       },
+       "gap": {
+        "desktop": "0",
+        "mobile": "0"
+       },
+       "align-items": {
+        "desktop": "stretch",
+        "mobile": "stretch"
+       },
+       "flex-direction": {
+        "desktop": "row",
+        "mobile": "column"
+       }
+      },
+      "disabled": false
+     }
+    }
+   },
+   {
+    "id": "footer5_followColumn",
+    "wrapperId": "footer5_layout",
+    "blockId": null,
+    "visibility": "show",
+    "parent": null,
+    "children": [],
+    "types": [
+     "editable"
+    ],
+    "textContent": null,
+    "tag": {
+     "name": "div"
+    },
+    "attributes": {
+     "style": {
+      "value": {
+       "display": {
+        "desktop": "flex",
+        "mobile": "flex"
+       },
+       "flex-direction": {
+        "desktop": "column",
+        "mobile": "column"
+       },
+       "gap": {
+        "desktop": "56px",
+        "mobile": "56px"
+       },
+       "padding": {
+        "desktop": "20px",
+        "mobile": "20px"
+       },
+       "flex-basis": {
+        "desktop": null,
+        "mobile": "auto"
+       },
+       "width": {
+        "desktop": null,
+        "mobile": "100%"
+       }
+      },
+      "disabled": false
+     }
+    }
+   },
+   {
+    "id": "footer5_followCopy",
+    "wrapperId": "footer5_followColumn",
+    "blockId": null,
+    "visibility": "show",
+    "parent": null,
+    "children": [],
+    "types": [
+     "editable"
+    ],
+    "textContent": null,
+    "tag": {
+     "name": "div"
+    },
+    "attributes": {
+     "style": {
+      "value": {
+       "display": {
+        "desktop": "flex",
+        "mobile": "flex"
+       },
+       "flex-direction": {
+        "desktop": "column",
+        "mobile": "column"
+       },
+       "gap": {
+        "desktop": "12px",
+        "mobile": "12px"
+       }
+      },
+      "disabled": false
+     }
+    }
+   },
+   {
+    "id": "footer5_title1",
+    "wrapperId": "footer5_followCopy",
+    "blockId": null,
+    "visibility": "show",
+    "parent": null,
+    "children": [],
+    "types": [
+     "editable",
+     "text",
+     "pc-fb-font"
+    ],
+    "textContent": "Follow us",
+    "tag": {
+     "name": "div"
+    },
+    "attributes": {
+     "style": {
+      "value": {
+       "font-family": {
+        "desktop": "'DM Sans', Helvetica, Arial, sans-serif",
+        "mobile": "'DM Sans', Helvetica, Arial, sans-serif"
+       },
+       "font-size": {
+        "desktop": "18px",
+        "mobile": "18px"
+       },
+       "font-weight": {
+        "desktop": 400,
+        "mobile": "500"
+       },
+       "color": {
+        "desktop": "#1B1B1B",
+        "mobile": "#1B1B1B"
+       },
+       "letter-spacing": {
+        "desktop": "-0.2px",
+        "mobile": "-0.2px"
+       },
+       "line-height": {
+        "desktop": "24px",
+        "mobile": "24px"
+       }
+      },
+      "disabled": false
+     }
+    }
+   },
+   {
+    "id": "footer5_bodyText1",
+    "wrapperId": "footer5_followCopy",
+    "blockId": null,
+    "visibility": "show",
+    "parent": null,
+    "children": [],
+    "types": [
+     "editable",
+     "text",
+     "pc-fb-font"
+    ],
+    "textContent": "We are always looking for new exciting projects and collaborations. Feel free to contact us.",
+    "tag": {
+     "name": "div"
+    },
+    "attributes": {
+     "style": {
+      "value": {
+       "font-family": {
+        "desktop": "'DM Sans', Helvetica, Arial, sans-serif",
+        "mobile": "'DM Sans', Helvetica, Arial, sans-serif"
+       },
+       "font-size": {
+        "desktop": "14px",
+        "mobile": "14px"
+       },
+       "color": {
+        "desktop": "#9B9B9B",
+        "mobile": "#9B9B9B"
+       },
+       "letter-spacing": {
+        "desktop": "-0.2px",
+        "mobile": "-0.2px"
+       },
+       "line-height": {
+        "desktop": "20px",
+        "mobile": "20px"
+       }
+      },
+      "disabled": false
+     }
+    }
+   },
+   {
+    "id": "footer5_socialIcons",
+    "wrapperId": "footer5_followColumn",
+    "blockId": null,
+    "visibility": "show",
+    "parent": null,
+    "children": [],
+    "types": [
+     "editable"
+    ],
+    "textContent": null,
+    "tag": {
+     "name": "div"
+    },
+    "attributes": {
+     "style": {
+      "value": {
+       "display": {
+        "desktop": "flex",
+        "mobile": "flex"
+       },
+       "gap": {
+        "desktop": "32px",
+        "mobile": "32px"
+       },
+       "align-items": {
+        "desktop": "center",
+        "mobile": "center"
+       },
+       "justify-content": {
+        "desktop": "flex-start",
+        "mobile": "flex-start"
+       },
+       "padding": {
+        "desktop": "0 0 16px",
+        "mobile": "0 0 16px"
+       },
+       "flex-direction": {
+        "desktop": "row",
+        "mobile": "row"
+       }
+      },
+      "disabled": false
+     }
+    }
+   },
+   {
+    "id": "footer5_socialIcon1ImageLink",
+    "wrapperId": "footer5_socialIcons",
+    "blockId": null,
+    "visibility": "show",
+    "parent": "footer5_socialIcon1Image",
+    "children": [],
+    "types": [
+     "editable"
+    ],
+    "textContent": null,
+    "tag": {
+     "name": "a"
+    },
+    "attributes": {
+     "href": {
+      "value": "http://example.com/",
+      "disabled": false
+     },
+     "style": {
+      "value": {
+       "padding": {
+        "desktop": "0",
+        "mobile": "0"
+       }
+      },
+      "disabled": false
+     }
+    }
+   },
+   {
+    "id": "footer5_socialIcon1Image",
+    "wrapperId": null,
+    "blockId": "footer5_socialIcon1ImageLink",
+    "visibility": "show",
+    "parent": null,
+    "children": [
+     "footer5_socialIcon1ImageLink"
+    ],
+    "types": [
+     "editable"
+    ],
+    "textContent": null,
+    "tag": {
+     "name": "img"
+    },
+    "attributes": {
+     "src": {
+      "value": "https://res.cloudinary.com/drawberry/image/upload/v1637260268/components/miscellaneous/facebook-dark_uqhmsy.png",
+      "disabled": false
+     },
+     "style": {
+      "value": {
+       "width": {
+        "desktop": "20px",
+        "mobile": "20px"
+       },
+       "height": {
+        "desktop": "20px",
+        "mobile": "20px"
+       }
+      },
+      "disabled": false
+     }
+    }
+   },
+   {
+    "id": "footer5_socialIcon2ImageLink",
+    "wrapperId": "footer5_socialIcons",
+    "blockId": null,
+    "visibility": "show",
+    "parent": "footer5_socialIcon2Image",
+    "children": [],
+    "types": [
+     "editable"
+    ],
+    "textContent": null,
+    "tag": {
+     "name": "a"
+    },
+    "attributes": {
+     "href": {
+      "value": "http://example.com/",
+      "disabled": false
+     },
+     "style": {
+      "value": {
+       "padding": {
+        "desktop": "0",
+        "mobile": "0"
+       }
+      },
+      "disabled": false
+     }
+    }
+   },
+   {
+    "id": "footer5_socialIcon2Image",
+    "wrapperId": null,
+    "blockId": "footer5_socialIcon2ImageLink",
+    "visibility": "show",
+    "parent": null,
+    "children": [
+     "footer5_socialIcon2ImageLink"
+    ],
+    "types": [
+     "editable"
+    ],
+    "textContent": null,
+    "tag": {
+     "name": "img"
+    },
+    "attributes": {
+     "src": {
+      "value": "https://res.cloudinary.com/drawberry/image/upload/v1704848622/components/miscellaneous/twitter-x-dark_dkn8rd.png",
+      "disabled": false
+     },
+     "style": {
+      "value": {
+       "width": {
+        "desktop": "21px",
+        "mobile": "21px"
+       },
+       "height": {
+        "desktop": "18px",
+        "mobile": "18px"
+       }
+      },
+      "disabled": false
+     }
+    }
+   },
+   {
+    "id": "footer5_socialIcon3ImageLink",
+    "wrapperId": "footer5_socialIcons",
+    "blockId": null,
+    "visibility": "show",
+    "parent": "footer5_socialIcon3Image",
+    "children": [],
+    "types": [
+     "editable"
+    ],
+    "textContent": null,
+    "tag": {
+     "name": "a"
+    },
+    "attributes": {
+     "href": {
+      "value": "http://example.com/",
+      "disabled": false
+     },
+     "style": {
+      "value": {
+       "padding": {
+        "desktop": "0",
+        "mobile": "0"
+       }
+      },
+      "disabled": false
+     }
+    }
+   },
+   {
+    "id": "footer5_socialIcon3Image",
+    "wrapperId": null,
+    "blockId": "footer5_socialIcon3ImageLink",
+    "visibility": "show",
+    "parent": null,
+    "children": [
+     "footer5_socialIcon3ImageLink"
+    ],
+    "types": [
+     "editable"
+    ],
+    "textContent": null,
+    "tag": {
+     "name": "img"
+    },
+    "attributes": {
+     "src": {
+      "value": "https://res.cloudinary.com/drawberry/image/upload/v1637260268/components/miscellaneous/instagram-dark_xnk4ni.png",
+      "disabled": false
+     },
+     "style": {
+      "value": {
+       "width": {
+        "desktop": "21px",
+        "mobile": "21px"
+       },
+       "height": {
+        "desktop": "20px",
+        "mobile": "20px"
+       }
+      },
+      "disabled": false
+     }
+    }
+   },
+   {
+    "id": "footer5_socialIcon4ImageLink",
+    "wrapperId": "footer5_socialIcons",
+    "blockId": null,
+    "visibility": "show",
+    "parent": "footer5_socialIcon4Image",
+    "children": [],
+    "types": [
+     "editable"
+    ],
+    "textContent": null,
+    "tag": {
+     "name": "a"
+    },
+    "attributes": {
+     "href": {
+      "value": "http://example.com/",
+      "disabled": false
+     },
+     "style": {
+      "value": {
+       "padding": {
+        "desktop": "0",
+        "mobile": "0"
+       }
+      },
+      "disabled": false
+     }
+    }
+   },
+   {
+    "id": "footer5_socialIcon4Image",
+    "wrapperId": null,
+    "blockId": "footer5_socialIcon4ImageLink",
+    "visibility": "show",
+    "parent": null,
+    "children": [
+     "footer5_socialIcon4ImageLink"
+    ],
+    "types": [
+     "editable"
+    ],
+    "textContent": null,
+    "tag": {
+     "name": "img"
+    },
+    "attributes": {
+     "src": {
+      "value": "https://res.cloudinary.com/drawberry/image/upload/v1644040846/components/miscellaneous/linkedin-dark_iljqvf.png",
+      "disabled": false
+     },
+     "style": {
+      "value": {
+       "width": {
+        "desktop": "20px",
+        "mobile": "20px"
+       },
+       "height": {
+        "desktop": "20px",
+        "mobile": "20px"
+       }
+      },
+      "disabled": false
+     }
+    }
+   },
+   {
+    "id": "footer5_contactColumn",
+    "wrapperId": "footer5_layout",
+    "blockId": null,
+    "visibility": "show",
+    "parent": null,
+    "children": [],
+    "types": [
+     "editable"
+    ],
+    "textContent": null,
+    "tag": {
+     "name": "div"
+    },
+    "attributes": {
+     "style": {
+      "value": {
+       "display": {
+        "desktop": "flex",
+        "mobile": "flex"
+       },
+       "flex-direction": {
+        "desktop": "column",
+        "mobile": "column"
+       },
+       "gap": {
+        "desktop": "48px",
+        "mobile": "48px"
+       },
+       "padding": {
+        "desktop": "20px",
+        "mobile": "20px"
+       },
+       "flex-basis": {
+        "desktop": null,
+        "mobile": "auto"
+       },
+       "width": {
+        "desktop": null,
+        "mobile": "100%"
+       }
+      },
+      "disabled": false
+     }
+    }
+   },
+   {
+    "id": "footer5_contactIntro",
+    "wrapperId": "footer5_contactColumn",
+    "blockId": null,
+    "visibility": "show",
+    "parent": null,
+    "children": [],
+    "types": [
+     "editable"
+    ],
+    "textContent": null,
+    "tag": {
+     "name": "div"
+    },
+    "attributes": {
+     "style": {
+      "value": {
+       "display": {
+        "desktop": "flex",
+        "mobile": "flex"
+       },
+       "flex-direction": {
+        "desktop": "column",
+        "mobile": "column"
+       },
+       "gap": {
+        "desktop": "12px",
+        "mobile": "12px"
+       }
+      },
+      "disabled": false
+     }
+    }
+   },
+   {
+    "id": "footer5_title2",
+    "wrapperId": "footer5_contactIntro",
+    "blockId": null,
+    "visibility": "show",
+    "parent": null,
+    "children": [],
+    "types": [
+     "editable",
+     "text",
+     "pc-fb-font"
+    ],
+    "textContent": "Contact us",
+    "tag": {
+     "name": "div"
+    },
+    "attributes": {
+     "style": {
+      "value": {
+       "font-family": {
+        "desktop": "'DM Sans', Helvetica, Arial, sans-serif",
+        "mobile": "'DM Sans', Helvetica, Arial, sans-serif"
+       },
+       "font-size": {
+        "desktop": "18px",
+        "mobile": "18px"
+       },
+       "font-weight": {
+        "desktop": 400,
+        "mobile": "500"
+       },
+       "color": {
+        "desktop": "#1B1B1B",
+        "mobile": "#1B1B1B"
+       },
+       "letter-spacing": {
+        "desktop": "-0.2px",
+        "mobile": "-0.2px"
+       },
+       "line-height": {
+        "desktop": "24px",
+        "mobile": "24px"
+       }
+      },
+      "disabled": false
+     }
+    }
+   },
+   {
+    "id": "footer5_bodyText2",
+    "wrapperId": "footer5_contactIntro",
+    "blockId": null,
+    "visibility": "show",
+    "parent": null,
+    "children": [],
+    "types": [
+     "editable",
+     "text",
+     "pc-fb-font"
+    ],
+    "textContent": "234 Remote Ville, Surulere, Lagos, Nigeria",
+    "tag": {
+     "name": "div"
+    },
+    "attributes": {
+     "style": {
+      "value": {
+       "font-family": {
+        "desktop": "'DM Sans', Helvetica, Arial, sans-serif",
+        "mobile": "'DM Sans', Helvetica, Arial, sans-serif"
+       },
+       "font-size": {
+        "desktop": "14px",
+        "mobile": "14px"
+       },
+       "color": {
+        "desktop": "#9B9B9B",
+        "mobile": "#9B9B9B"
+       },
+       "letter-spacing": {
+        "desktop": "-0.2px",
+        "mobile": "-0.2px"
+       },
+       "line-height": {
+        "desktop": "20px",
+        "mobile": "20px"
+       }
+      },
+      "disabled": false
+     }
+    }
+   },
+   {
+    "id": "footer5_contactDetails",
+    "wrapperId": "footer5_contactColumn",
+    "blockId": null,
+    "visibility": "show",
+    "parent": null,
+    "children": [],
+    "types": [
+     "editable"
+    ],
+    "textContent": null,
+    "tag": {
+     "name": "div"
+    },
+    "attributes": {
+     "style": {
+      "value": {
+       "display": {
+        "desktop": "flex",
+        "mobile": "flex"
+       },
+       "flex-direction": {
+        "desktop": "column",
+        "mobile": "column"
+       },
+       "gap": {
+        "desktop": "12px",
+        "mobile": "12px"
+       },
+       "align-items": {
+        "desktop": "flex-start",
+        "mobile": "flex-start"
+       }
+      },
+      "disabled": false
+     }
+    }
+   },
+   {
+    "id": "footer5_title3",
+    "wrapperId": "footer5_contactDetails",
+    "blockId": null,
+    "visibility": "show",
+    "parent": null,
+    "children": [
+     "footer5_title3Link"
+    ],
+    "types": [
+     "editable",
+     "text",
+     "pc-fb-font"
+    ],
+    "textContent": "(+234) 000 000 1234",
+    "tag": {
+     "name": "div"
+    },
+    "attributes": {
+     "style": {
+      "value": {
+       "font-family": {
+        "desktop": "'DM Sans', Helvetica, Arial, sans-serif",
+        "mobile": "'DM Sans', Helvetica, Arial, sans-serif"
+       },
+       "font-size": {
+        "desktop": "18px",
+        "mobile": "18px"
+       },
+       "font-weight": {
+        "desktop": 400,
+        "mobile": "500"
+       },
+       "color": {
+        "desktop": "#1B1B1B",
+        "mobile": "#1B1B1B"
+       },
+       "letter-spacing": {
+        "desktop": "-0.2px",
+        "mobile": "-0.2px"
+       },
+       "line-height": {
+        "desktop": "24px",
+        "mobile": "24px"
+       }
+      },
+      "disabled": false
+     }
+    }
+   },
+   {
+    "id": "footer5_title3Link",
+    "wrapperId": null,
+    "blockId": "footer5_title3",
+    "visibility": "show",
+    "parent": "footer5_title3",
+    "children": [],
+    "types": [
+     "editable",
+     "text"
+    ],
+    "textContent": "(+234) 000 000 1234",
+    "tag": {
+     "name": "a"
+    },
+    "attributes": {
+     "href": {
+      "value": "tel:+2340000001234",
+      "disabled": false
+     },
+     "style": {
+      "value": {
+       "color": {
+        "desktop": "#1B1B1B",
+        "mobile": "#1B1B1B"
+       }
+      },
+      "disabled": false
+     }
+    }
+   },
+   {
+    "id": "footer5_textLink",
+    "wrapperId": "footer5_contactDetails",
+    "blockId": null,
+    "visibility": "show",
+    "parent": null,
+    "children": [],
+    "types": [
+     "editable",
+     "text",
+     "pc-fb-font"
+    ],
+    "textContent": "hello@domain.com",
+    "tag": {
+     "name": "a"
+    },
+    "attributes": {
+     "href": {
+      "value": "mailto:hello@domain.com",
+      "disabled": false
+     },
+     "style": {
+      "value": {
+       "font-family": {
+        "desktop": "'DM Sans', Helvetica, Arial, sans-serif",
+        "mobile": "'DM Sans', Helvetica, Arial, sans-serif"
+       },
+       "font-size": {
+        "desktop": "14px",
+        "mobile": "14px"
+       },
+       "font-weight": {
+        "desktop": 400,
+        "mobile": "500"
+       },
+       "color": {
+        "desktop": "#1873CD",
+        "mobile": "#1873CD"
+       },
+       "line-height": {
+        "desktop": "24px",
+        "mobile": "24px"
+       }
+      },
+      "disabled": false
+     }
+    }
+   }
+  ]
+ },
+ {
+  "name": "Content Card 4",
+  "defaultHtml": "<html><head></head><body><div component=\"Content Card 4\" id=\"contentCard4\">\n        <div id=\"contentCard4_background\" class=\"editable\" style=\"display:flex; flex-direction:column; gap:0; padding:30px 20px 20px; background-color:#1D1E20; border-radius:0px; box-shadow:0 0px 0px 0 rgba(0,0,0,0.0); width:100%; box-sizing:border-box;\" data-mobile-style=\"padding: 20px;\">\n          <div id=\"contentCard4_header\" style=\"display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px; padding:10px 20px; box-sizing:border-box;\" data-mobile-style=\"justify-content:center; text-align:center;\">\n            <div id=\"contentCard4_sectionTitle\" class=\"editable text pc-fb-font\" style=\"font-family:'DM Sans', Helvetica, Arial, sans-serif; font-size:24px; line-height:34px; font-weight:700; letter-spacing:-0.4px; color:#FFFFFF;\">Featured Stories</div>\n            <a id=\"contentCard4_headerButton\" class=\"editable\" href=\"http://example.com\" style=\"display:inline-flex; align-items:center; gap:8px; border:1px solid #4A4B4D; border-radius:16px; padding:6px 12px; text-decoration:none; box-sizing:border-box;\">\n              <span id=\"contentCard4_headerButtonText\" parent=\"contentCard4_headerButton\" class=\"editable text pc-fb-font\" style=\"font-family:'DM Sans', Helvetica, Arial, sans-serif; font-size:14px; line-height:14px; font-weight:500; color:#FFFFFF; white-space:nowrap;\">See more</span>\n              <img id=\"contentCard4_headerButtonIcon\" parent=\"contentCard4_headerButton\" class=\"editable\" src=\"https://res.cloudinary.com/drawberry/image/upload/v1637872803/components/miscellaneous/arrows-right_c3silw.png\" alt=\"\" width=\"16\" height=\"16\" style=\"display:block; border:0; outline:0;\">\n            </a>\n          </div>\n          <div block=\"\" id=\"contentCard4_story1\" class=\"editable\" style=\"display:flex; flex-wrap:wrap; align-items:flex-start; gap:0; width:100%; box-sizing:border-box;\" data-mobile-style=\"flex-direction:column; align-items:center; text-align:center;\">\n            <div id=\"contentCard4_story1ImageWrapper\" parent=\"contentCard4_story1Image\" class=\"editable\" style=\"flex:1 1 240px; padding:20px; box-sizing:border-box; display:flex; justify-content:center;\" data-mobile-style=\"padding:20px 0 0;\"><a id=\"contentCard4_story1ImageLink\" parent=\"contentCard4_story1Image\" class=\"editable\" href=\"http://example.com\" style=\"text-decoration:none; display:block;\"><img id=\"contentCard4_story1Image\" class=\"editable\" src=\"https://res.cloudinary.com/drawberry/image/upload/v1637872266/components/content-card/tmbtp_o0nngg.jpg\" width=\"240\" height=\"200\" alt=\"\" style=\"display:block; width:100%; max-width:240px; height:auto; border:0; outline:0; border-radius:6px; color:#1D1E20;\" data-mobile-style=\"max-width: 100%;\"></a></div>\n            <div id=\"contentCard4_story1TextWrapper\" class=\"editable\" style=\"flex:1 1 240px; padding:20px; box-sizing:border-box; display:flex; flex-direction:column; align-items:flex-start; gap: 8px;\" data-mobile-style=\"align-items:center; text-align:center; padding:16px 0 20px;\">\n              <div id=\"contentCard4_story1Category\" block=\"\" class=\"editable text pc-fb-font\" style=\"font-family:'DM Sans', Helvetica, Arial, sans-serif; font-size:14px; line-height:20px; font-weight:500; color:#5C9919;\">Accessibility</div>\n              <div id=\"contentCard4_story1Title\" block=\"\" class=\"editable text pc-fb-font\" style=\"font-family:'DM Sans', Helvetica, Arial, sans-serif; font-size:24px; line-height:34px; font-weight:700; letter-spacing:-0.4px; color:#FFFFFF;\"><a id=\"contentCard4_story1TitleLink\" parent=\"contentCard4_story1Title\" class=\"editable text\" href=\"http://example.com\" style=\"text-decoration: none; color: #FFFFFF; \">Keep the focus on you.</a></div>\n              <div id=\"contentCard4_story1BodyText\" block=\"\" class=\"editable text pc-fb-font\" style=\"font-family:'DM Sans', Helvetica, Arial, sans-serif; font-size:18px; line-height:28px; font-weight:300; letter-spacing:-0.2px; color:#8E8F90;\"><a id=\"contentCard4_story1BodyTextLink\" parent=\"contentCard4_story1BodyText\" class=\"editable text\" href=\"http://example.com\" style=\"text-decoration: none; color: #8E8F90; \">Enjoy unlimited templates, easy-to-use tools and seamless integrations.</a></div>\n            </div>\n          </div>\n          <div block=\"\" class=\"editable\" id=\"contentCard4_story2\" style=\"display:flex; flex-wrap:wrap; align-items:flex-start; gap:0; width:100%; box-sizing:border-box;\" data-mobile-style=\"flex-direction:column; align-items:center; text-align:center;\">\n            <div id=\"contentCard4_story2ImageWrapper\" parent=\"contentCard4_story2Image\" class=\"editable\" style=\"flex:1 1 240px; padding:20px; box-sizing:border-box; display:flex; justify-content:center;\" data-mobile-style=\"padding:20px 0 0;\"><a id=\"contentCard4_story2ImageLink\" parent=\"contentCard4_story2Image\" class=\"editable\" href=\"http://example.com\" style=\"text-decoration:none; display:block;\"><img id=\"contentCard4_story2Image\" class=\"editable\" src=\"https://res.cloudinary.com/drawberry/image/upload/v1637872075/components/content-card/message-2_kp13dh.jpg\" width=\"240\" height=\"200\" alt=\"\" style=\"display:block; width:100%; max-width:240px; height:auto; border:0; outline:0; border-radius:6px; color:#1D1E20;\" data-mobile-style=\"max-width: 100%;\"></a></div>\n            <div id=\"contentCard4_story2TextWrapper\" class=\"editable\" style=\"flex:1 1 240px; padding:20px; box-sizing:border-box; display:flex; flex-direction:column; align-items:flex-start; gap:8px;\" data-mobile-style=\"align-items:center; text-align:center; padding:16px 0 20px;\">\n              <div id=\"contentCard4_story2Category\" block=\"\" class=\"editable text pc-fb-font\" style=\"font-family:'DM Sans', Helvetica, Arial, sans-serif; font-size:14px; line-height:20px; font-weight:500; color:#5C9919;\">Technology</div>\n              <div id=\"contentCard4_story2Title\" block=\"\" class=\"editable text pc-fb-font\" style=\"font-family:'DM Sans', Helvetica, Arial, sans-serif; font-size:24px; line-height:34px; font-weight:700; letter-spacing:-0.4px; color:#FFFFFF;\"><a id=\"contentCard4_story2TitleLink\" parent=\"contentCard4_story2Title\" class=\"editable text\" href=\"http://example.com\" style=\"text-decoration: none; color: #FFFFFF; \">Your message, your way.</a></div>\n              <div id=\"contentCard4_story2BodyText\" block=\"\" class=\"editable text pc-fb-font\" style=\"font-family:'DM Sans', Helvetica, Arial, sans-serif; font-size:18px; line-height:28px; font-weight:300; letter-spacing:-0.2px; color:#8E8F90;\"><a id=\"contentCard4_story2BodyTextLink\" parent=\"contentCard4_story2BodyText\" class=\"editable text\" href=\"http://example.com\" style=\"text-decoration: none; color: #8E8F90; \">Add custom colors, branding, and more, then intergrate and send anywhere.</a></div>\n            </div>\n          </div>\n        </div>\n      </div></body></html>",
+  "json": [
+   {
+    "id": "contentCard4_background",
+    "wrapperId": null,
+    "blockId": null,
+    "visibility": "show",
+    "parent": null,
+    "children": [],
+    "types": [
+     "editable"
+    ],
+    "textContent": null,
+    "tag": {
+     "name": "div"
+    },
+    "attributes": {
+     "style": {
+      "value": {
+       "display": {
+        "desktop": "flex",
+        "mobile": "flex"
+       },
+       "flex-direction": {
+        "desktop": "column",
+        "mobile": "column"
+       },
+       "gap": {
+        "desktop": "0",
+        "mobile": "0"
+       },
+       "padding": {
+        "desktop": "30px 20px 20px",
+        "mobile": "25px 20px"
+       },
+       "background-color": {
+        "desktop": "#1D1E20",
+        "mobile": "#1D1E20"
+       },
+       "border-radius": "0px",
+       "box-shadow": "0 0 0 0 rgba(0, 0, 0, 0.0)"
+      },
+      "disabled": false
+     }
+    }
+   },
+   {
+    "id": "contentCard4_sectionTitle",
+    "wrapperId": null,
+    "blockId": null,
+    "visibility": "show",
+    "parent": null,
+    "children": [],
+    "types": [
+     "editable",
+     "text",
+     "pc-fb-font"
+    ],
+    "textContent": "Featured Stories",
+    "tag": {
+     "name": "div"
+    },
+    "attributes": {
+     "style": {
+      "value": {
+       "font-family": {
+        "desktop": "'DM Sans', Helvetica, Arial, sans-serif",
+        "mobile": "'DM Sans', Helvetica, Arial, sans-serif"
+       },
+       "font-size": {
+        "desktop": "24px",
+        "mobile": "24px"
+       },
+       "font-weight": {
+        "desktop": 400,
+        "mobile": "700"
+       },
+       "color": {
+        "desktop": "#FFFFFF",
+        "mobile": "#FFFFFF"
+       },
+       "letter-spacing": {
+        "desktop": "-0.4px",
+        "mobile": "-0.4px"
+       },
+       "line-height": {
+        "desktop": "34px",
+        "mobile": "34px"
+       }
+      },
+      "disabled": false
+     }
+    }
+   },
+   {
+    "id": "contentCard4_headerButton",
+    "wrapperId": null,
+    "blockId": null,
+    "visibility": "show",
+    "parent": null,
+    "children": [
+     "contentCard4_headerButtonText",
+     "contentCard4_headerButtonIcon"
+    ],
+    "types": [
+     "editable"
+    ],
+    "textContent": "See more",
+    "tag": {
+     "name": "a"
+    },
+    "attributes": {
+     "href": {
+      "value": "http://example.com",
+      "disabled": false
+     },
+     "style": {
+      "value": {
+       "padding": {
+        "desktop": "6px 12px",
+        "mobile": "6px 12px"
+       }
+      },
+      "disabled": false
+     }
+    }
+   },
+   {
+    "id": "contentCard4_headerButtonText",
+    "wrapperId": null,
+    "blockId": null,
+    "visibility": "show",
+    "parent": "contentCard4_headerButton",
+    "children": [],
+    "types": [
+     "editable",
+     "text",
+     "pc-fb-font"
+    ],
+    "textContent": "See more",
+    "tag": {
+     "name": "span"
+    },
+    "attributes": {
+     "style": {
+      "disabled": false
+     }
+    }
+   },
+   {
+    "id": "contentCard4_headerButtonIcon",
+    "wrapperId": null,
+    "blockId": null,
+    "visibility": "show",
+    "parent": "contentCard4_headerButton",
+    "children": [],
+    "types": [
+     "editable"
+    ],
+    "textContent": null,
+    "tag": {
+     "name": "img"
+    },
+    "attributes": {
+     "src": {
+      "value": "https://res.cloudinary.com/drawberry/image/upload/v1637872803/components/miscellaneous/arrows-right_c3silw.png",
+      "disabled": false
+     },
+     "style": {
+      "disabled": false
+     }
+    }
+   },
+   {
+    "id": "contentCard4_story1",
+    "wrapperId": "contentCard4_background",
+    "blockId": null,
+    "visibility": "show",
+    "parent": null,
+    "children": [],
+    "types": [
+     "editable"
+    ],
+    "textContent": null,
+    "tag": {
+     "name": "div"
+    },
+    "attributes": {
+     "style": {
+      "value": {
+       "display": {
+        "desktop": "flex",
+        "mobile": "flex"
+       },
+       "gap": {
+        "desktop": "0",
+        "mobile": "0"
+       },
+       "align-items": {
+        "desktop": "flex-start",
+        "mobile": "center"
+       },
+       "flex-direction": {
+        "desktop": "row",
+        "mobile": "column"
+       },
+       "text-align": {
+        "desktop": null,
+        "mobile": "center"
+       }
+      },
+      "disabled": false
+     }
+    }
+   },
+   {
+    "id": "contentCard4_story1ImageWrapper",
+    "wrapperId": null,
+    "blockId": "contentCard4_story1",
+    "visibility": "show",
+    "parent": "contentCard4_story1Image",
+    "children": [],
+    "types": [
+     "editable"
+    ],
+    "textContent": null,
+    "tag": {
+     "name": "div"
+    },
+    "attributes": {
+     "style": {
+      "value": {
+       "display": {
+        "desktop": "flex",
+        "mobile": "flex"
+       },
+       "justify-content": {
+        "desktop": "center",
+        "mobile": "center"
+       },
+       "padding": {
+        "desktop": "20px",
+        "mobile": "20px"
+       },
+       "flex-direction": {
+        "desktop": "row",
+        "mobile": "row"
+       }
+      },
+      "disabled": false
+     }
+    }
+   },
+   {
+    "id": "contentCard4_story1ImageLink",
+    "wrapperId": null,
+    "blockId": "contentCard4_story1",
+    "visibility": "show",
+    "parent": "contentCard4_story1Image",
+    "children": [],
+    "types": [
+     "editable"
+    ],
+    "textContent": null,
+    "tag": {
+     "name": "a"
+    },
+    "attributes": {
+     "href": {
+      "value": "http://example.com",
+      "disabled": false
+     },
+     "style": {
+      "disabled": false
+     }
+    }
+   },
+   {
+    "id": "contentCard4_story1Image",
+    "wrapperId": null,
+    "blockId": "contentCard4_story1",
+    "visibility": "show",
+    "parent": null,
+    "children": [
+     "contentCard4_story1ImageWrapper",
+     "contentCard4_story1ImageLink"
+    ],
+    "types": [
+     "editable"
+    ],
+    "textContent": null,
+    "tag": {
+     "name": "img"
+    },
+    "attributes": {
+     "src": {
+      "value": "https://res.cloudinary.com/drawberry/image/upload/v1637872266/components/content-card/tmbtp_o0nngg.jpg",
+      "disabled": false
+     },
+     "style": {
+      "value": {
+       "width": {
+        "desktop": "100%",
+        "mobile": "100%"
+       },
+       "height": {
+        "desktop": "auto",
+        "mobile": "auto"
+       },
+       "border-radius": {
+        "desktop": "6px",
+        "mobile": "6px"
+       }
+      },
+      "disabled": false
+     }
+    }
+   },
+   {
+    "id": "contentCard4_story1TextWrapper",
+    "wrapperId": null,
+    "blockId": "contentCard4_story1",
+    "visibility": "show",
+    "parent": null,
+    "children": [],
+    "types": [
+     "editable"
+    ],
+    "textContent": null,
+    "tag": {
+     "name": "div"
+    },
+    "attributes": {
+     "style": {
+      "value": {
+       "display": {
+        "desktop": "flex",
+        "mobile": "flex"
+       },
+       "flex-direction": {
+        "desktop": "column",
+        "mobile": "column"
+       },
+       "gap": {
+        "desktop": "8px",
+        "mobile": "8px"
+       },
+       "align-items": {
+        "desktop": "flex-start",
+        "mobile": "flex-start"
+       },
+       "padding": {
+        "desktop": "20px",
+        "mobile": "20px"
+       }
+      },
+      "disabled": false
+     }
+    }
+   },
+   {
+    "id": "contentCard4_story1Category",
+    "wrapperId": "contentCard4_story1TextWrapper",
+    "blockId": null,
+    "visibility": "show",
+    "parent": null,
+    "children": [],
+    "types": [
+     "editable",
+     "text",
+     "pc-fb-font"
+    ],
+    "textContent": "Accessibility",
+    "tag": {
+     "name": "div"
+    },
+    "attributes": {
+     "style": {
+      "value": {
+       "font-family": {
+        "desktop": "'DM Sans', Helvetica, Arial, sans-serif",
+        "mobile": "'DM Sans', Helvetica, Arial, sans-serif"
+       },
+       "font-size": {
+        "desktop": "14px",
+        "mobile": "14px"
+       },
+       "font-weight": {
+        "desktop": 400,
+        "mobile": "500"
+       },
+       "color": {
+        "desktop": "#5C9919",
+        "mobile": "#5C9919"
+       },
+       "line-height": {
+        "desktop": "20px",
+        "mobile": "20px"
+       }
+      },
+      "disabled": false
+     }
+    }
+   },
+   {
+    "id": "contentCard4_story1Title",
+    "wrapperId": "contentCard4_story1TextWrapper",
+    "blockId": null,
+    "visibility": "show",
+    "parent": null,
+    "children": [
+     "contentCard4_story1TitleLink"
+    ],
+    "types": [
+     "editable",
+     "text",
+     "pc-fb-font"
+    ],
+    "textContent": "Keep the focus on you.",
+    "tag": {
+     "name": "div"
+    },
+    "attributes": {
+     "style": {
+      "value": {
+       "font-family": {
+        "desktop": "'DM Sans', Helvetica, Arial, sans-serif",
+        "mobile": "'DM Sans', Helvetica, Arial, sans-serif"
+       },
+       "font-size": {
+        "desktop": "24px",
+        "mobile": "24px"
+       },
+       "font-weight": {
+        "desktop": 400,
+        "mobile": "700"
+       },
+       "color": {
+        "desktop": "#FFFFFF",
+        "mobile": "#FFFFFF"
+       },
+       "letter-spacing": {
+        "desktop": "-0.4px",
+        "mobile": "-0.4px"
+       },
+       "line-height": {
+        "desktop": "34px",
+        "mobile": "34px"
+       }
+      },
+      "disabled": false
+     }
+    }
+   },
+   {
+    "id": "contentCard4_story1TitleLink",
+    "wrapperId": null,
+    "blockId": "contentCard4_story1Title",
+    "visibility": "show",
+    "parent": "contentCard4_story1Title",
+    "children": [],
+    "types": [
+     "editable",
+     "text"
+    ],
+    "textContent": "Keep the focus on you.",
+    "tag": {
+     "name": "a"
+    },
+    "attributes": {
+     "href": {
+      "value": "http://example.com",
+      "disabled": false
+     },
+     "style": {
+      "value": {
+       "color": {
+        "desktop": "#FFFFFF",
+        "mobile": "#FFFFFF"
+       }
+      },
+      "disabled": false
+     }
+    }
+   },
+   {
+    "id": "contentCard4_story1BodyText",
+    "wrapperId": "contentCard4_story1TextWrapper",
+    "blockId": null,
+    "visibility": "show",
+    "parent": null,
+    "children": [
+     "contentCard4_story1BodyTextLink"
+    ],
+    "types": [
+     "editable",
+     "text",
+     "pc-fb-font"
+    ],
+    "textContent": "Enjoy unlimited templates, easy-to-use tools and seamless integrations.",
+    "tag": {
+     "name": "div"
+    },
+    "attributes": {
+     "style": {
+      "value": {
+       "font-family": {
+        "desktop": "'DM Sans', Helvetica, Arial, sans-serif",
+        "mobile": "'DM Sans', Helvetica, Arial, sans-serif"
+       },
+       "font-size": {
+        "desktop": "18px",
+        "mobile": "18px"
+       },
+       "font-weight": {
+        "desktop": 400,
+        "mobile": "300"
+       },
+       "color": {
+        "desktop": "#8E8F90",
+        "mobile": "#8E8F90"
+       },
+       "letter-spacing": {
+        "desktop": "-0.2px",
+        "mobile": "-0.2px"
+       },
+       "line-height": {
+        "desktop": "28px",
+        "mobile": "28px"
+       }
+      },
+      "disabled": false
+     }
+    }
+   },
+   {
+    "id": "contentCard4_story1BodyTextLink",
+    "wrapperId": null,
+    "blockId": "contentCard4_story1BodyText",
+    "visibility": "show",
+    "parent": "contentCard4_story1BodyText",
+    "children": [],
+    "types": [
+     "editable",
+     "text"
+    ],
+    "textContent": "Enjoy unlimited templates, easy-to-use tools and seamless integrations.",
+    "tag": {
+     "name": "a"
+    },
+    "attributes": {
+     "href": {
+      "value": "http://example.com",
+      "disabled": false
+     },
+     "style": {
+      "value": {
+       "color": {
+        "desktop": "#8E8F90",
+        "mobile": "#8E8F90"
+       }
+      },
+      "disabled": false
+     }
+    }
+   },
+   {
+    "id": "contentCard4_story2",
+    "wrapperId": "contentCard4_background",
+    "blockId": null,
+    "visibility": "show",
+    "parent": null,
+    "children": [],
+    "types": [
+     "editable"
+    ],
+    "textContent": null,
+    "tag": {
+     "name": "div"
+    },
+    "attributes": {
+     "style": {
+      "value": {
+       "display": {
+        "desktop": "flex",
+        "mobile": "flex"
+       },
+       "gap": {
+        "desktop": "0",
+        "mobile": "0"
+       },
+       "align-items": {
+        "desktop": "flex-start",
+        "mobile": "center"
+       },
+       "flex-direction": {
+        "desktop": "row",
+        "mobile": "column"
+       },
+       "text-align": {
+        "desktop": null,
+        "mobile": "center"
+       }
+      },
+      "disabled": false
+     }
+    }
+   },
+   {
+    "id": "contentCard4_story2ImageWrapper",
+    "wrapperId": null,
+    "blockId": "contentCard4_story2",
+    "visibility": "show",
+    "parent": "contentCard4_story2Image",
+    "children": [],
+    "types": [
+     "editable"
+    ],
+    "textContent": null,
+    "tag": {
+     "name": "div"
+    },
+    "attributes": {
+     "style": {
+      "value": {
+       "display": {
+        "desktop": "flex",
+        "mobile": "flex"
+       },
+       "justify-content": {
+        "desktop": "center",
+        "mobile": "center"
+       },
+       "padding": {
+        "desktop": "20px",
+        "mobile": "20px"
+       },
+       "flex-direction": {
+        "desktop": "row",
+        "mobile": "row"
+       }
+      },
+      "disabled": false
+     }
+    }
+   },
+   {
+    "id": "contentCard4_story2ImageLink",
+    "wrapperId": null,
+    "blockId": "contentCard4_story2",
+    "visibility": "show",
+    "parent": "contentCard4_story2Image",
+    "children": [],
+    "types": [
+     "editable"
+    ],
+    "textContent": null,
+    "tag": {
+     "name": "a"
+    },
+    "attributes": {
+     "href": {
+      "value": "http://example.com",
+      "disabled": false
+     },
+     "style": {
+      "disabled": false
+     }
+    }
+   },
+   {
+    "id": "contentCard4_story2Image",
+    "wrapperId": null,
+    "blockId": "contentCard4_story2",
+    "visibility": "show",
+    "parent": null,
+    "children": [
+     "contentCard4_story2ImageWrapper",
+     "contentCard4_story2ImageLink"
+    ],
+    "types": [
+     "editable"
+    ],
+    "textContent": null,
+    "tag": {
+     "name": "img"
+    },
+    "attributes": {
+     "src": {
+      "value": "https://res.cloudinary.com/drawberry/image/upload/v1637872075/components/content-card/message-2_kp13dh.jpg",
+      "disabled": false
+     },
+     "style": {
+      "value": {
+       "width": {
+        "desktop": "100%",
+        "mobile": "100%"
+       },
+       "height": {
+        "desktop": "auto",
+        "mobile": "auto"
+       },
+       "border-radius": {
+        "desktop": "6px",
+        "mobile": "6px"
+       }
+      },
+      "disabled": false
+     }
+    }
+   },
+   {
+    "id": "contentCard4_story2TextWrapper",
+    "wrapperId": null,
+    "blockId": "contentCard4_story2",
+    "visibility": "show",
+    "parent": null,
+    "children": [],
+    "types": [
+     "editable"
+    ],
+    "textContent": null,
+    "tag": {
+     "name": "div"
+    },
+    "attributes": {
+     "style": {
+      "value": {
+       "display": {
+        "desktop": "flex",
+        "mobile": "flex"
+       },
+       "flex-direction": {
+        "desktop": "column",
+        "mobile": "column"
+       },
+       "gap": {
+        "desktop": "8px",
+        "mobile": "8px"
+       },
+       "align-items": {
+        "desktop": "flex-start",
+        "mobile": "flex-start"
+       },
+       "padding": {
+        "desktop": "20px",
+        "mobile": "20px"
+       }
+      },
+      "disabled": false
+     }
+    }
+   },
+   {
+    "id": "contentCard4_story2Category",
+    "wrapperId": "contentCard4_story2TextWrapper",
+    "blockId": null,
+    "visibility": "show",
+    "parent": null,
+    "children": [],
+    "types": [
+     "editable",
+     "text",
+     "pc-fb-font"
+    ],
+    "textContent": "Technology",
+    "tag": {
+     "name": "div"
+    },
+    "attributes": {
+     "style": {
+      "value": {
+       "font-family": {
+        "desktop": "'DM Sans', Helvetica, Arial, sans-serif",
+        "mobile": "'DM Sans', Helvetica, Arial, sans-serif"
+       },
+       "font-size": {
+        "desktop": "14px",
+        "mobile": "14px"
+       },
+       "font-weight": {
+        "desktop": 400,
+        "mobile": "500"
+       },
+       "color": {
+        "desktop": "#5C9919",
+        "mobile": "#5C9919"
+       },
+       "line-height": {
+        "desktop": "20px",
+        "mobile": "20px"
+       }
+      },
+      "disabled": false
+     }
+    }
+   },
+   {
+    "id": "contentCard4_story2Title",
+    "wrapperId": "contentCard4_story2TextWrapper",
+    "blockId": null,
+    "visibility": "show",
+    "parent": null,
+    "children": [
+     "contentCard4_story2TitleLink"
+    ],
+    "types": [
+     "editable",
+     "text",
+     "pc-fb-font"
+    ],
+    "textContent": "Your message, your way.",
+    "tag": {
+     "name": "div"
+    },
+    "attributes": {
+     "style": {
+      "value": {
+       "font-family": {
+        "desktop": "'DM Sans', Helvetica, Arial, sans-serif",
+        "mobile": "'DM Sans', Helvetica, Arial, sans-serif"
+       },
+       "font-size": {
+        "desktop": "24px",
+        "mobile": "24px"
+       },
+       "font-weight": {
+        "desktop": 400,
+        "mobile": "700"
+       },
+       "color": {
+        "desktop": "#FFFFFF",
+        "mobile": "#FFFFFF"
+       },
+       "letter-spacing": {
+        "desktop": "-0.4px",
+        "mobile": "-0.4px"
+       },
+       "line-height": {
+        "desktop": "34px",
+        "mobile": "34px"
+       }
+      },
+      "disabled": false
+     }
+    }
+   },
+   {
+    "id": "contentCard4_story2TitleLink",
+    "wrapperId": null,
+    "blockId": "contentCard4_story2Title",
+    "visibility": "show",
+    "parent": "contentCard4_story2Title",
+    "children": [],
+    "types": [
+     "editable",
+     "text"
+    ],
+    "textContent": "Your message, your way.",
+    "tag": {
+     "name": "a"
+    },
+    "attributes": {
+     "href": {
+      "value": "http://example.com",
+      "disabled": false
+     },
+     "style": {
+      "value": {
+       "color": {
+        "desktop": "#FFFFFF",
+        "mobile": "#FFFFFF"
+       }
+      },
+      "disabled": false
+     }
+    }
+   },
+   {
+    "id": "contentCard4_story2BodyText",
+    "wrapperId": "contentCard4_story2TextWrapper",
+    "blockId": null,
+    "visibility": "show",
+    "parent": null,
+    "children": [
+     "contentCard4_story2BodyTextLink"
+    ],
+    "types": [
+     "editable",
+     "text",
+     "pc-fb-font"
+    ],
+    "textContent": "Add custom colors, branding, and more, then intergrate and send anywhere.",
+    "tag": {
+     "name": "div"
+    },
+    "attributes": {
+     "style": {
+      "value": {
+       "font-family": {
+        "desktop": "'DM Sans', Helvetica, Arial, sans-serif",
+        "mobile": "'DM Sans', Helvetica, Arial, sans-serif"
+       },
+       "font-size": {
+        "desktop": "18px",
+        "mobile": "18px"
+       },
+       "font-weight": {
+        "desktop": 400,
+        "mobile": "300"
+       },
+       "color": {
+        "desktop": "#8E8F90",
+        "mobile": "#8E8F90"
+       },
+       "letter-spacing": {
+        "desktop": "-0.2px",
+        "mobile": "-0.2px"
+       },
+       "line-height": {
+        "desktop": "28px",
+        "mobile": "28px"
+       }
+      },
+      "disabled": false
+     }
+    }
+   },
+   {
+    "id": "contentCard4_story2BodyTextLink",
+    "wrapperId": null,
+    "blockId": "contentCard4_story2BodyText",
+    "visibility": "show",
+    "parent": "contentCard4_story2BodyText",
+    "children": [],
+    "types": [
+     "editable",
+     "text"
+    ],
+    "textContent": "Add custom colors, branding, and more, then intergrate and send anywhere.",
+    "tag": {
+     "name": "a"
+    },
+    "attributes": {
+     "href": {
+      "value": "http://example.com",
+      "disabled": false
+     },
+     "style": {
+      "value": {
+       "color": {
+        "desktop": "#8E8F90",
+        "mobile": "#8E8F90"
+       }
+      },
+      "disabled": false
+     }
+    }
+   }
+  ]
+ },
+ {
+  "name": "Feature 4",
+  "defaultHtml": "<html><head></head><body><div component=\"Feature 4\" id=\"feature4\">\n      <div id=\"feature4_background\" class=\"editable\" style=\"display:flex; flex-direction:column; gap:20px; padding:40px 20px 30px; background-color:#1D1E20; border-radius:0px; box-shadow:0 0px 0px 0 rgba(0,0,0,0.0); width:100%; box-sizing:border-box;\" data-mobile-style=\"padding: 25px 0;\">\n\n      <div id=\"feature4_header\" block=\"\" class=\"editable\" style=\"display:flex; flex-direction:column; gap:10px; padding:0 20px; box-sizing:border-box;\">\n        <div id=\"feature4_title\" block=\"\" class=\"editable text pc-fb-font\" style=\"font-family:'DM Sans', Helvetica, Arial, sans-serif; font-size:24px; line-height:34px; font-weight:700; letter-spacing:-0.4px; color:#FFFFFF; text-align:left;\">Did you know?</div>\n        <div id=\"feature4_bodyText\" block=\"\" class=\"editable text pc-fb-font\" style=\"font-family:'DM Sans', Helvetica, Arial, sans-serif; font-size:18px; line-height:28px; font-weight:300; letter-spacing:-0.2px; color:#8E8F90; text-align:left;\">Email marketing never have been better and easier. Everyone on your team is now empowered, now go power that campaign.</div>\n      </div>\n      <div id=\"feature4_items\" block=\"\" class=\"editable\" style=\"display:flex; flex-wrap:wrap; align-items:stretch; width:100%; box-sizing:border-box;\" data-mobile-style=\"flex-direction: column;\">\n\n        <div id=\"feature4_item1\" block=\"\" class=\"editable\" style=\"display:flex; align-items:flex-start; gap:12px; flex:1 1 50%; max-width:50%; padding:10px 20px; box-sizing:border-box;\" data-mobile-style=\"width: 100%; max-width: 100%; flex-basis: 100%;\">\n          <img id=\"feature4_item1Image\" class=\"editable\" src=\"https://res.cloudinary.com/drawberry/image/upload/v1638619879/components/content-card/beta_lrrsdf.png\" width=\"32\" height=\"32\" alt=\"\" style=\"display:block; width:32px; height:32px; flex:0 0 32px; border:0; outline:0;\">\n          <div id=\"feature4_item1Content\" block=\"\" class=\"editable\" style=\"display:flex; flex-direction:column; gap:8px; min-width:0;\">\n            <div id=\"feature4_item1Title\" block=\"\" class=\"editable text pc-fb-font\" style=\"font-family:'DM Sans', Helvetica, Arial, sans-serif; font-size:18px; line-height:24px; font-weight:500; letter-spacing:-0.2px; color:#FFFFFF; text-align:left;\">Email Branding</div>\n            <div id=\"feature4_item1BodyText\" block=\"\" class=\"editable text pc-fb-font\" style=\"font-family:'DM Sans', Helvetica, Arial, sans-serif; font-size:14px; line-height:20px; font-weight:300; letter-spacing:-0.2px; color:#8E8F90; text-align:left;\">Build your email on our visual canvas. Customize your templates according to your brand identity.</div>\n          </div>\n        </div>\n        <div id=\"feature4_item2\" block=\"\" class=\"editable\" style=\"display:flex; align-items:flex-start; gap:12px; flex:1 1 50%; max-width:50%; padding:10px 20px; box-sizing:border-box;\" data-mobile-style=\"width: 100%; max-width: 100%; flex-basis: 100%;\">\n          <img id=\"feature4_item2Image\" class=\"editable\" src=\"https://res.cloudinary.com/drawberry/image/upload/v1638619879/components/content-card/omni_ltoix8.png\" width=\"32\" height=\"32\" alt=\"\" style=\"display:block; width:32px; height:32px; flex:0 0 32px; border:0; outline:0;\">\n          <div id=\"feature4_item2Content\" block=\"\" class=\"editable\" style=\"display:flex; flex-direction:column; gap:8px; min-width:0;\">\n            <div id=\"feature4_item2Title\" block=\"\" class=\"editable text pc-fb-font\" style=\"font-family:'DM Sans', Helvetica, Arial, sans-serif; font-size:18px; line-height:24px; font-weight:500; letter-spacing:-0.2px; color:#FFFFFF; text-align:left;\">Cloud Hosting</div>\n            <div id=\"feature4_item2BodyText\" block=\"\" class=\"editable text pc-fb-font\" style=\"font-family:'DM Sans', Helvetica, Arial, sans-serif; font-size:14px; line-height:20px; font-weight:300; letter-spacing:-0.2px; color:#8E8F90; text-align:left;\">Focus of creating your content and allow take away the stress of where these media contents will be hosted.</div>\n          </div>\n        </div>\n        <div id=\"feature4_item3\" block=\"\" class=\"editable\" style=\"display:flex; align-items:flex-start; gap:12px; flex:1 1 50%; max-width:50%; padding:10px 20px; box-sizing:border-box;\" data-mobile-style=\"width: 100%; max-width: 100%; flex-basis: 100%;\">\n          <img id=\"feature4_item3Image\" class=\"editable\" src=\"https://res.cloudinary.com/drawberry/image/upload/v1638619879/components/content-card/alpha_y1j60j.png\" width=\"32\" height=\"32\" alt=\"\" style=\"display:block; width:32px; height:32px; flex:0 0 32px; border:0; outline:0;\">\n          <div id=\"feature4_item3Content\" block=\"\" class=\"editable\" style=\"display:flex; flex-direction:column; gap:8px; min-width:0;\">\n            <div id=\"feature4_item3Title\" block=\"\" class=\"editable text pc-fb-font\" style=\"font-family:'DM Sans', Helvetica, Arial, sans-serif; font-size:18px; line-height:24px; font-weight:500; letter-spacing:-0.2px; color:#FFFFFF; text-align:left;\">Campaign Strategy</div>\n            <div id=\"feature4_item3BodyText\" block=\"\" class=\"editable text pc-fb-font\" style=\"font-family:'DM Sans', Helvetica, Arial, sans-serif; font-size:14px; line-height:20px; font-weight:300; letter-spacing:-0.2px; color:#8E8F90; text-align:left;\">We'll walk you through creating your email campaign template strategy to focus more on your goals and your audience</div>\n          </div>\n        </div>\n        <div id=\"feature4_item4\" block=\"\" class=\"editable\" style=\"display:flex; align-items:flex-start; gap:12px; flex:1 1 50%; max-width:50%; padding:10px 20px; box-sizing:border-box;\" data-mobile-style=\"width: 100%; max-width: 100%; flex-basis: 100%;\">\n          <img id=\"feature4_item4Image\" class=\"editable\" src=\"https://res.cloudinary.com/drawberry/image/upload/v1638619879/components/content-card/omega_v6t5jw.png\" width=\"32\" height=\"32\" alt=\"\" style=\"display:block; width:32px; height:32px; flex:0 0 32px; border:0; outline:0;\">\n          <div id=\"feature4_item4Content\" block=\"\" class=\"editable\" style=\"display:flex; flex-direction:column; gap:8px; min-width:0;\">\n            <div id=\"feature4_item4Title\" block=\"\" class=\"editable text pc-fb-font\" style=\"font-family:'DM Sans', Helvetica, Arial, sans-serif; font-size:18px; line-height:24px; font-weight:500; letter-spacing:-0.2px; color:#FFFFFF; text-align:left;\">Affordable Pricing</div>\n            <div id=\"feature4_item4BodyText\" block=\"\" class=\"editable text pc-fb-font\" style=\"font-family:'DM Sans', Helvetica, Arial, sans-serif; font-size:14px; line-height:20px; font-weight:300; letter-spacing:-0.2px; color:#8E8F90; text-align:left;\">Choose a subscription option that works for you and let us do the rest. We have prices that suits your every need.</div>\n          </div>\n        </div>\n      </div>\n      </div>\n    </div></body></html>",
+  "json": [
+   {
+    "id": "feature4_background",
+    "wrapperId": null,
+    "blockId": null,
+    "visibility": "show",
+    "parent": null,
+    "children": [],
+    "types": [
+     "editable"
+    ],
+    "textContent": null,
+    "tag": {
+     "name": "div"
+    },
+    "attributes": {
+     "style": {
+      "value": {
+       "display": {
+        "desktop": "flex",
+        "mobile": "flex"
+       },
+       "flex-direction": {
+        "desktop": "column",
+        "mobile": "column"
+       },
+       "gap": {
+        "desktop": "20px",
+        "mobile": "20px"
+       },
+       "padding": {
+        "desktop": "40px 20px 30px",
+        "mobile": "25px 0"
+       },
+       "background-color": {
+        "desktop": "#1D1E20",
+        "mobile": "#1D1E20"
+       },
+       "border-radius": "0px",
+       "box-shadow": "0 0 0 0 rgba(0, 0, 0, 0.0)"
+      },
+      "disabled": false
+     }
+    }
+   },
+   {
+    "id": "feature4_header",
+    "wrapperId": "feature4_background",
+    "blockId": null,
+    "visibility": "show",
+    "parent": null,
+    "children": [],
+    "types": [
+     "editable"
+    ],
+    "textContent": null,
+    "tag": {
+     "name": "div"
+    },
+    "attributes": {
+     "style": {
+      "value": {
+       "display": {
+        "desktop": "flex",
+        "mobile": "flex"
+       },
+       "flex-direction": {
+        "desktop": "column",
+        "mobile": "column"
+       },
+       "gap": {
+        "desktop": "10px",
+        "mobile": "10px"
+       },
+       "padding": {
+        "desktop": "0 20px",
+        "mobile": "0 20px"
+       }
+      },
+      "disabled": false
+     }
+    }
+   },
+   {
+    "id": "feature4_title",
+    "wrapperId": "feature4_header",
+    "blockId": null,
+    "visibility": "show",
+    "parent": null,
+    "children": [],
+    "types": [
+     "editable",
+     "text",
+     "pc-fb-font"
+    ],
+    "textContent": "Did you know?",
+    "tag": {
+     "name": "div"
+    },
+    "attributes": {
+     "style": {
+      "value": {
+       "font-family": {
+        "desktop": "'DM Sans', Helvetica, Arial, sans-serif",
+        "mobile": "'DM Sans', Helvetica, Arial, sans-serif"
+       },
+       "font-size": {
+        "desktop": "24px",
+        "mobile": "24px"
+       },
+       "font-weight": {
+        "desktop": 400,
+        "mobile": "700"
+       },
+       "color": {
+        "desktop": "#FFFFFF",
+        "mobile": "#FFFFFF"
+       },
+       "letter-spacing": {
+        "desktop": "-0.4px",
+        "mobile": "-0.4px"
+       },
+       "line-height": {
+        "desktop": "34px",
+        "mobile": "34px"
+       },
+       "text-align": {
+        "desktop": "left",
+        "mobile": "left"
+       }
+      },
+      "disabled": false
+     }
+    }
+   },
+   {
+    "id": "feature4_bodyText",
+    "wrapperId": "feature4_header",
+    "blockId": null,
+    "visibility": "show",
+    "parent": null,
+    "children": [],
+    "types": [
+     "editable",
+     "text",
+     "pc-fb-font"
+    ],
+    "textContent": "Email marketing never have been better and easier. Everyone on your team is now empowered, now go power that campaign.",
+    "tag": {
+     "name": "div"
+    },
+    "attributes": {
+     "style": {
+      "value": {
+       "font-family": {
+        "desktop": "'DM Sans', Helvetica, Arial, sans-serif",
+        "mobile": "'DM Sans', Helvetica, Arial, sans-serif"
+       },
+       "font-size": {
+        "desktop": "18px",
+        "mobile": "18px"
+       },
+       "font-weight": {
+        "desktop": 400,
+        "mobile": "300"
+       },
+       "color": {
+        "desktop": "#8E8F90",
+        "mobile": "#8E8F90"
+       },
+       "letter-spacing": {
+        "desktop": "-0.2px",
+        "mobile": "-0.2px"
+       },
+       "line-height": {
+        "desktop": "28px",
+        "mobile": "28px"
+       },
+       "text-align": {
+        "desktop": "left",
+        "mobile": "left"
+       }
+      },
+      "disabled": false
+     }
+    }
+   },
+   {
+    "id": "feature4_items",
+    "wrapperId": "feature4_background",
+    "blockId": null,
+    "visibility": "show",
+    "parent": null,
+    "children": [],
+    "types": [
+     "editable"
+    ],
+    "textContent": null,
+    "tag": {
+     "name": "div"
+    },
+    "attributes": {
+     "style": {
+      "value": {
+       "display": {
+        "desktop": "flex",
+        "mobile": "flex"
+       },
+       "align-items": {
+        "desktop": "stretch",
+        "mobile": "stretch"
+       },
+       "flex-direction": {
+        "desktop": "row",
+        "mobile": "column"
+       }
+      },
+      "disabled": false
+     }
+    }
+   },
+   {
+    "id": "feature4_item1",
+    "wrapperId": "feature4_items",
+    "blockId": null,
+    "visibility": "show",
+    "parent": null,
+    "children": [],
+    "types": [
+     "editable"
+    ],
+    "textContent": null,
+    "tag": {
+     "name": "div"
+    },
+    "attributes": {
+     "style": {
+      "value": {
+       "display": {
+        "desktop": "flex",
+        "mobile": "flex"
+       },
+       "gap": {
+        "desktop": "12px",
+        "mobile": "12px"
+       },
+       "align-items": {
+        "desktop": "flex-start",
+        "mobile": "flex-start"
+       },
+       "padding": {
+        "desktop": "10px 20px",
+        "mobile": "10px 20px"
+       },
+       "flex-direction": {
+        "desktop": "row",
+        "mobile": "row"
+       },
+       "width": {
+        "desktop": null,
+        "mobile": "100%"
+       },
+       "max-width": {
+        "desktop": null,
+        "mobile": "100%"
+       },
+       "flex-basis": {
+        "desktop": null,
+        "mobile": "100%"
+       }
+      },
+      "disabled": false
+     }
+    }
+   },
+   {
+    "id": "feature4_item1Image",
+    "wrapperId": null,
+    "blockId": "feature4_item1",
+    "visibility": "show",
+    "parent": null,
+    "children": [],
+    "types": [
+     "editable"
+    ],
+    "textContent": null,
+    "tag": {
+     "name": "img"
+    },
+    "attributes": {
+     "src": {
+      "value": "https://res.cloudinary.com/drawberry/image/upload/v1638619879/components/content-card/beta_lrrsdf.png",
+      "disabled": false
+     },
+     "style": {
+      "value": {
+       "width": {
+        "desktop": "32px",
+        "mobile": "32px"
+       },
+       "height": {
+        "desktop": "32px",
+        "mobile": "32px"
+       }
+      },
+      "disabled": false
+     }
+    }
+   },
+   {
+    "id": "feature4_item1Content",
+    "wrapperId": "feature4_item1",
+    "blockId": null,
+    "visibility": "show",
+    "parent": null,
+    "children": [],
+    "types": [
+     "editable"
+    ],
+    "textContent": null,
+    "tag": {
+     "name": "div"
+    },
+    "attributes": {
+     "style": {
+      "value": {
+       "display": {
+        "desktop": "flex",
+        "mobile": "flex"
+       },
+       "flex-direction": {
+        "desktop": "column",
+        "mobile": "column"
+       },
+       "gap": {
+        "desktop": "8px",
+        "mobile": "8px"
+       }
+      },
+      "disabled": false
+     }
+    }
+   },
+   {
+    "id": "feature4_item1Title",
+    "wrapperId": "feature4_item1Content",
+    "blockId": null,
+    "visibility": "show",
+    "parent": null,
+    "children": [],
+    "types": [
+     "editable",
+     "text",
+     "pc-fb-font"
+    ],
+    "textContent": "Email Branding",
+    "tag": {
+     "name": "div"
+    },
+    "attributes": {
+     "style": {
+      "value": {
+       "font-family": {
+        "desktop": "'DM Sans', Helvetica, Arial, sans-serif",
+        "mobile": "'DM Sans', Helvetica, Arial, sans-serif"
+       },
+       "font-size": {
+        "desktop": "18px",
+        "mobile": "18px"
+       },
+       "font-weight": {
+        "desktop": 400,
+        "mobile": "500"
+       },
+       "color": {
+        "desktop": "#FFFFFF",
+        "mobile": "#FFFFFF"
+       },
+       "letter-spacing": {
+        "desktop": "-0.2px",
+        "mobile": "-0.2px"
+       },
+       "line-height": {
+        "desktop": "24px",
+        "mobile": "24px"
+       },
+       "text-align": {
+        "desktop": "left",
+        "mobile": "left"
+       }
+      },
+      "disabled": false
+     }
+    }
+   },
+   {
+    "id": "feature4_item1BodyText",
+    "wrapperId": "feature4_item1Content",
+    "blockId": null,
+    "visibility": "show",
+    "parent": null,
+    "children": [],
+    "types": [
+     "editable",
+     "text",
+     "pc-fb-font"
+    ],
+    "textContent": "Build your email on our visual canvas. Customize your templates according to your brand identity.",
+    "tag": {
+     "name": "div"
+    },
+    "attributes": {
+     "style": {
+      "value": {
+       "font-family": {
+        "desktop": "'DM Sans', Helvetica, Arial, sans-serif",
+        "mobile": "'DM Sans', Helvetica, Arial, sans-serif"
+       },
+       "font-size": {
+        "desktop": "14px",
+        "mobile": "14px"
+       },
+       "font-weight": {
+        "desktop": 400,
+        "mobile": "300"
+       },
+       "color": {
+        "desktop": "#8E8F90",
+        "mobile": "#8E8F90"
+       },
+       "letter-spacing": {
+        "desktop": "-0.2px",
+        "mobile": "-0.2px"
+       },
+       "line-height": {
+        "desktop": "20px",
+        "mobile": "20px"
+       },
+       "text-align": {
+        "desktop": "left",
+        "mobile": "left"
+       }
+      },
+      "disabled": false
+     }
+    }
+   },
+   {
+    "id": "feature4_item2",
+    "wrapperId": "feature4_items",
+    "blockId": null,
+    "visibility": "show",
+    "parent": null,
+    "children": [],
+    "types": [
+     "editable"
+    ],
+    "textContent": null,
+    "tag": {
+     "name": "div"
+    },
+    "attributes": {
+     "style": {
+      "value": {
+       "display": {
+        "desktop": "flex",
+        "mobile": "flex"
+       },
+       "gap": {
+        "desktop": "12px",
+        "mobile": "12px"
+       },
+       "align-items": {
+        "desktop": "flex-start",
+        "mobile": "flex-start"
+       },
+       "padding": {
+        "desktop": "10px 20px",
+        "mobile": "10px 20px"
+       },
+       "flex-direction": {
+        "desktop": "row",
+        "mobile": "row"
+       },
+       "width": {
+        "desktop": null,
+        "mobile": "100%"
+       },
+       "max-width": {
+        "desktop": null,
+        "mobile": "100%"
+       },
+       "flex-basis": {
+        "desktop": null,
+        "mobile": "100%"
+       }
+      },
+      "disabled": false
+     }
+    }
+   },
+   {
+    "id": "feature4_item2Image",
+    "wrapperId": null,
+    "blockId": "feature4_item2",
+    "visibility": "show",
+    "parent": null,
+    "children": [],
+    "types": [
+     "editable"
+    ],
+    "textContent": null,
+    "tag": {
+     "name": "img"
+    },
+    "attributes": {
+     "src": {
+      "value": "https://res.cloudinary.com/drawberry/image/upload/v1638619879/components/content-card/omni_ltoix8.png",
+      "disabled": false
+     },
+     "style": {
+      "value": {
+       "width": {
+        "desktop": "32px",
+        "mobile": "32px"
+       },
+       "height": {
+        "desktop": "32px",
+        "mobile": "32px"
+       }
+      },
+      "disabled": false
+     }
+    }
+   },
+   {
+    "id": "feature4_item2Content",
+    "wrapperId": "feature4_item2",
+    "blockId": null,
+    "visibility": "show",
+    "parent": null,
+    "children": [],
+    "types": [
+     "editable"
+    ],
+    "textContent": null,
+    "tag": {
+     "name": "div"
+    },
+    "attributes": {
+     "style": {
+      "value": {
+       "display": {
+        "desktop": "flex",
+        "mobile": "flex"
+       },
+       "flex-direction": {
+        "desktop": "column",
+        "mobile": "column"
+       },
+       "gap": {
+        "desktop": "8px",
+        "mobile": "8px"
+       }
+      },
+      "disabled": false
+     }
+    }
+   },
+   {
+    "id": "feature4_item2Title",
+    "wrapperId": "feature4_item2Content",
+    "blockId": null,
+    "visibility": "show",
+    "parent": null,
+    "children": [],
+    "types": [
+     "editable",
+     "text",
+     "pc-fb-font"
+    ],
+    "textContent": "Cloud Hosting",
+    "tag": {
+     "name": "div"
+    },
+    "attributes": {
+     "style": {
+      "value": {
+       "font-family": {
+        "desktop": "'DM Sans', Helvetica, Arial, sans-serif",
+        "mobile": "'DM Sans', Helvetica, Arial, sans-serif"
+       },
+       "font-size": {
+        "desktop": "18px",
+        "mobile": "18px"
+       },
+       "font-weight": {
+        "desktop": 400,
+        "mobile": "500"
+       },
+       "color": {
+        "desktop": "#FFFFFF",
+        "mobile": "#FFFFFF"
+       },
+       "letter-spacing": {
+        "desktop": "-0.2px",
+        "mobile": "-0.2px"
+       },
+       "line-height": {
+        "desktop": "24px",
+        "mobile": "24px"
+       },
+       "text-align": {
+        "desktop": "left",
+        "mobile": "left"
+       }
+      },
+      "disabled": false
+     }
+    }
+   },
+   {
+    "id": "feature4_item2BodyText",
+    "wrapperId": "feature4_item2Content",
+    "blockId": null,
+    "visibility": "show",
+    "parent": null,
+    "children": [],
+    "types": [
+     "editable",
+     "text",
+     "pc-fb-font"
+    ],
+    "textContent": "Focus of creating your content and allow take away the stress of where these media contents will be hosted.",
+    "tag": {
+     "name": "div"
+    },
+    "attributes": {
+     "style": {
+      "value": {
+       "font-family": {
+        "desktop": "'DM Sans', Helvetica, Arial, sans-serif",
+        "mobile": "'DM Sans', Helvetica, Arial, sans-serif"
+       },
+       "font-size": {
+        "desktop": "14px",
+        "mobile": "14px"
+       },
+       "font-weight": {
+        "desktop": 400,
+        "mobile": "300"
+       },
+       "color": {
+        "desktop": "#8E8F90",
+        "mobile": "#8E8F90"
+       },
+       "letter-spacing": {
+        "desktop": "-0.2px",
+        "mobile": "-0.2px"
+       },
+       "line-height": {
+        "desktop": "20px",
+        "mobile": "20px"
+       },
+       "text-align": {
+        "desktop": "left",
+        "mobile": "left"
+       }
+      },
+      "disabled": false
+     }
+    }
+   },
+   {
+    "id": "feature4_item3",
+    "wrapperId": "feature4_items",
+    "blockId": null,
+    "visibility": "show",
+    "parent": null,
+    "children": [],
+    "types": [
+     "editable"
+    ],
+    "textContent": null,
+    "tag": {
+     "name": "div"
+    },
+    "attributes": {
+     "style": {
+      "value": {
+       "display": {
+        "desktop": "flex",
+        "mobile": "flex"
+       },
+       "gap": {
+        "desktop": "12px",
+        "mobile": "12px"
+       },
+       "align-items": {
+        "desktop": "flex-start",
+        "mobile": "flex-start"
+       },
+       "padding": {
+        "desktop": "10px 20px",
+        "mobile": "10px 20px"
+       },
+       "flex-direction": {
+        "desktop": "row",
+        "mobile": "row"
+       },
+       "width": {
+        "desktop": null,
+        "mobile": "100%"
+       },
+       "max-width": {
+        "desktop": null,
+        "mobile": "100%"
+       },
+       "flex-basis": {
+        "desktop": null,
+        "mobile": "100%"
+       }
+      },
+      "disabled": false
+     }
+    }
+   },
+   {
+    "id": "feature4_item3Image",
+    "wrapperId": null,
+    "blockId": "feature4_item3",
+    "visibility": "show",
+    "parent": null,
+    "children": [],
+    "types": [
+     "editable"
+    ],
+    "textContent": null,
+    "tag": {
+     "name": "img"
+    },
+    "attributes": {
+     "src": {
+      "value": "https://res.cloudinary.com/drawberry/image/upload/v1638619879/components/content-card/alpha_y1j60j.png",
+      "disabled": false
+     },
+     "style": {
+      "value": {
+       "width": {
+        "desktop": "32px",
+        "mobile": "32px"
+       },
+       "height": {
+        "desktop": "32px",
+        "mobile": "32px"
+       }
+      },
+      "disabled": false
+     }
+    }
+   },
+   {
+    "id": "feature4_item3Content",
+    "wrapperId": "feature4_item3",
+    "blockId": null,
+    "visibility": "show",
+    "parent": null,
+    "children": [],
+    "types": [
+     "editable"
+    ],
+    "textContent": null,
+    "tag": {
+     "name": "div"
+    },
+    "attributes": {
+     "style": {
+      "value": {
+       "display": {
+        "desktop": "flex",
+        "mobile": "flex"
+       },
+       "flex-direction": {
+        "desktop": "column",
+        "mobile": "column"
+       },
+       "gap": {
+        "desktop": "8px",
+        "mobile": "8px"
+       }
+      },
+      "disabled": false
+     }
+    }
+   },
+   {
+    "id": "feature4_item3Title",
+    "wrapperId": "feature4_item3Content",
+    "blockId": null,
+    "visibility": "show",
+    "parent": null,
+    "children": [],
+    "types": [
+     "editable",
+     "text",
+     "pc-fb-font"
+    ],
+    "textContent": "Campaign Strategy",
+    "tag": {
+     "name": "div"
+    },
+    "attributes": {
+     "style": {
+      "value": {
+       "font-family": {
+        "desktop": "'DM Sans', Helvetica, Arial, sans-serif",
+        "mobile": "'DM Sans', Helvetica, Arial, sans-serif"
+       },
+       "font-size": {
+        "desktop": "18px",
+        "mobile": "18px"
+       },
+       "font-weight": {
+        "desktop": 400,
+        "mobile": "500"
+       },
+       "color": {
+        "desktop": "#FFFFFF",
+        "mobile": "#FFFFFF"
+       },
+       "letter-spacing": {
+        "desktop": "-0.2px",
+        "mobile": "-0.2px"
+       },
+       "line-height": {
+        "desktop": "24px",
+        "mobile": "24px"
+       },
+       "text-align": {
+        "desktop": "left",
+        "mobile": "left"
+       }
+      },
+      "disabled": false
+     }
+    }
+   },
+   {
+    "id": "feature4_item3BodyText",
+    "wrapperId": "feature4_item3Content",
+    "blockId": null,
+    "visibility": "show",
+    "parent": null,
+    "children": [],
+    "types": [
+     "editable",
+     "text",
+     "pc-fb-font"
+    ],
+    "textContent": "We'll walk you through creating your email campaign template strategy to focus more on your goals and your audience",
+    "tag": {
+     "name": "div"
+    },
+    "attributes": {
+     "style": {
+      "value": {
+       "font-family": {
+        "desktop": "'DM Sans', Helvetica, Arial, sans-serif",
+        "mobile": "'DM Sans', Helvetica, Arial, sans-serif"
+       },
+       "font-size": {
+        "desktop": "14px",
+        "mobile": "14px"
+       },
+       "font-weight": {
+        "desktop": 400,
+        "mobile": "300"
+       },
+       "color": {
+        "desktop": "#8E8F90",
+        "mobile": "#8E8F90"
+       },
+       "letter-spacing": {
+        "desktop": "-0.2px",
+        "mobile": "-0.2px"
+       },
+       "line-height": {
+        "desktop": "20px",
+        "mobile": "20px"
+       },
+       "text-align": {
+        "desktop": "left",
+        "mobile": "left"
+       }
+      },
+      "disabled": false
+     }
+    }
+   },
+   {
+    "id": "feature4_item4",
+    "wrapperId": "feature4_items",
+    "blockId": null,
+    "visibility": "show",
+    "parent": null,
+    "children": [],
+    "types": [
+     "editable"
+    ],
+    "textContent": null,
+    "tag": {
+     "name": "div"
+    },
+    "attributes": {
+     "style": {
+      "value": {
+       "display": {
+        "desktop": "flex",
+        "mobile": "flex"
+       },
+       "gap": {
+        "desktop": "12px",
+        "mobile": "12px"
+       },
+       "align-items": {
+        "desktop": "flex-start",
+        "mobile": "flex-start"
+       },
+       "padding": {
+        "desktop": "10px 20px",
+        "mobile": "10px 20px"
+       },
+       "flex-direction": {
+        "desktop": "row",
+        "mobile": "row"
+       },
+       "width": {
+        "desktop": null,
+        "mobile": "100%"
+       },
+       "max-width": {
+        "desktop": null,
+        "mobile": "100%"
+       },
+       "flex-basis": {
+        "desktop": null,
+        "mobile": "100%"
+       }
+      },
+      "disabled": false
+     }
+    }
+   },
+   {
+    "id": "feature4_item4Image",
+    "wrapperId": null,
+    "blockId": "feature4_item4",
+    "visibility": "show",
+    "parent": null,
+    "children": [],
+    "types": [
+     "editable"
+    ],
+    "textContent": null,
+    "tag": {
+     "name": "img"
+    },
+    "attributes": {
+     "src": {
+      "value": "https://res.cloudinary.com/drawberry/image/upload/v1638619879/components/content-card/omega_v6t5jw.png",
+      "disabled": false
+     },
+     "style": {
+      "value": {
+       "width": {
+        "desktop": "32px",
+        "mobile": "32px"
+       },
+       "height": {
+        "desktop": "32px",
+        "mobile": "32px"
+       }
+      },
+      "disabled": false
+     }
+    }
+   },
+   {
+    "id": "feature4_item4Content",
+    "wrapperId": "feature4_item4",
+    "blockId": null,
+    "visibility": "show",
+    "parent": null,
+    "children": [],
+    "types": [
+     "editable"
+    ],
+    "textContent": null,
+    "tag": {
+     "name": "div"
+    },
+    "attributes": {
+     "style": {
+      "value": {
+       "display": {
+        "desktop": "flex",
+        "mobile": "flex"
+       },
+       "flex-direction": {
+        "desktop": "column",
+        "mobile": "column"
+       },
+       "gap": {
+        "desktop": "8px",
+        "mobile": "8px"
+       }
+      },
+      "disabled": false
+     }
+    }
+   },
+   {
+    "id": "feature4_item4Title",
+    "wrapperId": "feature4_item4Content",
+    "blockId": null,
+    "visibility": "show",
+    "parent": null,
+    "children": [],
+    "types": [
+     "editable",
+     "text",
+     "pc-fb-font"
+    ],
+    "textContent": "Affordable Pricing",
+    "tag": {
+     "name": "div"
+    },
+    "attributes": {
+     "style": {
+      "value": {
+       "font-family": {
+        "desktop": "'DM Sans', Helvetica, Arial, sans-serif",
+        "mobile": "'DM Sans', Helvetica, Arial, sans-serif"
+       },
+       "font-size": {
+        "desktop": "18px",
+        "mobile": "18px"
+       },
+       "font-weight": {
+        "desktop": 400,
+        "mobile": "500"
+       },
+       "color": {
+        "desktop": "#FFFFFF",
+        "mobile": "#FFFFFF"
+       },
+       "letter-spacing": {
+        "desktop": "-0.2px",
+        "mobile": "-0.2px"
+       },
+       "line-height": {
+        "desktop": "24px",
+        "mobile": "24px"
+       },
+       "text-align": {
+        "desktop": "left",
+        "mobile": "left"
+       }
+      },
+      "disabled": false
+     }
+    }
+   },
+   {
+    "id": "feature4_item4BodyText",
+    "wrapperId": "feature4_item4Content",
+    "blockId": null,
+    "visibility": "show",
+    "parent": null,
+    "children": [],
+    "types": [
+     "editable",
+     "text",
+     "pc-fb-font"
+    ],
+    "textContent": "Choose a subscription option that works for you and let us do the rest. We have prices that suits your every need.",
+    "tag": {
+     "name": "div"
+    },
+    "attributes": {
+     "style": {
+      "value": {
+       "font-family": {
+        "desktop": "'DM Sans', Helvetica, Arial, sans-serif",
+        "mobile": "'DM Sans', Helvetica, Arial, sans-serif"
+       },
+       "font-size": {
+        "desktop": "14px",
+        "mobile": "14px"
+       },
+       "font-weight": {
+        "desktop": 400,
+        "mobile": "300"
+       },
+       "color": {
+        "desktop": "#8E8F90",
+        "mobile": "#8E8F90"
+       },
+       "letter-spacing": {
+        "desktop": "-0.2px",
+        "mobile": "-0.2px"
+       },
+       "line-height": {
+        "desktop": "20px",
+        "mobile": "20px"
+       },
+       "text-align": {
+        "desktop": "left",
+        "mobile": "left"
+       }
+      },
+      "disabled": false
+     }
+    }
+   }
+  ]
+ },
+ {
+  "name": "eCommerce 2",
+  "defaultHtml": "<html><head></head><body><div component=\"eCommerce 2\" id=\"ecommerce2\">\n      <div id=\"ecommerce2_background\" class=\"editable\" style=\"display:flex; flex-direction:column; gap:20px; padding:30px 35px; background-color:#D1E2BF; width:100%; box-sizing:border-box; border-radius:0px; box-shadow:0 0px 0px 0 rgba(0,0,0,0.0);\" data-mobile-style=\"padding:15px;\">\n        <div id=\"ecommerce2_header\" block=\"\" class=\"editable\" style=\"display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px; padding:0 5px; width:100%; box-sizing:border-box;\" data-mobile-style=\"flex-direction:column; align-items:center; gap:12px; text-align:center;\">\n          <div id=\"ecommerce2_headerTitle\" block=\"\" class=\"editable text pc-fb-font\" style=\"flex:1 1 320px; font-family:'DM Sans', Helvetica, Arial, sans-serif; font-size:24px; line-height:34px; font-weight:700; letter-spacing:-0.4px; color:#1D1E20; text-align:left;\" data-mobile-style=\"flex-basis:auto; text-align:center;\">New Arrivals.</div>\n          <div id=\"ecommerce2_seeMoreButton\" block=\"\" class=\"editable\" style=\"display:inline-flex; align-items:center; justify-content:center; gap:8px; padding:6px 12px; border:1px solid #1D1E20; border-radius:16px; box-sizing:border-box;\">\n            <a id=\"ecommerce2_seeMoreButtonLink\" parent=\"ecommerce2_seeMoreButton\" class=\"editable text pc-fb-font\" href=\"http://example.com\" style=\"display:block; font-family:'DM Sans', Helvetica, Arial, sans-serif; font-size:14px; line-height:14px; font-weight:500; color:#4A4B4D; text-decoration:none; white-space:nowrap;\">See more</a>\n            <img id=\"ecommerce2_seeMoreButtonIcon\" parent=\"ecommerce2_seeMoreButton\" class=\"editable\" src=\"https://res.cloudinary.com/drawberry/image/upload/v1637872803/components/miscellaneous/arrows-right_c3silw.png\" width=\"16\" height=\"16\" alt=\"\" style=\"display:block; width:16px; height:16px; border:0; outline:0;\">\n          </div>\n        </div>\n\n        <div id=\"ecommerce2_product\" block=\"\" class=\"editable\" style=\"display:flex; flex-direction:column; align-items:flex-start; width:100%; box-sizing:border-box;\">\n          <div id=\"ecommerce2_productImageContainer\" block=\"\" parent=\"ecommerce2_productImage\" class=\"editable\" style=\"display:flex; justify-content:center; padding:0 5px; width:100%; box-sizing:border-box;\">\n            <img id=\"ecommerce2_productImage\" class=\"editable\" src=\"https://res.cloudinary.com/drawberry/image/upload/v1644034307/components/eCommerce/white-demin-jacket_q0zp7o.png\" width=\"384\" height=\"400\" alt=\"\" style=\"display:block; width:100%; max-width:384px; height:auto; margin:0 auto; border:0; outline:0; color:#1D1E20;\">\n          </div>\n\n          <div id=\"ecommerce2_productDetails\" block=\"\" class=\"editable\" style=\"display:flex; flex-direction:column; gap:6px; align-items:flex-start; padding:0 5px; margin-top:15px; width:100%; box-sizing:border-box;\">\n            <div id=\"ecommerce2_productCategory\" block=\"\" class=\"editable text pc-fb-font\" style=\"font-family:'DM Sans', Helvetica, Arial, sans-serif; font-size:14px; line-height:20px; font-weight:500; color:#3F6811;\">Overalls and Covers</div>\n            <div id=\"ecommerce2_productTitle\" block=\"\" class=\"editable text pc-fb-font\" style=\"font-family:'DM Sans', Helvetica, Arial, sans-serif; font-size:24px; line-height:34px; font-weight:700; letter-spacing:-0.4px; color:#1D1E20;\">White 90's Denim Bomber</div>\n            <div id=\"ecommerce2_productDescription\" block=\"\" class=\"editable text pc-fb-font\" style=\"font-family:'DM Sans', Helvetica, Arial, sans-serif; font-size:18px; line-height:28px; font-weight:300; letter-spacing:-0.2px; color:#1D1E20;\">Speak volumes of styles with this 90's retro bomber. Rock this with any outfit from your selection and see how it fits right.</div>\n          </div>\n\n          <div id=\"ecommerce2_actionGroup\" block=\"\" class=\"editable\" style=\"display:flex; align-items:center; flex-wrap:wrap; gap:20px; margin-top:20px; padding:0 5px; width:100%; box-sizing:border-box;\">\n            <div id=\"ecommerce2_button\" block=\"\" class=\"editable\" style=\"display:inline-flex; align-items:center; justify-content:center; padding:13px 17px; border-radius:8px; background-color:#1D1E20; box-sizing:border-box;\">\n              <a id=\"ecommerce2_buttonLink\" parent=\"ecommerce2_button\" class=\"editable text pc-fb-font\" href=\"http://example.com\" style=\"display:block; font-family:'DM Sans', Helvetica, Arial, sans-serif; font-size:16px; line-height:24px; font-weight:500; color:#FFFFFF; text-decoration:none; word-break:break-word;\">Shop now</a>\n            </div>\n            <div id=\"ecommerce2_productPrice\" block=\"\" class=\"editable text pc-fb-font\" style=\"font-family:'DM Sans', Helvetica, Arial, sans-serif; font-size:24px; line-height:28px; font-weight:500; color:#1D1E20;\">₦11,000</div>\n          </div>\n        </div>\n      </div>\n    </div></body></html>",
+  "json": [
+   {
+    "id": "ecommerce2_background",
+    "wrapperId": null,
+    "blockId": null,
+    "visibility": "show",
+    "parent": null,
+    "children": [],
+    "types": [
+     "editable"
+    ],
+    "textContent": null,
+    "tag": {
+     "name": "div"
+    },
+    "attributes": {
+     "style": {
+      "value": {
+       "display": {
+        "desktop": "flex",
+        "mobile": "flex"
+       },
+       "flex-direction": {
+        "desktop": "column",
+        "mobile": "column"
+       },
+       "gap": {
+        "desktop": "20px",
+        "mobile": "20px"
+       },
+       "padding": {
+        "desktop": "30px 35px",
+        "mobile": "15px"
+       },
+       "background-color": {
+        "desktop": "#D1E2BF",
+        "mobile": "#D1E2BF"
+       },
+       "border-radius": "0px",
+       "box-shadow": "0 0 0 0 rgba(0, 0, 0, 0.0)"
+      },
+      "disabled": false
+     }
+    }
+   },
+   {
+    "id": "ecommerce2_header",
+    "wrapperId": "ecommerce2_background",
+    "blockId": null,
+    "visibility": "show",
+    "parent": null,
+    "children": [],
+    "types": [
+     "editable"
+    ],
+    "textContent": null,
+    "tag": {
+     "name": "div"
+    },
+    "attributes": {
+     "style": {
+      "value": {
+       "display": {
+        "desktop": "flex",
+        "mobile": "flex"
+       },
+       "gap": {
+        "desktop": "16px",
+        "mobile": "12px"
+       },
+       "align-items": {
+        "desktop": "center",
+        "mobile": "center"
+       },
+       "justify-content": {
+        "desktop": "space-between",
+        "mobile": "space-between"
+       },
+       "padding": {
+        "desktop": "0 5px",
+        "mobile": "0 5px"
+       },
+       "flex-direction": {
+        "desktop": "row",
+        "mobile": "column"
+       },
+       "text-align": {
+        "desktop": null,
+        "mobile": "center"
+       }
+      },
+      "disabled": false
+     }
+    }
+   },
+   {
+    "id": "ecommerce2_headerTitle",
+    "wrapperId": "ecommerce2_header",
+    "blockId": null,
+    "visibility": "show",
+    "parent": null,
+    "children": [],
+    "types": [
+     "editable",
+     "text",
+     "pc-fb-font"
+    ],
+    "textContent": "New Arrivals.",
+    "tag": {
+     "name": "div"
+    },
+    "attributes": {
+     "style": {
+      "value": {
+       "font-family": {
+        "desktop": "'DM Sans', Helvetica, Arial, sans-serif",
+        "mobile": "'DM Sans', Helvetica, Arial, sans-serif"
+       },
+       "font-size": {
+        "desktop": "24px",
+        "mobile": "24px"
+       },
+       "font-weight": {
+        "desktop": 400,
+        "mobile": "700"
+       },
+       "color": {
+        "desktop": "#1D1E20",
+        "mobile": "#1D1E20"
+       },
+       "letter-spacing": {
+        "desktop": "-0.4px",
+        "mobile": "-0.4px"
+       },
+       "line-height": {
+        "desktop": "34px",
+        "mobile": "34px"
+       },
+       "text-align": {
+        "desktop": "left",
+        "mobile": "center"
+       },
+       "flex-basis": {
+        "desktop": null,
+        "mobile": "auto"
+       }
+      },
+      "disabled": false
+     }
+    }
+   },
+   {
+    "id": "ecommerce2_seeMoreButton",
+    "wrapperId": "ecommerce2_header",
+    "blockId": null,
+    "visibility": "show",
+    "parent": null,
+    "children": [
+     "ecommerce2_seeMoreButtonLink",
+     "ecommerce2_seeMoreButtonIcon"
+    ],
+    "types": [
+     "editable"
+    ],
+    "textContent": null,
+    "tag": {
+     "name": "div"
+    },
+    "attributes": {
+     "style": {
+      "value": {
+       "display": {
+        "desktop": "inline-flex",
+        "mobile": "inline-flex"
+       },
+       "gap": {
+        "desktop": "8px",
+        "mobile": "8px"
+       },
+       "align-items": {
+        "desktop": "center",
+        "mobile": "center"
+       },
+       "justify-content": {
+        "desktop": "center",
+        "mobile": "center"
+       },
+       "padding": {
+        "desktop": "6px 12px",
+        "mobile": "6px 12px"
+       },
+       "border-radius": {
+        "desktop": "16px",
+        "mobile": "16px"
+       },
+       "border": {
+        "desktop": "1px solid #1D1E20",
+        "mobile": "1px solid #1D1E20"
+       }
+      },
+      "disabled": false
+     }
+    }
+   },
+   {
+    "id": "ecommerce2_seeMoreButtonLink",
+    "wrapperId": null,
+    "blockId": "ecommerce2_seeMoreButton",
+    "visibility": "show",
+    "parent": "ecommerce2_seeMoreButton",
+    "children": [],
+    "types": [
+     "editable",
+     "text",
+     "pc-fb-font"
+    ],
+    "textContent": "See more",
+    "tag": {
+     "name": "a"
+    },
+    "attributes": {
+     "href": {
+      "value": "http://example.com",
+      "disabled": false
+     },
+     "style": {
+      "value": {
+       "font-family": {
+        "desktop": "'DM Sans', Helvetica, Arial, sans-serif",
+        "mobile": "'DM Sans', Helvetica, Arial, sans-serif"
+       },
+       "font-size": {
+        "desktop": "14px",
+        "mobile": "14px"
+       },
+       "font-weight": {
+        "desktop": 400,
+        "mobile": "500"
+       },
+       "color": {
+        "desktop": "#4A4B4D",
+        "mobile": "#4A4B4D"
+       },
+       "line-height": {
+        "desktop": "14px",
+        "mobile": "14px"
+       }
+      },
+      "disabled": false
+     }
+    }
+   },
+   {
+    "id": "ecommerce2_seeMoreButtonIcon",
+    "wrapperId": null,
+    "blockId": "ecommerce2_seeMoreButton",
+    "visibility": "show",
+    "parent": "ecommerce2_seeMoreButton",
+    "children": [],
+    "types": [
+     "editable"
+    ],
+    "textContent": null,
+    "tag": {
+     "name": "img"
+    },
+    "attributes": {
+     "src": {
+      "value": "https://res.cloudinary.com/drawberry/image/upload/v1637872803/components/miscellaneous/arrows-right_c3silw.png",
+      "disabled": false
+     },
+     "style": {
+      "value": {
+       "width": {
+        "desktop": "16px",
+        "mobile": "16px"
+       },
+       "height": {
+        "desktop": "16px",
+        "mobile": "16px"
+       }
+      },
+      "disabled": false
+     }
+    }
+   },
+   {
+    "id": "ecommerce2_product",
+    "wrapperId": "ecommerce2_background",
+    "blockId": null,
+    "visibility": "show",
+    "parent": null,
+    "children": [],
+    "types": [
+     "editable"
+    ],
+    "textContent": null,
+    "tag": {
+     "name": "div"
+    },
+    "attributes": {
+     "style": {
+      "value": {
+       "display": {
+        "desktop": "flex",
+        "mobile": "flex"
+       },
+       "flex-direction": {
+        "desktop": "column",
+        "mobile": "column"
+       },
+       "align-items": {
+        "desktop": "flex-start",
+        "mobile": "flex-start"
+       }
+      },
+      "disabled": false
+     }
+    }
+   },
+   {
+    "id": "ecommerce2_productImageContainer",
+    "wrapperId": "ecommerce2_product",
+    "blockId": null,
+    "visibility": "show",
+    "parent": "ecommerce2_productImage",
+    "children": [],
+    "types": [
+     "editable"
+    ],
+    "textContent": null,
+    "tag": {
+     "name": "div"
+    },
+    "attributes": {
+     "style": {
+      "value": {
+       "display": {
+        "desktop": "flex",
+        "mobile": "flex"
+       },
+       "justify-content": {
+        "desktop": "center",
+        "mobile": "center"
+       },
+       "padding": {
+        "desktop": "0 5px",
+        "mobile": "0 5px"
+       },
+       "flex-direction": {
+        "desktop": "row",
+        "mobile": "row"
+       }
+      },
+      "disabled": false
+     }
+    }
+   },
+   {
+    "id": "ecommerce2_productImage",
+    "wrapperId": null,
+    "blockId": "ecommerce2_productImageContainer",
+    "visibility": "show",
+    "parent": null,
+    "children": [
+     "ecommerce2_productImageContainer"
+    ],
+    "types": [
+     "editable"
+    ],
+    "textContent": null,
+    "tag": {
+     "name": "img"
+    },
+    "attributes": {
+     "src": {
+      "value": "https://res.cloudinary.com/drawberry/image/upload/v1644034307/components/eCommerce/white-demin-jacket_q0zp7o.png",
+      "disabled": false
+     },
+     "style": {
+      "value": {
+       "width": {
+        "desktop": "100%",
+        "mobile": "100%"
+       },
+       "height": {
+        "desktop": "auto",
+        "mobile": "auto"
+       }
+      },
+      "disabled": false
+     }
+    }
+   },
+   {
+    "id": "ecommerce2_productDetails",
+    "wrapperId": "ecommerce2_product",
+    "blockId": null,
+    "visibility": "show",
+    "parent": null,
+    "children": [],
+    "types": [
+     "editable"
+    ],
+    "textContent": null,
+    "tag": {
+     "name": "div"
+    },
+    "attributes": {
+     "style": {
+      "value": {
+       "display": {
+        "desktop": "flex",
+        "mobile": "flex"
+       },
+       "flex-direction": {
+        "desktop": "column",
+        "mobile": "column"
+       },
+       "gap": {
+        "desktop": "6px",
+        "mobile": "6px"
+       },
+       "align-items": {
+        "desktop": "flex-start",
+        "mobile": "flex-start"
+       },
+       "padding": {
+        "desktop": "0 5px",
+        "mobile": "0 5px"
+       },
+       "margin-top": {
+        "desktop": "15px",
+        "mobile": "15px"
+       }
+      },
+      "disabled": false
+     }
+    }
+   },
+   {
+    "id": "ecommerce2_productCategory",
+    "wrapperId": "ecommerce2_productDetails",
+    "blockId": null,
+    "visibility": "show",
+    "parent": null,
+    "children": [],
+    "types": [
+     "editable",
+     "text",
+     "pc-fb-font"
+    ],
+    "textContent": "Overalls and Covers",
+    "tag": {
+     "name": "div"
+    },
+    "attributes": {
+     "style": {
+      "value": {
+       "font-family": {
+        "desktop": "'DM Sans', Helvetica, Arial, sans-serif",
+        "mobile": "'DM Sans', Helvetica, Arial, sans-serif"
+       },
+       "font-size": {
+        "desktop": "14px",
+        "mobile": "14px"
+       },
+       "font-weight": {
+        "desktop": 400,
+        "mobile": "500"
+       },
+       "color": {
+        "desktop": "#3F6811",
+        "mobile": "#3F6811"
+       },
+       "line-height": {
+        "desktop": "20px",
+        "mobile": "20px"
+       }
+      },
+      "disabled": false
+     }
+    }
+   },
+   {
+    "id": "ecommerce2_productTitle",
+    "wrapperId": "ecommerce2_productDetails",
+    "blockId": null,
+    "visibility": "show",
+    "parent": null,
+    "children": [],
+    "types": [
+     "editable",
+     "text",
+     "pc-fb-font"
+    ],
+    "textContent": "White 90's Denim Bomber",
+    "tag": {
+     "name": "div"
+    },
+    "attributes": {
+     "style": {
+      "value": {
+       "font-family": {
+        "desktop": "'DM Sans', Helvetica, Arial, sans-serif",
+        "mobile": "'DM Sans', Helvetica, Arial, sans-serif"
+       },
+       "font-size": {
+        "desktop": "24px",
+        "mobile": "24px"
+       },
+       "font-weight": {
+        "desktop": 400,
+        "mobile": "700"
+       },
+       "color": {
+        "desktop": "#1D1E20",
+        "mobile": "#1D1E20"
+       },
+       "letter-spacing": {
+        "desktop": "-0.4px",
+        "mobile": "-0.4px"
+       },
+       "line-height": {
+        "desktop": "34px",
+        "mobile": "34px"
+       }
+      },
+      "disabled": false
+     }
+    }
+   },
+   {
+    "id": "ecommerce2_productDescription",
+    "wrapperId": "ecommerce2_productDetails",
+    "blockId": null,
+    "visibility": "show",
+    "parent": null,
+    "children": [],
+    "types": [
+     "editable",
+     "text",
+     "pc-fb-font"
+    ],
+    "textContent": "Speak volumes of styles with this 90's retro bomber. Rock this with any outfit from your selection and see how it fits right.",
+    "tag": {
+     "name": "div"
+    },
+    "attributes": {
+     "style": {
+      "value": {
+       "font-family": {
+        "desktop": "'DM Sans', Helvetica, Arial, sans-serif",
+        "mobile": "'DM Sans', Helvetica, Arial, sans-serif"
+       },
+       "font-size": {
+        "desktop": "18px",
+        "mobile": "18px"
+       },
+       "font-weight": {
+        "desktop": 400,
+        "mobile": "300"
+       },
+       "color": {
+        "desktop": "#1D1E20",
+        "mobile": "#1D1E20"
+       },
+       "letter-spacing": {
+        "desktop": "-0.2px",
+        "mobile": "-0.2px"
+       },
+       "line-height": {
+        "desktop": "28px",
+        "mobile": "28px"
+       }
+      },
+      "disabled": false
+     }
+    }
+   },
+   {
+    "id": "ecommerce2_actionGroup",
+    "wrapperId": "ecommerce2_product",
+    "blockId": null,
+    "visibility": "show",
+    "parent": null,
+    "children": [],
+    "types": [
+     "editable"
+    ],
+    "textContent": null,
+    "tag": {
+     "name": "div"
+    },
+    "attributes": {
+     "style": {
+      "value": {
+       "display": {
+        "desktop": "flex",
+        "mobile": "flex"
+       },
+       "gap": {
+        "desktop": "20px",
+        "mobile": "20px"
+       },
+       "align-items": {
+        "desktop": "center",
+        "mobile": "center"
+       },
+       "padding": {
+        "desktop": "0 5px",
+        "mobile": "0 5px"
+       },
+       "margin-top": {
+        "desktop": "20px",
+        "mobile": "20px"
+       },
+       "flex-direction": {
+        "desktop": "row",
+        "mobile": "row"
+       }
+      },
+      "disabled": false
+     }
+    }
+   },
+   {
+    "id": "ecommerce2_button",
+    "wrapperId": "ecommerce2_actionGroup",
+    "blockId": null,
+    "visibility": "show",
+    "parent": null,
+    "children": [
+     "ecommerce2_buttonLink"
+    ],
+    "types": [
+     "editable"
+    ],
+    "textContent": null,
+    "tag": {
+     "name": "div"
+    },
+    "attributes": {
+     "style": {
+      "value": {
+       "display": {
+        "desktop": "inline-flex",
+        "mobile": "inline-flex"
+       },
+       "align-items": {
+        "desktop": "center",
+        "mobile": "center"
+       },
+       "justify-content": {
+        "desktop": "center",
+        "mobile": "center"
+       },
+       "padding": {
+        "desktop": "13px 17px",
+        "mobile": "13px 17px"
+       },
+       "background-color": {
+        "desktop": "#1D1E20",
+        "mobile": "#1D1E20"
+       },
+       "border-radius": {
+        "desktop": "8px",
+        "mobile": "8px"
+       }
+      },
+      "disabled": false
+     }
+    }
+   },
+   {
+    "id": "ecommerce2_buttonLink",
+    "wrapperId": null,
+    "blockId": "ecommerce2_button",
+    "visibility": "show",
+    "parent": "ecommerce2_button",
+    "children": [],
+    "types": [
+     "editable",
+     "text",
+     "pc-fb-font"
+    ],
+    "textContent": "Shop now",
+    "tag": {
+     "name": "a"
+    },
+    "attributes": {
+     "href": {
+      "value": "http://example.com",
+      "disabled": false
+     },
+     "style": {
+      "value": {
+       "font-family": {
+        "desktop": "'DM Sans', Helvetica, Arial, sans-serif",
+        "mobile": "'DM Sans', Helvetica, Arial, sans-serif"
+       },
+       "font-size": {
+        "desktop": "16px",
+        "mobile": "16px"
+       },
+       "font-weight": {
+        "desktop": 400,
+        "mobile": "500"
+       },
+       "color": {
+        "desktop": "#FFFFFF",
+        "mobile": "#FFFFFF"
+       },
+       "line-height": {
+        "desktop": "24px",
+        "mobile": "24px"
+       }
+      },
+      "disabled": false
+     }
+    }
+   },
+   {
+    "id": "ecommerce2_productPrice",
+    "wrapperId": "ecommerce2_actionGroup",
+    "blockId": null,
+    "visibility": "show",
+    "parent": null,
+    "children": [],
+    "types": [
+     "editable",
+     "text",
+     "pc-fb-font"
+    ],
+    "textContent": "₦11,000",
+    "tag": {
+     "name": "div"
+    },
+    "attributes": {
+     "style": {
+      "value": {
+       "font-family": {
+        "desktop": "'DM Sans', Helvetica, Arial, sans-serif",
+        "mobile": "'DM Sans', Helvetica, Arial, sans-serif"
+       },
+       "font-size": {
+        "desktop": "24px",
+        "mobile": "24px"
+       },
+       "font-weight": {
+        "desktop": 400,
+        "mobile": "500"
+       },
+       "color": {
+        "desktop": "#1D1E20",
+        "mobile": "#1D1E20"
+       },
+       "line-height": {
+        "desktop": "28px",
+        "mobile": "28px"
+       }
+      },
+      "disabled": false
+     }
+    }
+   }
+  ]
+ }
+]

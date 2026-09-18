@@ -374,8 +374,7 @@ const emitRow = (
     // columns, or a lone child narrower than the container. A single full-width child is
     // left unpinned so it fills the cell.
     const pinWidth =
-      row.length > 1 ||
-      child.rect.width < parent.rect.width - ROW_TOLERANCE;
+      row.length > 1 || child.rect.width < parent.rect.width - ROW_TOLERANCE;
     const widthAttr = pinWidth ? ` width="${round(child.rect.width)}"` : "";
     cells.push(`<td${widthAttr} valign="${valign}">${emitChild(child)}</td>`);
   });

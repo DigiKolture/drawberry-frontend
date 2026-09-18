@@ -419,7 +419,10 @@ async function measureDesktopThenMobile(
     root.style.width = mobileW + "px";
     root.querySelectorAll("[data-mobile-style]").forEach((el) => {
       const cur = el.getAttribute("style") || "";
-      el.setAttribute("style", cur + ";" + el.getAttribute("data-mobile-style"));
+      el.setAttribute(
+        "style",
+        cur + ";" + el.getAttribute("data-mobile-style")
+      );
     });
   }, MOBILE_WIDTH);
   const mobile = await page.evaluate(() =>

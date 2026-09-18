@@ -683,6 +683,30 @@ describe("emit(MeasuredTree)", () => {
       expect(style).toContain("border-radius: 16px");
     });
 
+    it("uses separate borders on a rounded wrapper, since collapsed tables ignore border-radius", () => {
+      // The pill's corners rendered square: `border-collapse: collapse` discards the
+      // radius. Zero border-spacing keeps the layout identical to a collapsed table.
+      const style = load(emit(pill))("#seeMore").attr("style") || "";
+      expect(style).toContain("border-collapse: separate");
+      expect(style).toContain("border-spacing: 0");
+      // Plain containers keep collapsing (the compact, Outlook-safe default).
+      const plain = tree(
+        600,
+        node("root", [0, 0, 600, 40], {
+          id: "root",
+          children: [
+            node("container", [0, 0, 600, 40], {
+              id: "box",
+              children: [node("text", [0, 0, 600, 40], { id: "t", text: "x" })],
+            }),
+          ],
+        })
+      );
+      expect(load(emit(plain))("#box").attr("style") || "").toContain(
+        "border-collapse: collapse"
+      );
+    });
+
     it("wraps a linked container's table in its link so it stays clickable", () => {
       const $ = load(emit(pill));
       const link = $("#seeMore").closest("a");

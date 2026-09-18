@@ -487,8 +487,13 @@ const emitContainer = (
   // can't honour. Outlook is pinned to the desktop copy by the two-layout toggle. A measured
   // background image rides along with its size/position/repeat (styleString normalises the
   // url("…") quotes to url('…'), which stays valid inside the style attribute).
+  // Collapsed borders make a table IGNORE border-radius, so a rounded or bordered wrapper
+  // (the outlined "See more" pill) rendered with square corners. Such a wrapper uses
+  // separate borders; with zero spacing (cellspacing="0" too) the layout is identical.
+  const outlined = !!(node.styles.borderRadius || node.styles.borderTop);
   const tableStyle = styleString([
-    ["border-collapse", "collapse"],
+    ["border-collapse", outlined ? "separate" : "collapse"],
+    ["border-spacing", outlined ? "0" : undefined],
     ["width", "100%"],
     // Round UP: a sub-pixel measured width rounded down wraps shrink-wrapped text.
     ["max-width", `${Math.ceil(width)}px`],

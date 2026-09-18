@@ -88,6 +88,8 @@ const fontStylePairs = (
   ["font-size", styles.fontSize],
   ["font-weight", styles.fontWeight],
   ["line-height", styles.lineHeight],
+  // Letter-spacing changes where text wraps; dropping it pushed titles onto extra lines.
+  ["letter-spacing", styles.letterSpacing],
   ["color", forceLightColor(styles.color)],
   ["text-align", styles.textAlign],
 ];
@@ -119,6 +121,10 @@ const buttonStyle = (styles: MeasuredStyles): string =>
     ["font-family", styles.fontFamily],
     ["font-size", styles.fontSize],
     ["font-weight", styles.fontWeight],
+    // Without the measured line-height the label's line box falls back to the font's natural
+    // height, and every button came out 3px shorter than the Canvas.
+    ["line-height", styles.lineHeight],
+    ["letter-spacing", styles.letterSpacing],
     ["padding-top", styles.paddingTop],
     ["padding-right", styles.paddingRight],
     ["padding-bottom", styles.paddingBottom],
@@ -150,6 +156,7 @@ const emitButton = (node: MeasuredNode): string => {
     ["font-family", node.styles.fontFamily],
     ["font-size", node.styles.fontSize],
     ["font-weight", node.styles.fontWeight],
+    ["letter-spacing", node.styles.letterSpacing],
   ]);
   const vml =
     `<!--[if mso]>` +
@@ -178,10 +185,12 @@ const idAttr = (id: string): string => (id ? ` id="${escapeAttr(id)}"` : "");
 const emitLeaf = (node: MeasuredNode): string => {
   switch (node.role) {
     case "image": {
-      // max-width:100% lets the image shrink with a narrow (non-Outlook) client.
+      // max-width:100% lets the image shrink with a narrow (non-Outlook) client. Measured
+      // corner radius rides along (rounded banner/story images were coming out square).
       const style = styleString([
         ["display", "block"],
         ["max-width", "100%"],
+        ["border-radius", node.styles.borderRadius],
       ]);
       return (
         `<img${idAttr(node.id)} src="${escapeAttr(node.src || "")}"` +
@@ -213,7 +222,10 @@ const emitLeaf = (node: MeasuredNode): string => {
       // reproduce the Canvas's measured text-decoration (usually "none") to avoid an
       // unwanted underline.
       if (node.href) {
+        // display:block — each leaf owns its cell, and an INLINE <a>'s box is the font's
+        // content area (ignoring line-height), so links measured at 24px rendered 18px.
         const linkStyle = styleString([
+          ["display", "block"],
           ...fontStylePairs(node.styles),
           ["text-decoration", node.styles.textDecoration || "none"],
         ]);
@@ -364,23 +376,36 @@ const emitRow = (
   // at the width the Canvas showed instead of filling the whole container. (This used to be
   // alignment-only to keep the desktop layout fluid; the two-layout mobile copy made that
   // moot, and alignment alone let block text spread to full width.)
-  const leadPad = row[0].rect.x - parent.rect.x;
-  if (leadPad > ROW_TOLERANCE) cells.push(spacerCell("width", leadPad));
+  // Widths: pinned cells round UP, spacers round DOWN, and the trailing spacer takes the
+  // exact remainder. Measured widths are sub-pixel (a title at 374.3px); rounding its cell
+  // DOWN to 374 left the text a fraction too wide for the cell, so the last word wrapped and
+  // every height below it doubled. Rounding up keeps text on the lines the Canvas showed,
+  // and the remainder keeps the row summing to its parent's width.
+  const rowWidth = round(parent.rect.width);
+  let used = 0;
+  const push = (cell: string, px: number): void => {
+    cells.push(cell);
+    used += px;
+  };
+  const leadPad = Math.floor(row[0].rect.x - parent.rect.x);
+  if (leadPad > ROW_TOLERANCE) push(spacerCell("width", leadPad), leadPad);
   row.forEach((child, index) => {
-    const gap = columnGap(row, index);
-    if (gap > 0) cells.push(spacerCell("width", gap));
+    const gap = Math.floor(columnGap(row, index));
+    if (gap > 0) push(spacerCell("width", gap), gap);
     const valign = deriveValign(child, bandTop, bandBottom);
     // Pin the measured width whenever the child doesn't simply fill its parent — real
     // columns, or a lone child narrower than the container. A single full-width child is
     // left unpinned so it fills the cell.
     const pinWidth =
       row.length > 1 || child.rect.width < parent.rect.width - ROW_TOLERANCE;
-    const widthAttr = pinWidth ? ` width="${round(child.rect.width)}"` : "";
-    cells.push(`<td${widthAttr} valign="${valign}">${emitChild(child)}</td>`);
+    const width = Math.ceil(child.rect.width);
+    const widthAttr = pinWidth ? ` width="${width}"` : "";
+    push(
+      `<td${widthAttr} valign="${valign}">${emitChild(child)}</td>`,
+      pinWidth ? width : rowWidth - used
+    );
   });
-  const last = row[row.length - 1];
-  const trailPad =
-    parent.rect.x + parent.rect.width - (last.rect.x + last.rect.width);
+  const trailPad = rowWidth - used;
   if (trailPad > ROW_TOLERANCE) cells.push(spacerCell("width", trailPad));
   return `<tr>${cells.join("")}</tr>`;
 };
@@ -406,7 +431,16 @@ const emitContainer = (
       const gap = rowTop(row) - rowBottom(rows[index - 1]);
       if (gap > 0) body.push(spacerRow(gap));
     }
-    body.push(emitRow(row, node, emitChild));
+    // Each row gets its OWN table. In an HTML table every row shares one column grid, so
+    // rows shaped [40|520|40] and [262|77|261] would be reconciled into a single grid whose
+    // columns sum past the width, shrinking every cell (a 520px paragraph rendered at 327px
+    // and wrapped word-per-line). Stacking one single-row table per row inside this
+    // single-column table keeps each row's measured widths intact.
+    body.push(
+      `<tr><td><table role="presentation" border="0" cellpadding="0" cellspacing="0"` +
+        ` width="100%" style="border-collapse: collapse; width: 100%;">` +
+        `<tbody>${emitRow(row, node, emitChild)}</tbody></table></td></tr>`
+    );
   });
   // ...and its bottom padding (space below the last child).
   if (rows.length > 0) {
@@ -417,12 +451,21 @@ const emitContainer = (
 
   // Fluid: width:100% capped at the measured px, so it holds the measured width on desktop
   // but shrinks on a narrow (non-Outlook) client instead of forcing a min-width the viewport
-  // can't honour. Outlook is pinned to the desktop copy by the two-layout toggle.
+  // can't honour. Outlook is pinned to the desktop copy by the two-layout toggle. A measured
+  // background image rides along with its size/position/repeat (styleString normalises the
+  // url("…") quotes to url('…'), which stays valid inside the style attribute).
   const tableStyle = styleString([
     ["border-collapse", "collapse"],
     ["width", "100%"],
-    ["max-width", `${round(width)}px`],
+    // Round UP: a sub-pixel measured width rounded down wraps shrink-wrapped text.
+    ["max-width", `${Math.ceil(width)}px`],
     ["background-color", forceLightColor(node.styles.backgroundColor)],
+    // A rounded wrapper (a pill "See more" with no fill) keeps its measured corners.
+    ["border-radius", node.styles.borderRadius],
+    ["background-image", node.styles.backgroundImage],
+    ["background-size", node.styles.backgroundSize],
+    ["background-position", node.styles.backgroundPosition],
+    ["background-repeat", node.styles.backgroundRepeat],
   ]);
   return (
     `<table${idAttr(node.id)} role="presentation" border="0" cellpadding="0"` +

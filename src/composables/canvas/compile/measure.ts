@@ -40,6 +40,11 @@ const readStyles = (style: CSSStyleDeclaration): MeasuredStyles => ({
   fontSize: style.fontSize || undefined,
   fontWeight: style.fontWeight || undefined,
   lineHeight: style.lineHeight || undefined,
+  // "normal" is the default; only a real value is worth baking (it moves line breaks).
+  letterSpacing:
+    style.letterSpacing && style.letterSpacing !== "normal"
+      ? style.letterSpacing
+      : undefined,
   textAlign: style.textAlign || undefined,
   textDecoration: style.textDecorationLine || undefined,
   borderRadius: normalizeZero(style.borderRadius),
@@ -47,6 +52,16 @@ const readStyles = (style: CSSStyleDeclaration): MeasuredStyles => ({
   paddingRight: normalizeZero(style.paddingRight),
   paddingBottom: normalizeZero(style.paddingBottom),
   paddingLeft: normalizeZero(style.paddingLeft),
+  // A container's background image, with the properties that place it. Read only when an
+  // image is actually set so the emitter never bakes "none".
+  ...(style.backgroundImage && style.backgroundImage !== "none"
+    ? {
+        backgroundImage: style.backgroundImage,
+        backgroundSize: style.backgroundSize || undefined,
+        backgroundPosition: style.backgroundPosition || undefined,
+        backgroundRepeat: style.backgroundRepeat || undefined,
+      }
+    : {}),
 });
 
 /** Drop fully-transparent backgrounds so the emitter doesn't bake a meaningless colour. */
@@ -135,6 +150,13 @@ const measureElement = (
       node.styles.fontFamily = linkStyle.fontFamily || node.styles.fontFamily;
       node.styles.fontSize = linkStyle.fontSize || node.styles.fontSize;
       node.styles.fontWeight = linkStyle.fontWeight || node.styles.fontWeight;
+      // The label's line-height sets the button's height (padding + line box); the wrapper's
+      // own is "normal", which came out 3px short.
+      node.styles.lineHeight = linkStyle.lineHeight || node.styles.lineHeight;
+      node.styles.letterSpacing =
+        linkStyle.letterSpacing && linkStyle.letterSpacing !== "normal"
+          ? linkStyle.letterSpacing
+          : node.styles.letterSpacing;
     }
   } else if (role === "text") {
     node.text = (el.textContent || "").trim();

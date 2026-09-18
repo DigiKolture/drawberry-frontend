@@ -41,10 +41,17 @@ export interface MeasuredStyles {
   fontSize?: string;
   fontWeight?: string;
   lineHeight?: string;
+  /** e.g. "-0.6px"; absent when "normal". Changes where text wraps, so it must be baked. */
+  letterSpacing?: string;
   textAlign?: string;
   /** e.g. "none" / "underline" — reproduced on links, which otherwise underline by default. */
   textDecoration?: string;
   borderRadius?: string;
+  /** Container background image (`url(...)`), with its measured size/position/repeat. */
+  backgroundImage?: string;
+  backgroundSize?: string;
+  backgroundPosition?: string;
+  backgroundRepeat?: string;
   paddingTop?: string;
   paddingRight?: string;
   paddingBottom?: string;

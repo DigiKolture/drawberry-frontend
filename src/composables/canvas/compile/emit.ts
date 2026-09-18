@@ -61,6 +61,39 @@ const rgbToHex = (color?: string): string | undefined => {
 
 const round = (n: number): number => Math.round(n);
 
+/** Force-light the colour inside a measured border string ("1px solid rgb(…)"). */
+const forceLightBorder = (border?: string): string | undefined =>
+  border
+    ? border.replace(
+        /rgba?\([^)]*\)|#[0-9a-fA-F]{3,8}|\b(?:white|black)\b/g,
+        (c) => forceLightColor(c) || c
+      )
+    : border;
+
+/**
+ * Measured borders as style pairs: one `border` when all four sides match (the usual case:
+ * an outlined pill, a bordered button), else per side. Empty when there is no border.
+ */
+const borderPairs = (
+  styles: MeasuredStyles
+): Array<[string, string | undefined]> => {
+  const sides = [
+    styles.borderTop,
+    styles.borderRight,
+    styles.borderBottom,
+    styles.borderLeft,
+  ];
+  if (sides[0] && sides.every((s) => s === sides[0])) {
+    return [["border", forceLightBorder(sides[0])]];
+  }
+  return [
+    ["border-top", forceLightBorder(styles.borderTop)],
+    ["border-right", forceLightBorder(styles.borderRight)],
+    ["border-bottom", forceLightBorder(styles.borderBottom)],
+    ["border-left", forceLightBorder(styles.borderLeft)],
+  ];
+};
+
 const escapeHtml = (text: string): string =>
   text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 
@@ -115,6 +148,8 @@ const buttonStyle = (styles: MeasuredStyles): string =>
     ["background-color", forceLightColor(styles.backgroundColor)],
     ["color", forceLightColor(styles.color)],
     ["border-radius", styles.borderRadius],
+    // A border the user gave the button (measured, force-lit) — dropped until now.
+    ...borderPairs(styles),
     ["font-family", styles.fontFamily],
     ["font-size", styles.fontSize],
     ["font-weight", styles.fontWeight],
@@ -153,6 +188,20 @@ const emitButton = (node: MeasuredNode): string => {
   const fill =
     rgbToHex(forceLightColor(node.styles.backgroundColor)) || OFF_BLACK;
   const textColor = rgbToHex(forceLightColor(node.styles.color)) || OFF_WHITE;
+  // A measured border becomes the VML stroke (Outlook draws no CSS border on the <a>);
+  // without one the stroke matches the fill so it stays invisible.
+  const border = node.styles.borderTop;
+  const borderColor = border
+    ? rgbToHex(
+        forceLightColor(
+          (border.match(/rgba?\([^)]*\)|#[0-9a-fA-F]{3,8}/) || [])[0]
+        )
+      )
+    : undefined;
+  const strokeAttrs =
+    border && borderColor
+      ? ` strokecolor="${borderColor}" strokeweight="${border.split(" ")[0]}"`
+      : ` strokecolor="${fill}"`;
   const centerStyle = styleString([
     ["color", textColor],
     ["font-family", node.styles.fontFamily],
@@ -169,7 +218,7 @@ const emitButton = (node: MeasuredNode): string => {
     ` arcsize="${arcsize(
       node.styles,
       height
-    )}" strokecolor="${fill}" fillcolor="${fill}">` +
+    )}"${strokeAttrs} fillcolor="${fill}">` +
     `<w:anchorlock/><center style="${centerStyle}">${text}</center>` +
     `</v:roundrect><![endif]-->`;
   const fallback =
@@ -212,6 +261,7 @@ const emitLeaf = (node: MeasuredNode): string => {
         ["font-size", "1px"],
         ["background-color", forceLightColor(node.styles.backgroundColor)],
         ["border-radius", node.styles.borderRadius],
+        ...borderPairs(node.styles),
       ]);
       return `<div${idAttr(node.id)} style="${style}">&nbsp;</div>`;
     }
@@ -443,18 +493,31 @@ const emitContainer = (
     // Round UP: a sub-pixel measured width rounded down wraps shrink-wrapped text.
     ["max-width", `${Math.ceil(width)}px`],
     ["background-color", forceLightColor(node.styles.backgroundColor)],
-    // A rounded wrapper (a pill "See more" with no fill) keeps its measured corners.
+    // A rounded / outlined wrapper (a "See more" pill with a 1px border and no fill) keeps
+    // its measured corners and border.
     ["border-radius", node.styles.borderRadius],
+    ...borderPairs(node.styles),
     ["background-image", node.styles.backgroundImage],
     ["background-size", node.styles.backgroundSize],
     ["background-position", node.styles.backgroundPosition],
     ["background-repeat", node.styles.backgroundRepeat],
   ]);
-  return (
+  const table =
     `<table${idAttr(node.id)} role="presentation" border="0" cellpadding="0"` +
     ` cellspacing="0" width="100%" style="${tableStyle}">` +
-    `<tbody>${body.join("")}</tbody></table>`
-  );
+    `<tbody>${body.join("")}</tbody></table>`;
+  // A linked wrapper (an <a> around a label + icon) stays clickable: the whole table sits
+  // inside the link. Block-level links around tables are valid HTML and honoured by the
+  // major clients; the link itself adds no styling of its own.
+  if (node.href) {
+    return (
+      `<a href="${escapeAttr(
+        node.href
+      )}" style="display: block; text-decoration: none;` +
+      ` color: inherit;">${table}</a>`
+    );
+  }
+  return table;
 };
 
 /** Wrap the two measured layouts, defaulting to desktop; Outlook keeps desktop (mso-hide). */

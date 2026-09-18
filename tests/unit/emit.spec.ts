@@ -647,6 +647,102 @@ describe("emit(MeasuredTree)", () => {
     });
   });
 
+  describe("borders and linked wrappers", () => {
+    // An outlined "See more" pill: an <a> with a 1px border and no fill, wrapping a label
+    // and an icon. It's a container (children, no solid background), so it must keep its
+    // measured border AND stay clickable — both were dropped.
+    const pill = tree(
+      600,
+      node("root", [0, 0, 600, 60], {
+        id: "root",
+        children: [
+          node("container", [428, 12, 112, 30], {
+            id: "seeMore",
+            href: "http://example.com",
+            styles: {
+              borderRadius: "16px",
+              borderTop: "1px solid rgb(74, 75, 77)",
+              borderRight: "1px solid rgb(74, 75, 77)",
+              borderBottom: "1px solid rgb(74, 75, 77)",
+              borderLeft: "1px solid rgb(74, 75, 77)",
+            },
+            children: [
+              node("text", [441, 20, 62, 14], {
+                id: "label",
+                text: "See more",
+              }),
+            ],
+          }),
+        ],
+      })
+    );
+
+    it("emits a container's uniform measured border as one `border`", () => {
+      const style = load(emit(pill))("#seeMore").attr("style") || "";
+      expect(style).toContain("border: 1px solid rgb(74, 75, 77)");
+      expect(style).toContain("border-radius: 16px");
+    });
+
+    it("wraps a linked container's table in its link so it stays clickable", () => {
+      const $ = load(emit(pill));
+      const link = $("#seeMore").closest("a");
+      expect(link.attr("href")).toBe("http://example.com");
+      expect(link.attr("style") || "").toContain("display: block");
+    });
+
+    it("gives a bordered button its border and a matching VML stroke", () => {
+      const html = emit(
+        tree(
+          600,
+          node("root", [0, 0, 600, 60], {
+            id: "root",
+            children: [
+              node("button", [223, 0, 154, 50], {
+                id: "cta",
+                text: "Secure you data",
+                href: "https://example.com",
+                styles: {
+                  backgroundColor: "rgb(92, 153, 25)",
+                  borderTop: "2px solid rgb(255, 255, 255)",
+                  borderRight: "2px solid rgb(255, 255, 255)",
+                  borderBottom: "2px solid rgb(255, 255, 255)",
+                  borderLeft: "2px solid rgb(255, 255, 255)",
+                },
+              }),
+            ],
+          })
+        )
+      );
+      // The <a> fallback carries the (force-lit) border…
+      expect(load(html)("#cta").attr("style") || "").toContain(
+        "border: 2px solid #fffffe"
+      );
+      // …and Outlook's roundrect strokes it in the same colour and weight.
+      expect(html).toContain('strokecolor="#fffffe" strokeweight="2px"');
+    });
+
+    it("keeps an unbordered button's stroke invisible (matches the fill)", () => {
+      const html = emit(
+        tree(
+          600,
+          node("root", [0, 0, 600, 60], {
+            id: "root",
+            children: [
+              node("button", [223, 0, 154, 50], {
+                id: "cta",
+                text: "Go",
+                href: "https://example.com",
+                styles: { backgroundColor: "rgb(0, 122, 255)" },
+              }),
+            ],
+          })
+        )
+      );
+      expect(html).toContain('strokecolor="#007aff" fillcolor="#007aff"');
+      expect(html).not.toContain("strokeweight");
+    });
+  });
+
   describe("squeeze resilience (a phone narrower than the mobile measurement)", () => {
     // Email-chrome gutters and narrower phones give the mobile copy less width than it was
     // measured at, and a squeezed row shrinks every cell a few percent. Content that was ONE

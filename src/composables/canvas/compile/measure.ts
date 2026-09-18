@@ -48,6 +48,26 @@ const readStyles = (style: CSSStyleDeclaration): MeasuredStyles => ({
   textAlign: style.textAlign || undefined,
   textDecoration: style.textDecorationLine || undefined,
   borderRadius: normalizeZero(style.borderRadius),
+  borderTop: readBorder(
+    style.borderTopWidth,
+    style.borderTopStyle,
+    style.borderTopColor
+  ),
+  borderRight: readBorder(
+    style.borderRightWidth,
+    style.borderRightStyle,
+    style.borderRightColor
+  ),
+  borderBottom: readBorder(
+    style.borderBottomWidth,
+    style.borderBottomStyle,
+    style.borderBottomColor
+  ),
+  borderLeft: readBorder(
+    style.borderLeftWidth,
+    style.borderLeftStyle,
+    style.borderLeftColor
+  ),
   paddingTop: normalizeZero(style.paddingTop),
   paddingRight: normalizeZero(style.paddingRight),
   paddingBottom: normalizeZero(style.paddingBottom),
@@ -74,6 +94,20 @@ const normalizeColor = (value: string): string | undefined => {
 
 const normalizeZero = (value: string): string | undefined =>
   !value || value === "0px" ? undefined : value;
+
+/** "1px solid rgb(…)" for a side with a visible border, else undefined. */
+const readBorder = (
+  width: string,
+  borderStyle: string,
+  color: string
+): string | undefined =>
+  width &&
+  width !== "0px" &&
+  borderStyle &&
+  borderStyle !== "none" &&
+  borderStyle !== "hidden"
+    ? `${width} ${borderStyle} ${color}`
+    : undefined;
 
 const hasElementChildren = (el: Element): boolean =>
   Array.from(el.children).some((child) => child.nodeType === 1);
@@ -173,6 +207,11 @@ const measureElement = (
     }
     // A container that measured no visible children is nothing to emit.
     if (node.children.length === 0) return null;
+    // A LINKED wrapper (an <a> around a label + icon, e.g. an outlined "See more" pill) keeps
+    // its href so the emitter can wrap its table in the link; it was silently unclickable.
+    if (el.tagName.toLowerCase() === "a") {
+      node.href = el.getAttribute("href") || "";
+    }
   }
 
   return node;

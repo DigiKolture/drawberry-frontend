@@ -184,6 +184,9 @@ interface Box {
   bg: string;
   bgi: boolean;
   br: string;
+  /** Top border width + colour (an outlined "See more" pill, a bordered button). */
+  bw: string;
+  bc: string;
 }
 
 /** Every visible id'd element under the root: box relative to the root + the styles we bake. */
@@ -216,6 +219,8 @@ const measure = (): Record<string, Box> => {
       bg: cs.backgroundColor,
       bgi: cs.backgroundImage !== "none",
       br: cs.borderRadius,
+      bw: cs.borderTopWidth,
+      bc: cs.borderTopColor,
     };
   });
   return out;
@@ -269,6 +274,10 @@ const compare = (
       if (c.bgi && !t.bgi) found.push("background-image DROPPED");
       if (c.br !== t.br && c.br !== "0px" && c.tag !== "A")
         found.push(`radius ${c.br}->${t.br}`);
+      // A visible border on the Canvas must survive (an outlined pill, a bordered button).
+      if (c.bw !== "0px" && (c.bw !== t.bw || norm(c.bc) !== norm(t.bc))) {
+        found.push(`border ${c.bw} ${c.bc}->${t.bw} ${t.bc}`);
+      }
     }
     if (found.length)
       issues.push(`${id}${c.text ? ` "${c.text}"` : ""}: ${found.join(", ")}`);

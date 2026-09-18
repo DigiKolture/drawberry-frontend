@@ -47,6 +47,14 @@ export interface MeasuredStyles {
   /** e.g. "none" / "underline" — reproduced on links, which otherwise underline by default. */
   textDecoration?: string;
   borderRadius?: string;
+  /**
+   * Per-side border as "1px solid rgb(…)", present only where the side has a visible
+   * border (an outlined "See more" pill, a button the user gave a border).
+   */
+  borderTop?: string;
+  borderRight?: string;
+  borderBottom?: string;
+  borderLeft?: string;
   /** Container background image (`url(...)`), with its measured size/position/repeat. */
   backgroundImage?: string;
   backgroundSize?: string;

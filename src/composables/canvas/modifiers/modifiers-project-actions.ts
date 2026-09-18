@@ -3,6 +3,7 @@ import store from "@/store";
 import { history } from "@/composables/canvas/history";
 import { focus } from "@/composables/canvas/focus";
 import { HistoryActionTypes } from "@/store/modules/history/types";
+import { CanvasBreakpoints } from "@/store/modules/canvas/types";
 import ObjectId from "bson-objectid";
 import { project } from "@/composables/project/project";
 import { useRoute } from "vue-router";
@@ -68,11 +69,14 @@ export function modifiersProjectActions() {
     // the component's design; the font loader resolves them per family, and a browser
     // synthesises bold for a variant the family lacks. (Changing the project font from the
     // sidebar still resets weights on purpose — see SidebarFontStyle.)
+    // Every breakpoint: the project font is project-wide, and writing only the one being
+    // viewed left a component added on Mobile carrying the catalog font on Desktop.
     store.commit("canvas/UPDATE_PROJECT_COMPONENTS_STYLE", {
       projectIndex: positionIndex,
       style: {
         "font-family": style.value.fontFamily,
       },
+      breakpoints: Object.values(CanvasBreakpoints),
     });
 
     store.dispatch("canvas/updateProjectComponentsAndStyles").then();

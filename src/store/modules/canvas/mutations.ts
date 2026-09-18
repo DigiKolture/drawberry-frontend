@@ -206,10 +206,21 @@ export const mutations: MutationTree<CanvasState> = {
     }
     return state.workspaceComponents;
   },
+  /**
+   * Apply style values to every element of one component. Writes the current breakpoint by
+   * default (panel styles are breakpoint-scoped); a project-wide setting such as the project
+   * font passes `breakpoints` to write both, otherwise a component added while viewing Mobile
+   * would carry the project font on mobile and the catalog font on desktop.
+   */
   UPDATE_PROJECT_COMPONENTS_STYLE(
     state: CanvasState,
-    { style, projectIndex }
+    {
+      style,
+      projectIndex,
+      breakpoints,
+    }: { style: object; projectIndex: number; breakpoints?: string[] }
   ): any {
+    const targets = breakpoints ?? [state.breakpoint];
     const workspaceComponent = state.workspaceComponents[projectIndex];
     for (const element of workspaceComponent.json) {
       for (const [property, value] of Object.entries(style))
@@ -217,7 +228,9 @@ export const mutations: MutationTree<CanvasState> = {
           element.attributes.style.value &&
           property in element.attributes.style.value
         ) {
-          element.attributes.style.value[property][state.breakpoint] = value;
+          for (const breakpoint of targets) {
+            element.attributes.style.value[property][breakpoint] = value;
+          }
         }
       //TODO: Create an update element dom for array of elements
       workspaceComponent.html = updateElementDom(
@@ -227,7 +240,13 @@ export const mutations: MutationTree<CanvasState> = {
     }
     return state.workspaceComponents;
   },
+  /**
+   * Apply style values to every element of every component — a PROJECT-wide setting (the
+   * project font), so it writes every breakpoint: written to the current one only, changing
+   * the font while viewing Desktop left Mobile on the old font.
+   */
   UPDATE_ALL_PROJECT_COMPONENTS_STYLE(state: CanvasState, style: object): any {
+    const breakpoints = Object.values(CanvasBreakpoints);
     for (const workspaceComponent of state.workspaceComponents) {
       for (const element of workspaceComponent.json) {
         for (const [property, value] of Object.entries(style))
@@ -235,7 +254,9 @@ export const mutations: MutationTree<CanvasState> = {
             element.attributes.style.value &&
             property in element.attributes.style.value
           ) {
-            element.attributes.style.value[property][state.breakpoint] = value;
+            for (const breakpoint of breakpoints) {
+              element.attributes.style.value[property][breakpoint] = value;
+            }
           }
         //TODO: Create an update element dom for array of elements
         workspaceComponent.html = updateElementDom(

@@ -647,6 +647,66 @@ describe("emit(MeasuredTree)", () => {
     });
   });
 
+  describe("squeeze resilience (a phone narrower than the mobile measurement)", () => {
+    // Email-chrome gutters and narrower phones give the mobile copy less width than it was
+    // measured at, and a squeezed row shrinks every cell a few percent. Content that was ONE
+    // line on the Canvas must not wrap for that: nowrap holds its min-content width so the
+    // spacer cells absorb the squeeze. Multi-line paragraphs keep wrapping naturally.
+    const textLeaf = (rect: [number, number, number, number]) =>
+      emit(
+        tree(
+          600,
+          node("root", [0, 0, 600, 200], {
+            id: "root",
+            children: [
+              node("text", rect, {
+                id: "t",
+                text: "Top Tips",
+                styles: { lineHeight: "20px" },
+              }),
+            ],
+          })
+        )
+      );
+
+    it("keeps a single-line text leaf on one line (white-space: nowrap)", () => {
+      // 54px wide, 20px tall at a 20px line-height: one line on the Canvas.
+      const style = load(textLeaf([273, 0, 54, 20]))("#t").attr("style") || "";
+      expect(style).toContain("white-space: nowrap");
+    });
+
+    it("lets a multi-line paragraph keep wrapping (no nowrap)", () => {
+      // 56px tall at a 20px line-height: it already wrapped on the Canvas.
+      const style = load(textLeaf([40, 0, 520, 56]))("#t").attr("style") || "";
+      expect(style).not.toContain("white-space");
+    });
+
+    it("keeps a button label on one line", () => {
+      const $ = load(
+        emit(
+          tree(
+            600,
+            node("root", [0, 0, 600, 60], {
+              id: "root",
+              children: [
+                node("button", [223, 0, 154, 50], {
+                  id: "cta",
+                  text: "Secure you data",
+                  href: "https://example.com",
+                  styles: {
+                    backgroundColor: "rgb(92, 153, 25)",
+                    lineHeight: "24px",
+                  },
+                }),
+              ],
+            })
+          )
+        )
+      );
+      expect($("#cta").attr("style") || "").toContain("white-space: nowrap");
+    });
+  });
+
   describe("snapshot", () => {
     it("is stable for a representative two-block layout", () => {
       const t = tree(

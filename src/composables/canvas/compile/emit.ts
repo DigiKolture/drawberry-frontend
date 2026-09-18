@@ -109,9 +109,6 @@ const paddingPairs = (
   ["padding-left", styles.paddingLeft],
 ];
 
-const fontStyle = (styles: MeasuredStyles): string =>
-  styleString([...fontStylePairs(styles), ...paddingPairs(styles)]);
-
 const buttonStyle = (styles: MeasuredStyles): string =>
   styleString([
     ["display", "inline-block"],
@@ -130,6 +127,11 @@ const buttonStyle = (styles: MeasuredStyles): string =>
     ["padding-bottom", styles.paddingBottom],
     ["padding-left", styles.paddingLeft],
     ["text-decoration", "none"],
+    // A phone can be narrower than the width the mobile copy was measured at (the chrome's
+    // gutters alone take 375 down to 355), and a squeezed row shrinks every cell a few
+    // percent. The label must not wrap for that: nowrap holds the button's min-content width
+    // so the row's spacer cells absorb the squeeze instead.
+    ["white-space", "nowrap"],
   ]);
 
 /** Percentage of the button's height that the measured corner radius represents (VML arcsize). */
@@ -215,8 +217,18 @@ const emitLeaf = (node: MeasuredNode): string => {
     }
     case "text":
     default: {
-      const style = fontStyle(node.styles);
       const content = escapeHtml(node.text || "");
+      // Text that was ONE line on the Canvas (a label, a title that fit) must stay one line
+      // when a narrow phone squeezes its row (chrome gutters alone take 375 down to 355, and
+      // phones go to 320): nowrap holds its min-content width so the row's spacer cells
+      // absorb the squeeze instead. Multi-line paragraphs keep wrapping naturally.
+      const lineHeight = parseFloat(node.styles.lineHeight || "");
+      const singleLine =
+        !Number.isNaN(lineHeight) &&
+        node.rect.height <= lineHeight + ROW_TOLERANCE;
+      const wrapPairs: Array<[string, string | undefined]> = singleLine
+        ? [["white-space", "nowrap"]]
+        : [];
       // A text leaf that is itself a link keeps its href (e.g. footer "Unsubscribe", header
       // nav links) rather than being flattened to inert text. Links underline by default, so
       // reproduce the Canvas's measured text-decoration (usually "none") to avoid an
@@ -228,11 +240,17 @@ const emitLeaf = (node: MeasuredNode): string => {
           ["display", "block"],
           ...fontStylePairs(node.styles),
           ["text-decoration", node.styles.textDecoration || "none"],
+          ...wrapPairs,
         ]);
         return `<a${idAttr(node.id)} href="${escapeAttr(
           node.href
         )}" style="${linkStyle}">${content}</a>`;
       }
+      const style = styleString([
+        ...fontStylePairs(node.styles),
+        ...paddingPairs(node.styles),
+        ...wrapPairs,
+      ]);
       const styleAttr = style ? ` style="${style}"` : "";
       return `<div${idAttr(node.id)}${styleAttr}>${content}</div>`;
     }

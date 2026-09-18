@@ -55,6 +55,9 @@ const preflight = (): string => {
 // The Canvas content widths per breakpoint (workspace.css / canvas.css).
 const DESKTOP_WIDTH = 600;
 const MOBILE_WIDTH = 367;
+// What the email chrome actually gives the mobile copy on a 375px phone: its outer cell
+// carries 10px side gutters (wrapInChrome), so 375 - 20. Narrower than the Canvas measured.
+const CHROME_MOBILE_WIDTH = 355;
 type Breakpoint = "desktop" | "mobile";
 
 /**
@@ -337,4 +340,59 @@ test("stock components: the mobile compile matches the Canvas at the mobile brea
   const tables = await page.evaluate(measure);
   const issues = compare(canvasMobile, tables);
   expect(issues, `mobile mismatches:\n${issues.join("\n")}`).toEqual([]);
+});
+
+test("stock components: the mobile copy survives the chrome's narrower width without wrapping", async ({
+  page,
+}) => {
+  // The chrome's gutters give the mobile copy 355px on a 375px phone, not the 367px it was
+  // measured at (and phones go down to 320). A squeezed row shrinks every cell a few percent;
+  // nothing that was ONE line on the Canvas may wrap for that (buttons, labels, titles).
+  // Height is the tell: an extra line doubles it. Paragraphs may reflow; they aren't checked.
+  await page.setViewportSize({ width: 900, height: 1400 });
+  await load(page, canvasDoc("desktop"));
+  await page.addScriptTag({ content: BUNDLE });
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const desktopTree = await page.evaluate(() =>
+    (window as any).__compile.measureCanvas()
+  );
+  await load(page, canvasDoc("mobile"));
+  await page.addScriptTag({ content: BUNDLE });
+  const canvasMobile = await page.evaluate(measure);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const mobileTree = await page.evaluate(() =>
+    (window as any).__compile.measureCanvas()
+  );
+  const { body, media } = await page.evaluate(
+    ([d, m]) => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const c = (window as any).__compile;
+      return {
+        body: c.emit(d, m) as string,
+        media: c.collectMediaQuery(d, m) as string,
+      };
+    },
+    [desktopTree, mobileTree]
+  );
+  await page.setViewportSize({ width: 375, height: 1400 });
+  await load(page, tablesDoc(body, media, CHROME_MOBILE_WIDTH, FONTS));
+  const tables = await page.evaluate(measure);
+  const wrapped: string[] = [];
+  for (const [id, c] of Object.entries(canvasMobile)) {
+    const t = tables[id];
+    if (!t) continue;
+    // A button's Canvas node is a wrapper (not a leaf) while its emitted <a> is a leaf, so
+    // accept either side as the text carrier; a single Canvas line is height <= line-height.
+    const text = c.text || t.text;
+    if (!text) continue;
+    const lineHeight = parseFloat(c.lh);
+    const singleLine = !Number.isNaN(lineHeight) && c.h <= lineHeight + 4;
+    if (singleLine && t.h > c.h + 4) {
+      wrapped.push(`${id} "${text}": h ${c.h}->${t.h}`);
+    }
+  }
+  expect(
+    wrapped,
+    `wrapped when squeezed to ${CHROME_MOBILE_WIDTH}px:\n${wrapped.join("\n")}`
+  ).toEqual([]);
 });

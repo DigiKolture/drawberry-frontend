@@ -9,9 +9,10 @@ import { MeasuredNode, MeasuredStyles, MeasuredTree } from "./measured-tree";
 //   - gaps           = measured pixel distance between boxes
 // Buttons are emitted as bulletproof VML (Outlook rounded-rect + a styled <a> fallback)
 // from their measured dimensions, and colours are forced light (off-white/off-black, no
-// dark @media — ADR-0006). Given a mobile MeasuredTree, each section that reflows on mobile
-// is emitted as two layouts — desktop tables and mobile tables (from the mobile measurement)
-// — toggled by a measured @media block (see collectMediaQuery).
+// dark @media — ADR-0006). Given a mobile MeasuredTree, the desktop tables are emitted ONCE
+// with id-keyed @media rules that rewrite whatever the mobile measurement differs in (see
+// the Responsive notes below and compileBody); only a section whose structure can't be
+// expressed by rules gets a second, mobile copy.
 // This function stays browser-free so it can be unit-tested against synthetic fixtures.
 
 /** Boxes within this many px of each other vertically count as the same row. */
@@ -142,32 +143,36 @@ const paddingPairs = (
   ["padding-left", styles.paddingLeft],
 ];
 
+const buttonPairs = (
+  styles: MeasuredStyles
+): Array<[string, string | undefined]> => [
+  ["display", "inline-block"],
+  ["background-color", forceLightColor(styles.backgroundColor)],
+  ["color", forceLightColor(styles.color)],
+  ["border-radius", styles.borderRadius],
+  // A border the user gave the button (measured, force-lit) — dropped until now.
+  ...borderPairs(styles),
+  ["font-family", styles.fontFamily],
+  ["font-size", styles.fontSize],
+  ["font-weight", styles.fontWeight],
+  // Without the measured line-height the label's line box falls back to the font's natural
+  // height, and every button came out 3px shorter than the Canvas.
+  ["line-height", styles.lineHeight],
+  ["letter-spacing", styles.letterSpacing],
+  ["padding-top", styles.paddingTop],
+  ["padding-right", styles.paddingRight],
+  ["padding-bottom", styles.paddingBottom],
+  ["padding-left", styles.paddingLeft],
+  ["text-decoration", "none"],
+  // A phone can be narrower than the width the mobile copy was measured at (the chrome's
+  // gutters alone take 375 down to 355), and a squeezed row shrinks every cell a few
+  // percent. The label must not wrap for that: nowrap holds the button's min-content width
+  // so the row's spacer cells absorb the squeeze instead.
+  ["white-space", "nowrap"],
+];
+
 const buttonStyle = (styles: MeasuredStyles): string =>
-  styleString([
-    ["display", "inline-block"],
-    ["background-color", forceLightColor(styles.backgroundColor)],
-    ["color", forceLightColor(styles.color)],
-    ["border-radius", styles.borderRadius],
-    // A border the user gave the button (measured, force-lit) — dropped until now.
-    ...borderPairs(styles),
-    ["font-family", styles.fontFamily],
-    ["font-size", styles.fontSize],
-    ["font-weight", styles.fontWeight],
-    // Without the measured line-height the label's line box falls back to the font's natural
-    // height, and every button came out 3px shorter than the Canvas.
-    ["line-height", styles.lineHeight],
-    ["letter-spacing", styles.letterSpacing],
-    ["padding-top", styles.paddingTop],
-    ["padding-right", styles.paddingRight],
-    ["padding-bottom", styles.paddingBottom],
-    ["padding-left", styles.paddingLeft],
-    ["text-decoration", "none"],
-    // A phone can be narrower than the width the mobile copy was measured at (the chrome's
-    // gutters alone take 375 down to 355), and a squeezed row shrinks every cell a few
-    // percent. The label must not wrap for that: nowrap holds the button's min-content width
-    // so the row's spacer cells absorb the squeeze instead.
-    ["white-space", "nowrap"],
-  ]);
+  styleString(buttonPairs(styles));
 
 /** Percentage of the button's height that the measured corner radius represents (VML arcsize). */
 const arcsize = (styles: MeasuredStyles, height: number): string => {
@@ -179,7 +184,10 @@ const arcsize = (styles: MeasuredStyles, height: number): string => {
 // A bulletproof VML button: an Outlook-only rounded rectangle sized to the measured button,
 // plus a styled <a> every other client uses. Both carry the measured width/padding/radius/
 // colour, so the button looks the same and stays clickable everywhere (spec User Story 10).
-const emitButton = (node: MeasuredNode): string => {
+const emitButton = (
+  node: MeasuredNode,
+  attrs: string = idAttr(node.id)
+): string => {
   const href = node.href ? escapeAttr(node.href) : "";
   const text = escapeHtml(node.text || "");
   const width = round(node.rect.width);
@@ -223,7 +231,7 @@ const emitButton = (node: MeasuredNode): string => {
     `</v:roundrect><![endif]-->`;
   const fallback =
     `<!--[if !mso]><!-->` +
-    `<a${idAttr(node.id)}${href ? ` href="${href}"` : ""} style="${buttonStyle(
+    `<a${attrs}${href ? ` href="${href}"` : ""} style="${buttonStyle(
       node.styles
     )}">${text}</a>` +
     `<!--<![endif]-->`;
@@ -232,8 +240,70 @@ const emitButton = (node: MeasuredNode): string => {
 
 const idAttr = (id: string): string => (id ? ` id="${escapeAttr(id)}"` : "");
 
-/** Emit a leaf node (text / image / button) as cell content. */
-const emitLeaf = (node: MeasuredNode): string => {
+type StylePairs = Array<[string, string | undefined]>;
+
+/**
+ * Text that was ONE line on the Canvas (a label, a title that fit) must stay one line when a
+ * narrow phone squeezes its row (chrome gutters alone take 375 down to 355, and phones go to
+ * 320): nowrap holds its min-content width so the row's spacer cells absorb the squeeze
+ * instead. Multi-line paragraphs keep wrapping naturally.
+ */
+const isSingleLine = (node: MeasuredNode): boolean => {
+  const lineHeight = parseFloat(node.styles.lineHeight || "");
+  return (
+    !Number.isNaN(lineHeight) && node.rect.height <= lineHeight + ROW_TOLERANCE
+  );
+};
+
+// The pairs each leaf kind bakes. The emitted style is the SPARSE form (unset values
+// omitted); the mobile diff compares the EXPLICIT form (every property present, "0px" /
+// "normal" defaults) so a value that is set on one breakpoint and unset on the other still
+// produces a rule.
+const imagePairs = (node: MeasuredNode): StylePairs => [
+  ["width", `${round(node.rect.width)}px`],
+  ["height", `${round(node.rect.height)}px`],
+  ["border-radius", node.styles.borderRadius || "0px"],
+];
+const boxPairs = (node: MeasuredNode): StylePairs => [
+  ["height", `${round(node.rect.height)}px`],
+  ["line-height", `${round(node.rect.height)}px`],
+  ["font-size", "1px"],
+  ["background-color", forceLightColor(node.styles.backgroundColor)],
+  ["border-radius", node.styles.borderRadius],
+  ...borderPairs(node.styles),
+];
+const explicitPadding = (styles: MeasuredStyles): StylePairs => [
+  ["padding-top", styles.paddingTop || "0px"],
+  ["padding-right", styles.paddingRight || "0px"],
+  ["padding-bottom", styles.paddingBottom || "0px"],
+  ["padding-left", styles.paddingLeft || "0px"],
+];
+const explicitFont = (styles: MeasuredStyles): StylePairs =>
+  fontStylePairs(styles).map(([prop, value]) =>
+    prop === "letter-spacing" ? [prop, value || "normal"] : [prop, value]
+  );
+const textPairsExplicit = (node: MeasuredNode): StylePairs => [
+  ...explicitFont(node.styles),
+  ...explicitPadding(node.styles),
+  ["white-space", isSingleLine(node) ? "nowrap" : "normal"],
+];
+const linkPairsExplicit = (node: MeasuredNode): StylePairs => [
+  ...explicitFont(node.styles),
+  ["text-decoration", node.styles.textDecoration || "none"],
+  ["white-space", isSingleLine(node) ? "nowrap" : "normal"],
+];
+
+/**
+ * Emit a leaf node (text / image / button / box) as cell content. With its mobile twin and
+ * a context, whatever the mobile measurement bakes differently becomes a rule on its id.
+ */
+const emitLeaf = (
+  node: MeasuredNode,
+  mobile?: MeasuredNode,
+  ctx?: OverrideCtx
+): string => {
+  const diff = (pairs: (n: MeasuredNode) => StylePairs): string[] =>
+    mobile && ctx ? diffPairs(pairs(node), pairs(mobile)) : [];
   switch (node.role) {
     case "image": {
       // max-width:100% lets the image shrink with a narrow (non-Outlook) client. Measured
@@ -244,7 +314,9 @@ const emitLeaf = (node: MeasuredNode): string => {
         ["border-radius", node.styles.borderRadius],
       ]);
       return (
-        `<img${idAttr(node.id)} src="${escapeAttr(node.src || "")}"` +
+        `<img${ruleAttr(ctx, node.id, diff(imagePairs))} src="${escapeAttr(
+          node.src || ""
+        )}"` +
         ` width="${round(node.rect.width)}" height="${round(
           node.rect.height
         )}"` +
@@ -252,31 +324,26 @@ const emitLeaf = (node: MeasuredNode): string => {
       );
     }
     case "button":
-      return emitButton(node);
+      return emitButton(
+        node,
+        ruleAttr(
+          ctx,
+          node.id,
+          diff((n) => buttonPairs(n.styles))
+        )
+      );
     case "box": {
       // A bare visual block: hold its measured height and background so it doesn't collapse.
-      const style = styleString([
-        ["height", `${round(node.rect.height)}px`],
-        ["line-height", `${round(node.rect.height)}px`],
-        ["font-size", "1px"],
-        ["background-color", forceLightColor(node.styles.backgroundColor)],
-        ["border-radius", node.styles.borderRadius],
-        ...borderPairs(node.styles),
-      ]);
-      return `<div${idAttr(node.id)} style="${style}">&nbsp;</div>`;
+      return `<div${ruleAttr(
+        ctx,
+        node.id,
+        diff(boxPairs)
+      )} style="${styleString(boxPairs(node))}">&nbsp;</div>`;
     }
     case "text":
     default: {
       const content = escapeHtml(node.text || "");
-      // Text that was ONE line on the Canvas (a label, a title that fit) must stay one line
-      // when a narrow phone squeezes its row (chrome gutters alone take 375 down to 355, and
-      // phones go to 320): nowrap holds its min-content width so the row's spacer cells
-      // absorb the squeeze instead. Multi-line paragraphs keep wrapping naturally.
-      const lineHeight = parseFloat(node.styles.lineHeight || "");
-      const singleLine =
-        !Number.isNaN(lineHeight) &&
-        node.rect.height <= lineHeight + ROW_TOLERANCE;
-      const wrapPairs: Array<[string, string | undefined]> = singleLine
+      const wrapPairs: StylePairs = isSingleLine(node)
         ? [["white-space", "nowrap"]]
         : [];
       // A text leaf that is itself a link keeps its href (e.g. footer "Unsubscribe", header
@@ -292,9 +359,11 @@ const emitLeaf = (node: MeasuredNode): string => {
           ["text-decoration", node.styles.textDecoration || "none"],
           ...wrapPairs,
         ]);
-        return `<a${idAttr(node.id)} href="${escapeAttr(
-          node.href
-        )}" style="${linkStyle}">${content}</a>`;
+        return `<a${ruleAttr(
+          ctx,
+          node.id,
+          diff(linkPairsExplicit)
+        )} href="${escapeAttr(node.href)}" style="${linkStyle}">${content}</a>`;
       }
       const style = styleString([
         ...fontStylePairs(node.styles),
@@ -302,23 +371,113 @@ const emitLeaf = (node: MeasuredNode): string => {
         ...wrapPairs,
       ]);
       const styleAttr = style ? ` style="${style}"` : "";
-      return `<div${idAttr(node.id)}${styleAttr}>${content}</div>`;
+      return `<div${ruleAttr(
+        ctx,
+        node.id,
+        diff(textPairsExplicit)
+      )}${styleAttr}>${content}</div>`;
     }
   }
 };
 
-/**
- * A function that renders one measured node to HTML. It's threaded through
- * emitContainer/emitRow so the same layout code can emit either a plain single layout or
- * the responsive (desktop + mobile) variant, depending on which emitter is passed.
- */
-type ChildEmitter = (node: MeasuredNode) => string;
+// ── Responsive: one copy + measured mobile overrides ─────────────────────────────────
+//
+// Compilation measures the design at desktop AND at the mobile breakpoint. A section whose
+// STRUCTURE is the same at both (same elements, same row grouping) is emitted ONCE — its
+// desktop tables — plus id-keyed `@media` rules that rewrite exactly the numbers and styles
+// that differ on mobile (cell and spacer widths, gaps, paddings, font sizes, image sizes…),
+// every value taken from the mobile measurement. Only a section that RESTACKS on mobile
+// (columns become rows: a different structure no rule can express) is emitted as two
+// layouts, toggled by the same @media block. The mobile layout is observed, never inferred
+// (ADR-0004), and the email stays close to single-copy size — Gmail clips above ~102KB, and
+// two full copies of everything doubled it. Outlook ignores @media, so it always shows the
+// desktop tables.
 
-/** Plain single-layout child emitter: a nested table for containers, cell content for leaves. */
-const emitChildSingle: ChildEmitter = (node) =>
-  node.children.length > 0 && node.role !== "text"
-    ? emitContainer(node, node.rect.width, emitChildSingle)
-    : emitLeaf(node);
+/** Collects the mobile @media rules while the desktop body is being emitted. */
+interface OverrideCtx {
+  rules: string[];
+  nextId: () => string;
+}
+
+const isContainer = (node: MeasuredNode): boolean =>
+  node.children.length > 0 && node.role !== "text";
+
+/**
+ * Record a mobile rule for an element and return the id attribute to stamp on it: its own
+ * id, or a fresh short one when it has none — and no id at all when there is no rule, so
+ * ids cost bytes only where they are used.
+ */
+const ruleAttr = (
+  ctx: OverrideCtx | undefined,
+  id: string,
+  decls: string[]
+): string => {
+  const own = decls.filter(Boolean);
+  if (!ctx || own.length === 0) return idAttr(id);
+  const target = id || ctx.nextId();
+  ctx.rules.push(`#${target}{${own.map((d) => `${d}!important`).join(";")}}`);
+  return idAttr(target);
+};
+
+/** The declarations in `mobile` whose value differs from `desktop` (both as style pairs). */
+const diffPairs = (
+  desktop: Array<[string, string | undefined]>,
+  mobile: Array<[string, string | undefined]>
+): string[] => {
+  const d = new Map(desktop);
+  return mobile
+    .filter(
+      ([prop, value]) =>
+        value !== undefined && value !== "" && d.get(prop) !== value
+    )
+    .map(([prop, value]) => `${prop}:${String(value).replace(/"/g, "'")}`);
+};
+
+/** A container's children in reading order (row-major: the order the emitter lays out). */
+const sequence = (node: MeasuredNode): MeasuredNode[] =>
+  bucketRows(node.children).flat();
+
+/**
+ * Can one desktop copy + rules reproduce the mobile counterpart? Yes when both hold the
+ * same elements in the same reading order, all the way down, and every desktop row either
+ * stays one row on mobile or has EVERY member on its own row (a clean stack). A row that
+ * stacks is expressed as rules — cells become full-width blocks positioned from their
+ * mobile rects. Anything else (members reordered, a 3-up row that becomes 2+1) is a
+ * structure no rule can express, and the section gets its own mobile tables instead.
+ */
+const compatible = (d: MeasuredNode, m: MeasuredNode): boolean => {
+  if (d.id !== m.id || d.role !== m.role) return false;
+  if (!isContainer(d) || !isContainer(m)) {
+    return isContainer(d) === isContainer(m);
+  }
+  const seqD = sequence(d);
+  const seqM = sequence(m);
+  if (seqD.length !== seqM.length) return false;
+  if (!seqD.every((child, i) => compatible(child, seqM[i]))) return false;
+  const twinOf = new Map(seqD.map((child, i) => [child, seqM[i]]));
+  return bucketRows(d.children).every((row) => {
+    if (row.length === 1) return true;
+    const twins = row.map((child) => twinOf.get(child) as MeasuredNode);
+    const mobileRows = bucketRows(twins).length;
+    return mobileRows === 1 || mobileRows === twins.length;
+  });
+};
+
+/**
+ * Renders one measured node — with its mobile counterpart when overrides are being
+ * collected. Threaded through emitContainer/emitRow so the same layout code serves the
+ * plain, the overridden and the two-layout paths.
+ */
+type ChildEmitter = (node: MeasuredNode, mobile?: MeasuredNode) => string;
+
+/** A child emitter: nested tables for containers, cell content for leaves. */
+const makeChildEmitter = (ctx?: OverrideCtx): ChildEmitter => {
+  const emitChild: ChildEmitter = (node, mobile) =>
+    isContainer(node)
+      ? emitContainer(node, node.rect.width, emitChild, mobile, ctx)
+      : emitLeaf(node, mobile, ctx);
+  return emitChild;
+};
 
 /** Group siblings into rows by measured vertical overlap; sort each row left-to-right. */
 const bucketRows = (children: MeasuredNode[]): MeasuredNode[][] => {
@@ -361,11 +520,20 @@ const deriveValign = (
 // A collapsed, invisible spacer cell reproduces a measured gap (vertical between rows,
 // horizontal between columns) in a way every email client respects.
 const SPACER_STYLE = "font-size: 1px; line-height: 1px;";
-const spacerCell = (dimension: "height" | "width", px: number): string =>
-  `<td ${dimension}="${round(px)}" style="${SPACER_STYLE}">&nbsp;</td>`;
+const spacerCell = (
+  dimension: "height" | "width",
+  px: number,
+  attrs = ""
+): string =>
+  `<td${attrs} ${dimension}="${round(px)}" style="${SPACER_STYLE}">&nbsp;</td>`;
 
-const spacerRow = (height: number): string =>
-  `<tr>${spacerCell("height", height)}</tr>`;
+/**
+ * A spacer row; a mobile rule (height / display:none) lands on the <td>, not the <tr>: the
+ * cell carries `height="N"`, and a row can never be shorter than its cell, so a height on
+ * the row would be ignored.
+ */
+const spacerRow = (height: number, attrs = ""): string =>
+  `<tr>${spacerCell("height", height, attrs)}</tr>`;
 
 const rowTop = (row: MeasuredNode[]): number =>
   Math.min(...row.map((n) => n.rect.y));
@@ -378,68 +546,199 @@ const columnGap = (row: MeasuredNode[], index: number): number =>
     ? 0
     : row[index].rect.x - (row[index - 1].rect.x + row[index - 1].rect.width);
 
-// ── Responsive: two-layout (desktop + measured mobile) ────────────────────────────────
-//
-// Compilation measures the design at desktop AND at the mobile breakpoint. Every top-level
-// section (one per placed component) is emitted as BOTH layouts — its desktop tables from
-// the desktop measurement and its mobile tables from the mobile measurement — toggled by a
-// measured @media block. Always both, not only where columns restack: the mobile Canvas
-// also differs in font sizes, weights, paddings and image sizes, and a fluid-shrunk desktop
-// copy reproduces none of that (it just scales everything by mobile/desktop width). Because
-// the mobile copy is emitted from the mobile measurement, the mobile layout is observed,
-// never inferred (ADR-0004). Outlook (which ignores @media) is pinned to the desktop copy
-// via `mso-hide:all` on the mobile copy. `pc-` matches the chrome's existing class prefix.
-const D_CLASS = "pc-d"; // desktop copy: shown by default, hidden on mobile
-const M_CLASS = "pc-m"; // mobile copy: hidden by default + in Outlook, shown on mobile
+// Two-layout (a restacking section only): the desktop copy shows by default and Outlook
+// (no @media) never sees the mobile one, thanks to `mso-hide:all`. `pc-` matches the
+// chrome's existing class prefix.
+const D_CLASS = "pc-d"; // desktop copy of a restacking section: hidden on mobile
+const M_CLASS = "pc-m"; // its mobile copy: hidden by default + in Outlook, shown on mobile
 
-/** Emit a single row of columns (single layout), with measured gap + padding spacers. */
-const emitRow = (
-  row: MeasuredNode[],
-  parent: MeasuredNode,
-  emitChild: ChildEmitter
-): string => {
-  const bandTop = rowTop(row);
-  const bandBottom = rowBottom(row);
-  const cells: string[] = [];
-  // Reproduce the parent's horizontal padding as leading/trailing spacer cells so the
-  // columns keep their measured x-positions (e.g. a space-between header stays flush to the
-  // edges) instead of collapsing to the cell edge. The same spacers position a LONE child
-  // narrower than its parent (a centered button, an inset paragraph): its measured x is the
-  // leading spacer and its measured width is pinned on the cell, so a block text leaf wraps
-  // at the width the Canvas showed instead of filling the whole container. (This used to be
-  // alignment-only to keep the desktop layout fluid; the two-layout mobile copy made that
-  // moot, and alignment alone let block text spread to full width.)
-  // Widths: pinned cells round UP, spacers round DOWN, and the trailing spacer takes the
-  // exact remainder. Measured widths are sub-pixel (a title at 374.3px); rounding its cell
-  // DOWN to 374 left the text a fraction too wide for the cell, so the last word wrapped and
-  // every height below it doubled. Rounding up keeps text on the lines the Canvas showed,
-  // and the remainder keeps the row summing to its parent's width.
+/**
+ * Integer cell metrics for one row. Pinned cells round UP, spacers round DOWN, and the
+ * trailing spacer takes the exact remainder: measured widths are sub-pixel (a title at
+ * 374.3px), and rounding its cell DOWN to 374 left the text a fraction too wide, so the
+ * last word wrapped and every height below it doubled. Rounding up keeps text on the lines
+ * the Canvas showed; the remainder keeps the row summing to its parent's width.
+ */
+interface RowMetrics {
+  rowWidth: number;
+  lead: number;
+  gaps: number[];
+  pinned: boolean[];
+  widths: number[];
+  trail: number;
+}
+const rowMetrics = (row: MeasuredNode[], parent: MeasuredNode): RowMetrics => {
   const rowWidth = round(parent.rect.width);
-  let used = 0;
-  const push = (cell: string, px: number): void => {
-    cells.push(cell);
-    used += px;
-  };
-  const leadPad = Math.floor(row[0].rect.x - parent.rect.x);
-  if (leadPad > ROW_TOLERANCE) push(spacerCell("width", leadPad), leadPad);
+  const lead = Math.floor(row[0].rect.x - parent.rect.x);
+  let used = lead > ROW_TOLERANCE ? lead : 0;
+  const gaps: number[] = [];
+  const pinned: boolean[] = [];
+  const widths: number[] = [];
   row.forEach((child, index) => {
     const gap = Math.floor(columnGap(row, index));
-    if (gap > 0) push(spacerCell("width", gap), gap);
-    const valign = deriveValign(child, bandTop, bandBottom);
+    gaps.push(gap);
+    if (gap > 0) used += gap;
     // Pin the measured width whenever the child doesn't simply fill its parent — real
     // columns, or a lone child narrower than the container. A single full-width child is
     // left unpinned so it fills the cell.
-    const pinWidth =
+    const pin =
       row.length > 1 || child.rect.width < parent.rect.width - ROW_TOLERANCE;
     const width = Math.ceil(child.rect.width);
-    const widthAttr = pinWidth ? ` width="${width}"` : "";
-    push(
-      `<td${widthAttr} valign="${valign}">${emitChild(child)}</td>`,
-      pinWidth ? width : rowWidth - used
+    pinned.push(pin);
+    widths.push(width);
+    used += pin ? width : rowWidth - used;
+  });
+  return { rowWidth, lead, gaps, pinned, widths, trail: rowWidth - used };
+};
+
+/** Mobile rule for a spacer the desktop row has: a new width, or gone. */
+const spacerDecls = (
+  desktopPx: number,
+  mobilePx: number | undefined
+): string[] => {
+  if (mobilePx === undefined) return [];
+  if (mobilePx <= ROW_TOLERANCE) return ["display:none"];
+  return mobilePx !== desktopPx ? [`width:${mobilePx}px`] : [];
+};
+
+/**
+ * Emit a single row of columns with measured gap + padding spacers. The parent's horizontal
+ * padding becomes leading/trailing spacer cells so columns keep their measured x (a
+ * space-between header stays flush to the edges); the same spacers position a LONE child
+ * narrower than its parent (a centred button, an inset paragraph), whose measured width is
+ * pinned on its cell so block text wraps where the Canvas wrapped it.
+ *
+ * With the row's mobile twin (same members) and a context, each cell or spacer whose
+ * mobile metric differs gets an id + a rule; a spacer the desktop row LACKS but mobile
+ * needs becomes padding on the neighbouring content cell.
+ */
+const emitRow = (
+  row: MeasuredNode[],
+  parent: MeasuredNode,
+  emitChild: ChildEmitter,
+  ctx?: OverrideCtx,
+  mRow?: MeasuredNode[],
+  mParent?: MeasuredNode
+): string => {
+  const bandTop = rowTop(row);
+  const bandBottom = rowBottom(row);
+  const d = rowMetrics(row, parent);
+  // The row's twins either share one mobile row (metrics compare cell by cell) or STACK, one
+  // per mobile row (compatible() allows nothing in between): then every spacer goes and each
+  // cell becomes a full-width block placed by padding from its own mobile rect — the
+  // standard way a column row restacks on a phone, here with measured numbers.
+  const stacked =
+    !!ctx &&
+    !!mRow &&
+    !!mParent &&
+    row.length > 1 &&
+    bucketRows(mRow).length > 1;
+  const m =
+    ctx && mRow && mParent && !stacked ? rowMetrics(mRow, mParent) : undefined;
+  const gone = stacked ? ["display:none"] : undefined;
+  const cellDecls: string[][] = row.map(() => []);
+  if (stacked && mRow && mParent) {
+    const rowWidthM = round(mParent.rect.width);
+    // `width:auto` on a block cell: it fills its row and the paddings set the content
+    // width, so the result doesn't depend on the client's box-sizing (a width + padding
+    // rule collapses to nothing under border-box) — and it cancels the desktop cell's
+    // `width="N"` attribute, which would otherwise still pin the block at its column width.
+    mRow.forEach((twin, index) => {
+      const left = Math.floor(twin.rect.x - mParent.rect.x);
+      const width = Math.ceil(twin.rect.width);
+      const right = Math.max(rowWidthM - left - width, 0);
+      cellDecls[index].push(
+        "display:block",
+        "width:auto",
+        `padding-left:${left}px`,
+        `padding-right:${right}px`
+      );
+      if (index > 0) {
+        const previous = mRow[index - 1];
+        const gap = round(
+          twin.rect.y - (previous.rect.y + previous.rect.height)
+        );
+        if (gap > 0) cellDecls[index].push(`padding-top:${gap}px`);
+      }
+    });
+  }
+
+  let leadCell = "";
+  if (d.lead > ROW_TOLERANCE) {
+    leadCell = spacerCell(
+      "width",
+      d.lead,
+      ruleAttr(ctx, "", gone ?? spacerDecls(d.lead, m?.lead))
+    );
+  } else if (m && m.lead > ROW_TOLERANCE) {
+    cellDecls[0].push(`padding-left:${m.lead}px`);
+  }
+  const gapCells: string[] = row.map((child, index) => {
+    if (d.gaps[index] > 0) {
+      return spacerCell(
+        "width",
+        d.gaps[index],
+        ruleAttr(
+          ctx,
+          "",
+          gone ?? spacerDecls(d.gaps[index], m && m.gaps[index])
+        )
+      );
+    }
+    if (m && m.gaps[index] > 0) {
+      cellDecls[index].push(`padding-left:${m.gaps[index]}px`);
+    }
+    return "";
+  });
+  let trailCell = "";
+  if (d.trail > ROW_TOLERANCE) {
+    trailCell = spacerCell(
+      "width",
+      d.trail,
+      ruleAttr(ctx, "", gone ?? spacerDecls(d.trail, m?.trail))
+    );
+  } else if (m && m.trail > ROW_TOLERANCE) {
+    cellDecls[row.length - 1].push(`padding-right:${m.trail}px`);
+  }
+  if (m) {
+    row.forEach((child, index) => {
+      if (m.pinned[index]) {
+        if (!d.pinned[index] || m.widths[index] !== d.widths[index]) {
+          cellDecls[index].push(`width:${m.widths[index]}px`);
+        }
+      } else if (d.pinned[index]) {
+        cellDecls[index].push("width:auto");
+      }
+    });
+  }
+  // A cell that gained padding (a spacer the desktop row lacks) must not also pin a width:
+  // under a client's border-box reset the padding would eat the content (a 40px logo cell
+  // with 295px of padding rendered 0 wide). A LONE cell fills its row with `width:auto` —
+  // the paddings set the content width, and auto cancels the desktop `width="N"` attribute
+  // that would otherwise still apply; a padded cell sharing a row keeps its width and pins
+  // the box model explicitly.
+  cellDecls.forEach((decls) => {
+    const padded = decls.some((decl) => decl.startsWith("padding-"));
+    const widthAt = decls.findIndex((decl) => decl.startsWith("width:"));
+    if (!padded || widthAt < 0) return;
+    if (row.length === 1) decls[widthAt] = "width:auto";
+    else decls.push("box-sizing:content-box");
+  });
+
+  const cells: string[] = leadCell ? [leadCell] : [];
+  row.forEach((child, index) => {
+    if (gapCells[index]) cells.push(gapCells[index]);
+    const valign = deriveValign(child, bandTop, bandBottom);
+    const widthAttr = d.pinned[index] ? ` width="${d.widths[index]}"` : "";
+    const attrs = ruleAttr(ctx, "", cellDecls[index]);
+    cells.push(
+      `<td${attrs}${widthAttr} valign="${valign}">${emitChild(
+        child,
+        mRow ? mRow[index] : undefined
+      )}</td>`
     );
   });
-  const trailPad = rowWidth - used;
-  if (trailPad > ROW_TOLERANCE) cells.push(spacerCell("width", trailPad));
+  if (trailCell) cells.push(trailCell);
   return `<tr>${cells.join("")}</tr>`;
 };
 
@@ -450,37 +749,110 @@ const emitRow = (
 const emitContainer = (
   node: MeasuredNode,
   width: number,
-  emitChild: ChildEmitter
+  emitChild: ChildEmitter,
+  mobile?: MeasuredNode,
+  ctx?: OverrideCtx,
+  mobileWidth?: number
 ): string => {
   const rows = bucketRows(node.children);
-  const body: string[] = [];
-  // Reproduce the container's top padding (space above the first child).
+  // Each desktop child pairs with its mobile TWIN by reading order — compatible() guaranteed
+  // the sequences match for a section, and the root's children (the sections) pair the same
+  // way. A desktop row's twins may sit in one mobile row or stack one per row; either way
+  // the row's mobile top/bottom come from the twins' rects. Anything unpaired gets no rules
+  // rather than wrong ones.
+  const seqM = ctx && mobile ? sequence(mobile) : undefined;
+  const twinRows =
+    seqM && seqM.length === node.children.length
+      ? (() => {
+          const seqD = rows.flat();
+          const twinOf = new Map(seqD.map((child, i) => [child, seqM[i]]));
+          return rows.map((row) =>
+            row.map((child) => twinOf.get(child) as MeasuredNode)
+          );
+        })()
+      : undefined;
+
+  // Vertical spacing. A spacer row the desktop has gets a rule (new height, or gone); the
+  // spacing the desktop LACKS but mobile has becomes padding on the neighbouring row's
+  // wrapper cell. Computed first so wrapper cells know their rule when they're emitted.
+  const vDecls = (
+    desktopPx: number,
+    mobilePx: number | undefined
+  ): string[] => {
+    if (mobilePx === undefined) return [];
+    if (mobilePx <= ROW_TOLERANCE) return ["display:none"];
+    return round(mobilePx) !== round(desktopPx)
+      ? [`height:${round(mobilePx)}px`]
+      : [];
+  };
+  const wrapDecls: string[][] = rows.map(() => []);
+  const gapRows: string[] = rows.map(() => "");
+  let padTopRow = "";
+  let padBottomRow = "";
   if (rows.length > 0) {
+    const last = rows.length - 1;
+    // Top padding (space above the first child).
     const padTop = rowTop(rows[0]) - node.rect.y;
-    if (padTop > ROW_TOLERANCE) body.push(spacerRow(padTop));
-  }
-  rows.forEach((row, index) => {
-    if (index > 0) {
-      const gap = rowTop(row) - rowBottom(rows[index - 1]);
-      if (gap > 0) body.push(spacerRow(gap));
+    const padTopM =
+      twinRows && mobile ? rowTop(twinRows[0]) - mobile.rect.y : undefined;
+    if (padTop > ROW_TOLERANCE) {
+      padTopRow = spacerRow(padTop, ruleAttr(ctx, "", vDecls(padTop, padTopM)));
+    } else if (padTopM !== undefined && padTopM > ROW_TOLERANCE) {
+      wrapDecls[0].push(`padding-top:${round(padTopM)}px`);
     }
+    // Gaps between rows.
+    rows.forEach((row, index) => {
+      if (index === 0) return;
+      const gap = rowTop(row) - rowBottom(rows[index - 1]);
+      const gapM = twinRows
+        ? Math.max(rowTop(twinRows[index]) - rowBottom(twinRows[index - 1]), 0)
+        : undefined;
+      if (gap > 0) {
+        gapRows[index] = spacerRow(gap, ruleAttr(ctx, "", vDecls(gap, gapM)));
+      } else if (gapM !== undefined && gapM > ROW_TOLERANCE) {
+        wrapDecls[index].push(`padding-top:${round(gapM)}px`);
+      }
+    });
+    // Bottom padding (space below the last child).
+    const padBottom = node.rect.y + node.rect.height - rowBottom(rows[last]);
+    const padBottomM =
+      twinRows && mobile
+        ? mobile.rect.y + mobile.rect.height - rowBottom(twinRows[last])
+        : undefined;
+    if (padBottom > ROW_TOLERANCE) {
+      padBottomRow = spacerRow(
+        padBottom,
+        ruleAttr(ctx, "", vDecls(padBottom, padBottomM))
+      );
+    } else if (padBottomM !== undefined && padBottomM > ROW_TOLERANCE) {
+      wrapDecls[last].push(`padding-bottom:${round(padBottomM)}px`);
+    }
+  }
+
+  const body: string[] = [];
+  if (padTopRow) body.push(padTopRow);
+  rows.forEach((row, index) => {
+    if (gapRows[index]) body.push(gapRows[index]);
     // Each row gets its OWN table. In an HTML table every row shares one column grid, so
     // rows shaped [40|520|40] and [262|77|261] would be reconciled into a single grid whose
     // columns sum past the width, shrinking every cell (a 520px paragraph rendered at 327px
     // and wrapped word-per-line). Stacking one single-row table per row inside this
     // single-column table keeps each row's measured widths intact.
+    const wrapAttr = ruleAttr(ctx, "", wrapDecls[index]);
     body.push(
-      `<tr><td><table role="presentation" border="0" cellpadding="0" cellspacing="0"` +
-        ` width="100%" style="border-collapse: collapse; width: 100%;">` +
-        `<tbody>${emitRow(row, node, emitChild)}</tbody></table></td></tr>`
+      `<tr><td${wrapAttr}><table role="presentation" border="0" cellpadding="0"` +
+        ` cellspacing="0" width="100%" style="border-collapse: collapse; width: 100%;">` +
+        `<tbody>${emitRow(
+          row,
+          node,
+          emitChild,
+          ctx,
+          twinRows ? twinRows[index] : undefined,
+          twinRows ? mobile : undefined
+        )}</tbody></table></td></tr>`
     );
   });
-  // ...and its bottom padding (space below the last child).
-  if (rows.length > 0) {
-    const padBottom =
-      node.rect.y + node.rect.height - rowBottom(rows[rows.length - 1]);
-    if (padBottom > ROW_TOLERANCE) body.push(spacerRow(padBottom));
-  }
+  if (padBottomRow) body.push(padBottomRow);
 
   // Fluid: width:100% capped at the measured px, so it holds the measured width on desktop
   // but shrinks on a narrow (non-Outlook) client instead of forcing a min-width the viewport
@@ -507,9 +879,21 @@ const emitContainer = (
     ["background-position", node.styles.backgroundPosition],
     ["background-repeat", node.styles.backgroundRepeat],
   ]);
+  // The mobile measurement's width caps the table on mobile (the root: the mobile content
+  // width) — the one container-level number that changes between breakpoints.
+  const mobileMax =
+    ctx && mobile ? Math.ceil(mobileWidth ?? mobile.rect.width) : undefined;
+  const tableDecls =
+    mobileMax !== undefined && mobileMax !== Math.ceil(width)
+      ? [`max-width:${mobileMax}px`]
+      : [];
   const table =
-    `<table${idAttr(node.id)} role="presentation" border="0" cellpadding="0"` +
-    ` cellspacing="0" width="100%" style="${tableStyle}">` +
+    `<table${ruleAttr(
+      ctx,
+      node.id,
+      tableDecls
+    )} role="presentation" border="0"` +
+    ` cellpadding="0" cellspacing="0" width="100%" style="${tableStyle}">` +
     `<tbody>${body.join("")}</tbody></table>`;
   // A linked wrapper (an <a> around a label + icon) stays clickable: the whole table sits
   // inside the link. Block-level links around tables are valid HTML and honoured by the
@@ -530,54 +914,92 @@ const twoLayout = (desktopHtml: string, mobileHtml: string): string =>
   `<div class="${D_CLASS}">${desktopHtml}</div>` +
   `<div class="${M_CLASS}" style="display: none; mso-hide: all;">${mobileHtml}</div>`;
 
+export interface CompiledBody {
+  /** The email body: nested tables. */
+  body: string;
+  /** The measured `@media` block for it, or "" without a mobile render. */
+  mediaCss: string;
+}
+
 /**
- * Emit the Compiled email body (nested tables) from the desktop MeasuredTree. With a mobile
- * MeasuredTree, every top-level section is emitted as two layouts (see the Responsive notes
- * above), toggled by the measured @media block (collectMediaQuery); without it the output is
- * the plain desktop layout. Sections pair by POSITION: the root's children are the placed
+ * Compile the email body (nested tables) from the desktop MeasuredTree, plus its mobile
+ * `@media` block. With a mobile MeasuredTree, each top-level section that keeps its
+ * structure on mobile is emitted once with id-keyed override rules (see the Responsive
+ * notes above); a section that restacks is emitted as two layouts, and the block then also
+ * carries the toggle that swaps them. Without a mobile tree the output is the plain desktop
+ * layout and no block. Sections pair by POSITION: the root's children are the placed
  * components in order (their wrapper ids repeat, so ids can't pair them), and both trees
- * hold the same components in the same order. Chrome (outer shell, head, MSO conditionals,
- * the @media block) is wrapped around this separately.
+ * hold the same components in the same order. Chrome (outer shell, head, MSO conditionals)
+ * is wrapped around this separately. The breakpoint sits just under the desktop content
+ * width so a viewport at exactly it still shows desktop (max-width is inclusive).
  */
-export const emit = (desktop: MeasuredTree, mobile?: MeasuredTree): string => {
-  if (!mobile) {
-    return emitContainer(desktop.root, desktop.contentWidth, emitChildSingle);
+export const compileBody = (
+  desktop: MeasuredTree,
+  mobile?: MeasuredTree
+): CompiledBody => {
+  if (!mobile || mobile.root.children.length === 0) {
+    return {
+      body: emitContainer(
+        desktop.root,
+        desktop.contentWidth,
+        makeChildEmitter()
+      ),
+      mediaCss: "",
+    };
   }
+  let counter = 0;
+  const ctx: OverrideCtx = { rules: [], nextId: () => `m${++counter}` };
+  const overridden = makeChildEmitter(ctx);
+  const plain = makeChildEmitter();
+  let restacks = false;
   const mobileSections = mobile.root.children;
   let position = 0;
   const emitSection: ChildEmitter = (node) => {
     const counterpart = mobileSections[position++];
-    const isContainer = node.children.length > 0 && node.role !== "text";
-    if (!isContainer || !counterpart) return emitChildSingle(node);
+    if (!isContainer(node) || !counterpart) return plain(node);
+    if (compatible(node, counterpart)) return overridden(node, counterpart);
+    restacks = true;
     return twoLayout(
-      emitContainer(node, node.rect.width, emitChildSingle),
-      emitContainer(counterpart, counterpart.rect.width, emitChildSingle)
+      emitContainer(node, node.rect.width, plain),
+      emitContainer(counterpart, counterpart.rect.width, plain)
     );
   };
-  return emitContainer(desktop.root, desktop.contentWidth, emitSection);
+  const body = emitContainer(
+    desktop.root,
+    desktop.contentWidth,
+    emitSection,
+    mobile.root,
+    ctx,
+    mobile.contentWidth
+  );
+  const breakpoint = round(desktop.contentWidth) - 1;
+  const lines = [
+    ...(restacks
+      ? [
+          `  .${D_CLASS} { display: none !important; }`,
+          `  .${M_CLASS} { display: block !important; }`,
+        ]
+      : []),
+    ...ctx.rules.map((rule) => `  ${rule}`),
+  ];
+  const mediaCss =
+    lines.length === 0
+      ? ""
+      : `@media screen and (max-width: ${breakpoint}px) {\n${lines.join(
+          "\n"
+        )}\n}`;
+  return { body, mediaCss };
 };
 
-/**
- * The measured `@media` block that toggles the desktop/mobile layouts (ADR-0004): below the
- * measured desktop content width the desktop copy is hidden and the mobile copy shown. The
- * breakpoint sits just under the content width so a viewport at exactly it still shows
- * desktop. Returns "" without a mobile render (then there is no mobile copy to toggle to).
- */
+/** The compiled body alone (see compileBody). */
+export const emit = (desktop: MeasuredTree, mobile?: MeasuredTree): string =>
+  compileBody(desktop, mobile).body;
+
+/** The measured `@media` block alone (see compileBody). */
 export const collectMediaQuery = (
   desktop: MeasuredTree,
   mobile?: MeasuredTree
-): string => {
-  if (!mobile || mobile.root.children.length === 0) return "";
-  // Just below the desktop column width: a viewport at exactly the content width still shows
-  // desktop; anything narrower switches to the mobile copy. (max-width is inclusive.)
-  const breakpoint = round(desktop.contentWidth) - 1;
-  return (
-    `@media screen and (max-width: ${breakpoint}px) {\n` +
-    `  .${D_CLASS} { display: none !important; }\n` +
-    `  .${M_CLASS} { display: block !important; }\n` +
-    `}`
-  );
-};
+): string => compileBody(desktop, mobile).mediaCss;
 
 // ── Force light: Outlook.com colour reassertions (ADR-0006) ───────────────────────────
 //

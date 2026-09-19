@@ -521,11 +521,12 @@ describe("emit(MeasuredTree)", () => {
     });
   });
 
-  describe("responsive: two-layout from the mobile measurement", () => {
+  describe("responsive: one copy + measured mobile overrides", () => {
     // A section ("hdr") with two 290px columns side by side on desktop. Given a mobile tree,
-    // EVERY top-level section is emitted as both layouts — its mobile copy transcribed from
-    // the mobile measurement, whether the columns stack there (mobileStacked) or stay side by
-    // side at new widths (mobileSideBySide) — never inferred or approximated from desktop.
+    // the desktop tables are emitted once, plus id-keyed @media rules for whatever the mobile
+    // measurement differs in — a stack (mobileStacked) or new widths (mobileSideBySide) —
+    // never inferred from desktop. Only a structure no rule can express (mobileReordered)
+    // gets a second, mobile copy of the section.
     const desktop = tree(
       600,
       node("root", [0, 0, 600, 120], {
@@ -551,78 +552,88 @@ describe("emit(MeasuredTree)", () => {
         ],
       })
     );
-    const mobileStacked = tree(
-      375,
-      node("root", [0, 0, 375, 240], {
-        id: "root",
+    // The same section measured at the mobile breakpoint, three ways.
+    const mobileWith = (
+      colA: [number, number, number, number],
+      colB: [number, number, number, number],
+      order: "AB" | "BA" = "AB"
+    ) => {
+      const a = node("container", [colA[0], colA[1], colA[2], 120], {
+        id: "colA",
         children: [
-          node("container", [0, 0, 375, 240], {
-            id: "hdr",
-            children: [
-              node("container", [0, 0, 375, 120], { id: "colA", children: [] }),
-              node("container", [0, 120, 375, 120], {
-                id: "colB",
-                children: [],
-              }),
-            ],
-          }),
+          node("text", [colA[0], colA[1], colA[2], 40], { id: "a", text: "A" }),
         ],
-      })
-    );
-    const mobileSideBySide = tree(
-      375,
-      node("root", [0, 0, 375, 120], {
-        id: "root",
+      });
+      const b = node("container", [colB[0], colB[1], colB[2], 120], {
+        id: "colB",
         children: [
-          node("container", [0, 0, 375, 120], {
-            id: "hdr",
-            children: [
-              node("container", [0, 0, 185, 120], { id: "colA", children: [] }),
-              node("container", [190, 0, 185, 120], {
-                id: "colB",
-                children: [],
-              }),
-            ],
-          }),
+          node("text", [colB[0], colB[1], colB[2], 40], { id: "b", text: "B" }),
         ],
-      })
+      });
+      return tree(
+        375,
+        node("root", [0, 0, 375, 240], {
+          id: "root",
+          children: [
+            node("container", [0, 0, 375, 240], {
+              id: "hdr",
+              children: order === "AB" ? [a, b] : [b, a],
+            }),
+          ],
+        })
+      );
+    };
+    // Columns stack, each full width, in the same order.
+    const mobileStacked = mobileWith([0, 0, 375, 120], [0, 120, 375, 120]);
+    // Columns stay side by side, narrower (185px) with a 5px gap.
+    const mobileSideBySide = mobileWith([0, 0, 185, 120], [190, 0, 185, 120]);
+    // Columns stack but colB comes FIRST: a reading order no rule can produce.
+    const mobileReordered = mobileWith(
+      [0, 120, 375, 120],
+      [0, 0, 375, 120],
+      "BA"
     );
 
-    it("emits both a desktop copy and a mobile copy for a section that reflows", () => {
-      const $ = load(emit(desktop, mobileStacked));
+    it("a row that stacks on mobile is emitted ONCE, with rules that stack its cells", () => {
+      const body = emit(desktop, mobileStacked);
+      const css = collectMediaQuery(desktop, mobileStacked);
+      // No second copy of the section…
+      expect(body).not.toContain("pc-d");
+      expect(body).not.toContain("pc-m");
+      // …the desktop cells keep their measured widths…
+      expect(load(body)("#colA").closest("td").attr("width")).toBe("290");
+      // …and the rules turn them into full-width blocks on mobile (one per column).
+      expect(css).toMatch(/@media[^{]*max-width:\s*599px/);
+      expect((css.match(/display:block!important/g) || []).length).toBe(2);
+      expect(css).not.toContain(".pc-d");
+    });
+
+    it("a row that stays side-by-side gets width rules instead of a second copy", () => {
+      // The mobile Canvas differs even without restacking (185px columns instead of 290 —
+      // in real components also font sizes, paddings, image sizes): the measurement becomes
+      // a rule per cell, not a copy of the section.
+      const body = emit(desktop, mobileSideBySide);
+      const css = collectMediaQuery(desktop, mobileSideBySide);
+      expect(body).not.toContain("pc-m");
+      // One width rule per column cell (anchored: `max-width` on the column tables is a
+      // separate, expected rule)…
+      expect((css.match(/[{;]width:185px!important/g) || []).length).toBe(2);
+      // …and each column's own table is capped at its mobile width.
+      expect((css.match(/max-width:185px!important/g) || []).length).toBe(2);
+    });
+
+    it("a row whose members reorder on mobile falls back to two layouts", () => {
+      const $ = load(emit(desktop, mobileReordered));
+      const css = collectMediaQuery(desktop, mobileReordered);
       expect($("div.pc-d").length).toBe(1);
       expect($("div.pc-m").length).toBe(1);
-      // The mobile copy is hidden by default and from Outlook.
+      // The mobile copy is the measured mobile layout (colB first), hidden by default and
+      // from Outlook; the block carries the toggle that swaps the copies.
       const mStyle = $("div.pc-m").attr("style") || "";
       expect(mStyle).toContain("display: none");
       expect(mStyle).toContain("mso-hide: all");
-    });
-
-    it("the desktop copy keeps the columns side by side at their measured widths", () => {
-      const $ = load(emit(desktop, mobileStacked));
-      const desktopColA = $("div.pc-d #colA");
-      expect(desktopColA.length).toBe(1);
-      expect(desktopColA.closest("td").attr("width")).toBe("290");
-    });
-
-    it("the mobile copy is the measured mobile layout (stacked, full width)", () => {
-      const $ = load(emit(desktop, mobileStacked));
-      const mobileColA = $("div.pc-m #colA");
-      const mobileColB = $("div.pc-m #colB");
-      expect(mobileColA.length).toBe(1);
-      expect(mobileColB.length).toBe(1);
-      // Full-width mobile columns → no fixed 290 width column baked here.
-      expect(mobileColA.closest("td").attr("width")).toBeUndefined();
-    });
-
-    it("a section that stays side-by-side on mobile still gets its own measured mobile copy", () => {
-      // The mobile Canvas differs even without restacking (here: 185px columns instead of
-      // 290px — in real components also font sizes, paddings, image sizes). A fluid-shrunk
-      // desktop copy would only scale the 290s; the mobile copy transcribes the measurement.
-      const $ = load(emit(desktop, mobileSideBySide));
-      expect($("div.pc-d #colA").closest("td").attr("width")).toBe("290");
-      expect($("div.pc-m #colA").closest("td").attr("width")).toBe("185");
-      expect($("div.pc-m #colB").closest("td").attr("width")).toBe("185");
+      expect(css).toContain(".pc-d { display: none !important; }");
+      expect(css).toContain(".pc-m { display: block !important; }");
     });
 
     it("with no mobile tree, output is the plain desktop layout (backward compatible)", () => {
@@ -630,20 +641,12 @@ describe("emit(MeasuredTree)", () => {
       expect(emit(desktop)).not.toContain("pc-d");
     });
 
-    it("generates the measured @media toggle whenever there is a mobile render", () => {
-      for (const mobile of [mobileStacked, mobileSideBySide]) {
-        const css = collectMediaQuery(desktop, mobile);
-        // Breakpoint sits just below the 600px content width so desktop stays desktop.
-        expect(css).toMatch(/@media[^{]*max-width:\s*599px/);
-        expect(css).toContain(".pc-d { display: none !important; }");
-        expect(css).toContain(".pc-m { display: block !important; }");
-      }
-    });
-
-    it("emits no @media without a mobile render (there is no mobile copy to toggle to)", () => {
+    it("emits no @media without a mobile render, or when mobile matches desktop", () => {
       expect(collectMediaQuery(desktop, undefined)).toBe("");
       const empty = tree(375, node("root", [0, 0, 375, 0], { id: "root" }));
       expect(collectMediaQuery(desktop, empty)).toBe("");
+      // Identical measurements: nothing differs, so nothing to say.
+      expect(collectMediaQuery(desktop, desktop)).toBe("");
     });
   });
 

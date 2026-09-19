@@ -517,10 +517,12 @@ test("two-pass measure observes the Canvas mobile restacking", async ({
   // Desktop: side by side. Mobile (re-measured at the mobile breakpoint): stacked.
   expect(r.dGapY).toBeLessThanOrEqual(POS_TOLERANCE);
   expect(r.mColBY).toBeGreaterThan(r.mColAY + 40);
-  // ...and that observed stack drives the responsive (two-layout) output.
-  expect(r.body).toContain("pc-d");
-  expect(r.body).toContain("pc-m");
+  // ...and that observed stack drives the responsive output: the columns keep the same
+  // reading order, so the ONE desktop copy gets rules that turn its cells into stacked
+  // blocks on mobile — no second copy of the section.
   expect(r.media).toContain("@media");
+  expect(r.media).toContain("display:block!important");
+  expect(r.body).not.toContain("pc-d");
 });
 
 test("editor chrome marked data-canvas-chrome is excluded from the compile", async ({

@@ -79,6 +79,12 @@ export interface MeasuredNode {
   /** Images only. */
   src?: string;
   alt?: string;
+  /**
+   * The image file's own height/width ratio (from naturalWidth/naturalHeight), so the
+   * emitter can tell a proportionally-sized image (safe to scale with `height:auto`) from
+   * one the design deliberately stretches. Absent when the image hadn't loaded.
+   */
+  naturalRatio?: number;
   children: MeasuredNode[];
 }
 

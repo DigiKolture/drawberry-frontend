@@ -259,9 +259,23 @@ const isSingleLine = (node: MeasuredNode): boolean => {
 // omitted); the mobile diff compares the EXPLICIT form (every property present, "0px" /
 // "normal" defaults) so a value that is set on one breakpoint and unset on the other still
 // produces a rule.
-const imagePairs = (node: MeasuredNode): StylePairs => [
+/** Is the image shown at its file's own ratio (so `height:auto` reproduces it)? */
+const isProportional = (node: MeasuredNode): boolean => {
+  const shown = node.rect.width > 0 ? node.rect.height / node.rect.width : 0;
+  return (
+    node.naturalRatio !== undefined &&
+    Math.abs(shown - node.naturalRatio) <= node.naturalRatio * 0.03
+  );
+};
+
+// A fluid, proportional image scales with the phone, so its height is `auto` — a pixel
+// height in the mobile rule would pin it and warp the squeezed image.
+const imagePairs = (node: MeasuredNode, fluid: boolean): StylePairs => [
   ["width", `${round(node.rect.width)}px`],
-  ["height", `${round(node.rect.height)}px`],
+  [
+    "height",
+    fluid && isProportional(node) ? "auto" : `${round(node.rect.height)}px`,
+  ],
   ["border-radius", node.styles.borderRadius || "0px"],
 ];
 const boxPairs = (node: MeasuredNode): StylePairs => [
@@ -300,23 +314,35 @@ const linkPairsExplicit = (node: MeasuredNode): StylePairs => [
 const emitLeaf = (
   node: MeasuredNode,
   mobile?: MeasuredNode,
-  ctx?: OverrideCtx
+  ctx?: OverrideCtx,
+  fluid = true
 ): string => {
   const diff = (pairs: (n: MeasuredNode) => StylePairs): string[] =>
     mobile && ctx ? diffPairs(pairs(node), pairs(mobile)) : [];
   switch (node.role) {
     case "image": {
-      // max-width:100% lets the image shrink with a narrow (non-Outlook) client. Measured
-      // corner radius rides along (rounded banner/story images were coming out square).
+      // An image that FILLS its row (a banner) is fluid: max-width:100% lets it shrink on a
+      // narrow (non-Outlook) client, and height:auto makes that shrink proportional — with
+      // only the height attribute a squeezed image kept its height and warped. Only when
+      // the design shows the file at its own ratio, though: an icon the Canvas deliberately
+      // stretches keeps its fixed height. An image narrower than its row (a logo, an icon)
+      // is NOT fluid: max-width:100% would make it the cell that gives way under a squeeze
+      // (a 36px logo shrank to 24), whereas a fixed width makes table layout shrink the
+      // row's spacers first, which is what keeps the layout intact on a small phone.
+      // (Outlook reads the attributes and ignores all of this.) Measured corner radius
+      // rides along (rounded banner/story images were coming out square).
       const style = styleString([
         ["display", "block"],
-        ["max-width", "100%"],
+        ["max-width", fluid ? "100%" : undefined],
+        ["height", fluid && isProportional(node) ? "auto" : undefined],
         ["border-radius", node.styles.borderRadius],
       ]);
       return (
-        `<img${ruleAttr(ctx, node.id, diff(imagePairs))} src="${escapeAttr(
-          node.src || ""
-        )}"` +
+        `<img${ruleAttr(
+          ctx,
+          node.id,
+          diff((n) => imagePairs(n, fluid))
+        )} src="${escapeAttr(node.src || "")}"` +
         ` width="${round(node.rect.width)}" height="${round(
           node.rect.height
         )}"` +
@@ -397,6 +423,8 @@ const emitLeaf = (
 interface OverrideCtx {
   rules: string[];
   nextId: () => string;
+  /** The mobile email's content width — what an image must nearly fill to count as fluid. */
+  mobileContentWidth: number;
 }
 
 const isContainer = (node: MeasuredNode): boolean =>
@@ -468,14 +496,19 @@ const compatible = (d: MeasuredNode, m: MeasuredNode): boolean => {
  * collected. Threaded through emitContainer/emitRow so the same layout code serves the
  * plain, the overridden and the two-layout paths.
  */
-type ChildEmitter = (node: MeasuredNode, mobile?: MeasuredNode) => string;
+type ChildEmitter = (
+  node: MeasuredNode,
+  mobile?: MeasuredNode,
+  /** Does the child fill its row? Decides whether an image may shrink (see emitLeaf). */
+  fluid?: boolean
+) => string;
 
 /** A child emitter: nested tables for containers, cell content for leaves. */
 const makeChildEmitter = (ctx?: OverrideCtx): ChildEmitter => {
-  const emitChild: ChildEmitter = (node, mobile) =>
+  const emitChild: ChildEmitter = (node, mobile, fluid) =>
     isContainer(node)
       ? emitContainer(node, node.rect.width, emitChild, mobile, ctx)
-      : emitLeaf(node, mobile, ctx);
+      : emitLeaf(node, mobile, ctx, fluid);
   return emitChild;
 };
 
@@ -526,6 +559,21 @@ const spacerCell = (
   attrs = ""
 ): string =>
   `<td${attrs} ${dimension}="${round(px)}" style="${SPACER_STYLE}">&nbsp;</td>`;
+
+/**
+ * A spacer the DESKTOP row doesn't have but the mobile row needs (a lone logo that sits
+ * flush on desktop and centred on a phone). Emitted hidden, and shown by its mobile rule
+ * at the measured width. Padding on the neighbouring cell was the previous answer, and
+ * padding never yields: on a phone narrower than the measurement, 147px + 148px of it
+ * squeezed a 40px logo into a sliver. A spacer CELL yields — table layout shrinks it before
+ * it shrinks content — which is exactly how the desktop-born spacers already survive the
+ * squeeze.
+ */
+const phantomSpacer = (ctx: OverrideCtx | undefined, px: number): string =>
+  `<td${ruleAttr(ctx, "", [
+    "display:table-cell",
+    `width:${px}px`,
+  ])} width="0" style="display: none; ${SPACER_STYLE}">&nbsp;</td>`;
 
 /**
  * A spacer row; a mobile rule (height / display:none) lands on the <td>, not the <tr>: the
@@ -671,7 +719,7 @@ const emitRow = (
       ruleAttr(ctx, "", gone ?? spacerDecls(d.lead, m?.lead))
     );
   } else if (m && m.lead > ROW_TOLERANCE) {
-    cellDecls[0].push(`padding-left:${m.lead}px`);
+    leadCell = phantomSpacer(ctx, m.lead);
   }
   const gapCells: string[] = row.map((child, index) => {
     if (d.gaps[index] > 0) {
@@ -685,9 +733,7 @@ const emitRow = (
         )
       );
     }
-    if (m && m.gaps[index] > 0) {
-      cellDecls[index].push(`padding-left:${m.gaps[index]}px`);
-    }
+    if (m && m.gaps[index] > 0) return phantomSpacer(ctx, m.gaps[index]);
     return "";
   });
   let trailCell = "";
@@ -698,7 +744,7 @@ const emitRow = (
       ruleAttr(ctx, "", gone ?? spacerDecls(d.trail, m?.trail))
     );
   } else if (m && m.trail > ROW_TOLERANCE) {
-    cellDecls[row.length - 1].push(`padding-right:${m.trail}px`);
+    trailCell = phantomSpacer(ctx, m.trail);
   }
   if (m) {
     row.forEach((child, index) => {
@@ -731,10 +777,21 @@ const emitRow = (
     const valign = deriveValign(child, bandTop, bandBottom);
     const widthAttr = d.pinned[index] ? ` width="${d.widths[index]}"` : "";
     const attrs = ruleAttr(ctx, "", cellDecls[index]);
+    // Is the child a banner that must shrink with a narrow phone, or a logo/icon that must
+    // hold its width so the row's spacers give way instead? Judged against the MOBILE
+    // email's content width, not the immediate wrapper (a 36px logo fills its 36px link
+    // wrapper, yet is no banner): three quarters of the email width counts as filling it —
+    // anything that wide would overflow a small phone. Without a mobile render (a
+    // desktop-only email) every image stays fluid, as before.
+    const twin = mRow ? mRow[index] : undefined;
+    const fluid = ctx
+      ? (twin ?? child).rect.width >= ctx.mobileContentWidth * 0.75
+      : true;
     cells.push(
       `<td${attrs}${widthAttr} valign="${valign}">${emitChild(
         child,
-        mRow ? mRow[index] : undefined
+        twin,
+        fluid
       )}</td>`
     );
   });
@@ -948,7 +1005,11 @@ export const compileBody = (
     };
   }
   let counter = 0;
-  const ctx: OverrideCtx = { rules: [], nextId: () => `m${++counter}` };
+  const ctx: OverrideCtx = {
+    rules: [],
+    nextId: () => `m${++counter}`,
+    mobileContentWidth: mobile.contentWidth,
+  };
   const overridden = makeChildEmitter(ctx);
   const plain = makeChildEmitter();
   let restacks = false;

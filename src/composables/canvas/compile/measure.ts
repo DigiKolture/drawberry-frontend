@@ -171,6 +171,12 @@ const measureElement = (
   if (role === "image") {
     node.src = el.getAttribute("src") || "";
     node.alt = el.getAttribute("alt") || "";
+    // The file's own ratio, so the emitter can tell a proportionally-sized image (safe to
+    // scale with height:auto on a narrow phone) from one the design stretches on purpose.
+    const img = el as HTMLImageElement;
+    if (img.naturalWidth > 0 && img.naturalHeight > 0) {
+      node.naturalRatio = img.naturalHeight / img.naturalWidth;
+    }
   } else if (role === "button") {
     const link = buttonLink(el) as Element;
     node.href = link.getAttribute("href") || "";

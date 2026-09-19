@@ -1,0 +1,14 @@
+{
+  "detector": {
+    "ignoreRules": [],
+    "ignoreFiles": [],
+    "ignoreValues": [
+      {
+        "rule": "overused-font",
+        "value": "helvetica",
+        "createdAt": "2026-09-19T08:54:45.651Z",
+        "reason": "Outlook (MSO) fallback font stack in the email chrome, not a UI typeface — user confirmed intentional"
+      }
+    ]
+  }
+}

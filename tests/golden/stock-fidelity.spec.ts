@@ -383,25 +383,45 @@ test("stock components: the mobile copy survives the chrome's narrower width wit
     },
     [desktopTree, mobileTree]
   );
-  await page.setViewportSize({ width: 375, height: 1400 });
-  await load(page, tablesDoc(body, media, CHROME_MOBILE_WIDTH, FONTS));
-  const tables = await page.evaluate(measure);
-  const wrapped: string[] = [];
-  for (const [id, c] of Object.entries(canvasMobile)) {
-    const t = tables[id];
-    if (!t) continue;
-    // A button's Canvas node is a wrapper (not a leaf) while its emitted <a> is a leaf, so
-    // accept either side as the text carrier; a single Canvas line is height <= line-height.
-    const text = c.text || t.text;
-    if (!text) continue;
-    const lineHeight = parseFloat(c.lh);
-    const singleLine = !Number.isNaN(lineHeight) && c.h <= lineHeight + 4;
-    if (singleLine && t.h > c.h + 4) {
-      wrapped.push(`${id} "${text}": h ${c.h}->${t.h}`);
+  // Three phone classes: a 375 iPhone, a 360 Android, a 320 iPhone SE — each minus the
+  // chrome's 20px of gutters. If the mobile copy survives 300px it survives everything above.
+  for (const [phone, width] of [
+    [375, CHROME_MOBILE_WIDTH],
+    [360, 340],
+    [320, 300],
+  ] as const) {
+    await page.setViewportSize({ width: phone, height: 1400 });
+    await load(page, tablesDoc(body, media, width, FONTS));
+    const tables = await page.evaluate(measure);
+    const broken: string[] = [];
+    for (const [id, c] of Object.entries(canvasMobile)) {
+      const t = tables[id];
+      if (!t) continue;
+      // An image must shrink proportionally, never warp: with only a height attribute a
+      // squeezed logo kept its 40px height and collapsed to a sliver.
+      if (c.tag === "IMG" && c.w > 0 && c.h > 0) {
+        const ratio = c.h / c.w;
+        const got = t.w > 0 ? t.h / t.w : Infinity;
+        if (t.w === 0 || Math.abs(got - ratio) > ratio * 0.05) {
+          broken.push(`${id}: image ${c.w}x${c.h} -> ${t.w}x${t.h}`);
+        }
+        continue;
+      }
+      // A button's Canvas node is a wrapper (not a leaf) while its emitted <a> is a leaf, so
+      // accept either side as the text carrier; a single Canvas line is height <= line-height.
+      const text = c.text || t.text;
+      if (!text) continue;
+      const lineHeight = parseFloat(c.lh);
+      const singleLine = !Number.isNaN(lineHeight) && c.h <= lineHeight + 4;
+      if (singleLine && t.h > c.h + 4) {
+        broken.push(`${id} "${text}": h ${c.h}->${t.h}`);
+      }
     }
+    expect(
+      broken,
+      `broken when squeezed to ${width}px (a ${phone}px phone):\n${broken.join(
+        "\n"
+      )}`
+    ).toEqual([]);
   }
-  expect(
-    wrapped,
-    `wrapped when squeezed to ${CHROME_MOBILE_WIDTH}px:\n${wrapped.join("\n")}`
-  ).toEqual([]);
 });

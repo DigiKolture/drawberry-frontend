@@ -38,6 +38,7 @@
     <form
       v-if="showForm"
       class="connector__form"
+      autocomplete="off"
       @submit.prevent="submitApiKey"
     >
       <div
@@ -53,7 +54,10 @@
           :type="field.type === 'password' ? 'password' : 'text'"
           :placeholder="field.placeholder || ''"
           :required="field.required"
-          autocomplete="off"
+          :name="`${entry.key}-${field.key}`"
+          :autocomplete="field.type === 'password' ? 'new-password' : 'off'"
+          data-lpignore="true"
+          data-1p-ignore
         />
         <small v-if="field.helpText" class="connector__form__help">{{
           field.helpText
@@ -132,9 +136,15 @@ export default defineComponent({
         });
     };
 
+    const clearFields = () =>
+      Object.keys(fields).forEach((k) => delete fields[k]);
+
     const startConnect = () => {
       error.value = "";
       if (isApiKey.value) {
+        // Always open (and close) the form empty — never with values left over
+        // from a cancelled attempt.
+        clearFields();
         showForm.value = !showForm.value;
       } else {
         // OAuth connectors redirect out to the provider. Remember the project
@@ -174,7 +184,7 @@ export default defineComponent({
         })
         .then(() => {
           showForm.value = false;
-          Object.keys(fields).forEach((k) => delete fields[k]);
+          clearFields();
           toast(`${props.entry.displayName} connected`);
         })
         .catch((err: Error) => {

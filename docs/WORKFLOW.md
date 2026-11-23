@@ -1,6 +1,6 @@
 # How we build features with Claude
 
-This guide is for designers working on Drawberry. You don't need to write code: you describe the work, answer Claude's questions, and check the result. Claude handles git, code and tests.
+This guide is for anyone working on Drawberry. You describe the work, answer Claude's questions, and check the result. Claude handles git, code and tests.
 
 Drawberry has two repos:
 
@@ -9,34 +9,9 @@ Drawberry has two repos:
 
 Do UI work in the web repo. If a feature needs both, Claude will tell you, and you'll run the same steps in the API repo.
 
-## Words you'll see
-
-| Word                  | What it means                                                                         |
-| --------------------- | ------------------------------------------------------------------------------------- |
-| **Branch**            | Your own copy of the project for one task. Changes on it don't affect anyone else.    |
-| **`dev`**             | The shared staging version. Nobody works on it directly.                              |
-| **`main`**            | The live product. Nobody works on it directly.                                        |
-| **Commit**            | A saved checkpoint of your work on your branch.                                       |
-| **Pull request (PR)** | A request to add your branch to `dev`. An engineer reviews it, then merges it.        |
-| **Spec**              | A written description of the feature: the problem, the solution and every user story. |
-| **Ticket**            | One small, testable piece of the spec.                                                |
-
 ## The golden rule
 
 **One task, one new branch, started from the latest `dev`.** Never work on `dev` or `main`. Claude follows this rule automatically, but check before you start: the branch name appears at the bottom of the Claude app.
-
-## One-time setup
-
-1. Install the [Claude desktop app](https://claude.ai/download) and open the **Code** tab.
-2. Ask an engineer to give you access to both GitHub repos and to clone them onto your computer.
-3. Install the workflow skills. In the Code tab, open the repo folder and paste:
-   ```bash
-   npx skills add mattpocock/skills
-   ```
-   ```bash
-   npx skills add emilkowalski/skills
-   ```
-   When it asks which skills to install, pick at least `grill-with-docs`, `grilling`, `domain-modeling`, `to-spec`, `to-tickets`, `implement`, `tdd`, `code-review` and `prototype`.
 
 ## The workflow
 
